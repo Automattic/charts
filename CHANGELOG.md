@@ -10,5 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Adding new chart type.
 - Charts: adds Barchart functionality and storybook item
 - Initial version.
