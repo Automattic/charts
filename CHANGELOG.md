@@ -15,3 +15,6 @@ This is an alpha version! The changes listed here are not final.
 - Charts: adds Barchart functionality and storybook item
 - Charts: adds tooltip component
 - Initial version.
+
+### Changed
+- Chart Library: Update tooltip component
