@@ -18,3 +18,6 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Chart Library: Update tooltip component
+
+### Fixed
+- Fixed lints following ESLint rule changes for TS
