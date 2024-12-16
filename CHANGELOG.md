@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Adding a theme provider to Automattic Charts
+- Adding new chart type - pie chart.
 - Adding new chart type.
 - Charts: adds Barchart functionality and storybook item
 - Charts: adds tooltip component

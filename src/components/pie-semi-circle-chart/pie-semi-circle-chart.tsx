@@ -8,23 +8,9 @@ import { FC, useCallback } from 'react';
 import { useChartTheme } from '../../providers/theme/theme-provider';
 import { BaseTooltip } from '../tooltip';
 import styles from './pie-semi-circle-chart.module.scss';
-import type { DataPointPercentage } from '../shared/types';
+import type { BaseChartProps, DataPointPercentage } from '../shared/types';
 
-type ArcData = PieArcDatum< DataPointPercentage >;
-
-interface PieSemiCircleChartProps {
-	/**
-	 * Array of data points to display in the chart
-	 */
-	data: DataPointPercentage[];
-	/**
-	 * Width of the chart in pixels
-	 */
-	width: number;
-	/**
-	 * Height of the chart in pixels
-	 */
-	height: number;
+interface PieSemiCircleChartProps extends BaseChartProps< DataPointPercentage[] > {
 	/**
 	 * Label text to display above the chart
 	 */
@@ -33,11 +19,9 @@ interface PieSemiCircleChartProps {
 	 * Note text to display below the label
 	 */
 	note: string;
-	/**
-	 * Whether to show tooltips
-	 */
-	showTooltips?: boolean;
 }
+
+type ArcData = PieArcDatum< DataPointPercentage >;
 
 const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 	data,
@@ -45,7 +29,7 @@ const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 	height,
 	label,
 	note,
-	showTooltips = false,
+	withTooltips = false,
 } ) => {
 	const providerTheme = useChartTheme();
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =
@@ -106,7 +90,7 @@ const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 						data={ dataWithIndex }
 						pieValue={ accessors.value }
 						outerRadius={ width / 2 } // half of the diameter (width)
-						innerRadius={ ( width / 2 ) * 0.6 } // 70% of the radius
+						innerRadius={ ( width / 2 ) * 0.6 } // 60% of the radius
 						cornerRadius={ 3 }
 						padAngle={ 0.03 }
 						startAngle={ -Math.PI / 2 }
@@ -147,7 +131,7 @@ const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 				</Group>
 			</svg>
 
-			{ showTooltips && tooltipOpen && tooltipData && (
+			{ withTooltips && tooltipOpen && tooltipData && (
 				<BaseTooltip
 					data={ {
 						label: tooltipData.label,
