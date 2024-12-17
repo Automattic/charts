@@ -24,3 +24,4 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Fixed lints following ESLint rule changes for TS
+- Fixing a bug in Chart storybook data.
