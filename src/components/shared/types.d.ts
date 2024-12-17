@@ -68,7 +68,7 @@ export type BaseChartProps< T = DataPoint | DataPointDate > = {
 	/**
 	 * Height of the chart in pixels
 	 */
-	height: number;
+	height?: number;
 	/**
 	 * Chart margins
 	 */
