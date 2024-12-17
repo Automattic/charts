@@ -10,6 +10,16 @@ export type DataPointDate = {
 	value: number;
 };
 
+export type SeriesData = {
+	label: string;
+	data: DataPointDate[];
+};
+
+export type MultipleDataPointsDate = {
+	label: string;
+	data: DataPointDate[];
+};
+
 export type DataPointPercentage = {
 	/**
 	 * Label for the data point
@@ -61,6 +71,10 @@ export type BaseChartProps< T = DataPoint | DataPointDate > = {
 	 * Array of data points to display in the chart
 	 */
 	data: T extends DataPoint | DataPointDate ? T[] : T;
+	/**
+	 * Additional CSS class name for the chart container
+	 */
+	className?: string;
 	/**
 	 * Width of the chart in pixels
 	 */

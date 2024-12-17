@@ -24,6 +24,7 @@ const BarChart: FC< BarChartProps > = ( {
 	height,
 	margin = { top: 20, right: 20, bottom: 40, left: 40 },
 	withTooltips = false,
+	className,
 } ) => {
 	const theme = useChartTheme();
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =
@@ -63,7 +64,7 @@ const BarChart: FC< BarChartProps > = ( {
 	}, [ hideTooltip ] );
 
 	return (
-		<div className={ clsx( 'bar-chart', styles[ 'bar-chart' ] ) }>
+		<div className={ clsx( 'bar-chart', className, styles[ 'bar-chart' ] ) }>
 			<svg width={ width } height={ height }>
 				<Group left={ margins.left } top={ margins.top }>
 					{ data.map( d => {

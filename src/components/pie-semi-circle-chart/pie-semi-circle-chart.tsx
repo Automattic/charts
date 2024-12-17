@@ -37,6 +37,7 @@ const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 	width,
 	label,
 	note,
+	className,
 	withTooltips = false,
 	clockwise = true,
 	thickness = 0.4,
@@ -98,7 +99,9 @@ const PieSemiCircleChart: FC< PieSemiCircleChartProps > = ( {
 	);
 
 	return (
-		<div className={ clsx( 'pie-semi-circle-chart', styles[ 'pie-semi-circle-chart' ] ) }>
+		<div
+			className={ clsx( 'pie-semi-circle-chart', styles[ 'pie-semi-circle-chart' ], className ) }
+		>
 			<svg width={ width } height={ height }>
 				{ /* Main chart group that contains both the pie and text elements */ }
 				<Group top={ centerX } left={ centerX }>
