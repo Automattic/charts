@@ -7,6 +7,7 @@ import { useTooltip } from '@visx/tooltip';
 import clsx from 'clsx';
 import { FC, useCallback, type MouseEvent } from 'react';
 import { useChartTheme } from '../../providers/theme';
+import { Legend } from '../legend';
 import { BaseTooltip } from '../tooltip';
 import styles from './bar-chart.module.scss';
 import type { BaseChartProps, DataPoint } from '../shared/types';
@@ -16,6 +17,10 @@ interface BarChartProps extends BaseChartProps {
 	 * Array of data points to display in the chart
 	 */
 	data: DataPoint[];
+	/**
+	 * Label for the data series
+	 */
+	seriesLabel?: string;
 }
 
 const BarChart: FC< BarChartProps > = ( {
@@ -24,7 +29,10 @@ const BarChart: FC< BarChartProps > = ( {
 	height,
 	margin = { top: 20, right: 20, bottom: 40, left: 40 },
 	withTooltips = false,
+	showLegend = false,
+	legendOrientation = 'horizontal',
 	className,
+	seriesLabel,
 } ) => {
 	const theme = useChartTheme();
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =
@@ -34,6 +42,7 @@ const BarChart: FC< BarChartProps > = ( {
 	const xMax = width - margins.left - margins.right;
 	const yMax = height - margins.top - margins.bottom;
 
+	// Create scales
 	const xScale = scaleBand< string >( {
 		range: [ 0, xMax ],
 		domain: data.map( d => d.label ),
@@ -62,6 +71,14 @@ const BarChart: FC< BarChartProps > = ( {
 	const handleMouseLeave = useCallback( () => {
 		hideTooltip();
 	}, [ hideTooltip ] );
+
+	const legendItems = [
+		{
+			label: seriesLabel,
+			value: '', // Empty string since we don't want to show a specific value
+			color: theme.colors[ 0 ],
+		},
+	];
 
 	return (
 		<div className={ clsx( 'bar-chart', className, styles[ 'bar-chart' ] ) }>
@@ -98,10 +115,17 @@ const BarChart: FC< BarChartProps > = ( {
 					left={ tooltipLeft }
 				/>
 			) }
+
+			{ showLegend && (
+				<Legend
+					items={ legendItems }
+					orientation={ legendOrientation }
+					className={ styles[ 'bar-chart-legend' ] }
+				/>
+			) }
 		</div>
 	);
 };
 
 BarChart.displayName = 'BarChart';
-
 export default BarChart;

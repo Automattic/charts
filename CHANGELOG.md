@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Adding new chart type - pie chart.
 - Adding new chart type.
 - Adding support for mutliple data series for the line charts.
+- Chart library: add legend component
 - Charts: adds Barchart functionality and storybook item
 - Charts: adds tooltip component
 - Initial version.
