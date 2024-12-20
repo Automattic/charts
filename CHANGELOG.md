@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Adding a theme provider to Automattic Charts
+- Adding build option for Charts.
 - Adding new chart type - pie chart.
 - Adding new chart type.
 - Adding support for multiple data series to the Bar chart component.
