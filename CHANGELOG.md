@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: adds grid component to charts
 
+### Fixed
+- Fixing incorrect TS build.
+
 ## 0.1.0 - 2024-12-20
 ### Added
 - Adding a theme provider to Automattic Charts [#40558]
