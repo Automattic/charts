@@ -1,0 +1,95 @@
+.bar-chart-module__bar-chart__lmYNi {
+  position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
+}
+.line-chart-module__line-chart__ITM3d {
+  position: relative;
+}
+.line-chart-module__line-chart__tooltip__aqcme {
+  background: #fff;
+  padding: 0.5rem;
+}
+.line-chart-module__line-chart__tooltip-date__4Dzab {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.line-chart-module__line-chart__tooltip-row__6A37G {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  justify-content: space-between;
+}
+.line-chart-module__line-chart__tooltip-label__IvnFF {
+  font-weight: 500;
+  padding-right: 1rem;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
+  position: relative;
+  text-align: center;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart-legend__c8W1Y {
+  margin-top: 1rem;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__label__nPqOg {
+  margin-bottom: 0px;
+  font-weight: 600;
+  font-size: 16px;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
+  margin-top: 0px;
+  font-size: 14px;
+}
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.legend-module__legend--horizontal__IUN13 {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.legend-module__legend--vertical__Scfzo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-module__legend-item__feemn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.legend-module__legend-item-swatch__nRyXf {
+  border-radius: 2px;
+}
+
+.legend-module__legend-item-label__ksx6I {
+  color: var(--jp-gray-80, #2c3338);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-module__legend-item-value__d9x1j {
+  font-weight: 500;
+}
+.base-tooltip-module__tooltip__OfX6n {
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
+}

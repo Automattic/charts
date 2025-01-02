@@ -1,0 +1,2 @@
+import{jsx as l,jsxs as t,Fragment as a}from"react/jsx-runtime";var e="base-tooltip-module__tooltip__OfX6n";const o=({data:l})=>t(a,{children:[null==l?void 0:l.label,": ",(null==l?void 0:l.valueDisplay)||(null==l?void 0:l.value)]}),i=({data:t,top:a,left:i,component:d=o,children:n,className:s})=>l("div",{className:e,style:{top:a,left:i},role:"tooltip",children:n||t&&l(d,{data:t,className:s})});export{i as BaseTooltip};
+//# sourceMappingURL=index.js.map
