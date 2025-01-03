@@ -1,24 +1,3 @@
-.line-chart-module__line-chart__ITM3d {
-  position: relative;
-}
-.line-chart-module__line-chart__tooltip__aqcme {
-  background: #fff;
-  padding: 0.5rem;
-}
-.line-chart-module__line-chart__tooltip-date__4Dzab {
-  font-weight: bold;
-  padding-bottom: 10px;
-}
-.line-chart-module__line-chart__tooltip-row__6A37G {
-  display: flex;
-  align-items: center;
-  padding: 4px 0;
-  justify-content: space-between;
-}
-.line-chart-module__line-chart__tooltip-label__IvnFF {
-  font-weight: 500;
-  padding-right: 1rem;
-}
 .bar-chart-module__bar-chart__lmYNi {
   position: relative;
 }
@@ -40,6 +19,27 @@
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
   margin-top: 0px;
   font-size: 14px;
+}
+.line-chart-module__line-chart__ITM3d {
+  position: relative;
+}
+.line-chart-module__line-chart__tooltip__aqcme {
+  background: #fff;
+  padding: 0.5rem;
+}
+.line-chart-module__line-chart__tooltip-date__4Dzab {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.line-chart-module__line-chart__tooltip-row__6A37G {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  justify-content: space-between;
+}
+.line-chart-module__line-chart__tooltip-label__IvnFF {
+  font-weight: 500;
+  padding-right: 1rem;
 }
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
