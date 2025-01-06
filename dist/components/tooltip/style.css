@@ -38,10 +38,11 @@
   font-weight: 500;
   padding-right: 1rem;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.bar-chart-module__bar-chart__lmYNi {
+  position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
@@ -76,11 +77,10 @@
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
 }
-.bar-chart-module__bar-chart__lmYNi {
-  position: relative;
-}
-.bar-chart-module__bar-chart-legend__vgKKq {
-  margin-top: 1rem;
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .base-tooltip-module__tooltip__OfX6n {
   padding: 0.5rem;
