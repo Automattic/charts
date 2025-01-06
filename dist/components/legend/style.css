@@ -1,11 +1,21 @@
 .pie-chart-module__pie-chart__R12Vh {
   position: relative;
 }
-.bar-chart-module__bar-chart__lmYNi {
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
+  text-align: center;
 }
-.bar-chart-module__bar-chart-legend__vgKKq {
+.pie-semi-circle-chart-module__pie-semi-circle-chart-legend__c8W1Y {
   margin-top: 1rem;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__label__nPqOg {
+  margin-bottom: 0px;
+  font-weight: 600;
+  font-size: 16px;
+}
+.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
+  margin-top: 0px;
+  font-size: 14px;
 }
 .line-chart-module__line-chart__ITM3d {
   position: relative;
@@ -28,21 +38,10 @@
   font-weight: 500;
   padding-right: 1rem;
 }
-.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
-  position: relative;
-  text-align: center;
-}
-.pie-semi-circle-chart-module__pie-semi-circle-chart-legend__c8W1Y {
-  margin-top: 1rem;
-}
-.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__label__nPqOg {
-  margin-bottom: 0px;
-  font-weight: 600;
-  font-size: 16px;
-}
-.pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
-  margin-top: 0px;
-  font-size: 14px;
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .base-tooltip-module__tooltip__OfX6n {
   padding: 0.5rem;
@@ -55,10 +54,11 @@
   pointer-events: none;
   transform: translate(-50%, -100%);
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.bar-chart-module__bar-chart__lmYNi {
+  position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
