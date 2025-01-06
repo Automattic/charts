@@ -4,6 +4,9 @@
 .bar-chart-module__bar-chart-legend__vgKKq {
   margin-top: 1rem;
 }
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
+}
 .base-tooltip-module__tooltip__OfX6n {
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.85);
@@ -35,9 +38,6 @@
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
   margin-top: 0px;
   font-size: 14px;
-}
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
