@@ -25,13 +25,13 @@
   font-weight: 500;
   padding-right: 1rem;
 }
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
-}
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
   stroke-width: 1px;
   shape-rendering: crispEdges;
+}
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;

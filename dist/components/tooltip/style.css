@@ -25,8 +25,10 @@
   font-weight: 500;
   padding-right: 1rem;
 }
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
@@ -77,10 +79,8 @@
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .base-tooltip-module__tooltip__OfX6n {
   padding: 0.5rem;
