@@ -7,11 +7,6 @@
 .pie-chart-module__pie-chart__R12Vh {
   position: relative;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
-}
 .line-chart-module__line-chart__ITM3d {
   position: relative;
 }
@@ -32,6 +27,11 @@
 .line-chart-module__line-chart__tooltip-label__IvnFF {
   font-weight: 500;
   padding-right: 1rem;
+}
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
