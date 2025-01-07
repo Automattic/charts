@@ -1,9 +1,3 @@
-.bar-chart-module__bar-chart__lmYNi {
-  position: relative;
-}
-.bar-chart-module__bar-chart-legend__vgKKq {
-  margin-top: 1rem;
-}
 .line-chart-module__line-chart__ITM3d {
   position: relative;
 }
@@ -45,6 +39,12 @@
   stroke: #d7d6d6;
   stroke-width: 1px;
   shape-rendering: crispEdges;
+}
+.bar-chart-module__bar-chart__lmYNi {
+  position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;

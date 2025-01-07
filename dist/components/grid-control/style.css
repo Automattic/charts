@@ -1,12 +1,6 @@
 .pie-chart-module__pie-chart__R12Vh {
   position: relative;
 }
-.bar-chart-module__bar-chart__lmYNi {
-  position: relative;
-}
-.bar-chart-module__bar-chart-legend__vgKKq {
-  margin-top: 1rem;
-}
 .line-chart-module__line-chart__ITM3d {
   position: relative;
 }
@@ -87,6 +81,12 @@
 
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
+}
+.bar-chart-module__bar-chart__lmYNi {
+  position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
 }
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
