@@ -23,11 +23,6 @@
   margin-top: 0px;
   font-size: 14px;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
-}
 .base-tooltip-module__tooltip__OfX6n {
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.85);
@@ -38,6 +33,11 @@
   position: absolute;
   pointer-events: none;
   transform: translate(-50%, -100%);
+}
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
