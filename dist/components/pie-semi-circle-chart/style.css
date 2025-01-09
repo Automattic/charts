@@ -4,8 +4,10 @@
 .bar-chart-module__bar-chart-legend__vgKKq {
   margin-top: 1rem;
 }
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .line-chart-module__line-chart__ITM3d {
   position: relative;
@@ -28,10 +30,8 @@
   font-weight: 500;
   padding-right: 1rem;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
