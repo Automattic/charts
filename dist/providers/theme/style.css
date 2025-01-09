@@ -49,17 +49,6 @@
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
-.base-tooltip-module__tooltip__OfX6n {
-  padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-  border-radius: 4px;
-  font-size: 14px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  pointer-events: none;
-  transform: translate(-50%, -100%);
-}
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
   flex-direction: row;
@@ -92,4 +81,15 @@
 
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
+}
+.base-tooltip-module__tooltip__OfX6n {
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
 }
