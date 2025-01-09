@@ -1,3 +1,6 @@
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
+}
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
   text-align: center;
@@ -34,9 +37,6 @@
 .line-chart-module__line-chart__tooltip-label__IvnFF {
   font-weight: 500;
   padding-right: 1rem;
-}
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
 }
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
