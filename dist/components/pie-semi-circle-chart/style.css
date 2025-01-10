@@ -1,6 +1,3 @@
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
-}
 .bar-chart-module__bar-chart__lmYNi {
   position: relative;
 }
@@ -32,6 +29,9 @@
   stroke: #d7d6d6;
   stroke-width: 1px;
   shape-rendering: crispEdges;
+}
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
