@@ -4,6 +4,9 @@
 .bar-chart-module__bar-chart-legend__vgKKq {
   margin-top: 1rem;
 }
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
+}
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
   text-align: center;
@@ -41,6 +44,17 @@
   font-weight: 500;
   padding-right: 1rem;
 }
+.base-tooltip-module__tooltip__OfX6n {
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
   flex-direction: row;
@@ -73,20 +87,6 @@
 
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
-}
-.base-tooltip-module__tooltip__OfX6n {
-  padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-  border-radius: 4px;
-  font-size: 14px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  pointer-events: none;
-  transform: translate(-50%, -100%);
-}
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
 }
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
