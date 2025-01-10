@@ -1,8 +1,5 @@
-.bar-chart-module__bar-chart__lmYNi {
+.pie-chart-module__pie-chart__R12Vh {
   position: relative;
-}
-.bar-chart-module__bar-chart-legend__vgKKq {
-  margin-top: 1rem;
 }
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
@@ -90,6 +87,9 @@
 .legend-module__legend-item-value__d9x1j {
   font-weight: 500;
 }
-.pie-chart-module__pie-chart__R12Vh {
+.bar-chart-module__bar-chart__lmYNi {
   position: relative;
+}
+.bar-chart-module__bar-chart-legend__vgKKq {
+  margin-top: 1rem;
 }
