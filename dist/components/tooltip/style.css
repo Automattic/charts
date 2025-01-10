@@ -1,6 +1,3 @@
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
-}
 .bar-chart-module__bar-chart__lmYNi {
   position: relative;
 }
@@ -43,6 +40,9 @@
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
   margin-top: 0px;
   font-size: 14px;
+}
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
