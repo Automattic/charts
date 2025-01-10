@@ -1,16 +1,11 @@
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
-}
 .bar-chart-module__bar-chart__lmYNi {
   position: relative;
 }
 .bar-chart-module__bar-chart-legend__vgKKq {
   margin-top: 1rem;
 }
-.grid-control-module__grid-control__KOnZN .visx-line {
-  stroke: #d7d6d6;
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
 }
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
@@ -38,6 +33,11 @@
   position: absolute;
   pointer-events: none;
   transform: translate(-50%, -100%);
+}
+.grid-control-module__grid-control__KOnZN .visx-line {
+  stroke: #d7d6d6;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 .legend-module__legend--horizontal__IUN13 {
   display: flex;
