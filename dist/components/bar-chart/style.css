@@ -19,6 +19,9 @@
   font-weight: 500;
   padding-right: 1rem;
 }
+.pie-chart-module__pie-chart__R12Vh {
+  position: relative;
+}
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 {
   position: relative;
   text-align: center;
@@ -34,9 +37,6 @@
 .pie-semi-circle-chart-module__pie-semi-circle-chart__r5jk9 .pie-semi-circle-chart-module__note__LpBZQ {
   margin-top: 0px;
   font-size: 14px;
-}
-.pie-chart-module__pie-chart__R12Vh {
-  position: relative;
 }
 .grid-control-module__grid-control__KOnZN .visx-line {
   stroke: #d7d6d6;
