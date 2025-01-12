@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - make charts responsive
 
+### Fixed
+- Fixed React reference
+
 ## [0.2.3] - 2025-01-12
 ### Changed
 - Replace Rollup with Webpack for charts [#40912]
