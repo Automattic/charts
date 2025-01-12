@@ -1,6 +1,11 @@
-import { FC } from 'react';
 import type { BaseChartProps, SeriesData } from '../../types';
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
+    margin?: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
 }
-declare const LineChart: FC<LineChartProps>;
-export default LineChart;
+declare const _default: (props: Omit<LineChartProps, "width" | "height">) => import("react/jsx-runtime").JSX.Element;
+export default _default;

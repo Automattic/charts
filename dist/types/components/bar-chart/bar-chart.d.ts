@@ -1,6 +1,5 @@
-import { FC } from 'react';
 import type { BaseChartProps, SeriesData } from '../../types';
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
 }
-declare const BarChart: FC<BarChartProps>;
-export default BarChart;
+declare const _default: (props: Omit<BarChartProps, "width" | "height">) => import("react/jsx-runtime").JSX.Element;
+export default _default;

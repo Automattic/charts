@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import type { BaseChartProps, DataPointPercentage } from '../../types';
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -19,5 +18,5 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     thickness?: number;
 }
-declare const PieSemiCircleChart: FC<PieSemiCircleChartProps>;
-export default PieSemiCircleChart;
+declare const _default: (props: Omit<PieSemiCircleChartProps, "width" | "height">) => import("react/jsx-runtime").JSX.Element;
+export default _default;

@@ -73,7 +73,7 @@ export type BaseChartProps<T = DataPoint | DataPointDate> = {
     /**
      * Width of the chart in pixels
      */
-    width: number;
+    width?: number;
     /**
      * Height of the chart in pixels
      */
