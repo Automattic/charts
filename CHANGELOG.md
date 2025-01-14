@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
+- Introduce gapScale and cornerScale properties
 - PieChart: iterate a bit over component API
 
 ## [0.3.0] - 2025-01-12
