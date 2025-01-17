@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Added passing through options for X, Y axis
+- Add gradient fill for line chart
 - Charts: add responsive chart stories
 
 ### Changed
