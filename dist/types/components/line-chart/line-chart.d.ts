@@ -7,5 +7,5 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
         left: number;
     };
 }
-declare const _default: (props: Omit<LineChartProps, "width" | "height">) => import("react/jsx-runtime").JSX.Element;
+declare const _default: (props: Omit<LineChartProps, "width" | "height" | "size">) => import("react/jsx-runtime").JSX.Element;
 export default _default;

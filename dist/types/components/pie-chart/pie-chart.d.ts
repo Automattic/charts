@@ -30,5 +30,5 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     cornerScale?: number;
 }
-declare const _default: (props: Omit<PieChartProps, "width" | "height">) => import("react/jsx-runtime").JSX.Element;
+declare const _default: (props: Omit<PieChartProps, "width" | "height" | "size">) => import("react/jsx-runtime").JSX.Element;
 export default _default;
