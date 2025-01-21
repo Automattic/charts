@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Added passing through options for X, Y axis
 - Add gradient fill for line chart
 - Charts: add responsive chart stories
+- Charts: adds dependencies and config for jest testing. Adds some initial tests to pie chart component
 
 ### Changed
 - Introduce gapScale and cornerScale properties
