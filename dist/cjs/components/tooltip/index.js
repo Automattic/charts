@@ -1,2 +1,0 @@
-"use strict";var e=require("react/jsx-runtime"),t="base-tooltip-module__tooltip__OfX6n";const a=({data:t})=>e.jsxs(e.Fragment,{children:[t?.label,": ",t?.valueDisplay||t?.value]});exports.BaseTooltip=({data:l,top:s,left:o,component:i=a,children:r,className:c})=>e.jsx("div",{className:t,style:{top:s,left:o},role:"tooltip",children:r||l&&e.jsx(i,{data:l,className:c})});
-//# sourceMappingURL=index.js.map

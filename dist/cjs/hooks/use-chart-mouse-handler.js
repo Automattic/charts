@@ -1,0 +1,2 @@
+"use strict";var o=require("@visx/event"),t=require("@visx/tooltip"),e=require("react");module.exports=({withTooltips:i})=>{const{tooltipOpen:l,tooltipLeft:p,tooltipTop:a,tooltipData:r,hideTooltip:s,showTooltip:u}=t.useTooltip();return{onMouseMove:e.useCallback(((t,e)=>{if(!i)return;const l=o.localPoint(t);l&&u({tooltipData:e,tooltipLeft:l.x,tooltipTop:l.y-10})}),[i,u]),onMouseLeave:e.useCallback((()=>{i&&s()}),[i,s]),tooltipOpen:l,tooltipData:r||null,tooltipLeft:p,tooltipTop:a}};
+//# sourceMappingURL=use-chart-mouse-handler.js.map

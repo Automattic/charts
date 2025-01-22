@@ -1,0 +1,2 @@
+"use strict";var r=require("react/jsx-runtime"),e=require("@visx/grid");require("react");var i=require("./grid-control.module.scss.js");module.exports=({width:s,height:t,xScale:l,yScale:c,gridVisibility:a="x",top:d=0})=>r.jsxs("g",{transform:`translate(0, ${d})`,className:i["grid-control"],children:[a.includes("x")&&r.jsx(e.GridRows,{scale:l,width:s}),a.includes("y")&&r.jsx(e.GridColumns,{scale:c,height:t})]});
+//# sourceMappingURL=grid-control.js.map
