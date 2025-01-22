@@ -1,0 +1,2 @@
+import{localPoint as o}from"@visx/event";import{useTooltip as t}from"@visx/tooltip";import{useCallback as p}from"react";const i=({withTooltips:i})=>{const{tooltipOpen:e,tooltipLeft:l,tooltipTop:r,tooltipData:n,hideTooltip:a,showTooltip:s}=t();return{onMouseMove:p(((t,p)=>{if(!i)return;const e=o(t);e&&s({tooltipData:p,tooltipLeft:e.x,tooltipTop:e.y-10})}),[i,s]),onMouseLeave:p((()=>{i&&a()}),[i,a]),tooltipOpen:e,tooltipData:n||null,tooltipLeft:l,tooltipTop:r}};export{i as default};
+//# sourceMappingURL=use-chart-mouse-handler.js.map

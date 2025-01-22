@@ -1,0 +1,2 @@
+import{jsx as t,jsxs as e,Fragment as l}from"react/jsx-runtime";import a from"./base-tooltip.module.scss.js";const o=({data:t})=>e(l,{children:[t?.label,": ",t?.valueDisplay||t?.value]}),s=({data:e,top:l,left:s,component:i=o,children:r,className:c})=>t("div",{className:a.tooltip,style:{top:l,left:s},role:"tooltip",children:r||e&&t(i,{data:e,className:c})});export{s as BaseTooltip};
+//# sourceMappingURL=base-tooltip.js.map

@@ -1,0 +1,2 @@
+"use strict";module.exports={"legend--horizontal":"legend-module_legend--horizontal__IUN13","legend--vertical":"legend-module_legend--vertical__Scfzo","legend-item":"legend-module_legend-item__feemn","legend-item-swatch":"legend-module_legend-item-swatch__nRyXf","legend-item-label":"legend-module_legend-item-label__ksx6I","legend-item-value":"legend-module_legend-item-value__d9x1j"};
+//# sourceMappingURL=legend.module.scss.js.map
