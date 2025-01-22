@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: adds more pie chart tests
 
 ### Changed
+- Changed back to build with Rollup
 - Introduce gapScale and cornerScale properties
 - PieChart: iterate a bit over component API
 
