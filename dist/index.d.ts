@@ -177,6 +177,10 @@ interface PieChartProps extends OmitBaseChartProps {
      * A value between 0 and 1, where 0 means no corner radius.
      */
     cornerScale?: number;
+    /**
+     * Use the children prop to render additional elements on the chart.
+     */
+    children?: React.ReactNode;
 }
 declare const _default$1: (props: Omit<PieChartProps, "width" | "height" | "size">) => react_jsx_runtime.JSX.Element;
 
