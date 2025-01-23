@@ -182,9 +182,9 @@ declare const _default$1: (props: Omit<PieChartProps, "width" | "height" | "size
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
-     * Size of the chart in pixels
+     * Width of the chart in pixels; height would be half of this value calculated automatically.
      */
-    size?: number;
+    width?: number;
     /**
      * Thickness of the pie chart. A value between 0 and 1
      */
