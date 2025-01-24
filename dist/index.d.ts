@@ -11,8 +11,8 @@ type DataPoint = {
 };
 type DataPointDate = {
     date: Date;
+    value: number | null;
     label?: string;
-    value: number;
 };
 type SeriesData = {
     group?: string;

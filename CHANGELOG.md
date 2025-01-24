@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Charts: adds tests for line chart component
 - Line chart: use natural curve
 - Y axis non-zero start for line chart
 
