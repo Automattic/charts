@@ -1,7 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation } from '@visx/axis';
+import { ScaleType, scaleOrdinal } from '@visx/scale';
 import { CSSProperties, ComponentType, ReactNode, FC } from 'react';
-import { scaleOrdinal } from '@visx/scale';
 
 type ValueOf<T> = T[keyof T];
 declare type OrientationType = ValueOf<typeof Orientation>;
@@ -125,6 +125,13 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      * More options for the chart.
      */
     options?: {
+        yScale?: {
+            type?: ScaleType;
+            zero?: boolean;
+        };
+        xScale?: {
+            type?: ScaleType;
+        };
         axis?: {
             x?: AxisOptions;
             y?: AxisOptions;
