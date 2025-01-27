@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Introduce `children` PieChart property
 - Only use area line for line chart
+- Updated package dependencies.
 
 ## [0.6.0] - 2025-01-23
 ### Changed
