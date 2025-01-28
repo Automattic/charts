@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Automatic margin for axis labels
 - Charts: adds tests for line chart component
+- Line chart: draw x-axis and ticks
 - Line chart: use natural curve
 - Y axis non-zero start for line chart
 

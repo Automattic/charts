@@ -1,6 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation } from '@visx/axis';
 import { ScaleType, scaleOrdinal } from '@visx/scale';
+import { LineStyles } from '@visx/xychart';
 import { CSSProperties, ComponentType, ReactNode, FC } from 'react';
 
 type ValueOf<T> = T[keyof T];
@@ -67,6 +68,10 @@ type ChartTheme = {
     gridColor: string;
     /** Color of the grid lines in dark mode */
     gridColorDark: string;
+    /** Styles for x-axis tick lines */
+    xTickLineStyles?: LineStyles;
+    /** Styles for x-axis line */
+    xAxisLineStyles?: LineStyles;
 };
 declare type AxisOptions = {
     orientation?: OrientationType;
@@ -141,7 +146,7 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
 }
-declare const _default$3: (props: Omit<BarChartProps, "width" | "height" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$3: (props: Omit<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     margin?: {
@@ -152,7 +157,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     };
     withGradientFill: boolean;
 }
-declare const _default$2: (props: Omit<LineChartProps, "width" | "height" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$2: (props: Omit<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -189,7 +194,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: React.ReactNode;
 }
-declare const _default$1: (props: Omit<PieChartProps, "width" | "height" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$1: (props: Omit<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -214,7 +219,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     clockwise?: boolean;
 }
-declare const _default: (props: Omit<PieSemiCircleChartProps, "width" | "height" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default: (props: Omit<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type TooltipData = {
     label: string;
