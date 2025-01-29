@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Automatic margin for axis labels
+- Charts: adds tests and fixes to bar chart component
 - Charts: adds tests for line chart component
 - Line chart: draw x-axis and ticks
 - Line chart: use natural curve
