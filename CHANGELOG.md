@@ -5,22 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.7.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.7.0] - 2025-01-31
 ### Added
-- Automatic margin for axis labels
-- Charts: adds tests and fixes to bar chart component
-- Charts: adds tests for line chart component
-- Line chart: draw x-axis and ticks
-- Line chart: use natural curve
-- Y axis non-zero start for line chart
+- Automatic margin for axis labels [#41325]
+- Charts: adds tests and fixes to bar chart component [#41296]
+- Charts: adds tests for line chart component [#41174]
+- Line chart: draw x-axis and ticks [#41346]
+- Line chart: use natural curve [#41293]
+- Y axis non-zero start for line chart [#41291]
 
 ### Changed
-- Introduce `children` PieChart property
-- Only use area line for line chart
-- Updated package dependencies.
+- Introduce `children` PieChart property [#41289]
+- Only use area line for line chart [#41292]
+- Updated package dependencies. [#41286]
 
 ## [0.6.0] - 2025-01-23
 ### Changed
@@ -92,7 +89,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.7.0-alpha]: https://github.com/Automattic/charts/compare/v0.6.0...v0.7.0-alpha
+[0.7.0]: https://github.com/Automattic/charts/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Automattic/charts/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Automattic/charts/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Automattic/charts/compare/v0.3.0...v0.4.0
