@@ -206,6 +206,11 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     thickness?: number;
     /**
+     * Direction of chart rendering
+     * true for clockwise, false for counter-clockwise
+     */
+    clockwise?: boolean;
+    /**
      * Label text to display above the chart
      */
     label?: string;
@@ -213,11 +218,6 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * Note text to display below the label
      */
     note?: string;
-    /**
-     * Direction of chart rendering
-     * true for clockwise, false for counter-clockwise
-     */
-    clockwise?: boolean;
 }
 declare const _default: (props: Omit<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 

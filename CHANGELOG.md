@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: add additional testing for library
 - Charts: adds tests for mouse-handler hook, responsive HOC, and grid control
+- Charts: adds tests for semi circle chart
 
 ## [0.7.0] - 2025-01-31
 ### Added
