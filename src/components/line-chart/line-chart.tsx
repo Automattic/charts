@@ -1,4 +1,4 @@
-import { curveNatural } from '@visx/curve';
+import { curveCatmullRom, curveLinear } from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
 import {
 	XYChart,
@@ -19,6 +19,7 @@ import type { BaseChartProps, DataPointDate, SeriesData } from '../../types';
 interface LineChartProps extends BaseChartProps< SeriesData[] > {
 	margin?: { top: number; right: number; bottom: number; left: number };
 	withGradientFill: boolean;
+	smoothing?: boolean;
 }
 
 type TooltipData = {
@@ -102,6 +103,7 @@ const LineChart: FC< LineChartProps > = ( {
 	showLegend = false,
 	legendOrientation = 'horizontal',
 	withGradientFill = false,
+	smoothing = true,
 	options = {},
 } ) => {
 	const providerTheme = useChartTheme();
@@ -191,7 +193,7 @@ const LineChart: FC< LineChartProps > = ( {
 								{ ...accessors }
 								fill={ withGradientFill ? `url(#area-gradient-${ index + 1 })` : undefined }
 								renderLine={ true }
-								curve={ curveNatural }
+								curve={ smoothing ? curveCatmullRom : curveLinear }
 							/>
 						</g>
 					);

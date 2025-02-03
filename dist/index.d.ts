@@ -156,6 +156,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
         left: number;
     };
     withGradientFill: boolean;
+    smoothing?: boolean;
 }
 declare const _default$2: (props: Omit<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
