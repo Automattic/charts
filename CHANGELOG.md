@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: adds tests for semi circle chart
 
 ### Changed
+- Small type and style fixes
 - Updated package dependencies.
 
 ## [0.7.0] - 2025-01-31

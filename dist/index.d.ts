@@ -5,6 +5,7 @@ import { LineStyles } from '@visx/xychart';
 import { CSSProperties, ComponentType, ReactNode, FC } from 'react';
 
 type ValueOf<T> = T[keyof T];
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 declare type OrientationType = ValueOf<typeof Orientation>;
 type DataPoint = {
     label: string;
@@ -80,6 +81,7 @@ declare type AxisOptions = {
     axisLineClassName?: string;
     labelClassName?: string;
     tickClassName?: string;
+    tickFormat?: (value: number) => string;
 };
 /**
  * Base properties shared across all chart components
@@ -102,13 +104,17 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      */
     height?: number;
     /**
+     * Size of the chart in pixels for pie and donut charts
+     */
+    size?: number;
+    /**
      * Chart margins
      */
     margin?: {
-        top: number;
-        right: number;
-        bottom: number;
-        left: number;
+        top?: number;
+        right?: number;
+        bottom?: number;
+        left?: number;
     };
     /**
      * Whether to show tooltips on hover. False by default.
@@ -146,19 +152,13 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
 }
-declare const _default$3: (props: Omit<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
-    margin?: {
-        top: number;
-        right: number;
-        bottom: number;
-        left: number;
-    };
     withGradientFill: boolean;
     smoothing?: boolean;
 }
-declare const _default$2: (props: Omit<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$2: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -166,10 +166,6 @@ interface PieChartProps extends OmitBaseChartProps {
      * Inner radius in pixels. If > 0, creates a donut chart. Defaults to 0.
      */
     innerRadius?: number;
-    /**
-     * Size of the chart in pixels
-     */
-    size?: number;
     /**
      * Add padding to the chart
      */
@@ -195,7 +191,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: React.ReactNode;
 }
-declare const _default$1: (props: Omit<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$1: (props: Optional<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -220,7 +216,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default: (props: Omit<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default: (props: Optional<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type TooltipData = {
     label: string;
@@ -275,6 +271,19 @@ type ThemeProviderProps = {
 };
 declare const ThemeProvider: FC<ThemeProviderProps>;
 
+/**
+ * Default theme configuration
+ */
+declare const defaultTheme: ChartTheme;
+/**
+ * Jetpack theme configuration
+ */
+declare const jetpackTheme: ChartTheme;
+/**
+ * Woo theme configuration
+ */
+declare const wooTheme: ChartTheme;
+
 type UseChartMouseHandlerProps = {
     /**
      * Whether tooltips are enabled
@@ -315,4 +324,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, BaseTooltip, BaseLegend as Legend, _default$2 as LineChart, _default$1 as PieChart, _default as PieSemiCircleChart, ThemeProvider, useChartMouseHandler };
+export { _default$3 as BarChart, BaseTooltip, BaseLegend as Legend, _default$2 as LineChart, _default$1 as PieChart, _default as PieSemiCircleChart, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
