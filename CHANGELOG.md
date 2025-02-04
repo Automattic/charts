@@ -20,6 +20,10 @@ This is an alpha version! The changes listed here are not final.
 - Small type and style fixes
 - Updated package dependencies.
 
+## [0.7.1] - 2025-02-04
+### Changed
+- Internal updates.
+
 ## [0.7.0] - 2025-01-31
 ### Added
 - Automatic margin for axis labels [#41325]
@@ -104,7 +108,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.8.0-alpha]: https://github.com/Automattic/charts/compare/v0.7.0...v0.8.0-alpha
+[0.8.0-alpha]: https://github.com/Automattic/charts/compare/v0.7.1...v0.8.0-alpha
+[0.7.1]: https://github.com/Automattic/charts/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/Automattic/charts/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/Automattic/charts/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Automattic/charts/compare/v0.4.0...v0.5.0
