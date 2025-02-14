@@ -2,7 +2,8 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation } from '@visx/axis';
 import { ScaleType, scaleOrdinal } from '@visx/scale';
 import { LineStyles } from '@visx/xychart';
-import { CSSProperties, ComponentType, ReactNode, FC } from 'react';
+import { CSSProperties, ReactNode, ComponentType, FC } from 'react';
+import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -157,6 +158,7 @@ declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
     smoothing?: boolean;
+    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
 }
 declare const _default$2: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 

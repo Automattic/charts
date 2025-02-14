@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Updated package dependencies.
 
+### Fixed
+- Line chart: support custom tooltips
+
 ## [0.8.1] - 2025-02-04
 ### Fixed
 - Charts: fixed type exports [#41562]
