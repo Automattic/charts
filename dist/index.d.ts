@@ -140,6 +140,8 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
         yScale?: {
             type?: ScaleType;
             zero?: boolean;
+            domain?: [number, number];
+            range?: [number, number];
         };
         xScale?: {
             type?: ScaleType;
