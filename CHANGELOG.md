@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
+- Set options as optional for series
 - Update package dependencies.
 
 ## [0.8.2] - 2025-02-19
