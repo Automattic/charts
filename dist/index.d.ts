@@ -21,10 +21,11 @@ type SeriesData = {
     group?: string;
     label: string;
     data: DataPointDate[] | DataPoint[];
-    options: {
+    options?: {
         gradient?: {
             from: string;
             to: string;
+            fromOpacity?: number;
             toOpacity?: number;
         };
         stroke?: string;
