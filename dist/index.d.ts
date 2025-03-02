@@ -1,8 +1,8 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation } from '@visx/axis';
 import { ScaleType, scaleOrdinal } from '@visx/scale';
-import { LineStyles } from '@visx/xychart';
-import { CSSProperties, ReactNode, ComponentType, FC } from 'react';
+import { LineStyles, EventHandlerParams } from '@visx/xychart';
+import { CSSProperties, PointerEvent, ReactNode, ComponentType, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 
 type ValueOf<T> = T[keyof T];
@@ -118,6 +118,22 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
         bottom?: number;
         left?: number;
     };
+    /**
+     * Callback function for pointer down event
+     */
+    onPointerDown?: (event: EventHandlerParams<object>) => void;
+    /**
+     * Callback function for pointer down event
+     */
+    onPointerUp?: (event: EventHandlerParams<object>) => void;
+    /**
+     * Callback function for pointer down event
+     */
+    onPointerMove?: (event: EventHandlerParams<object>) => void;
+    /**
+     * Callback function for pointer up event
+     */
+    onPointerOut?: (event: PointerEvent<Element>) => void;
     /**
      * Whether to show tooltips on hover. False by default.
      */
