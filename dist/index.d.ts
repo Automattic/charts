@@ -170,7 +170,14 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
     };
 };
 
+type BarChartTooltipData = {
+    value: number;
+    xLabel: string;
+    yLabel: string;
+    seriesIndex: number;
+};
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
+    renderTooltip?: (params: BarChartTooltipData) => ReactNode;
 }
 declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
