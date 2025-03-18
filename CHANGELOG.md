@@ -15,6 +15,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Bar chart: fix tickFormat not working issue
+
 ## [0.10.0] - 2025-03-17
 ### Changed
 - Bar chart: align options with line chart [#42448]
