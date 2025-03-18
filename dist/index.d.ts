@@ -75,6 +75,8 @@ type ChartTheme = {
     xTickLineStyles?: LineStyles;
     /** Styles for x-axis line */
     xAxisLineStyles?: LineStyles;
+    /** Styles for series lines */
+    seriesLineStyles?: LineStyles[];
 };
 declare type AxisOptions = {
     orientation?: OrientationType;
