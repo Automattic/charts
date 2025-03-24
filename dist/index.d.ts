@@ -183,9 +183,11 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
 }
 declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
+type CurveType = 'smooth' | 'linear' | 'monotone';
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
     smoothing?: boolean;
+    curveType?: CurveType;
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
 }
 declare const _default$2: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
