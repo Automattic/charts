@@ -356,4 +356,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, BaseTooltip, BaseLegend as Legend, _default$2 as LineChart, _default$1 as PieChart, _default as PieSemiCircleChart, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$3 as BarChart, BaseTooltip, type DataPoint, type DataPointDate, BaseLegend as Legend, _default$2 as LineChart, _default$1 as PieChart, _default as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
