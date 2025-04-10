@@ -5,21 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.11.1-alpha] - unreleased
+## [0.11.4] - 2025-04-10
+### Changed
+- Internal updates.
 
-This is an alpha version! The changes listed here are not final.
+## [0.11.3] - 2025-04-10
+### Changed
+- Internal updates.
 
+## [0.11.2] - 2025-04-10
+### Changed
+- Internal updates.
+
+## [0.11.1] - 2025-04-10
 ### Added
-- Export DataPoint, DataPointDate and SeriesData types
+- Export DataPoint, DataPointDate and SeriesData types [#42981]
 
 ### Changed
-- Code: First pass of style coding standards.
-- Update package dependencies.
+- Code: First pass of style coding standards. [#42734]
+- Update package dependencies. [#42762]
+- Update package dependencies. [#42809]
 
 ### Fixed
-- Code: Update stylesheets to use hex instead of named colors.
-- Code: Update stylesheets to use WordPress font styles.
-- Fixed TS type checking in the monorepo
+- Code: Update stylesheets to use hex instead of named colors. [#42920]
+- Code: Update stylesheets to use WordPress font styles. [#42928]
+- Fixed TS type checking in the monorepo [#42817]
 
 ## [0.11.0] - 2025-03-26
 ### Added
@@ -169,7 +179,10 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.11.1-alpha]: https://github.com/Automattic/charts/compare/v0.11.0...v0.11.1-alpha
+[0.11.4]: https://github.com/Automattic/charts/compare/v0.11.3...v0.11.4
+[0.11.3]: https://github.com/Automattic/charts/compare/v0.11.2...v0.11.3
+[0.11.2]: https://github.com/Automattic/charts/compare/v0.11.1...v0.11.2
+[0.11.1]: https://github.com/Automattic/charts/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/Automattic/charts/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/Automattic/charts/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/Automattic/charts/compare/v0.9.0...v0.10.0
