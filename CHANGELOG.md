@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update dependencies.
 
+### Fixed
+- Linting: Fix more Stylelint violations.
+
 ## [0.11.4] - 2025-04-10
 ### Changed
 - Internal updates.
