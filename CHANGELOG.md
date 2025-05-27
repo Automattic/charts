@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Fix tooltip causing horizontal scrollbars to appear
 - Linting: Fix more Stylelint violations.
 
 ## [0.11.4] - 2025-04-10
