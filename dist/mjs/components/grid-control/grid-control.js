@@ -1,2 +1,0 @@
-import{jsxs as t,jsx as i}from"react/jsx-runtime";import{GridRows as r,GridColumns as e}from"@visx/grid";import"react";import s from"./grid-control.module.scss.js";const a=({width:a,height:d,xScale:o,yScale:c,gridVisibility:l="x",top:m=0})=>t("g",{transform:`translate(0, ${m})`,className:s["grid-control"],children:[l.includes("x")&&i(r,{scale:o,width:a,"data-testid":"x-grid"}),l.includes("y")&&i(e,{scale:c,height:d,"data-testid":"y-grid"})]});export{a as default};
-//# sourceMappingURL=grid-control.js.map

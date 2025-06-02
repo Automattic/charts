@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { Orientation } from '@visx/axis';
-import { ScaleType, scaleOrdinal } from '@visx/scale';
+import { TickFormatter, AxisScale, Orientation } from '@visx/axis';
+import { ScaleType, ScaleInput, scaleOrdinal } from '@visx/scale';
 import { LineStyles, EventHandlerParams } from '@visx/xychart';
 import { CSSProperties, PointerEvent, ReactNode, ComponentType, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -85,7 +85,7 @@ declare type AxisOptions = {
     axisLineClassName?: string;
     labelClassName?: string;
     tickClassName?: string;
-    tickFormat?: (value: number) => string;
+    tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
 };
 /**
  * Base properties shared across all chart components
@@ -172,14 +172,8 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
     };
 };
 
-type BarChartTooltipData = {
-    value: number;
-    xLabel: string;
-    yLabel: string;
-    seriesIndex: number;
-};
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
-    renderTooltip?: (params: BarChartTooltipData) => ReactNode;
+    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
 }
 declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
