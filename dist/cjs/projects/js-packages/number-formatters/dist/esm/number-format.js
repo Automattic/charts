@@ -1,0 +1,2 @@
+"use strict";var t=require("./get-cached-formatter.js");const r=({browserSafeLocale:r,decimals:o=0,forceLatin:a=!0,numberFormatOptions:m={}})=>{const e=`${r}${a?"-u-nu-latn":""}`,i={minimumFractionDigits:o,maximumFractionDigits:o,...m};return t.getCachedFormatter({locale:e,options:i})};exports.numberFormat=r,exports.numberFormatCompact=({numberFormatOptions:t={},...o})=>r({...o,numberFormatOptions:{notation:"compact",maximumFractionDigits:1,...t}});
+//# sourceMappingURL=number-format.js.map

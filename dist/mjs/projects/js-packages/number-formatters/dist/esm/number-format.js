@@ -1,0 +1,2 @@
+import{getCachedFormatter as t}from"./get-cached-formatter.js";const o=({browserSafeLocale:o,decimals:i=0,forceLatin:m=!0,numberFormatOptions:n={}})=>{const r={minimumFractionDigits:i,maximumFractionDigits:i,...n};return t({locale:`${o}${m?"-u-nu-latn":""}`,options:r})},i=({numberFormatOptions:t={},...i})=>o({...i,numberFormatOptions:{notation:"compact",maximumFractionDigits:1,...t}});export{o as numberFormat,i as numberFormatCompact};
+//# sourceMappingURL=number-format.js.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"constants.js","sources":["/@automattic/charts/../../../../../../../../number-formatters/dist/esm/constants.js"],"sourcesContent":["export const FALLBACK_LOCALE = 'en';\nexport const FALLBACK_CURRENCY = 'USD';\n"],"names":[],"mappings":"uCACiC,8BADF"}
