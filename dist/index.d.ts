@@ -1,13 +1,14 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { TickFormatter, AxisScale, Orientation } from '@visx/axis';
+import { Orientation, TickFormatter, AxisScale } from '@visx/axis';
 import { ScaleType, ScaleInput, scaleOrdinal } from '@visx/scale';
-import { LineStyles, EventHandlerParams } from '@visx/xychart';
-import { CSSProperties, PointerEvent, ReactNode, ComponentType, FC } from 'react';
+import { GridStyles, LineStyles, EventHandlerParams } from '@visx/xychart';
+export { GridStyles, LineStyles } from '@visx/xychart';
+import { PointerEvent, ReactNode, CSSProperties, ComponentType, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
-declare type OrientationType = ValueOf<typeof Orientation>;
+type OrientationType = ValueOf<typeof Orientation>;
 type DataPoint = {
     label: string;
     value: number;
@@ -30,6 +31,10 @@ type SeriesData = {
         };
         stroke?: string;
     };
+};
+type MultipleDataPointsDate = {
+    label: string;
+    data: DataPointDate[];
 };
 type DataPointPercentage = {
     /**
@@ -64,7 +69,7 @@ type ChartTheme = {
     /** Array of colors used for data visualization */
     colors: string[];
     /** Optional CSS styles for grid lines */
-    gridStyles?: CSSProperties;
+    gridStyles?: GridStyles;
     /** Length of axis ticks in pixels */
     tickLength: number;
     /** Color of the grid lines */
@@ -170,6 +175,37 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
             y?: AxisOptions;
         };
     };
+};
+/**
+ * Properties for grid components
+ */
+type GridProps = {
+    /**
+     * Width of the grid in pixels
+     */
+    width: number;
+    /**
+     * Height of the grid in pixels
+     */
+    height: number;
+    /**
+     * Grid visibility. x is default.
+     */
+    gridVisibility?: 'x' | 'y' | 'xy' | 'none';
+    /**
+     * X-axis scale for the grid
+     * TODO: Fix any type after resolving visx scale type issues
+     */
+    xScale: any;
+    /**
+     * Y-axis scale for the grid
+     * TODO: Fix any type after resolving visx scale type issues
+     */
+    yScale: any;
+    /**
+     * Top offset for the grid
+     */
+    top?: number;
 };
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
@@ -351,4 +387,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, BaseTooltip, type DataPoint, type DataPointDate, BaseLegend as Legend, _default$2 as LineChart, _default$1 as PieChart, _default as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$3 as BarChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$2 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$1 as PieChart, _default as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
