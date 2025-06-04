@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Fix @rollup/plugin-typescript warnings
 - Fix tooltip causing horizontal scrollbars to appear
 - Linting: Fix more Stylelint violations.
 
