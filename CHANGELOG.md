@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Enhance BarChart component to support horizontal orientation
+
 ### Changed
 - Add dynamic chart margin calculation and improve Y-axis tick formatting
 - Refactor BarChart to use @visx/xychart

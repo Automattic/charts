@@ -149,7 +149,7 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      */
     legendOrientation?: 'horizontal' | 'vertical';
     /**
-     * Grid visibility. x is default.
+     * Grid visibility. x is default when orientation is vertical. y is default when orientation is horizontal.
      */
     gridVisibility?: 'x' | 'y' | 'xy' | 'none';
     /**
@@ -174,6 +174,7 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
+    orientation?: 'horizontal' | 'vertical';
 }
 declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
