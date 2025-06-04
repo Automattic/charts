@@ -1,7 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation, TickFormatter, AxisScale } from '@visx/axis';
 import { ScaleType, ScaleInput, scaleOrdinal } from '@visx/scale';
-import { GridStyles, LineStyles, EventHandlerParams } from '@visx/xychart';
+import { LineStyles, GridStyles, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import { PointerEvent, ReactNode, CSSProperties, ComponentType, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -30,6 +30,7 @@ type SeriesData = {
             toOpacity?: number;
         };
         stroke?: string;
+        seriesLineStyle?: LineStyles;
     };
 };
 type MultipleDataPointsDate = {

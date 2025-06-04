@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: Expose types from the charts library and visx package
 - Enhance BarChart component to support horizontal orientation
+- Support tick dasharray overridden by series data
 
 ### Changed
 - Add dynamic chart margin calculation and improve Y-axis tick formatting
