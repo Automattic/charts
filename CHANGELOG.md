@@ -20,6 +20,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Charts: use color set from the data for the stroke as legend if available and fallback to theme color if it was not available
 - Fix @rollup/plugin-typescript warnings
 - Fix tooltip causing horizontal scrollbars to appear
 - Linting: Fix more Stylelint violations.
