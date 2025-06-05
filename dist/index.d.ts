@@ -1,11 +1,13 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
-import { ScaleInput, ScaleType, scaleOrdinal } from '@visx/scale';
+import { LegendShape } from '@visx/legend/lib/types';
+import { ScaleInput, ScaleType } from '@visx/scale';
 import { LineStyles, GridStyles, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
-import { PointerEvent, ReactNode, ComponentType, CSSProperties, FC } from 'react';
+import { CSSProperties, PointerEvent, ReactNode, ComponentType, ComponentProps, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
+import { LegendOrdinal } from '@visx/legend';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -32,6 +34,7 @@ type SeriesData = {
         };
         stroke?: string;
         seriesLineStyle?: LineStyles;
+        legendShapeStyle?: CSSProperties;
     };
 };
 type MultipleDataPointsDate = {
@@ -84,6 +87,8 @@ type ChartTheme = {
     xAxisLineStyles?: LineStyles;
     /** Styles for series lines */
     seriesLineStyles?: LineStyles[];
+    /** Styles for legend shapes */
+    legendShapeStyles?: CSSProperties[];
 };
 declare type AxisOptions = {
     orientation?: OrientationType;
@@ -184,6 +189,10 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      * Legend orientation
      */
     legendOrientation?: 'horizontal' | 'vertical';
+    /**
+     * Legend shape
+     */
+    legendShape?: LegendShape<T, number>;
     /**
      * Grid visibility. x is default when orientation is vertical. y is default when orientation is horizontal.
      */
@@ -397,16 +406,16 @@ type CustomTooltip = {
 type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip);
 declare const BaseTooltip: ({ data, top, left, component: Component, children, className, }: BaseTooltipProps) => react_jsx_runtime.JSX.Element;
 
+type LegendOrdinalProps = Omit<ComponentProps<typeof LegendOrdinal>, 'scale' | 'direction'>;
 type LegendItem = {
     label: string;
     value: number | string;
     color: string;
+    shapeStyle?: CSSProperties;
 };
-type LegendProps = {
+type LegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
     items: LegendItem[];
-    className?: string;
     orientation?: 'horizontal' | 'vertical';
-    scale?: ReturnType<typeof scaleOrdinal>;
 };
 
 declare const BaseLegend: FC<LegendProps>;
