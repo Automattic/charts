@@ -1,10 +1,11 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { Orientation, TickFormatter, AxisScale } from '@visx/axis';
-import { ScaleType, ScaleInput, scaleOrdinal } from '@visx/scale';
+import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
+import { ScaleInput, ScaleType, scaleOrdinal } from '@visx/scale';
 import { LineStyles, GridStyles, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
-import { PointerEvent, ReactNode, CSSProperties, ComponentType, FC } from 'react';
+import { PointerEvent, ReactNode, ComponentType, CSSProperties, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
+import { TextProps } from '@visx/text';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -92,6 +93,35 @@ declare type AxisOptions = {
     labelClassName?: string;
     tickClassName?: string;
     tickFormat?: TickFormatter<ScaleInput<AxisScale>>;
+    /**
+     * For more control over rendering or to add event handlers to datum, pass a function as children.
+     */
+    children?: (renderProps: AxisRendererProps<AxisScale>) => ReactNode;
+};
+type ScaleOptions = {
+    type?: ScaleType;
+    zero?: boolean;
+    domain?: [number, number];
+    range?: [number, number];
+    /**
+     * For band scale, shortcut for setting `paddingInner` and `paddingOuter` to the same value.
+     *
+     * For point scale, the outer padding (spacing) at the ends of the range.
+     * This is similar to band scale's `paddingOuter`.
+     *
+     */
+    padding?: number;
+    /**
+     * The inner padding (spacing) within each band step of band scales, as a fraction of the step size. This value must lie in the range [0,1].
+     *
+     */
+    paddingInner?: number;
+    /**
+     * The outer padding (spacing) at the ends of the range of band and point scales,
+     * as a fraction of the step size. This value must lie in the range [0,1].
+     *
+     */
+    paddingOuter?: number;
 };
 /**
  * Base properties shared across all chart components
@@ -162,15 +192,8 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      * More options for the chart.
      */
     options?: {
-        yScale?: {
-            type?: ScaleType;
-            zero?: boolean;
-            domain?: [number, number];
-            range?: [number, number];
-        };
-        xScale?: {
-            type?: ScaleType;
-        };
+        yScale?: ScaleOptions;
+        xScale?: ScaleOptions;
         axis?: {
             x?: AxisOptions;
             y?: AxisOptions;
@@ -213,7 +236,7 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
 }
-declare const _default$3: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$4: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
@@ -222,7 +245,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     curveType?: CurveType;
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
 }
-declare const _default$2: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$3: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -255,7 +278,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: React.ReactNode;
 }
-declare const _default$1: (props: Optional<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$2: (props: Optional<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -280,7 +303,71 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default: (props: Optional<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$1: (props: Optional<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+
+interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
+    options?: {
+        /**
+         * Scale for the y axis. Exclude the type property.
+         */
+        yScale: Omit<ScaleOptions, 'type'>;
+        /**
+         * Scale for the x axis. Exclude the type property.
+         */
+        xScale: Omit<ScaleOptions, 'type'>;
+        /**
+         * Formatter for the label.
+         */
+        labelFormatter?: (value: string) => string;
+        /**
+         * Formatter for the value.
+         */
+        valueFormatter?: (value: number) => string;
+        /**
+         * y offset of the label and value. Default is based on the number of series, automatically computed.
+         */
+        yOffset?: number;
+        /**
+         * x position of the label.
+         */
+        labelPosition?: number;
+        /**
+         * x position of the value.
+         */
+        valuePosition?: number;
+        /**
+         * Custom render function for the label.
+         */
+        labelComponent?: ComponentType<RenderLabelProps>;
+        /**
+         * Custom render function for the value.
+         */
+        valueComponent?: ComponentType<RenderValueProps>;
+    };
+}
+interface RenderLabelProps {
+    textProps: TextProps;
+    x: number;
+    y: number;
+    label: string;
+    formatter: (value: string) => string;
+}
+interface RenderValueProps {
+    textProps: TextProps;
+    x: number;
+    y: number;
+    value: number;
+    /**
+     * Original data
+     */
+    data: SeriesData[];
+    /**
+     * Index of the data point
+     */
+    index: number;
+    formatter: (value: number) => string;
+}
+declare const _default: (props: Optional<BarListChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type TooltipData = {
     label: string;
@@ -388,4 +475,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$2 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$1 as PieChart, _default as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$4 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$3 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
