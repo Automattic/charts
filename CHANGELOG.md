@@ -22,6 +22,9 @@ This is an alpha version! The changes listed here are not final.
 - Update dependencies.
 - Update package dependencies.
 
+### Removed
+- Removed animation for line and bar charts
+
 ### Fixed
 - Charts: use color set from the data for the stroke as legend if available and fallback to theme color if it was not available
 - Fix @rollup/plugin-typescript warnings
