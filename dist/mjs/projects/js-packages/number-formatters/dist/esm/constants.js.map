@@ -1,1 +1,0 @@
-{"version":3,"file":"constants.js","sources":["../../../../../../../../number-formatters/dist/esm/constants.js"],"sourcesContent":["export const FALLBACK_LOCALE = 'en';\nexport const FALLBACK_CURRENCY = 'USD';\n"],"names":["FALLBACK_LOCALE","FALLBACK_CURRENCY"],"mappings":"AAAY,MAACA,EAAkB,KAClBC,EAAoB"}

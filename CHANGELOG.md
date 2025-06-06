@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Fixed
+- Fix @automattic/number-formatters dependency issue
+
 ## [0.12.0] - 2025-06-06
 ### Added
 - Add bar list chart component [#43763]
@@ -212,6 +219,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.12.1-alpha]: https://github.com/Automattic/charts/compare/v0.12.0...v0.12.1-alpha
 [0.12.0]: https://github.com/Automattic/charts/compare/v0.11.4...v0.12.0
 [0.11.4]: https://github.com/Automattic/charts/compare/v0.11.3...v0.11.4
 [0.11.3]: https://github.com/Automattic/charts/compare/v0.11.2...v0.11.3
