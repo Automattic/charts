@@ -2,7 +2,7 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleInput, ScaleType } from '@visx/scale';
-import { LineStyles, GridStyles, EventHandlerParams } from '@visx/xychart';
+import { LineStyles, GridStyles, EventHandlerParams, GlyphProps } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import { CSSProperties, PointerEvent, ReactNode, ComponentType, ComponentProps, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -260,11 +260,15 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
 declare const _default$4: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
+type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
+    glyphStyle?: React.SVGProps<SVGCircleElement>;
+};
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
     smoothing?: boolean;
     curveType?: CurveType;
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
+    withStartGlyphs?: boolean;
 }
 declare const _default$3: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
 
@@ -496,4 +500,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$4 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$3 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$4 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$3 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
