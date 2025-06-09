@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 - Janitorial: clean up dependency versions.
 
 ### Fixed
+- Fix default bar chart gridVisibility
 - Fix output CSS file name
 
 ## [0.12.1] - 2025-06-06
