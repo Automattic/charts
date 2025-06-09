@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Support date literals
 
+### Changed
+- Janitorial: clean up dependency versions.
+
 ## [0.12.1] - 2025-06-06
 ### Fixed
 - Fix @automattic/number-formatters dependency issue [#43813]
