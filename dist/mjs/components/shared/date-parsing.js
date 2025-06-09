@@ -1,0 +1,2 @@
+import{parseISO as y,isValid as t,parse as d}from"date-fns";const s=s=>{const m=s.trim();if((y=>/T.*[Z]$|T.*[+-]\d{2}:?\d{2}$/.test(y))(m)){const d=y(m);return t(d)?d:new Date(NaN)}const n=["yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm","yyyy-MM-dd'T'HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss.SSS","yyyy-MM-dd'T'HH:mm"];for(const y of n){const s=d(m,y,new Date);if(t(s))return s}return new Date(NaN)};export{s as parseAsLocalDate};
+//# sourceMappingURL=date-parsing.js.map

@@ -17,7 +17,19 @@ type DataPoint = {
     value: number;
 };
 type DataPointDate = {
-    date: Date;
+    date?: Date;
+    /**
+     * Supported Formats:
+     * - YYYY-MM-DD (local)
+     * - YYYY-MM-DD HH:mm:ss (local)
+     * - YYYY-MM-DD HH:mm (local)
+     * - YYYY-MM-DDTHH:mm:ss (local)
+     * - YYYY-MM-DDTHH:mm:ss.SSS (local)
+     * - YYYY-MM-DDTHH:mm (local)
+     * - YYYY-MM-DDTHH:mm:ssZ (UTC → local)
+     * - YYYY-MM-DDTHH:mm:ss±HH:mm (offset → local)
+     */
+    dateString?: string;
     value: number | null;
     label?: string;
 };

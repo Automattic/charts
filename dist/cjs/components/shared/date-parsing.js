@@ -1,0 +1,2 @@
+"use strict";var y=require("date-fns");exports.parseAsLocalDate=s=>{const e=s.trim();if((y=>/T.*[Z]$|T.*[+-]\d{2}:?\d{2}$/.test(y))(e)){const s=y.parseISO(e);return y.isValid(s)?s:new Date(NaN)}const t=["yyyy-MM-dd","yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm","yyyy-MM-dd'T'HH:mm:ss","yyyy-MM-dd'T'HH:mm:ss.SSS","yyyy-MM-dd'T'HH:mm"];for(const s of t){const t=y.parse(e,s,new Date);if(y.isValid(t))return t}return new Date(NaN)};
+//# sourceMappingURL=date-parsing.js.map
