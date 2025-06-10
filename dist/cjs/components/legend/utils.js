@@ -1,2 +1,2 @@
-"use strict";function e(e){return e&&"object"==typeof e&&"value"in e&&void 0!==e.value?e.value:e}require("@visx/scale"),exports.labelTransformFactory=function({scale:e,labelFormat:t}){return(r,n)=>({datum:r,index:n,text:`${t(r,n)}`,value:e(r)})},exports.valueOrIdentity=e,exports.valueOrIdentityString=function(t){return String(e(t))};
+"use strict";function t(t){return t&&"object"==typeof t&&"value"in t&&void 0!==t.value?t.value:t}exports.labelTransformFactory=function({scale:t,labelFormat:e}){return(r,n)=>({datum:r,index:n,text:`${e(r,n)}`,value:t(r)})},exports.valueOrIdentity=t,exports.valueOrIdentityString=function(e){return String(t(e))};
 //# sourceMappingURL=utils.js.map
