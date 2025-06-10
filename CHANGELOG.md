@@ -15,6 +15,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Janitorial: clean up dependency versions.
+- Set SVG overflow to visible in bar-chart and line-chart styles
 
 ### Fixed
 - Fix default bar chart gridVisibility
