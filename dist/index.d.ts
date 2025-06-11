@@ -278,6 +278,9 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     curveType?: CurveType;
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     withStartGlyphs?: boolean;
+    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
+    glyphStyle?: React.SVGProps<SVGCircleElement>;
+    withLegendGlyph: boolean;
 }
 declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "width" | "size"> & Omit<LineChartProps, "height" | "width" | "size"> & {
     maxWidth?: number;
@@ -448,14 +451,24 @@ type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip
 declare const BaseTooltip: ({ data, top, left, component: Component, children, className, }: BaseTooltipProps) => react_jsx_runtime.JSX.Element;
 
 type LegendOrdinalProps = Omit<ComponentProps<typeof LegendOrdinal>, 'scale' | 'direction'>;
-type LegendItem = {
+type BaseLegendItem = {
     label: string;
     value: number | string;
     color: string;
+    glyphSize?: number;
+    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     shapeStyle?: CSSProperties;
 };
+type LegendItemWithGlyph = BaseLegendItem & {
+    renderGlyph: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
+    glyphSize: number;
+};
+type LegendItemWithoutGlyph = BaseLegendItem & {
+    renderGlyph?: never;
+    glyphSize?: number;
+};
 type LegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
-    items: LegendItem[];
+    items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
     orientation?: 'horizontal' | 'vertical';
     ref?: RefObject<HTMLDivElement>;
 };
