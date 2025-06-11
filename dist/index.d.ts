@@ -4,7 +4,8 @@ import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleInput, ScaleType } from '@visx/scale';
 import { LineStyles, GridStyles, EventHandlerParams, GlyphProps } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
-import { CSSProperties, PointerEvent, ReactNode, ComponentType, ComponentProps, FC } from 'react';
+import * as react from 'react';
+import { CSSProperties, PointerEvent, ReactNode, ComponentType, RefObject, ComponentProps, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
 import { LegendOrdinal } from '@visx/legend';
@@ -456,9 +457,10 @@ type LegendItem = {
 type LegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
     items: LegendItem[];
     orientation?: 'horizontal' | 'vertical';
+    ref?: RefObject<HTMLDivElement>;
 };
 
-declare const BaseLegend: FC<LegendProps>;
+declare const BaseLegend: react.ForwardRefExoticComponent<Omit<LegendProps, "ref"> & react.RefAttributes<HTMLDivElement>>;
 
 /**
  * Props for the ThemeProvider component

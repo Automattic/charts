@@ -1,0 +1,2 @@
+import{useRef as e,useState as n,useLayoutEffect as t}from"react";function r({initialHeight:r=0}={}){const i=e(null),[c,o]=n(r);return t((()=>{if(!i.current)return;const e=()=>{o(i.current?.getBoundingClientRect().height||0)};e();const n=new window.ResizeObserver(e);return n.observe(i.current),()=>{n.disconnect()}}),[]),[i,c]}export{r as useElementHeight};
+//# sourceMappingURL=use-element-height.js.map
