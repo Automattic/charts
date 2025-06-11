@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Add responsive configuration options for charts
 - Add supports for customizing legend label/container styles
 - Charts: Add support for the glyph at the start of the line chart
 - Support date literals

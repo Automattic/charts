@@ -261,7 +261,11 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
 }
-declare const _default$4: (props: Optional<BarChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "width" | "size"> & Omit<BarChartProps, "height" | "width" | "size"> & {
+    maxWidth?: number;
+    aspectRatio?: number;
+    resizeDebounceTime?: number;
+}) => react_jsx_runtime.JSX.Element;
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
 type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
@@ -274,7 +278,11 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     withStartGlyphs?: boolean;
 }
-declare const _default$3: (props: Optional<LineChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "width" | "size"> & Omit<LineChartProps, "height" | "width" | "size"> & {
+    maxWidth?: number;
+    aspectRatio?: number;
+    resizeDebounceTime?: number;
+}) => react_jsx_runtime.JSX.Element;
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -307,7 +315,11 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: React.ReactNode;
 }
-declare const _default$2: (props: Optional<PieChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "width" | "size"> & Omit<PieChartProps, "height" | "width" | "size"> & {
+    maxWidth?: number;
+    aspectRatio?: number;
+    resizeDebounceTime?: number;
+}) => react_jsx_runtime.JSX.Element;
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -332,7 +344,11 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default$1: (props: Optional<PieSemiCircleChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "width" | "size"> & Omit<PieSemiCircleChartProps, "height" | "width" | "size"> & {
+    maxWidth?: number;
+    aspectRatio?: number;
+    resizeDebounceTime?: number;
+}) => react_jsx_runtime.JSX.Element;
 
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
     options?: {
@@ -396,7 +412,11 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
-declare const _default: (props: Optional<BarListChartProps, "height" | "width" | "size">) => react_jsx_runtime.JSX.Element;
+declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "width" | "size"> & Omit<BarListChartProps, "height" | "width" | "size"> & {
+    maxWidth?: number;
+    aspectRatio?: number;
+    resizeDebounceTime?: number;
+}) => react_jsx_runtime.JSX.Element;
 
 type TooltipData = {
     label: string;
