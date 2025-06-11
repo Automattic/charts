@@ -118,9 +118,6 @@ interface LineChartProps extends BaseChartProps< SeriesData[] > {
 	curveType?: CurveType;
 	renderTooltip?: ( params: RenderTooltipParams< DataPointDate > ) => ReactNode;
 	withStartGlyphs?: boolean;
-	renderGlyph?: < Datum extends object >( props: GlyphProps< Datum > ) => ReactNode;
-	glyphStyle?: React.SVGProps< SVGCircleElement >;
-	withLegendGlyph: boolean;
 }
 
 type TooltipDatum = {
@@ -128,8 +125,17 @@ type TooltipDatum = {
 	value: number;
 };
 
-const renderDefaultTooltip = ( params: RenderTooltipParams< DataPointDate > ) => {
-	const { tooltipData } = params;
+const renderDefaultTooltip = ( {
+	tooltipData,
+}: {
+	tooltipData?: {
+		nearestDatum?: {
+			datum: DataPointDate;
+			key: string;
+		};
+		datumByKey?: { [ key: string ]: { datum: DataPointDate } };
+	};
+} ) => {
 	const nearestDatum = tooltipData?.nearestDatum?.datum;
 	if ( ! nearestDatum ) return null;
 
@@ -189,10 +195,7 @@ const LineChart: FC< LineChartProps > = ( {
 	withTooltips = true,
 	showLegend = false,
 	legendOrientation = 'horizontal',
-	renderGlyph = defaultRenderGlyph,
-	glyphStyle = {},
 	legendShape = 'line',
-	withLegendGlyph = false,
 	withGradientFill = false,
 	smoothing = true,
 	curveType,
@@ -266,8 +269,6 @@ const LineChart: FC< LineChartProps > = ( {
 		value: '', // Empty string since we don't want to show a specific value
 		color: group?.options?.stroke ?? providerTheme.colors[ index % providerTheme.colors.length ],
 		shapeStyle: group?.options?.legendShapeStyle,
-		renderGlyph: withLegendGlyph ? renderGlyph : undefined,
-		glyphSize: Number( glyphStyle?.radius ),
 	} ) );
 
 	const accessors = {
@@ -317,9 +318,8 @@ const LineChart: FC< LineChartProps > = ( {
 									index={ index }
 									data={ seriesData }
 									color={ stroke }
-									renderGlyph={ renderGlyph }
+									renderGlyph={ defaultRenderGlyph }
 									accessors={ accessors }
-									glyphStyle={ glyphStyle }
 								/>
 							) }
 
@@ -359,8 +359,6 @@ const LineChart: FC< LineChartProps > = ( {
 						snapTooltipToDatumY
 						showSeriesGlyphs
 						renderTooltip={ renderTooltip }
-						renderGlyph={ renderGlyph }
-						glyphStyle={ glyphStyle }
 					/>
 				) }
 			</XYChart>
