@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Add support for pattern fill for accessibility
 - Charts: Show glyph in legends
 
+### Fixed
+- Fix useElementHeight hook to use a callback ref for reliable height measurement
+
 ## [0.13.0] - 2025-06-11
 ### Added
 - Add responsive configuration options for charts [#43871]
