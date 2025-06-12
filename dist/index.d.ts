@@ -261,6 +261,7 @@ type GridProps = {
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
+    withPatterns?: boolean;
 }
 declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "width" | "size"> & Omit<BarChartProps, "height" | "width" | "size"> & {
     maxWidth?: number;
