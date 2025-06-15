@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Bar chart: Add support for pattern fill for accessibility
 - Charts: Show glyph in legends
+- Line chart: Add support for Tooltip crosshairs
 
 ### Fixed
 - Fix useElementHeight hook to use a callback ref for reliable height measurement

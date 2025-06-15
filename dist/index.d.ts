@@ -282,6 +282,10 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     glyphStyle?: React.SVGProps<SVGCircleElement>;
     withLegendGlyph: boolean;
+    withTooltipCrosshairs?: {
+        showVertical?: boolean;
+        showHorizontal?: boolean;
+    };
 }
 declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "width" | "size"> & Omit<LineChartProps, "height" | "width" | "size"> & {
     maxWidth?: number;
