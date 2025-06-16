@@ -14,6 +14,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Show glyph in legends
 - Line chart: Add support for Tooltip crosshairs
 
+### Changed
+- Line chart: Organise stories for easier browsing
+
 ### Fixed
 - Fix useElementHeight hook to use a callback ref for reliable height measurement
 
