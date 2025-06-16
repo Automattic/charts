@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Allow setting the glyphs array in the theme to have these rendered in the line chart
 - Bar chart: Add support for pattern fill for accessibility
 - Charts: Show glyph in legends
 - Line chart: Add support for Tooltip crosshairs

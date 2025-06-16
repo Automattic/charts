@@ -2,10 +2,10 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleInput, ScaleType } from '@visx/scale';
-import { LineStyles, GridStyles, EventHandlerParams, GlyphProps } from '@visx/xychart';
+import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import * as react from 'react';
-import { CSSProperties, PointerEvent, ReactNode, ComponentType, RefObject, ComponentProps, FC } from 'react';
+import { CSSProperties, ReactNode, PointerEvent, ComponentType, RefObject, ComponentProps, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
 import { LegendOrdinal } from '@visx/legend';
@@ -102,6 +102,8 @@ type ChartTheme = {
     seriesLineStyles?: LineStyles[];
     /** Styles for legend shapes */
     legendShapeStyles?: CSSProperties[];
+    /** Array of render functions for glyphs */
+    glyphs?: Array<(<Datum extends object>(props: GlyphProps<Datum>) => ReactNode)>;
     /** Styles for legend labels */
     legendLabelStyles?: CSSProperties;
     /** Styles for legend container */
