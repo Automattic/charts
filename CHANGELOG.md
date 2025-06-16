@@ -5,21 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.14.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.14.0] - 2025-06-16
 ### Added
-- Allow setting the glyphs array in the theme to have these rendered in the line chart
-- Bar chart: Add support for pattern fill for accessibility
-- Charts: Show glyph in legends
-- Line chart: Add support for Tooltip crosshairs
+- Allow setting the glyphs array in the theme to have these rendered in the line chart [#43875]
+- Bar chart: Add support for pattern fill for accessibility [#43812]
+- Charts: Show glyph in legends [#43851]
+- Line chart: Add support for Tooltip crosshairs [#43921]
 
 ### Changed
-- Line chart: Organise stories for easier browsing
+- Line chart: Organise stories for easier browsing [#43922]
 
 ### Fixed
-- Fix useElementHeight hook to use a callback ref for reliable height measurement
+- Fix useElementHeight hook to use a callback ref for reliable height measurement [#43896]
 
 ## [0.13.0] - 2025-06-11
 ### Added
@@ -248,7 +245,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.14.0-alpha]: https://github.com/Automattic/charts/compare/v0.13.0...v0.14.0-alpha
+[0.14.0]: https://github.com/Automattic/charts/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/Automattic/charts/compare/v0.12.1...v0.13.0
 [0.12.1]: https://github.com/Automattic/charts/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/Automattic/charts/compare/v0.11.4...v0.12.0
