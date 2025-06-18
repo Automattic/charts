@@ -47,7 +47,7 @@
 		"./style.css": "./dist/mjs/style.css"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.0.5-alpha",
+		"@automattic/number-formatters": "^1.0.5",
 		"@babel/runtime": "7.27.4",
 		"@react-spring/web": "9.7.5",
 		"@visx/axis": "^3.12.0",
