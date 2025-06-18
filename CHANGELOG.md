@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Fixed
+- Line chart: Remove duplicate stories and centralize story config
+
 ## [0.14.0] - 2025-06-16
 ### Added
 - Allow setting the glyphs array in the theme to have these rendered in the line chart [#43875]
