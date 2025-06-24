@@ -1,14 +1,15 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
+import * as _visx_legend_lib_types from '@visx/legend/lib/types';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleInput, ScaleType } from '@visx/scale';
 import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import * as react from 'react';
-import { CSSProperties, ReactNode, PointerEvent, ComponentType, RefObject, ComponentProps, FC } from 'react';
+import { CSSProperties, ReactNode, PointerEvent, ComponentType, FC } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
-import { LegendOrdinal } from '@visx/legend';
+import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -212,6 +213,14 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      * Legend shape
      */
     legendShape?: LegendShape<T, number>;
+    /**
+     * Legend horizontal alignment
+     */
+    legendAlignmentHorizontal?: 'left' | 'center' | 'right';
+    /**
+     * Legend vertical alignment
+     */
+    legendAlignmentVertical?: 'top' | 'bottom';
     /**
      * Grid visibility. x is default when orientation is vertical. y is default when orientation is horizontal.
      */
@@ -457,7 +466,6 @@ type CustomTooltip = {
 type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip);
 declare const BaseTooltip: ({ data, top, left, component: Component, children, className, }: BaseTooltipProps) => react_jsx_runtime.JSX.Element;
 
-type LegendOrdinalProps = Omit<ComponentProps<typeof LegendOrdinal>, 'scale' | 'direction'>;
 type BaseLegendItem = {
     label: string;
     value: number | string;
@@ -474,13 +482,53 @@ type LegendItemWithoutGlyph = BaseLegendItem & {
     renderGlyph?: never;
     glyphSize?: number;
 };
-type LegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
-    items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
-    orientation?: 'horizontal' | 'vertical';
-    ref?: RefObject<HTMLDivElement>;
-};
 
-declare const BaseLegend: react.ForwardRefExoticComponent<Omit<LegendProps, "ref"> & react.RefAttributes<HTMLDivElement>>;
+declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
+    className?: string;
+    style?: React.CSSProperties;
+    fill?: (label: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }) => string | undefined;
+    children?: (labels: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }[]) => React.ReactNode;
+    labelFormat?: _visx_legend_lib_types.LabelFormatter<unknown>;
+    shape?: _visx_legend_lib_types.LegendShape<unknown, any>;
+    size?: (label: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }) => string | number | undefined;
+    domain?: unknown[];
+    shapeWidth?: string | number;
+    shapeHeight?: string | number;
+    shapeMargin?: string | number;
+    labelAlign?: string;
+    labelFlex?: string | number;
+    labelMargin?: string | number;
+    itemMargin?: string | number;
+    itemDirection?: _visx_legend_lib_types.FlexDirection;
+    shapeStyle?: (label: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }) => React.CSSProperties;
+    labelTransform?: _visx_legend_lib_types.LabelFormatterFactory<ScaleOrdinal<DiscreteInput, Output>>;
+    legendLabelProps?: Partial<_visx_legend_lib_legends_Legend_LegendLabel.LegendLabelProps>;
+}, "shapeStyle"> & {
+    items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    orientation?: "horizontal" | "vertical";
+    alignmentHorizontal?: "left" | "center" | "right";
+    alignmentVertical?: "top" | "bottom";
+} & react.RefAttributes<HTMLDivElement>>;
 
 /**
  * Props for the ThemeProvider component
