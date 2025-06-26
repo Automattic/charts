@@ -293,7 +293,9 @@ const LineChart: FC< LineChartProps > = ( {
 			style={ {
 				width,
 				height,
-				position: 'relative',
+				display: 'flex',
+				flexDirection:
+					showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
 			} }
 		>
 			<XYChart

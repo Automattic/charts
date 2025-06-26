@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Line Chart: Add annotation support
 
 ### Changed
+- charts: Replace absolute positioning with flexbox
 - Update package dependencies.
 
 ### Fixed
