@@ -19,6 +19,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Fix chart flickering on initial load
+- Fix internal resolution in Jetpack repo
 - Line chart: Remove duplicate stories and centralize story config
 
 ## [0.14.0] - 2025-06-16
