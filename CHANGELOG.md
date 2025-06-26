@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: Adds new `legendHorizontalAlign` and `legendVerticalAlign` props to chart legend components, allowing flexible positioning of legends
+- Line Chart: Add annotation support
 
 ### Changed
 - Update package dependencies.

@@ -1,4 +1,8 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
+import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubject';
+import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
+import { LabelProps } from '@visx/annotation/lib/components/Label';
+import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import * as _visx_legend_lib_types from '@visx/legend/lib/types';
 import { LegendShape } from '@visx/legend/lib/types';
@@ -10,6 +14,24 @@ import { CSSProperties, ReactNode, PointerEvent, ComponentType, FC } from 'react
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
 import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
+
+type AnnotationStyles = {
+    circleSubject?: Omit<CircleSubjectProps, 'x' | 'y'> & {
+        fill?: string;
+    };
+    lineSubject?: Omit<LineSubjectProps, 'x' | 'y'>;
+    connector?: Omit<ConnectorProps, 'x' | 'y' | 'dx' | 'dy'>;
+    label?: Omit<LabelProps, 'title' | 'subtitle'>;
+};
+type SubjectType = 'circle' | 'line-vertical' | 'line-horizontal';
+type LineChartAnnotationProps = {
+    datum: DataPointDate;
+    title: string;
+    subtitle?: string;
+    subjectType?: SubjectType;
+    styles?: AnnotationStyles;
+    testId?: string;
+};
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -109,6 +131,7 @@ type ChartTheme = {
     legendLabelStyles?: CSSProperties;
     /** Styles for legend container */
     legendContainerStyles?: CSSProperties;
+    annotationStyles?: AnnotationStyles;
 };
 declare type AxisOptions = {
     orientation?: OrientationType;
@@ -274,7 +297,7 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
 }
-declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "width" | "size"> & Omit<BarChartProps, "height" | "width" | "size"> & {
+declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "width" | "height" | "size"> & Omit<BarChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -297,8 +320,9 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
         showVertical?: boolean;
         showHorizontal?: boolean;
     };
+    annotations?: LineChartAnnotationProps[];
 }
-declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "width" | "size"> & Omit<LineChartProps, "height" | "width" | "size"> & {
+declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "width" | "height" | "size"> & Omit<LineChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -335,7 +359,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: React.ReactNode;
 }
-declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "width" | "size"> & Omit<PieChartProps, "height" | "width" | "size"> & {
+declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "width" | "height" | "size"> & Omit<PieChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -364,7 +388,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "width" | "size"> & Omit<PieSemiCircleChartProps, "height" | "width" | "size"> & {
+declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "width" | "height" | "size"> & Omit<PieSemiCircleChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -432,7 +456,7 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "width" | "size"> & Omit<BarListChartProps, "height" | "width" | "size"> & {
+declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "width" | "height" | "size"> & Omit<BarListChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
