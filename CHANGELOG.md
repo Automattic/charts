@@ -17,6 +17,9 @@ This is an alpha version! The changes listed here are not final.
 - charts: Replace absolute positioning with flexbox
 - Update package dependencies.
 
+### Removed
+- Charts: Remove unused legend-stories.tsx file
+
 ### Fixed
 - Fix chart flickering on initial load
 - Fix internal resolution in Jetpack repo
