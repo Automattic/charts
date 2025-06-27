@@ -19,6 +19,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Removed
+- Charts: removed unused legendAlign references, consolidated legend storybook item grouping
 - Charts: Remove unused legend-stories.tsx file
 
 ### Fixed
