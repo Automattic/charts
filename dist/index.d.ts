@@ -10,7 +10,7 @@ import { ScaleInput, ScaleType } from '@visx/scale';
 import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import * as react from 'react';
-import { CSSProperties, ReactNode, PointerEvent, ComponentType, FC } from 'react';
+import { CSSProperties, ReactNode, PointerEvent, SVGProps, ComponentType, FC, MouseEvent } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
 import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
@@ -305,7 +305,7 @@ declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chart
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
 type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
-    glyphStyle?: React.SVGProps<SVGCircleElement>;
+    glyphStyle?: SVGProps<SVGCircleElement>;
 };
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
@@ -314,7 +314,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     withStartGlyphs?: boolean;
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
-    glyphStyle?: React.SVGProps<SVGCircleElement>;
+    glyphStyle?: SVGProps<SVGCircleElement>;
     withLegendGlyph: boolean;
     withTooltipCrosshairs?: {
         showVertical?: boolean;
@@ -357,7 +357,7 @@ interface PieChartProps extends OmitBaseChartProps {
     /**
      * Use the children prop to render additional elements on the chart.
      */
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "width" | "height" | "size"> & Omit<PieChartProps, "width" | "height" | "size"> & {
     maxWidth?: number;
@@ -588,7 +588,7 @@ type UseChartMouseHandlerReturn = {
     /**
      * Handler for mouse move events
      */
-    onMouseMove: (event: React.MouseEvent<SVGElement>, data: DataPoint) => void;
+    onMouseMove: (event: MouseEvent<SVGElement>, data: DataPoint) => void;
     /**
      * Handler for mouse leave events
      */
