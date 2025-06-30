@@ -26,6 +26,7 @@ This is an alpha version! The changes listed here are not final.
 - Fix chart flickering on initial load
 - Fix internal resolution in Jetpack repo
 - Line chart: Remove duplicate stories and centralize story config
+- Properly pass `key` to JSX.
 
 ## [0.14.0] - 2025-06-16
 ### Added
