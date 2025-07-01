@@ -5,37 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.15.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.16.0] - 2025-07-01
 ### Added
-- Add keyboard navigation support for the line charts
-- Charts: Adds new `legendHorizontalAlign` and `legendVerticalAlign` props to chart legend components, allowing flexible positioning of legends
-- Charts: Updating exports config to work with Jetpack.
-- Line Chart: Add annotation support
-- Support date literal parsing for bar chart
+- Line chart: Add keyboard navigation support. [#43962]
+
+## [0.15.0] - 2025-06-30
+### Added
+- Add new `legendHorizontalAlign` and `legendVerticalAlign` props to chart legend components, allowing flexible positioning of legends. [#43979]
+- Bar chart: Support date literal parsing. [#44101]
+- Line chart: Add annotation support. [#43978]
+- Update exports config to work with Jetpack. [#43870]
 
 ### Changed
-- charts: Replace absolute positioning with flexbox
-- Update package dependencies.
+- Replace absolute positioning with flexbox. [#44085]
+- Update package dependencies. [#44020]
 
 ### Removed
-- Charts: removed unused legendAlign references, consolidated legend storybook item grouping
-- Charts: Remove unused legend-stories.tsx file
+- Remove unused `legendAlign` references and consolidate legend storybook item grouping. [#44100]
+- Remove unused `legend-stories.tsx` file. [#44120]
 
 ### Fixed
-- Fix chart flickering on initial load
-- Fix internal resolution in Jetpack repo
-- Line chart: Remove duplicate stories and centralize story config
-- Properly pass `key` to JSX.
+- Fix chart flickering on initial load. [#44062]
+- Fix internal resolution in Jetpack monorepo. [#44102]
+- Line chart: Remove duplicate stories and centralize story config. [#43994]
+- Properly pass `key` to JSX. [#44128]
 
 ## [0.14.0] - 2025-06-16
 ### Added
 - Allow setting the glyphs array in the theme to have these rendered in the line chart [#43875]
 - Bar chart: Add support for pattern fill for accessibility [#43812]
-- Charts: Show glyph in legends [#43851]
 - Line chart: Add support for Tooltip crosshairs [#43921]
+- Show glyph in legends [#43851]
 
 ### Changed
 - Line chart: Organise stories for easier browsing [#43922]
@@ -270,7 +270,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.15.0-alpha]: https://github.com/Automattic/charts/compare/v0.14.0...v0.15.0-alpha
+[0.16.0]: https://github.com/Automattic/charts/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/Automattic/charts/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/Automattic/charts/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/Automattic/charts/compare/v0.12.1...v0.13.0
 [0.12.1]: https://github.com/Automattic/charts/compare/v0.12.0...v0.12.1
