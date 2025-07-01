@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Add keyboard navigation support for the line charts
 
+### Changed
+- Update package dependencies.
+
 ## [0.15.0] - 2025-06-30
 ### Added
 - Add new `legendHorizontalAlign` and `legendVerticalAlign` props to chart legend components, allowing flexible positioning of legends. [#43979]
