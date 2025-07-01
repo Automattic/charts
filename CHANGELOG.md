@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Add keyboard navigation support for the line charts
 - Charts: Adds new `legendHorizontalAlign` and `legendVerticalAlign` props to chart legend components, allowing flexible positioning of legends
 - Charts: Updating exports config to work with Jetpack.
 - Line Chart: Add annotation support
