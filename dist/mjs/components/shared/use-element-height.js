@@ -1,2 +1,2 @@
-import{useState as e,useRef as n,useCallback as t}from"react";function r({initialHeight:r=0}={}){const[i,c]=e(r),o=n(null);return[t((e=>{if(o.current&&(o.current.disconnect(),o.current=null),e){const n=()=>{c(e.getBoundingClientRect().height||0)};n();const t=new window.ResizeObserver(n);t.observe(e),o.current=t}}),[]),i]}export{r as useElementHeight};
+import{useState as e,useRef as n,useCallback as t}from"react";function r({initialHeight:r=0}={}){const[i,c]=e(r),o=n(null);return[t(e=>{if(o.current&&(o.current.disconnect(),o.current=null),e){const n=()=>{c(e.getBoundingClientRect().height||0)};n();const t=new window.ResizeObserver(n);t.observe(e),o.current=t}},[]),i]}export{r as useElementHeight};
 //# sourceMappingURL=use-element-height.js.map
