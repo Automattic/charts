@@ -1,0 +1,2 @@
+import{useId as t,useMemo as r,useEffect as e}from"react";import{useChartContext as o}from"./chart-context.js";const a=r=>{const e=t();return r||e},c=(t,a,c,m,n,s)=>{const{registerChart:h,unregisterChart:i}=o(),p=r((()=>s),[s]);e((()=>(n&&h(t,{legendItems:a,theme:c,chartType:m,metadata:p}),()=>{i(t)})),[t,a,c,m,p,n,h,i])};export{a as useChartId,c as useChartRegistration};
+//# sourceMappingURL=utils.js.map

@@ -180,6 +180,10 @@ type BaseChartProps<T = DataPoint | DataPointDate> = {
      */
     data: T extends DataPoint | DataPointDate ? T[] : T;
     /**
+     * Optional unique identifier for the chart (auto-generated if not provided)
+     */
+    chartId?: string;
+    /**
      * Additional CSS class name for the chart container
      */
     className?: string;
@@ -297,7 +301,7 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
 }
-declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "width" | "height" | "size"> & Omit<BarChartProps, "width" | "height" | "size"> & {
+declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -322,7 +326,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     };
     annotations?: LineChartAnnotationProps[];
 }
-declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "width" | "height" | "size"> & Omit<LineChartProps, "width" | "height" | "size"> & {
+declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "size" | "width"> & Omit<LineChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -359,7 +363,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: ReactNode;
 }
-declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "width" | "height" | "size"> & Omit<PieChartProps, "width" | "height" | "size"> & {
+declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "size" | "width"> & Omit<PieChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -388,7 +392,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "width" | "height" | "size"> & Omit<PieSemiCircleChartProps, "width" | "height" | "size"> & {
+declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "size" | "width"> & Omit<PieSemiCircleChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -456,7 +460,7 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "width" | "height" | "size"> & Omit<BarListChartProps, "width" | "height" | "size"> & {
+declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "size" | "width"> & Omit<BarListChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
@@ -508,21 +512,12 @@ type LegendItemWithoutGlyph = BaseLegendItem & {
 };
 
 declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
-    className?: string;
-    style?: React.CSSProperties;
-    fill?: (label: {
-        datum: unknown;
-        index: number;
-        text: string;
-        value?: any;
-    }) => string | undefined;
     children?: (labels: {
         datum: unknown;
         index: number;
         text: string;
         value?: any;
     }[]) => React.ReactNode;
-    labelFormat?: _visx_legend_lib_types.LabelFormatter<unknown>;
     shape?: _visx_legend_lib_types.LegendShape<unknown, any>;
     size?: (label: {
         datum: unknown;
@@ -530,6 +525,8 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
         text: string;
         value?: any;
     }) => string | number | undefined;
+    className?: string;
+    style?: React.CSSProperties;
     domain?: unknown[];
     shapeWidth?: string | number;
     shapeHeight?: string | number;
@@ -539,12 +536,19 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
     labelMargin?: string | number;
     itemMargin?: string | number;
     itemDirection?: _visx_legend_lib_types.FlexDirection;
+    fill?: (label: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }) => string | undefined;
     shapeStyle?: (label: {
         datum: unknown;
         index: number;
         text: string;
         value?: any;
     }) => React.CSSProperties;
+    labelFormat?: _visx_legend_lib_types.LabelFormatter<unknown>;
     labelTransform?: _visx_legend_lib_types.LabelFormatterFactory<ScaleOrdinal<DiscreteInput, Output>>;
     legendLabelProps?: Partial<_visx_legend_lib_legends_Legend_LegendLabel.LegendLabelProps>;
 }, "shapeStyle"> & {
