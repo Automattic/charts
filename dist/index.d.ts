@@ -3,14 +3,14 @@ import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubjec
 import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
 import { LabelProps } from '@visx/annotation/lib/components/Label';
 import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
+import * as react from 'react';
+import { FC, CSSProperties, ReactNode, PointerEvent, SVGProps, ComponentType, MouseEvent } from 'react';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import * as _visx_legend_lib_types from '@visx/legend/lib/types';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleInput, ScaleType } from '@visx/scale';
 import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
-import * as react from 'react';
-import { CSSProperties, ReactNode, PointerEvent, SVGProps, ComponentType, FC, MouseEvent } from 'react';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { TextProps } from '@visx/text';
 import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
@@ -21,7 +21,10 @@ type AnnotationStyles = {
     };
     lineSubject?: Omit<LineSubjectProps, 'x' | 'y'>;
     connector?: Omit<ConnectorProps, 'x' | 'y' | 'dx' | 'dy'>;
-    label?: Omit<LabelProps, 'title' | 'subtitle'>;
+    label?: Omit<LabelProps, 'title' | 'subtitle' | 'x' | 'y'> & {
+        x?: number | 'start' | 'end';
+        y?: number | 'start' | 'end';
+    };
 };
 type SubjectType = 'circle' | 'line-vertical' | 'line-horizontal';
 type LineChartAnnotationProps = {
@@ -31,6 +34,14 @@ type LineChartAnnotationProps = {
     subjectType?: SubjectType;
     styles?: AnnotationStyles;
     testId?: string;
+    renderLabel?: FC<{
+        title: string;
+        subtitle?: string;
+    }>;
+    renderLabelPopover?: FC<{
+        title: string;
+        subtitle?: string;
+    }>;
 };
 
 type ValueOf<T> = T[keyof T];
@@ -301,11 +312,15 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
 }
-declare const _default$4: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & {
+declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
 }) => react_jsx_runtime.JSX.Element;
+
+interface LineChartAnnotationsProps {
+    children?: ReactNode;
+}
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
 type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
@@ -324,13 +339,16 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
         showVertical?: boolean;
         showHorizontal?: boolean;
     };
-    annotations?: LineChartAnnotationProps[];
+    children?: ReactNode;
 }
-declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "size" | "width"> & Omit<LineChartProps, "height" | "size" | "width"> & {
+declare const ResponsiveLineChart: (({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "size" | "width"> & Omit<LineChartProps, "height" | "size" | "width"> & {
     maxWidth?: number;
     aspectRatio?: number;
     resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element;
+}) => react_jsx_runtime.JSX.Element) & {
+    AnnotationsOverlay: FC<LineChartAnnotationsProps>;
+    Annotation: FC<LineChartAnnotationProps>;
+};
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -622,4 +640,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$4 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, _default$3 as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$3 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, ResponsiveLineChart as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
