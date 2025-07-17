@@ -14,6 +14,9 @@ This is an alpha version! The changes listed here are not final.
 - Add keyboard navigation support for the line charts
 - Line chart: Add support for custom interactive annotations. Includes a breaking change to the annotations API, from an `annotations` prop to a compound component pattern.
 
+### Changed
+- Replace `lodash` with `deepmerge`.
+
 ## [0.17.0] - 2025-07-14
 ### Added
 - Add foundation for ChartContext system. [#44189]
