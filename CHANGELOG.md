@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Replace `lodash` with `deepmerge`.
+- Update package dependencies.
 
 ## [0.17.0] - 2025-07-14
 ### Added

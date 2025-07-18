@@ -48,7 +48,7 @@
 	},
 	"dependencies": {
 		"@automattic/jetpack-components": "^1.1.14-alpha",
-		"@automattic/number-formatters": "^1.0.8",
+		"@automattic/number-formatters": "^1.0.9-alpha",
 		"@babel/runtime": "7.27.6",
 		"@react-spring/web": "9.7.5",
 		"@visx/annotation": "^3.12.0",
@@ -73,10 +73,10 @@
 	},
 	"devDependencies": {
 		"@automattic/jetpack-webpack-config": "workspace:*",
-		"@babel/core": "7.27.7",
+		"@babel/core": "7.28.0",
 		"@babel/plugin-transform-react-jsx": "7.27.1",
-		"@babel/plugin-transform-runtime": "7.27.4",
-		"@babel/preset-env": "7.27.2",
+		"@babel/plugin-transform-runtime": "7.28.0",
+		"@babel/preset-env": "7.28.0",
 		"@babel/preset-react": "7.27.1",
 		"@babel/preset-typescript": "7.27.1",
 		"@rollup/plugin-commonjs": "26.0.1",
