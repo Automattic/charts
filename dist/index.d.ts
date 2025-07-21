@@ -484,6 +484,115 @@ declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartPr
     resizeDebounceTime?: number;
 }) => react_jsx_runtime.JSX.Element;
 
+interface LeaderboardEntry {
+    /**
+     * Unique internal key (e.g., 'key-direct')
+     */
+    id: string;
+    /**
+     * Human-readable name (e.g., 'Direct')
+     */
+    label: string;
+    /**
+     * Value of the entry
+     */
+    currentValue: number;
+    /**
+     * Value of the entry in the previous period
+     */
+    previousValue: number;
+    /**
+     * Width of current bar, as % of the current value
+     */
+    currentShare: number;
+    /**
+     * Width of previous bar, as % of the current value
+     */
+    previousShare: number;
+    /**
+     * Delta of the entry
+     */
+    delta: number;
+}
+interface LeaderboardChartProps {
+    /**
+     * Array of leaderboard entries to display
+     */
+    data: LeaderboardEntry[];
+    /**
+     * Whether to show comparison data
+     */
+    withComparison?: boolean;
+    /**
+     * Primary color for current period bars
+     */
+    primaryColor?: string;
+    /**
+     * Secondary color for comparison period bars
+     */
+    secondaryColor?: string;
+    /**
+     * Formatter for values
+     */
+    valueFormatter?: (value: number) => string;
+    /**
+     * Formatter for delta values
+     */
+    deltaFormatter?: (value: number) => string;
+    /**
+     * Whether the chart is in loading state
+     */
+    loading?: boolean;
+    /**
+     * Additional CSS class name for the chart container
+     */
+    className?: string;
+    /**
+     * Custom styling for the chart container
+     */
+    style?: React.CSSProperties;
+}
+/**
+ * LeaderboardChart component displays a ranked list of data with progress bars
+ * and optional comparison values.
+ *
+ * @param props                - Component props
+ * @param props.data           - Array of leaderboard entries to display
+ * @param props.withComparison - Whether to show comparison data
+ * @param props.primaryColor   - Primary color for current period bars
+ * @param props.secondaryColor - Secondary color for comparison period bars
+ * @param props.valueFormatter - Custom formatter for values
+ * @param props.deltaFormatter - Custom formatter for delta values
+ * @param props.loading        - Whether the chart is in loading state
+ * @param props.className      - Additional CSS class name
+ * @param props.style          - Custom styling for the chart container
+ * @return JSX element representing the leaderboard chart
+ */
+declare const LeaderboardChart: FC<LeaderboardChartProps>;
+
+/**
+ * Types for formatMetricValue
+ */
+type MetricValueType = 'number' | 'average' | 'currency';
+type FormatMetricValueOptions = {
+    decimals?: number;
+    useMultipliers?: boolean;
+    signDisplay?: Intl.NumberFormatOptions['signDisplay'];
+};
+/**
+ * Format a numeric metric value based on type, precision and scale.
+ * Supports currency, number and percentage, using @automattic/number-formatters.
+ *
+ * @param value                  - The value to format
+ * @param type                   - The type of formatting to apply
+ * @param options                - Formatting options
+ * @param options.decimals       - Number of decimal places to show
+ * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
+ * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
+ * @return Formatted string
+ */
+declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
+
 type TooltipData = {
     label: string;
     value: number;
@@ -640,4 +749,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, BaseLegend as Legend, ResponsiveLineChart as LineChart, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$3 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, LeaderboardChart, type LeaderboardChartProps, type LeaderboardEntry, BaseLegend as Legend, ResponsiveLineChart as LineChart, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, formatMetricValue, jetpackTheme, useChartMouseHandler, wooTheme };

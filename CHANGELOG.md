@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Add keyboard navigation support for the bar charts
 - Add keyboard navigation support for the line charts
+- Add Woo Analytics Leaderboard chart component.
 - Line chart: Add documentation for annotations
 - Line chart: Add support for custom interactive annotations. Includes a breaking change to the annotations API, from an `annotations` prop to a compound component pattern.
 
