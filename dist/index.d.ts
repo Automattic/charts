@@ -4,16 +4,19 @@ import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
 import { LabelProps } from '@visx/annotation/lib/components/Label';
 import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
 import * as react from 'react';
-import { FC, CSSProperties, ReactNode, PointerEvent, SVGProps, ComponentType, MouseEvent } from 'react';
+import { FC, ReactNode, SVGProps, CSSProperties, PointerEvent, ComponentType, MouseEvent } from 'react';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import * as _visx_legend_lib_types from '@visx/legend/lib/types';
 import { LegendShape } from '@visx/legend/lib/types';
-import { ScaleInput, ScaleType } from '@visx/scale';
-import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
+import { ScaleType, ScaleInput } from '@visx/scale';
+import { GlyphProps, LineStyles, GridStyles, EventHandlerParams } from '@visx/xychart';
 export { GridStyles, LineStyles } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { TextProps } from '@visx/text';
+export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
+import { TextProps, Text as Text$1, useText as useText$1 } from '@visx/text';
 import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
+import { Group as Group$1 } from '@visx/group';
+import { LineShape as LineShape$1, CircleShape as CircleShape$1, RectShape as RectShape$1 } from '@visx/legend';
 
 type AnnotationStyles = {
     circleSubject?: Omit<CircleSubjectProps, 'x' | 'y'> & {
@@ -43,6 +46,165 @@ type LineChartAnnotationProps = {
         subtitle?: string;
     }>;
 };
+declare const LineChartAnnotation: FC<LineChartAnnotationProps>;
+
+interface LineChartAnnotationsProps {
+    children?: ReactNode;
+}
+declare const LineChartAnnotationsOverlay: FC<LineChartAnnotationsProps>;
+
+interface LineChartRef {
+    getScales: () => {
+        xScale: unknown;
+        yScale: unknown;
+    } | null;
+    getChartDimensions: () => {
+        width: number;
+        height: number;
+        margin: {
+            top?: number;
+            right?: number;
+            bottom?: number;
+            left?: number;
+        };
+    };
+}
+
+type CurveType = 'smooth' | 'linear' | 'monotone';
+type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
+    glyphStyle?: SVGProps<SVGCircleElement>;
+};
+interface LineChartProps extends BaseChartProps<SeriesData[]> {
+    withGradientFill: boolean;
+    smoothing?: boolean;
+    curveType?: CurveType;
+    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
+    withStartGlyphs?: boolean;
+    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
+    glyphStyle?: SVGProps<SVGCircleElement>;
+    withLegendGlyph: boolean;
+    withTooltipCrosshairs?: {
+        showVertical?: boolean;
+        showHorizontal?: boolean;
+    };
+    children?: ReactNode;
+}
+type LineChartAnnotationComponents = {
+    AnnotationsOverlay: typeof LineChartAnnotationsOverlay;
+    Annotation: typeof LineChartAnnotation;
+};
+type LineChartBaseProps = Optional<LineChartProps, 'width' | 'height' | 'size'>;
+type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<LineChartRef>> & LineChartAnnotationComponents;
+declare const ResponsiveLineChart: LineChartResponsiveComponent;
+
+interface LeaderboardEntry {
+    /**
+     * Unique internal key (e.g., 'key-direct')
+     */
+    id: string;
+    /**
+     * Human-readable name (e.g., 'Direct')
+     */
+    label: string;
+    /**
+     * Value of the entry
+     */
+    currentValue: number;
+    /**
+     * Value of the entry in the previous period
+     */
+    previousValue: number;
+    /**
+     * Width of current bar, as % of the current value
+     */
+    currentShare: number;
+    /**
+     * Width of previous bar, as % of the current value
+     */
+    previousShare: number;
+    /**
+     * Delta of the entry
+     */
+    delta: number;
+}
+interface LeaderboardChartProps {
+    /**
+     * Array of leaderboard entries to display
+     */
+    data: LeaderboardEntry[];
+    /**
+     * Whether to show comparison data
+     */
+    withComparison?: boolean;
+    /**
+     * Primary color for current period bars
+     */
+    primaryColor?: string;
+    /**
+     * Secondary color for comparison period bars
+     */
+    secondaryColor?: string;
+    /**
+     * Formatter for values
+     */
+    valueFormatter?: (value: number) => string;
+    /**
+     * Formatter for delta values
+     */
+    deltaFormatter?: (value: number) => string;
+    /**
+     * Whether the chart is in loading state
+     */
+    loading?: boolean;
+    /**
+     * Additional CSS class name for the chart container
+     */
+    className?: string;
+    /**
+     * Custom styling for the chart container
+     */
+    style?: React.CSSProperties;
+}
+/**
+ * LeaderboardChart component displays a ranked list of data with progress bars
+ * and optional comparison values.
+ *
+ * @param props                - Component props
+ * @param props.data           - Array of leaderboard entries to display
+ * @param props.withComparison - Whether to show comparison data
+ * @param props.primaryColor   - Primary color for current period bars
+ * @param props.secondaryColor - Secondary color for comparison period bars
+ * @param props.valueFormatter - Custom formatter for values
+ * @param props.deltaFormatter - Custom formatter for delta values
+ * @param props.loading        - Whether the chart is in loading state
+ * @param props.className      - Additional CSS class name
+ * @param props.style          - Custom styling for the chart container
+ * @return JSX element representing the leaderboard chart
+ */
+declare const LeaderboardChart: FC<LeaderboardChartProps>;
+
+/**
+ * Types for formatMetricValue
+ */
+type MetricValueType = 'number' | 'average' | 'currency';
+type FormatMetricValueOptions = {
+    decimals?: number;
+    useMultipliers?: boolean;
+    signDisplay?: Intl.NumberFormatOptions['signDisplay'];
+};
+/**
+ * Format a numeric metric value based on type, precision and scale.
+ * Supports currency, number and percentage, using @automattic/number-formatters.
+ *
+ * @param value                  - The value to format
+ * @param type                   - The type of formatting to apply
+ * @param options                - Formatting options
+ * @param options.decimals       - Number of decimal places to show
+ * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
+ * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
+ * @return Formatted string
+ */
+declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -306,49 +468,47 @@ type GridProps = {
      */
     top?: number;
 };
+/**
+ * Local type definitions for Popover API attributes and events
+ * These are used to avoid extending React module types while still getting type safety
+ * NOTE: These type definitions are only needed for React 18 and below.
+ * React 19+ includes Popover API types in the official React type definitions, so these can be removed when upgrading.
+ */
+interface PopoverButtonAttributes {
+    popovertarget?: string;
+    popovertargetaction?: 'hide' | 'show' | 'toggle';
+}
+interface PopoverElementAttributes {
+    popover?: 'auto' | 'manual' | '';
+}
+type ButtonWithPopover = PopoverButtonAttributes;
+type PopoverElement = PopoverElementAttributes;
+interface ToggleEvent extends Event {
+    newState: 'open' | 'closed';
+    oldState: 'open' | 'closed';
+}
+
+type ResponsiveConfig = {
+    /**
+     * The maximum width of the chart. Defaults to 1200.
+     */
+    maxWidth?: number;
+    /**
+     * The aspect ratio of the chart.
+     */
+    aspectRatio?: number;
+    /**
+     * Child render updates upon resize are delayed until debounceTime milliseconds after the last resize event is observed.
+     */
+    resizeDebounceTime?: number;
+};
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
 }
-declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & {
-    maxWidth?: number;
-    aspectRatio?: number;
-    resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element;
-
-interface LineChartAnnotationsProps {
-    children?: ReactNode;
-}
-
-type CurveType = 'smooth' | 'linear' | 'monotone';
-type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
-    glyphStyle?: SVGProps<SVGCircleElement>;
-};
-interface LineChartProps extends BaseChartProps<SeriesData[]> {
-    withGradientFill: boolean;
-    smoothing?: boolean;
-    curveType?: CurveType;
-    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
-    withStartGlyphs?: boolean;
-    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
-    glyphStyle?: SVGProps<SVGCircleElement>;
-    withLegendGlyph: boolean;
-    withTooltipCrosshairs?: {
-        showVertical?: boolean;
-        showHorizontal?: boolean;
-    };
-    children?: ReactNode;
-}
-declare const ResponsiveLineChart: (({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<LineChartProps>, "height" | "size" | "width"> & Omit<LineChartProps, "height" | "size" | "width"> & {
-    maxWidth?: number;
-    aspectRatio?: number;
-    resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element) & {
-    AnnotationsOverlay: FC<LineChartAnnotationsProps>;
-    Annotation: FC<LineChartAnnotationProps>;
-};
+declare const _default$3: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
 interface PieChartProps extends OmitBaseChartProps {
@@ -381,11 +541,7 @@ interface PieChartProps extends OmitBaseChartProps {
      */
     children?: ReactNode;
 }
-declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "size" | "width"> & Omit<PieChartProps, "height" | "size" | "width"> & {
-    maxWidth?: number;
-    aspectRatio?: number;
-    resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element;
+declare const _default$2: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "size" | "width"> & Omit<PieChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -410,11 +566,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "size" | "width"> & Omit<PieSemiCircleChartProps, "height" | "size" | "width"> & {
-    maxWidth?: number;
-    aspectRatio?: number;
-    resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element;
+declare const _default$1: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "size" | "width"> & Omit<PieSemiCircleChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
     options?: {
@@ -478,120 +630,7 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "size" | "width"> & Omit<BarListChartProps, "height" | "size" | "width"> & {
-    maxWidth?: number;
-    aspectRatio?: number;
-    resizeDebounceTime?: number;
-}) => react_jsx_runtime.JSX.Element;
-
-interface LeaderboardEntry {
-    /**
-     * Unique internal key (e.g., 'key-direct')
-     */
-    id: string;
-    /**
-     * Human-readable name (e.g., 'Direct')
-     */
-    label: string;
-    /**
-     * Value of the entry
-     */
-    currentValue: number;
-    /**
-     * Value of the entry in the previous period
-     */
-    previousValue: number;
-    /**
-     * Width of current bar, as % of the current value
-     */
-    currentShare: number;
-    /**
-     * Width of previous bar, as % of the current value
-     */
-    previousShare: number;
-    /**
-     * Delta of the entry
-     */
-    delta: number;
-}
-interface LeaderboardChartProps {
-    /**
-     * Array of leaderboard entries to display
-     */
-    data: LeaderboardEntry[];
-    /**
-     * Whether to show comparison data
-     */
-    withComparison?: boolean;
-    /**
-     * Primary color for current period bars
-     */
-    primaryColor?: string;
-    /**
-     * Secondary color for comparison period bars
-     */
-    secondaryColor?: string;
-    /**
-     * Formatter for values
-     */
-    valueFormatter?: (value: number) => string;
-    /**
-     * Formatter for delta values
-     */
-    deltaFormatter?: (value: number) => string;
-    /**
-     * Whether the chart is in loading state
-     */
-    loading?: boolean;
-    /**
-     * Additional CSS class name for the chart container
-     */
-    className?: string;
-    /**
-     * Custom styling for the chart container
-     */
-    style?: React.CSSProperties;
-}
-/**
- * LeaderboardChart component displays a ranked list of data with progress bars
- * and optional comparison values.
- *
- * @param props                - Component props
- * @param props.data           - Array of leaderboard entries to display
- * @param props.withComparison - Whether to show comparison data
- * @param props.primaryColor   - Primary color for current period bars
- * @param props.secondaryColor - Secondary color for comparison period bars
- * @param props.valueFormatter - Custom formatter for values
- * @param props.deltaFormatter - Custom formatter for delta values
- * @param props.loading        - Whether the chart is in loading state
- * @param props.className      - Additional CSS class name
- * @param props.style          - Custom styling for the chart container
- * @return JSX element representing the leaderboard chart
- */
-declare const LeaderboardChart: FC<LeaderboardChartProps>;
-
-/**
- * Types for formatMetricValue
- */
-type MetricValueType = 'number' | 'average' | 'currency';
-type FormatMetricValueOptions = {
-    decimals?: number;
-    useMultipliers?: boolean;
-    signDisplay?: Intl.NumberFormatOptions['signDisplay'];
-};
-/**
- * Format a numeric metric value based on type, precision and scale.
- * Supports currency, number and percentage, using @automattic/number-formatters.
- *
- * @param value                  - The value to format
- * @param type                   - The type of formatting to apply
- * @param options                - Formatting options
- * @param options.decimals       - Number of decimal places to show
- * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
- * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
- * @return Formatted string
- */
-declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
+declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "size" | "width"> & Omit<BarListChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 type TooltipData = {
     label: string;
@@ -685,6 +724,16 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
     alignmentVertical?: "top" | "bottom";
 } & react.RefAttributes<HTMLDivElement>>;
 
+declare const Text: typeof Text$1;
+declare const useText: typeof useText$1;
+declare const getStringWidth: any;
+
+declare const Group: typeof Group$1;
+
+declare const LineShape: typeof LineShape$1;
+declare const CircleShape: typeof CircleShape$1;
+declare const RectShape: typeof RectShape$1;
+
 /**
  * Props for the ThemeProvider component
  */
@@ -749,4 +798,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { _default$3 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ChartTheme, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, LeaderboardChart, type LeaderboardChartProps, type LeaderboardEntry, BaseLegend as Legend, ResponsiveLineChart as LineChart, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type RenderLineStartGlyphProps, type SeriesData, ThemeProvider, defaultTheme, formatMetricValue, jetpackTheme, useChartMouseHandler, wooTheme };
+export { _default$3 as BarChart, _default as BarListChart, type BaseChartProps, BaseTooltip, type ButtonWithPopover, type ChartTheme, CircleShape, type DataPoint, type DataPointDate, type DataPointPercentage, type GridProps, Group, LeaderboardChart, type LeaderboardChartProps, type LeaderboardEntry, BaseLegend as Legend, ResponsiveLineChart as LineChart, LineShape, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, _default$2 as PieChart, _default$1 as PieSemiCircleChart, type PopoverButtonAttributes, type PopoverElement, type PopoverElementAttributes, RectShape, type RenderLineStartGlyphProps, type ScaleOptions, type SeriesData, Text, ThemeProvider, type ToggleEvent, defaultTheme, formatMetricValue, getStringWidth, jetpackTheme, useChartMouseHandler, useText, wooTheme };

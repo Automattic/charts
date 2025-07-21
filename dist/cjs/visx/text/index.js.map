@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["/@automattic/charts/../../../../src/visx/text/index.ts"],"sourcesContent":[null],"names":["Text","VisxText","useText","useVisxText","getStringWidth","getVisxStringWidth"],"mappings":"yCAQO,MAAMA,EAAOC,EAASD,KAChBE,EAAUC,EAAYD,QACtBE,EAAiBC,EAAAA"}
