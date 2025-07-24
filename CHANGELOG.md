@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Add Storybook docs introduction
 
+### Changed
+- Removed src and tests to optimize lib size
+
 ## [0.20.0] - 2025-07-23
 ### Added
 - Line Chart: Add documentation [#44410]
