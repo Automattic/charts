@@ -1,2 +1,74 @@
-import{formatNumberCompact as i,formatNumber as e}from"@automattic/number-formatters";const r=(r,s="number",{decimals:t,useMultipliers:n=!1,signDisplay:a}={})=>{if(null==r)return"";const m=Number(r);if(isNaN(m))return"";switch(s){case"currency":return`$${n?i(m,{decimals:t??2,numberFormatOptions:{maximumFractionDigits:t??2,signDisplay:a}}):e(m,{decimals:t??2,numberFormatOptions:{signDisplay:a}})}`;case"average":return Number.isFinite(m)?e(m,{decimals:t??0,numberFormatOptions:{style:"percent",signDisplay:a??"exceptZero"}}):"—";default:return n?i(m,{decimals:t??0,numberFormatOptions:{maximumFractionDigits:t??0,signDisplay:a}}):e(m,{decimals:t??0,numberFormatOptions:{signDisplay:a}})}};export{r as formatMetricValue};
-//# sourceMappingURL=format-metric-value.js.map
+import { formatNumberCompact, formatNumber } from '@automattic/number-formatters';
+
+/**
+ * Format a numeric metric value based on type, precision and scale.
+ * Supports currency, number and percentage, using @automattic/number-formatters.
+ *
+ * @param value                  - The value to format
+ * @param type                   - The type of formatting to apply
+ * @param options                - Formatting options
+ * @param options.decimals       - Number of decimal places to show
+ * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
+ * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
+ * @return Formatted string
+ */
+const formatMetricValue = (value, type = 'number', { decimals, useMultipliers = false, signDisplay } = {}) => {
+    if (value === null || value === undefined) {
+        return '';
+    }
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+        return '';
+    }
+    switch (type) {
+        case 'currency': {
+            // Basic currency formatting - can be enhanced with full currency support
+            const formatted = useMultipliers
+                ? formatNumberCompact(numericValue, {
+                    decimals: decimals ?? 2,
+                    numberFormatOptions: {
+                        maximumFractionDigits: decimals ?? 2,
+                        signDisplay,
+                    },
+                })
+                : formatNumber(numericValue, {
+                    decimals: decimals ?? 2,
+                    numberFormatOptions: {
+                        signDisplay,
+                    },
+                });
+            return `$${formatted}`;
+        }
+        case 'average': {
+            if (!Number.isFinite(numericValue)) {
+                return '—';
+            }
+            return formatNumber(numericValue, {
+                decimals: decimals ?? 0,
+                numberFormatOptions: {
+                    style: 'percent',
+                    signDisplay: signDisplay ?? 'exceptZero',
+                },
+            });
+        }
+        case 'number':
+        default: {
+            return useMultipliers
+                ? formatNumberCompact(numericValue, {
+                    decimals: decimals ?? 0,
+                    numberFormatOptions: {
+                        maximumFractionDigits: decimals ?? 0,
+                        signDisplay,
+                    },
+                })
+                : formatNumber(numericValue, {
+                    decimals: decimals ?? 0,
+                    numberFormatOptions: {
+                        signDisplay,
+                    },
+                });
+        }
+    }
+};
+
+export { formatMetricValue };

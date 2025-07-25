@@ -1,2 +1,163 @@
-import{jsx as t,jsxs as e,Fragment as a}from"react/jsx-runtime";import{PatternHexagons as r,PatternWaves as o,PatternCircles as i,PatternLines as l}from"@visx/pattern";import{XYChart as s,Grid as n,BarGroup as c,BarSeries as d,Axis as h}from"@visx/xychart";import m from"clsx";import{useId as p,useRef as u,useState as g,useCallback as b,useMemo as f}from"react";import{ChartProvider as v}from"../../providers/chart-context/chart-context.js";import{useChartId as x,useChartRegistration as y}from"../../providers/chart-context/utils.js";import{useXYChartTheme as w,useChartTheme as N}from"../../providers/theme/theme-provider.js";import{BaseLegend as _}from"../legend/base-legend.js";import{useChartDataTransform as j}from"../shared/use-chart-data-transform.js";import{useChartMargin as k}from"../shared/use-chart-margin.js";import{useElementHeight as T}from"../shared/use-element-height.js";import{withResponsive as D}from"../shared/with-responsive.js";import{useKeyboardNavigation as S,AccessibleTooltip as $}from"../tooltip/accessible-tooltip.js";import A from"./bar-chart.module.scss.js";import{useBarChartOptions as I}from"./use-bar-chart-options.js";const z=(t,e)=>`bar-pattern-${t}-${e}`,C=({data:v,chartId:D,width:C,height:B=400,className:F,margin:K,withTooltips:V=!1,showLegend:M=!1,legendOrientation:P="horizontal",legendAlignmentHorizontal:R="center",legendAlignmentVertical:H="bottom",legendShape:E="rect",gridVisibility:G,renderTooltip:L,options:O={},orientation:W="vertical",withPatterns:X=!1})=>{const Y="horizontal"===W,q=p(),J=x(D),Q=w(v),U=j(v),Z=I(U,Y,O),tt=k(B,Z,U,Q,Y),[et,at]=T(),rt=u(null),[ot,it]=g(void 0),[lt,st]=g(!1),nt=Math.max(0,...v.map((t=>t.data?.length||0)))*v.length,{tooltipRef:ct,onChartFocus:dt,onChartBlur:ht,onChartKeyDown:mt}=S({selectedIndex:ot,setSelectedIndex:it,isNavigating:lt,setIsNavigating:st,chartRef:rt,totalPoints:nt}),pt=b(((t,e)=>t?.options?.stroke||Q.colors[e%Q.colors.length]),[Q]),ut=b((t=>()=>X?`url(#${z(q,t)})`:pt(U[t],t)),[X,pt,U,q]),gt=b((({tooltipData:a})=>{const r=a?.nearestDatum?.datum;return r?e("div",{className:A["bar-chart__tooltip"],children:[t("div",{className:A["bar-chart__tooltip-header"],children:a?.nearestDatum?.key}),e("div",{className:A["bar-chart__tooltip-row"],children:[e("span",{className:A["bar-chart__tooltip-label"],children:[Z.tooltip.labelFormatter(r.label||(r.date?r.date.getTime():0),0,[]),":"]}),t("span",{className:A["bar-chart__tooltip-value"],children:r.value})]})]}):null}),[Z.tooltip]),bt=b(((e,a)=>{const s=e%4,n=z(q,e),c={id:n,stroke:"white",strokeWidth:1,background:a};switch(s){case 0:default:return t(l,{...c,width:5,height:5,orientation:["diagonal"]},n);case 1:return t(i,{...c,width:6,height:6,fill:"white"},n);case 2:return t(o,{...c,width:4,height:4},n);case 3:return t(r,{...c,size:8,height:3},n)}}),[q]),ft=b(((t,e)=>`\n\t\t\t.visx-bar[fill="url(#${z(q,t)})"] {\n\t\t\t\tstroke: ${e};\n\t\t\t\tstroke-width: 1;\n\t\t\t\t}\n\t\t\t`),[q]),vt=b((()=>{if(void 0===ot)return"";const t=Math.max(...v.map((t=>t.data.length))),e=Math.floor(ot/v.length),a=ot%v.length;if(e>=t||a>=v.length)return"";if(e>=v[a].data.length)return"";return`\n\t\t\t.bar-chart[data-chart-id="bar-chart-${J}"] .visx-bar-group .visx-bar:nth-child(${a*t+e+1}) {\n\t\t\t\tstroke: #005fcc;\n\t\t\t\tstroke-width: 2px;\n\t\t\t}\n\t\t`}),[ot,v,J]),xt=(t=>t?.length?t.some((t=>t.data.some((t=>isNaN(t.value)||null===t.value||void 0===t.value||!t.label&&(!("date"in t&&t.date)||isNaN(t.date.getTime()))))))?"Invalid data":null:"No data available")(U),yt=!xt,wt=f((()=>U.map(((t,e)=>({label:t.label,value:"",color:pt(t,e),shapeStyle:t?.options?.legendShapeStyle})))),[U,pt]),Nt=N();if(y(J,wt,Nt,"bar",yt,{orientation:W,withPatterns:X}),xt)return t("div",{className:m("bar-chart",A["bar-chart"]),children:xt});const _t=G??Z.gridVisibility,jt=vt();return e("div",{className:m("bar-chart",A["bar-chart"],F),"data-testid":"bar-chart",role:"grid","aria-label":"bar chart",style:{width:C,height:B,display:"flex",flexDirection:M&&"top"===H?"column-reverse":"column"},tabIndex:0,onKeyDown:mt,onFocus:dt,onBlur:ht,ref:rt,"data-chart-id":`bar-chart-${J}`,children:[e(s,{theme:Q,width:C,height:B-(M?at:0),margin:{...tt,...K,...M&&"top"===H?{top:(tt.top||0)+at}:{}},xScale:Z.xScale,yScale:Z.yScale,horizontal:Y,pointerEventsDataKey:"nearest",children:[t(n,{columns:_t.includes("y"),rows:_t.includes("x"),numTicks:4}),X&&e(a,{children:[t("defs",{"data-testid":"bar-chart-patterns",children:U.map(((t,e)=>bt(e,pt(t,e))))}),t("style",{children:U.map(((t,e)=>ft(e,pt(t,e))))})]}),jt&&t("style",{children:jt}),t(c,{padding:Z.barGroup.padding,children:U.map(((e,a)=>t(d,{dataKey:e?.label,data:e.data,yAccessor:Z.accessors.yAccessor,xAccessor:Z.accessors.xAccessor,colorAccessor:ut(a)},e?.label)))}),t(h,{...Z.axis.x}),t(h,{...Z.axis.y}),V&&t($,{detectBounds:!0,snapTooltipToDatumX:!0,snapTooltipToDatumY:!0,renderTooltip:L||gt,selectedIndex:ot,tooltipRef:ct,keyboardFocusedClassName:A["bar-chart__tooltip--keyboard-focused"],series:v,mode:"individual"})]}),M&&t(_,{items:wt,orientation:P,alignmentHorizontal:R,alignmentVertical:H,className:A["bar-chart__legend"],shape:E,ref:et})]})},B=e=>t(v,{children:t(C,{...e})});B.displayName="BarChart";var F=D(B);export{F as default};
-//# sourceMappingURL=bar-chart.js.map
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
+import { PatternHexagons, PatternWaves, PatternCircles, PatternLines } from '@visx/pattern';
+import { XYChart, Grid, BarGroup, BarSeries, Axis } from '@visx/xychart';
+import clsx from 'clsx';
+import { useId, useRef, useState, useCallback, useMemo } from 'react';
+import { ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { useXYChartTheme, useChartTheme } from '../../providers/theme/theme-provider.js';
+import { BaseLegend } from '../legend/base-legend.js';
+import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
+import { useChartMargin } from '../shared/use-chart-margin.js';
+import { useElementHeight } from '../shared/use-element-height.js';
+import { withResponsive } from '../shared/with-responsive.js';
+import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
+import styles from './bar-chart.module.scss.js';
+import { useBarChartOptions } from './use-bar-chart-options.js';
+
+// Validation function similar to LineChart
+const validateData = (data) => {
+    if (!data?.length)
+        return 'No data available';
+    const hasInvalidData = data.some(series => series.data.some(point => isNaN(point.value) ||
+        point.value === null ||
+        point.value === undefined ||
+        (!point.label &&
+            (!('date' in point && point.date) || isNaN(point.date.getTime())))));
+    if (hasInvalidData)
+        return 'Invalid data';
+    return null;
+};
+const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
+const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, }) => {
+    const horizontal = orientation === 'horizontal';
+    // Generate a unique chart ID to avoid pattern conflicts with multiple charts
+    const internalChartId = useId();
+    const chartId = useChartId(providedChartId);
+    const theme = useXYChartTheme(data);
+    const dataSorted = useChartDataTransform(data);
+    const chartOptions = useBarChartOptions(dataSorted, horizontal, options);
+    const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
+    const [legendRef, legendHeight] = useElementHeight();
+    const chartRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(undefined);
+    const [isNavigating, setIsNavigating] = useState(false);
+    const totalPoints = Math.max(0, ...data.map(series => series.data?.length || 0)) * data.length;
+    // Use the keyboard navigation hook
+    const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
+        selectedIndex,
+        setSelectedIndex,
+        isNavigating,
+        setIsNavigating,
+        chartRef,
+        totalPoints,
+    });
+    const getColor = useCallback((seriesData, index) => seriesData?.options?.stroke || theme.colors[index % theme.colors.length], [theme]);
+    const getBarBackground = useCallback((index) => () => withPatterns
+        ? `url(#${getPatternId(internalChartId, index)})`
+        : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, internalChartId]);
+    const renderDefaultTooltip = useCallback(({ tooltipData }) => {
+        const nearestDatum = tooltipData?.nearestDatum?.datum;
+        if (!nearestDatum)
+            return null;
+        return (jsxs("div", { className: styles['bar-chart__tooltip'], children: [jsx("div", { className: styles['bar-chart__tooltip-header'], children: tooltipData?.nearestDatum?.key }), jsxs("div", { className: styles['bar-chart__tooltip-row'], children: [jsxs("span", { className: styles['bar-chart__tooltip-label'], children: [chartOptions.tooltip.labelFormatter(nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0), 0, []), ":"] }), jsx("span", { className: styles['bar-chart__tooltip-value'], children: nearestDatum.value })] })] }));
+    }, [chartOptions.tooltip]);
+    const renderPattern = useCallback((index, color) => {
+        const patternType = index % 4;
+        const id = getPatternId(internalChartId, index);
+        const commonProps = {
+            id,
+            stroke: 'white',
+            strokeWidth: 1,
+            background: color,
+        };
+        switch (patternType) {
+            case 0:
+            default:
+                return (jsx(PatternLines, { ...commonProps, width: 5, height: 5, orientation: ['diagonal'] }, id));
+            case 1:
+                return (jsx(PatternCircles, { ...commonProps, width: 6, height: 6, fill: "white" }, id));
+            case 2:
+                return jsx(PatternWaves, { ...commonProps, width: 4, height: 4 }, id);
+            case 3:
+                return jsx(PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
+        }
+    }, [internalChartId]);
+    const createPatternBorderStyle = useCallback((index, color) => {
+        const patternId = getPatternId(internalChartId, index);
+        return `
+			.visx-bar[fill="url(#${patternId})"] {
+				stroke: ${color};
+				stroke-width: 1;
+				}
+			`;
+    }, [internalChartId]);
+    const createKeyboardHighlightStyle = useCallback(() => {
+        if (selectedIndex === undefined)
+            return '';
+        // Calculate which bar should be highlighted based on selectedIndex
+        // Pattern: [series1[0], series2[0], series3[0], series1[1], series2[1], series3[1], ...]
+        const maxDataPoints = Math.max(...data.map(s => s.data.length));
+        const dataPointIndex = Math.floor(selectedIndex / data.length);
+        const seriesIndex = selectedIndex % data.length;
+        // Only highlight if we're within valid bounds
+        if (dataPointIndex >= maxDataPoints || seriesIndex >= data.length) {
+            return '';
+        }
+        const seriesData = data[seriesIndex];
+        if (dataPointIndex >= seriesData.data.length) {
+            return '';
+        }
+        // Based on the DOM structure analysis:
+        // - All bars are in a single .visx-bar-group
+        // - Bars are ordered as: [series1[0], series1[1], series2[0], series2[1], ...]
+        // - So we need to calculate the actual bar index in the DOM
+        const actualBarIndex = seriesIndex * maxDataPoints + dataPointIndex;
+        // Use a CSS class selector instead of ID since useId() generates invalid CSS ID characters
+        const generatedStyles = `
+			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${actualBarIndex + 1}) {
+				stroke: #005fcc;
+				stroke-width: 2px;
+			}
+		`;
+        return generatedStyles;
+    }, [selectedIndex, data, chartId]);
+    // Validate data first
+    const error = validateData(dataSorted);
+    const isDataValid = !error;
+    // Create legend items (hooks must be called in same order every render)
+    const legendItems = useMemo(() => dataSorted.map((group, index) => ({
+        label: group.label, // Label for each unique group
+        value: '', // Empty string since we don't want to show a specific value
+        color: getColor(group, index),
+        shapeStyle: group?.options?.legendShapeStyle,
+    })), [dataSorted, getColor]);
+    // Register chart with context only if data is valid
+    const providerTheme = useChartTheme();
+    useChartRegistration(chartId, legendItems, providerTheme, 'bar', isDataValid, {
+        orientation,
+        withPatterns,
+    });
+    if (error) {
+        return jsx("div", { className: clsx('bar-chart', styles['bar-chart']), children: error });
+    }
+    const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
+    const highlightedBarStyle = createKeyboardHighlightStyle();
+    return (jsxs("div", { className: clsx('bar-chart', styles['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": "bar chart", style: {
+            width,
+            height,
+            display: 'flex',
+            flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+        }, tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, "data-chart-id": `bar-chart-${chartId}`, children: [jsxs(XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
+                    ...defaultMargin,
+                    ...margin,
+                    ...(showLegend && legendAlignmentVertical === 'top'
+                        ? { top: (defaultMargin.top || 0) + legendHeight }
+                        : {}),
+                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxs(Fragment, { children: [jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsx("style", { children: highlightedBarStyle }), jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: dataSorted.map((seriesData, index) => (jsx(BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsx(BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['bar-chart__legend'], shape: legendShape, ref: legendRef }))] }));
+};
+const BarChart = props => (jsx(ChartProvider, { children: jsx(BarChartInternal, { ...props }) }));
+BarChart.displayName = 'BarChart';
+var BarChart$1 = withResponsive(BarChart);
+
+export { BarChart$1 as default };

@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Add Storybook docs introduction
 
 ### Changed
+- Fix export structure for charts
 - Removed src and tests to optimize lib size
 
 ## [0.20.0] - 2025-07-23

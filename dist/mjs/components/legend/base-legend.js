@@ -1,2 +1,48 @@
-import{jsx as e,jsxs as l}from"react/jsx-runtime";import{Group as i}from"@visx/group";import{LegendOrdinal as t,LegendItem as r,LegendShape as a,LegendLabel as n}from"@visx/legend";import{scaleOrdinal as o}from"@visx/scale";import m from"clsx";import{forwardRef as s,useCallback as d}from"react";import{useChartTheme as g}from"../../providers/theme/theme-provider.js";import p from"./legend.module.scss.js";import{valueOrIdentityString as h,valueOrIdentity as c,labelTransformFactory as x}from"./utils.js";const f={horizontal:"row",vertical:"column"},y=s((({items:s,className:y,orientation:b="horizontal",alignmentHorizontal:v="center",alignmentVertical:z="bottom",shape:u="rect",fill:S=h,size:$=h,labelFormat:j=c,labelTransform:w=x,shapeWidth:N=16,shapeHeight:D=16,shapeMargin:F="2px 4px 2px 0",labelAlign:M="left",labelFlex:C="1",labelMargin:G="0 4px",itemMargin:H="0",itemDirection:L="row",legendLabelProps:T,...k},A)=>{const I=g(),P=o({domain:s.map((e=>e.label)),range:s.map((e=>e.color))}),V=P.domain(),W=d((({index:e})=>s[e]?.shapeStyle??I.legendShapeStyles?.[e]??{}),[s,I]);return e(t,{scale:P,labelFormat:j,labelTransform:w,children:t=>e("div",{ref:A,role:"list","data-testid":`legend-${b}`,className:m(p.legend,p[`legend--${b}`],p[`legend--horizontal-align-${v}`],p[`legend--vertical-align-${z}`],y),style:{flexDirection:f[b],...I.legendContainerStyles},children:t.map(((t,o)=>l(r,{className:p["legend-item"],"data-testid":"legend-item",margin:H,flexDirection:L,...k,children:[s[o]?.renderGlyph?e("svg",{width:2*s[o]?.glyphSize,height:2*s[o]?.glyphSize,"data-testid":"legend-glyph",children:e(i,{children:s[o]?.renderGlyph({key:`legend-glyph-${t.text}`,datum:{},index:o,color:S(t),size:s[o]?.glyphSize,x:s[o]?.glyphSize,y:s[o]?.glyphSize})})}):e(a,{shape:u,height:D,width:N,margin:F,item:V[o],itemIndex:o,label:t,fill:S,size:$,shapeStyle:W}),l(n,{style:{justifyContent:M,flex:C,margin:G,...I.legendLabelStyles},...T,children:[t.text,s.find((e=>e.label===t.text))?.value&&e("span",{className:p["legend-item-value"],children:s.find((e=>e.label===t.text))?.value})]})]},`legend-${t.text}-${o}`)))})})}));export{y as BaseLegend};
-//# sourceMappingURL=base-legend.js.map
+import { jsx, jsxs } from 'react/jsx-runtime';
+import { Group } from '@visx/group';
+import { LegendOrdinal, LegendItem, LegendShape, LegendLabel } from '@visx/legend';
+import { scaleOrdinal } from '@visx/scale';
+import clsx from 'clsx';
+import { forwardRef, useCallback } from 'react';
+import { useChartTheme } from '../../providers/theme/theme-provider.js';
+import styles from './legend.module.scss.js';
+import { valueOrIdentityString, valueOrIdentity, labelTransformFactory } from './utils.js';
+
+const orientationToFlexDirection = {
+    horizontal: 'row',
+    vertical: 'column',
+};
+/*
+ * Base legend component that displays color-coded items with labels based on visx LegendOrdinal.
+ * We avoid using LegendOrdinal directly to enable support for advanced features such as interactivity.
+ */
+const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '1', labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
+    const theme = useChartTheme();
+    const legendScale = scaleOrdinal({
+        domain: items.map(item => item.label),
+        range: items.map(item => item.color),
+    });
+    const domain = legendScale.domain();
+    const getShapeStyle = useCallback(({ index }) => {
+        return items[index]?.shapeStyle ?? theme.legendShapeStyles?.[index] ?? {};
+    }, [items, theme]);
+    return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--horizontal-align-${alignmentHorizontal}`], styles[`legend--vertical-align-${alignmentVertical}`], className), style: {
+                flexDirection: orientationToFlexDirection[orientation],
+                ...theme.legendContainerStyles,
+            }, children: labels.map((label, i) => (jsxs(LegendItem, { className: styles['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsx(Group, { children: items[i]?.renderGlyph({
+                                key: `legend-glyph-${label.text}`,
+                                datum: {},
+                                index: i,
+                                color: fill(label),
+                                size: items[i]?.glyphSize,
+                                x: items[i]?.glyphSize,
+                                y: items[i]?.glyphSize,
+                            }) }) })) : (jsx(LegendShape, { shape: shape, height: shapeHeight, width: shapeWidth, margin: shapeMargin, item: domain[i], itemIndex: i, label: label, fill: fill, size: size, shapeStyle: getShapeStyle })), jsxs(LegendLabel, { style: {
+                            justifyContent: labelAlign,
+                            flex: labelFlex,
+                            margin: labelMargin,
+                            ...theme.legendLabelStyles,
+                        }, ...legendLabelProps, children: [label.text, items.find(item => item.label === label.text)?.value && (jsx("span", { className: styles['legend-item-value'], children: items.find(item => item.label === label.text)?.value }))] })] }, `legend-${label.text}-${i}`))) })) }));
+});
+
+export { BaseLegend };

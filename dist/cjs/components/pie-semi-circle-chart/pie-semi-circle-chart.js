@@ -1,2 +1,117 @@
-"use strict";var e=require("react/jsx-runtime"),t=require("@visx/event"),i=require("@visx/group"),a=require("@visx/shape"),l=require("@visx/text"),s=require("@visx/tooltip"),r=require("clsx"),o=require("react"),c=require("../../providers/chart-context/chart-context.js"),n=require("../../providers/chart-context/utils.js"),d=require("../../providers/theme/theme-provider.js"),h=require("../legend/base-legend.js"),p=require("../shared/use-element-height.js"),u=require("../shared/with-responsive.js"),m=require("../tooltip/base-tooltip.js"),v=require("./pie-semi-circle-chart.module.scss.js");const x=({data:c,chartId:u,width:x=400,thickness:g=.4,clockwise:j=!0,withTooltips:q=!1,showLegend:b=!1,legendOrientation:f="horizontal",legendAlignmentHorizontal:w="center",legendAlignmentVertical:M="bottom",legendShape:y="circle",label:A,note:N,className:T})=>{const C=d.useChartTheme(),I=n.useChartId(u),[P,V]=p.useElementHeight(),{tooltipOpen:k,tooltipLeft:D,tooltipTop:L,tooltipData:R,hideTooltip:S,showTooltip:z}=s.useTooltip(),B=o.useCallback(((e,i)=>{const a=t.localPoint(e);a&&z({tooltipData:i.data,tooltipLeft:a.x,tooltipTop:a.y-10})}),[z]),H=o.useCallback((()=>{S()}),[S]),G=o.useCallback((e=>t=>{B(t,e)}),[B]),{isValid:O,message:$}=(e=>e.length?e.some((e=>e.percentage<0||e.value<0))?{isValid:!1,message:"Invalid data: Negative values are not allowed"}:e.reduce(((e,t)=>e+t.percentage),0)<=0?{isValid:!1,message:"Invalid percentage total: Must be greater than 0"}:{isValid:!0,message:""}:{isValid:!1,message:"No data available"})(c),E=o.useMemo((()=>({value:e=>e.value,sort:(e,t)=>t.value-e.value,fill:e=>e.color||C.colors[e.index%C.colors.length]})),[C.colors]),F=o.useMemo((()=>c.map(((e,t)=>({label:e.label,value:e.valueDisplay||e.value.toString(),color:E.fill({...e,index:t})})))),[c,E]);if(n.useChartRegistration(I,F,C,"pie-semi-circle",O,{thickness:g,clockwise:j}),!O)return e.jsx("div",{className:v["pie-semi-circle-chart"],children:e.jsx("svg",{width:x,height:x/2,"data-testid":"pie-chart-svg",children:e.jsx("text",{x:"50%",y:"50%",textAnchor:"middle",className:v.error,children:$})})});const J=x/2,K=.03,Q=x-.06,U=J-K,W=Math.min(Q,2*U)/2,X=W*(1-g+K),Y=c.map(((e,t)=>({...e,index:t}))),Z=j?-Math.PI/2:Math.PI/2,_=j?Math.PI/2:-Math.PI/2;return e.jsxs("div",{className:r("pie-semi-circle-chart",v["pie-semi-circle-chart"],T),"data-testid":"pie-chart-container",style:{display:"flex",flexDirection:b&&"top"===M?"column-reverse":"column"},children:[e.jsx("svg",{width:x,height:J+(b&&"top"===M?V+20:0),viewBox:`0 0 ${x} ${J+(b&&"top"===M?V+20:0)}`,"data-testid":"pie-chart-svg",children:e.jsxs(i.Group,{top:W+(b&&"top"===M?V+20:0),left:W,children:[e.jsx(a.Pie,{data:Y,pieValue:E.value,outerRadius:W,innerRadius:X,cornerRadius:3,padAngle:K,startAngle:Z,endAngle:_,pieSort:E.sort,children:t=>t.arcs.map((i=>e.jsx("g",{onMouseMove:G(i),onMouseLeave:H,children:e.jsx("path",{d:t.path(i)||"",fill:E.fill(i.data),"data-testid":"pie-segment"})},i.data.label)))}),e.jsxs(i.Group,{children:[e.jsx(l.Text,{textAnchor:"middle",verticalAnchor:"start",y:-40,className:v.label,children:A}),e.jsx(l.Text,{textAnchor:"middle",verticalAnchor:"start",y:-20,className:v.note,children:N})]})]})}),q&&k&&R&&e.jsx(m.BaseTooltip,{data:{label:R.label,value:R.value,valueDisplay:R.valueDisplay},top:L||0,left:D||0}),b&&e.jsx(h.BaseLegend,{items:F,orientation:f,alignmentHorizontal:w,alignmentVertical:M,className:v["pie-semi-circle-chart-legend"],shape:y,ref:P})]})},g=t=>e.jsx(c.ChartProvider,{children:e.jsx(x,{...t})});g.displayName="PieSemiCircleChart";var j=u.withResponsive(g);module.exports=j;
-//# sourceMappingURL=pie-semi-circle-chart.js.map
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var jsxRuntime = require('react/jsx-runtime');
+var event = require('@visx/event');
+var group = require('@visx/group');
+var shape = require('@visx/shape');
+var text = require('@visx/text');
+var tooltip = require('@visx/tooltip');
+var clsx = require('clsx');
+var react = require('react');
+var chartContext = require('../../providers/chart-context/chart-context.js');
+var utils = require('../../providers/chart-context/utils.js');
+var themeProvider = require('../../providers/theme/theme-provider.js');
+var baseLegend = require('../legend/base-legend.js');
+var useElementHeight = require('../shared/use-element-height.js');
+var withResponsive = require('../shared/with-responsive.js');
+var baseTooltip = require('../tooltip/base-tooltip.js');
+var pieSemiCircleChart_module = require('./pie-semi-circle-chart.module.scss.js');
+
+/**
+ * Validates the semi-circle pie chart data
+ * @param data - The data to validate
+ * @return Object containing validation result and error message
+ */
+const validateData = (data) => {
+    if (!data.length) {
+        return { isValid: false, message: 'No data available' };
+    }
+    // Check for negative values
+    const hasNegativeValues = data.some(item => item.percentage < 0 || item.value < 0);
+    if (hasNegativeValues) {
+        return { isValid: false, message: 'Invalid data: Negative values are not allowed' };
+    }
+    // Validate total percentage is greater than 0
+    const totalPercentage = data.reduce((sum, item) => sum + item.percentage, 0);
+    if (totalPercentage <= 0) {
+        return { isValid: false, message: 'Invalid percentage total: Must be greater than 0' };
+    }
+    return { isValid: true, message: '' };
+};
+const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', label, note, className, }) => {
+    const providerTheme = themeProvider.useChartTheme();
+    const chartId = utils.useChartId(providedChartId);
+    const [legendRef, legendHeight] = useElementHeight.useElementHeight();
+    const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = tooltip.useTooltip();
+    const handleMouseMove = react.useCallback((event$1, arc) => {
+        const coords = event.localPoint(event$1);
+        if (!coords)
+            return;
+        showTooltip({
+            tooltipData: arc.data,
+            tooltipLeft: coords.x,
+            tooltipTop: coords.y - 10,
+        });
+    }, [showTooltip]);
+    const handleMouseLeave = react.useCallback(() => {
+        hideTooltip();
+    }, [hideTooltip]);
+    const handleArcMouseMove = react.useCallback((arc) => (event) => {
+        handleMouseMove(event, arc);
+    }, [handleMouseMove]);
+    // Validate data first to get validation result
+    const { isValid, message } = validateData(data);
+    // Define accessors with useMemo to avoid changing dependencies
+    const accessors = react.useMemo(() => ({
+        value: (d) => d.value,
+        sort: (a, b) => b.value - a.value,
+        // Use the color property from the data object as a last resort. The theme provides colours by default.
+        fill: (d) => d.color || providerTheme.colors[d.index % providerTheme.colors.length],
+    }), [providerTheme.colors]);
+    // Create legend items (hooks must be called in same order every render)
+    const legendItems = react.useMemo(() => data.map((item, index) => ({
+        label: item.label,
+        value: item.valueDisplay || item.value.toString(),
+        color: accessors.fill({ ...item, index }),
+    })), [data, accessors]);
+    // Register chart with context only if data is valid
+    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, {
+        thickness,
+        clockwise,
+    });
+    if (!isValid) {
+        return (jsxRuntime.jsx("div", { className: pieSemiCircleChart_module.default['pie-semi-circle-chart'], children: jsxRuntime.jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsxRuntime.jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: pieSemiCircleChart_module.default.error, children: message }) }) }));
+    }
+    const height = width / 2;
+    const pad = 0.03;
+    // Use padding for the overall chart dimensions
+    const chartWidth = width - pad * 2;
+    const chartHeight = height - pad;
+    const radius = Math.min(chartWidth, chartHeight * 2) / 2;
+    const innerRadius = radius * (1 - thickness + pad);
+    // Map the data to include index for color assignment
+    const dataWithIndex = data.map((d, index) => ({
+        ...d,
+        index,
+    }));
+    // Set the clockwise direction based on the prop
+    const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
+    const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
+    return (jsxRuntime.jsxs("div", { className: clsx('pie-semi-circle-chart', pieSemiCircleChart_module.default['pie-semi-circle-chart'], className), "data-testid": "pie-chart-container", style: {
+            display: 'flex',
+            flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+        }, children: [jsxRuntime.jsx("svg", { width: width, height: height + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0), viewBox: `0 0 ${width} ${height + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0)}`, "data-testid": "pie-chart-svg", children: jsxRuntime.jsxs(group.Group, { top: radius + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0), left: radius, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: radius, innerRadius: innerRadius, cornerRadius: 3, padAngle: pad, startAngle: startAngle, endAngle: endAngle, pieSort: accessors.sort, children: pie => {
+                                return pie.arcs.map(arc => (jsxRuntime.jsx("g", { onMouseMove: handleArcMouseMove(arc), onMouseLeave: handleMouseLeave, children: jsxRuntime.jsx("path", { d: pie.path(arc) || '', fill: accessors.fill(arc.data), "data-testid": "pie-segment" }) }, arc.data.label)));
+                            } }), jsxRuntime.jsxs(group.Group, { children: [jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -40, className: pieSemiCircleChart_module.default.label, children: label }), jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -20, className: pieSemiCircleChart_module.default.note, children: note })] })] }) }), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: {
+                    label: tooltipData.label,
+                    value: tooltipData.value,
+                    valueDisplay: tooltipData.valueDisplay,
+                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(baseLegend.BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieSemiCircleChart_module.default['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef }))] }));
+};
+const PieSemiCircleChart = props => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
+PieSemiCircleChart.displayName = 'PieSemiCircleChart';
+var pieSemiCircleChart = withResponsive.withResponsive(PieSemiCircleChart);
+
+exports.default = pieSemiCircleChart;

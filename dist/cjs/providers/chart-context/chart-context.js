@@ -1,2 +1,35 @@
-"use strict";var e=require("react/jsx-runtime"),r=require("react");const t=r.createContext(null);exports.ChartProvider=({children:a})=>{const s=r.useRef(new Map),u=r.useCallback(((e,r)=>{s.current.set(e,r)}),[]),n=r.useCallback((e=>{s.current.delete(e)}),[]),c=r.useCallback((e=>s.current.get(e)),[]),o=r.useMemo((()=>({charts:s.current,registerChart:u,unregisterChart:n,getChartData:c})),[u,n,c]);return e.jsx(t.Provider,{value:o,children:a})},exports.useChartContext=()=>{const e=r.useContext(t);if(!e)throw new Error("useChartContext must be used within a ChartProvider");return e};
-//# sourceMappingURL=chart-context.js.map
+'use strict';
+
+var jsxRuntime = require('react/jsx-runtime');
+var react = require('react');
+
+const ChartContext = react.createContext(null);
+const ChartProvider = ({ children }) => {
+    const chartsRef = react.useRef(new Map());
+    const registerChart = react.useCallback((id, data) => {
+        chartsRef.current.set(id, data);
+    }, []);
+    const unregisterChart = react.useCallback((id) => {
+        chartsRef.current.delete(id);
+    }, []);
+    const getChartData = react.useCallback((id) => {
+        return chartsRef.current.get(id);
+    }, []);
+    const value = react.useMemo(() => ({
+        charts: chartsRef.current,
+        registerChart,
+        unregisterChart,
+        getChartData,
+    }), [registerChart, unregisterChart, getChartData]);
+    return jsxRuntime.jsx(ChartContext.Provider, { value: value, children: children });
+};
+const useChartContext = () => {
+    const context = react.useContext(ChartContext);
+    if (!context) {
+        throw new Error('useChartContext must be used within a ChartProvider');
+    }
+    return context;
+};
+
+exports.ChartProvider = ChartProvider;
+exports.useChartContext = useChartContext;

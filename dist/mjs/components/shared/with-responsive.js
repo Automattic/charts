@@ -1,2 +1,35 @@
-import{jsx as e}from"react/jsx-runtime";import{useParentSize as t}from"@visx/responsive";function i(i){return function({resizeDebounceTime:n=300,maxWidth:r=1200,aspectRatio:h=.5,...o}){const{parentRef:a,width:c,height:s}=(({resizeDebounceTime:e=300,maxWidth:i=1200,aspectRatio:n=.5})=>{const{parentRef:r,width:h}=t({debounceTime:e,enableDebounceLeadingCall:!0}),o=h>0?Math.min(h,i):0;return{parentRef:r,width:o,height:o*n}})({resizeDebounceTime:n,maxWidth:r,aspectRatio:h});return e("div",{ref:a,style:{width:"100%",height:o.height??"auto"},children:e(i,{width:c,height:s,size:c,...o})})}}export{i as withResponsive};
-//# sourceMappingURL=with-responsive.js.map
+import { jsx } from 'react/jsx-runtime';
+import { useParentSize } from '@visx/responsive';
+
+const useResponsiveDimensions = ({ resizeDebounceTime = 300, maxWidth = 1200, aspectRatio = 0.5, }) => {
+    const { parentRef, width: parentWidth } = useParentSize({
+        debounceTime: resizeDebounceTime,
+        enableDebounceLeadingCall: true,
+    });
+    const containerWidth = parentWidth > 0 ? Math.min(parentWidth, maxWidth) : 0;
+    const containerHeight = containerWidth * aspectRatio;
+    return { parentRef, width: containerWidth, height: containerHeight };
+};
+/**
+ * A higher-order component that provides responsive dimensions
+ * to the wrapped chart component using useParentSize from @visx/responsive.
+ *
+ * @param WrappedComponent - The chart component to be wrapped.
+ * @return A functional component that renders the wrapped component with responsive dimensions.
+ */
+function withResponsive(// 'options' is excluded so that each chart can define its own options type
+WrappedComponent) {
+    return function ResponsiveChart({ resizeDebounceTime = 300, maxWidth = 1200, aspectRatio = 0.5, ...chartProps }) {
+        const { parentRef, width: containerWidth, height: containerHeight, } = useResponsiveDimensions({
+            resizeDebounceTime,
+            maxWidth,
+            aspectRatio,
+        });
+        return (jsx("div", { ref: parentRef, style: {
+                width: '100%',
+                height: chartProps.height ?? 'auto',
+            }, children: jsx(WrappedComponent, { width: containerWidth, height: containerHeight, size: containerWidth, ...chartProps }) }));
+    };
+}
+
+export { withResponsive };

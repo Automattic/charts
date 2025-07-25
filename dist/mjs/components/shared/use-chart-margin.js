@@ -1,2 +1,44 @@
-import{createScale as t,getTicks as a}from"@visx/scale";import{useMemo as i}from"react";import{getLongestTickWidth as o}from"./utils.js";const r=(r,e,s,m,n=!1)=>{const l=i((()=>{const i=s.flatMap((t=>t.data));if(n)return i.map((t=>t.label||e.axis?.y?.tickFormat(t.date.getTime(),0,[])));const o=Math.min(...i.map((t=>t.value))),m=Math.max(...i.map((t=>t.value))),l=t({...e.yScale,domain:[o,m],range:[r,0]});return a(l,e.axis?.y?.numTicks)}),[e,s,r,n]);return i((()=>{const t={top:10,right:20,bottom:20,left:20},a=e.axis?.y?.orientation,i="right"===a?m.axisStyles.y.right:m.axisStyles.y.left,r=(o(l,e.axis?.y?.tickFormat,i.axisLabel)??40)+(i?.tickLength??0);return"right"===a?t.right=r:t.left=r,"top"===e.axis?.x?.orientation&&(t.top=20,t.bottom=10),t}),[e,m,l])};export{r as useChartMargin};
-//# sourceMappingURL=use-chart-margin.js.map
+import { createScale, getTicks } from '@visx/scale';
+import { useMemo } from 'react';
+import { getLongestTickWidth } from './utils.js';
+
+const useChartMargin = (height, options, data, theme, horizontal = false) => {
+    const yTicks = useMemo(() => {
+        const allDataPoints = data.flatMap(series => series.data);
+        if (horizontal) {
+            // When horizontal, y ticks renders fixed tick labels.
+            return allDataPoints.map(d => d.label || options.axis?.y?.tickFormat(d.date.getTime(), 0, []));
+        }
+        const minY = Math.min(...allDataPoints.map(d => d.value));
+        const maxY = Math.max(...allDataPoints.map(d => d.value));
+        const yScale = createScale({
+            ...options.yScale,
+            domain: [minY, maxY],
+            range: [height, 0],
+        });
+        return getTicks(yScale, options.axis?.y?.numTicks);
+    }, [options, data, height, horizontal]);
+    return useMemo(() => {
+        // Default margin is for bottom axis labels.
+        const defaultMargin = { top: 10, right: 20, bottom: 20, left: 20 };
+        const defaultTickWidth = 40;
+        // Auto-calculate margin for y axis labels based on orientation and tick width.
+        const yAxisOrientation = options.axis?.y?.orientation;
+        const yAxisStyles = yAxisOrientation === 'right' ? theme.axisStyles.y.right : theme.axisStyles.y.left;
+        const yTickWidth = getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, yAxisStyles.axisLabel);
+        const yMarginValue = (yTickWidth ?? defaultTickWidth) + (yAxisStyles?.tickLength ?? 0);
+        if (yAxisOrientation === 'right') {
+            defaultMargin.right = yMarginValue;
+        }
+        else {
+            defaultMargin.left = yMarginValue;
+        }
+        if (options.axis?.x?.orientation === 'top') {
+            defaultMargin.top = 20;
+            defaultMargin.bottom = 10;
+        }
+        return defaultMargin;
+    }, [options, theme, yTicks]);
+};
+
+export { useChartMargin };

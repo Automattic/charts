@@ -1,2 +1,55 @@
-import{jsxs as t,jsx as e}from"react/jsx-runtime";import o from"clsx";import a from"gridicons";import{useId as r,useRef as n,useState as l,useEffect as i}from"react";import{isSafari as s}from"../shared/utils.js";import c from"./line-chart.module.scss.js";const p=44,d=({title:p,subtitle:d,renderLabel:h,renderLabelPopover:m})=>{const b=r(),u=n(null),v=n(null),[_,f]=l(!1),g=s();return i((()=>{const t=u.current,e=v.current;if(!t||!e)return;const o=()=>{if(!g){const o=t.getBoundingClientRect();e.style.left=`${o.right}px`,e.style.top=`${o.top}px`}f(!0)};e.addEventListener("toggle",(t=>{"open"===t.newState&&o()}));try{e.matches(":popover-open")&&o()}catch{}}),[g]),t("div",{className:c["line-chart__annotation-label"],children:[e("button",{ref:u,popovertarget:b,className:c["line-chart__annotation-label-trigger-button"],style:{width:"44px",height:"44px",transform:"translate(22px, 0)"},"aria-label":p||"View details",children:h({title:p,subtitle:d})}),e("div",{ref:v,id:b,popover:"auto",className:o(c["line-chart__annotation-label-popover"],_&&c["line-chart__annotation-label-popover--visible"],g&&c["line-chart__annotation-label-popover--safari"]),"data-testid":"line-chart-annotation-label-popover",children:t("div",{className:c["line-chart__annotation-label-popover-header"],children:[e("div",{className:c["line-chart__annotation-label-popover-content"],children:m({title:p,subtitle:d})}),e("button",{popovertarget:b,popovertargetaction:"hide",className:c["line-chart__annotation-label-popover-close-button"],"aria-label":"Close",children:e(a,{icon:"cross",size:16})})]})})]})};export{p as POPOVER_BUTTON_SIZE,d as default};
-//# sourceMappingURL=line-chart-annotation-label-popover.js.map
+import { jsxs, jsx } from 'react/jsx-runtime';
+import clsx from 'clsx';
+import Gridicon from 'gridicons';
+import { useId, useRef, useState, useEffect } from 'react';
+import { isSafari } from '../shared/utils.js';
+import styles from './line-chart.module.scss.js';
+
+const POPOVER_BUTTON_SIZE = 44;
+const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, renderLabelPopover, }) => {
+    const popoverId = useId();
+    const buttonRef = useRef(null);
+    const popoverRef = useRef(null);
+    const [isPositioned, setIsPositioned] = useState(false);
+    const isBrowserSafari = isSafari();
+    useEffect(() => {
+        const button = buttonRef.current;
+        const popover = popoverRef.current;
+        if (!button || !popover)
+            return;
+        const positionPopover = () => {
+            // Popover positioning in Safari is complicated due to issues with SVG foreign objects (https://bugs.webkit.org/show_bug.cgi?id=23113), so let it be positioned in the centre of the viewport.
+            if (!isBrowserSafari) {
+                const buttonRect = button.getBoundingClientRect();
+                popover.style.left = `${buttonRect.right}px`;
+                popover.style.top = `${buttonRect.top}px`;
+            }
+            setIsPositioned(true);
+        };
+        // Position when popover shows
+        popover.addEventListener('toggle', (e) => {
+            if (e.newState === 'open') {
+                positionPopover();
+            }
+        });
+        // Initial positioning if already open
+        try {
+            if (popover.matches(':popover-open')) {
+                positionPopover();
+            }
+        }
+        catch {
+            // Ignore errors in test environments (e.g., JSDOM does not support :popover-open)
+        }
+    }, [isBrowserSafari]);
+    return (jsxs("div", { className: styles['line-chart__annotation-label'], children: [jsx("button", { ref: buttonRef, ...{ popovertarget: popoverId }, className: styles['line-chart__annotation-label-trigger-button'], style: {
+                    width: `${POPOVER_BUTTON_SIZE}px`,
+                    height: `${POPOVER_BUTTON_SIZE}px`,
+                    transform: `translate(${POPOVER_BUTTON_SIZE / 2}px, 0)`,
+                }, "aria-label": title || 'View details', children: renderLabel({ title, subtitle }) }), jsx("div", { ref: popoverRef, id: popoverId, ...{ popover: 'auto' }, className: clsx(styles['line-chart__annotation-label-popover'], isPositioned && styles['line-chart__annotation-label-popover--visible'], isBrowserSafari && styles['line-chart__annotation-label-popover--safari']), "data-testid": "line-chart-annotation-label-popover", children: jsxs("div", { className: styles['line-chart__annotation-label-popover-header'], children: [jsx("div", { className: styles['line-chart__annotation-label-popover-content'], children: renderLabelPopover({ title, subtitle }) }), jsx("button", { ...{
+                                popovertarget: popoverId,
+                                popovertargetaction: 'hide',
+                            }, className: styles['line-chart__annotation-label-popover-close-button'], "aria-label": "Close", children: jsx(Gridicon, { icon: "cross", size: 16 }) })] }) })] }));
+};
+
+export { POPOVER_BUTTON_SIZE, LineChartAnnotationLabelWithPopover as default };

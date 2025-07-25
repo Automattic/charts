@@ -1,2 +1,18 @@
-"use strict";var t=require("@visx/text");const e=t.Text,r=t.useText,s=t.getStringWidth;exports.Text=e,exports.getStringWidth=s,exports.useText=r;
-//# sourceMappingURL=index.js.map
+'use strict';
+
+var text = require('@visx/text');
+
+
+
+Object.defineProperty(exports, 'Text', {
+	enumerable: true,
+	get: function () { return text.Text; }
+});
+Object.defineProperty(exports, 'getStringWidth', {
+	enumerable: true,
+	get: function () { return text.getStringWidth; }
+});
+Object.defineProperty(exports, 'useText', {
+	enumerable: true,
+	get: function () { return text.useText; }
+});

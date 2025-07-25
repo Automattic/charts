@@ -1,2 +1,7 @@
-"use strict";module.exports={leaderboardChart:"leaderboard-chart-module_leaderboardChart__zxakP",loading:"leaderboard-chart-module_loading__-AGv-",entryContainer:"leaderboard-chart-module_entryContainer__Os9tq",labelContainer:"leaderboard-chart-module_labelContainer__lt8CW",entryLabel:"leaderboard-chart-module_entryLabel__NPMEo",progressContainer:"leaderboard-chart-module_progressContainer__BZGbj",progressBar:"leaderboard-chart-module_progressBar__LAQaj",primaryBar:"leaderboard-chart-module_primaryBar__iybII",secondaryBar:"leaderboard-chart-module_secondaryBar__A7tLz",valueContainer:"leaderboard-chart-module_valueContainer__ZlLh4",currentValue:"leaderboard-chart-module_currentValue__I0aZw",deltaValue:"leaderboard-chart-module_deltaValue__zJpIW",emptyState:"leaderboard-chart-module_emptyState__0dkfy"};
-//# sourceMappingURL=leaderboard-chart.module.scss.js.map
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var styles = {"leaderboardChart":"leaderboard-chart-module_leaderboardChart__zxakP","loading":"leaderboard-chart-module_loading__-AGv-","entryContainer":"leaderboard-chart-module_entryContainer__Os9tq","labelContainer":"leaderboard-chart-module_labelContainer__lt8CW","entryLabel":"leaderboard-chart-module_entryLabel__NPMEo","progressContainer":"leaderboard-chart-module_progressContainer__BZGbj","progressBar":"leaderboard-chart-module_progressBar__LAQaj","primaryBar":"leaderboard-chart-module_primaryBar__iybII","secondaryBar":"leaderboard-chart-module_secondaryBar__A7tLz","valueContainer":"leaderboard-chart-module_valueContainer__ZlLh4","currentValue":"leaderboard-chart-module_currentValue__I0aZw","deltaValue":"leaderboard-chart-module_deltaValue__zJpIW","emptyState":"leaderboard-chart-module_emptyState__0dkfy"};
+
+exports.default = styles;

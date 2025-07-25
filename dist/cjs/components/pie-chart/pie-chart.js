@@ -1,2 +1,122 @@
-"use strict";var e=require("react/jsx-runtime"),t=require("@visx/group"),r=require("@visx/shape"),a=require("clsx"),s=require("react"),i=require("../../hooks/use-chart-mouse-handler.js"),l=require("../../providers/chart-context/chart-context.js"),o=require("../../providers/chart-context/utils.js"),n=require("../../providers/theme/theme-provider.js"),d=require("../../providers/theme/themes.js"),c=require("../legend/base-legend.js"),h=require("../shared/use-element-height.js"),u=require("../shared/with-responsive.js"),p=require("../tooltip/base-tooltip.js"),m=require("./pie-chart.module.scss.js");const g=({data:l,chartId:u,withTooltips:g=!1,className:v,showLegend:x,legendOrientation:j,legendAlignmentHorizontal:f="center",legendAlignmentVertical:q="bottom",legendShape:M="circle",size:b,thickness:w=1,padding:N=20,gapScale:V=0,cornerScale:A=0,children:C=null})=>{const S=n.useChartTheme(),y=o.useChartId(u),[R,T]=h.useElementHeight(),{onMouseMove:k,onMouseLeave:B,tooltipOpen:I,tooltipData:L,tooltipLeft:z,tooltipTop:P}=i({withTooltips:g}),{isValid:H,message:$}=(e=>{if(!e.length)return{isValid:!1,message:"No data available"};if(e.some((e=>e.percentage<0||e.value<0)))return{isValid:!1,message:"Invalid data: Negative values are not allowed"};const t=e.reduce(((e,t)=>e+t.percentage),0);return Math.abs(t-100)>.01?{isValid:!1,message:"Invalid percentage total: Must equal 100"}:{isValid:!0,message:""}})(l),D=s.useMemo((()=>l.map(((e,t)=>({label:e.label,value:e.value.toString(),color:S.colors[t%S.colors.length]})))),[l,S.colors]);if(o.useChartRegistration(y,D,S,"pie",H,{thickness:w,gapScale:V,cornerScale:A}),!H)return e.jsx("div",{className:a("pie-chart",m["pie-chart"],v),children:e.jsx("div",{className:m["error-message"],children:$})});const E=b,O=b,G=Math.min(E,O)/2,Y=E/2,F=O/2+(x&&"top"===q?T/2:0),J=V*(2*Math.PI/l.length),K=G-N,Q=0===w?0:K*(1-w),U=(K-Q)/2,W=A?Math.min(A*K,U):0,X=l.map(((e,t)=>({...e,index:t}))),Z={value:e=>e.value,fill:e=>e?.color||S.colors[e.index]};return e.jsxs("div",{className:a("pie-chart",m["pie-chart"],v),style:{display:"flex",flexDirection:x&&"top"===q?"column-reverse":"column"},children:[e.jsx("svg",{viewBox:`0 0 ${b} ${b}`,preserveAspectRatio:"xMidYMid meet",width:b,height:b,children:e.jsxs(t.Group,{top:F,left:Y,children:[e.jsx(r.Pie,{data:X,pieValue:Z.value,outerRadius:K,innerRadius:Q,padAngle:J,cornerRadius:W,children:t=>t.arcs.map(((r,a)=>{const[s,i]=t.path.centroid(r),l=r.endAngle-r.startAngle>=.25,o=e=>k(e,r.data),n={d:t.path(r)||"",fill:Z.fill(r.data)};return g&&(n.onMouseMove=o,n.onMouseLeave=B),e.jsxs("g",{children:[e.jsx("path",{...n}),l&&e.jsx("text",{x:s,y:i,dy:".33em",fill:S.labelBackgroundColor||d.defaultTheme.labelBackgroundColor,fontSize:12,textAnchor:"middle",pointerEvents:"none",children:r.data.label})]},`arc-${a}`)}))}),C]})}),x&&e.jsx(c.BaseLegend,{items:D,orientation:j,alignmentHorizontal:f,alignmentVertical:q,className:m["pie-chart-legend"],shape:M,ref:R}),g&&I&&L&&e.jsx(p.BaseTooltip,{data:L,top:P||0,left:z||0,style:{transform:"translate(-50%, -100%)"}})]})},v=t=>e.jsx(l.ChartProvider,{children:e.jsx(g,{...t})});v.displayName="PieChart";var x=u.withResponsive(v);module.exports=x;
-//# sourceMappingURL=pie-chart.js.map
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var jsxRuntime = require('react/jsx-runtime');
+var group = require('@visx/group');
+var shape = require('@visx/shape');
+var clsx = require('clsx');
+var react = require('react');
+var useChartMouseHandler = require('../../hooks/use-chart-mouse-handler.js');
+var chartContext = require('../../providers/chart-context/chart-context.js');
+var utils = require('../../providers/chart-context/utils.js');
+var themeProvider = require('../../providers/theme/theme-provider.js');
+var themes = require('../../providers/theme/themes.js');
+var baseLegend = require('../legend/base-legend.js');
+var useElementHeight = require('../shared/use-element-height.js');
+var withResponsive = require('../shared/with-responsive.js');
+var baseTooltip = require('../tooltip/base-tooltip.js');
+var pieChart_module = require('./pie-chart.module.scss.js');
+
+/**
+ * Validates the pie chart data
+ * @param data - The data to validate
+ * @return Object containing validation result and error message
+ */
+const validateData = (data) => {
+    if (!data.length) {
+        return { isValid: false, message: 'No data available' };
+    }
+    // Check for negative values
+    const hasNegativeValues = data.some(item => item.percentage < 0 || item.value < 0);
+    if (hasNegativeValues) {
+        return { isValid: false, message: 'Invalid data: Negative values are not allowed' };
+    }
+    // Validate total percentage
+    const totalPercentage = data.reduce((sum, item) => sum + item.percentage, 0);
+    if (Math.abs(totalPercentage - 100) > 0.01) {
+        // Using small epsilon for floating point comparison
+        return { isValid: false, message: 'Invalid percentage total: Must equal 100' };
+    }
+    return { isValid: true, message: '' };
+};
+/**
+ * Renders a pie or donut chart using the provided data.
+ *
+ * @param {PieChartProps} props - Component props
+ * @return {JSX.Element} The rendered chart component
+ */
+const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend, legendOrientation, legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
+    const providerTheme = themeProvider.useChartTheme();
+    const chartId = utils.useChartId(providedChartId);
+    const [legendRef, legendHeight] = useElementHeight.useElementHeight();
+    const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler.default({
+        withTooltips,
+    });
+    const { isValid, message } = validateData(data);
+    // Create legend items (hooks must be called in same order every render)
+    const legendItems = react.useMemo(() => data.map((item, index) => ({
+        label: item.label,
+        value: item.value.toString(),
+        color: providerTheme.colors[index % providerTheme.colors.length],
+    })), [data, providerTheme.colors]);
+    // Register chart with context only if data is valid
+    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, {
+        thickness,
+        gapScale,
+        cornerScale,
+    });
+    if (!isValid) {
+        return (jsxRuntime.jsx("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), children: jsxRuntime.jsx("div", { className: pieChart_module.default['error-message'], children: message }) }));
+    }
+    const width = size;
+    const height = size;
+    // Calculate radius based on width/height
+    const radius = Math.min(width, height) / 2;
+    // Center the chart in the available space, adjusting for legend position
+    const centerX = width / 2;
+    const legendOffset = showLegend && legendAlignmentVertical === 'top' ? legendHeight / 2 : 0;
+    const centerY = height / 2 + legendOffset;
+    // Calculate the angle between each
+    const padAngle = gapScale * ((2 * Math.PI) / data.length);
+    const outerRadius = radius - padding;
+    const innerRadius = thickness === 0 ? 0 : outerRadius * (1 - thickness);
+    const maxCornerRadius = (outerRadius - innerRadius) / 2;
+    const cornerRadius = cornerScale ? Math.min(cornerScale * outerRadius, maxCornerRadius) : 0;
+    // Map the data to include index for color assignment
+    const dataWithIndex = data.map((d, index) => ({
+        ...d,
+        index,
+    }));
+    const accessors = {
+        value: (d) => d.value,
+        // Use the color property from the data object as a last resort. The theme provides colours by default.
+        fill: (d) => d?.color || providerTheme.colors[d.index],
+    };
+    return (jsxRuntime.jsxs("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), style: {
+            display: 'flex',
+            flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+        }, children: [jsxRuntime.jsx("svg", { viewBox: `0 0 ${size} ${size}`, preserveAspectRatio: "xMidYMid meet", width: size, height: size, children: jsxRuntime.jsxs(group.Group, { top: centerY, left: centerX, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
+                                return pie.arcs.map((arc, index) => {
+                                    const [centroidX, centroidY] = pie.path.centroid(arc);
+                                    const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
+                                    const handleMouseMove = (event) => onMouseMove(event, arc.data);
+                                    const pathProps = {
+                                        d: pie.path(arc) || '',
+                                        fill: accessors.fill(arc.data),
+                                    };
+                                    if (withTooltips) {
+                                        pathProps.onMouseMove = handleMouseMove;
+                                        pathProps.onMouseLeave = onMouseLeave;
+                                    }
+                                    return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || themes.defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
+                                });
+                            } }), children] }) }), showLegend && (jsxRuntime.jsx(baseLegend.BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                    transform: 'translate(-50%, -100%)',
+                } }))] }));
+};
+const PieChart = (props) => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieChartInternal, { ...props }) }));
+PieChart.displayName = 'PieChart';
+var pieChart = withResponsive.withResponsive(PieChart);
+
+exports.default = pieChart;

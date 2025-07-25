@@ -1,2 +1,96 @@
-"use strict";var e=require("react/jsx-runtime"),t=require("@visx/xychart"),r=require("react"),a=require("./line-chart-context.js"),n=require("./line-chart.module.scss.js");module.exports=({children:l})=>{const{chartRef:i,chartWidth:c,chartHeight:s}=a.useLineChartContext(),[u,o]=r.useState(null),[h,x]=r.useState(!1),S=r.useCallback((e=>{const t=e.xScale.domain(),r=e.yScale.domain(),a=e.xScale.range(),n=e.yScale.range();return`${t.join(",")}-${r.join(",")}-${a.join(",")}-${n.join(",")}`}),[]),d=r.useCallback((()=>{if(i?.current){const e=i.current.getScales();if(e){const t={xScale:e.xScale,yScale:e.yScale};return{scales:t,signature:S(t)}}}return null}),[i,S]);if(r.useEffect((()=>{let e=null,t=null,r=0;x(!1);const a=()=>{const n=d();if(n){if(t&&n.signature===t)return void x(!0);o(n.scales),t=n.signature}r<20&&(r++,e=setTimeout(a,50))};return a(),()=>{e&&clearTimeout(e)}}),[d,c,s]),!i||!l)return null;if(!u||!h)return null;const g={xScale:u.xScale,yScale:u.yScale,margin:{top:0,right:0,bottom:0,left:0},width:c,height:s};return e.jsx(t.DataContext.Provider,{value:g,children:e.jsx("svg",{width:c,height:s,className:n["line-chart__annotations-overlay"],"data-testid":"line-chart-annotations-overlay",children:l})})};
-//# sourceMappingURL=line-chart-annotations-overlay.js.map
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var jsxRuntime = require('react/jsx-runtime');
+var xychart = require('@visx/xychart');
+var react = require('react');
+var lineChartContext = require('./line-chart-context.js');
+var lineChart_module = require('./line-chart.module.scss.js');
+
+const LineChartAnnotationsOverlay = ({ children }) => {
+    const { chartRef, chartWidth, chartHeight } = lineChartContext.useLineChartContext();
+    const [scales, setScales] = react.useState(null);
+    const [scalesStable, setScalesStable] = react.useState(false);
+    // Create a signature for scale data to enable easy comparison
+    const createScaleSignature = react.useCallback((scaleData) => {
+        const xDomain = scaleData.xScale.domain();
+        const yDomain = scaleData.yScale.domain();
+        const xRange = scaleData.xScale.range();
+        const yRange = scaleData.yScale.range();
+        return `${xDomain.join(',')}-${yDomain.join(',')}-${xRange.join(',')}-${yRange.join(',')}`;
+    }, []);
+    // Get scales from chart ref and return them with signature for comparison
+    const getScalesData = react.useCallback(() => {
+        if (chartRef?.current) {
+            const scaleData = chartRef.current.getScales();
+            if (scaleData) {
+                const scaleInfo = {
+                    xScale: scaleData.xScale,
+                    yScale: scaleData.yScale,
+                };
+                return {
+                    scales: scaleInfo,
+                    signature: createScaleSignature(scaleInfo),
+                };
+            }
+        }
+        return null;
+    }, [chartRef, createScaleSignature]);
+    // The chart resizes on render so we need to monitor the scales until they stabilize
+    react.useEffect(() => {
+        let timeoutId = null;
+        let lastSignature = null;
+        let retryCount = 0;
+        const maxRetries = 20; // 20 * 50ms = 1 second max
+        const checkInterval = 50; // Check every 50ms
+        // Reset stability state when monitoring starts
+        setScalesStable(false);
+        const monitorScales = () => {
+            const currentScaleData = getScalesData();
+            // If we got scales, compare signatures
+            if (currentScaleData) {
+                // Check if scales have settled by comparing signatures
+                const scalesSettled = lastSignature && currentScaleData.signature === lastSignature;
+                if (scalesSettled) {
+                    // Scales have stabilized, mark as stable
+                    setScalesStable(true);
+                    return;
+                }
+                // Update scales and remember signature for next comparison
+                setScales(currentScaleData.scales);
+                lastSignature = currentScaleData.signature;
+            }
+            // Continue monitoring if we haven't exceeded max retries
+            if (retryCount < maxRetries) {
+                retryCount++;
+                timeoutId = setTimeout(monitorScales, checkInterval);
+            }
+        };
+        monitorScales();
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
+    }, [getScalesData, chartWidth, chartHeight]);
+    // Early return if no chart data available
+    if (!chartRef || !children) {
+        return null;
+    }
+    if (!scales || !scalesStable) {
+        return null;
+    }
+    // Create a DataContext value that mimics what visx provides
+    // We're intentionally providing minimal context for annotations to work
+    const dataContextValue = {
+        xScale: scales.xScale,
+        yScale: scales.yScale,
+        margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        width: chartWidth,
+        height: chartHeight,
+    };
+    return (jsxRuntime.jsx(xychart.DataContext.Provider, { value: dataContextValue, children: jsxRuntime.jsx("svg", { width: chartWidth, height: chartHeight, className: lineChart_module.default['line-chart__annotations-overlay'], "data-testid": "line-chart-annotations-overlay", children: children }) }));
+};
+
+exports.default = LineChartAnnotationsOverlay;

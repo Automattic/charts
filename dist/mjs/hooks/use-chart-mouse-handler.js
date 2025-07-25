@@ -1,2 +1,44 @@
-import{localPoint as o}from"@visx/event";import{useTooltip as t}from"@visx/tooltip";import{useCallback as p}from"react";const i=({withTooltips:i})=>{const{tooltipOpen:e,tooltipLeft:l,tooltipTop:r,tooltipData:n,hideTooltip:a,showTooltip:s}=t();return{onMouseMove:p(((t,p)=>{if(!i)return;const e=o(t);e&&s({tooltipData:p,tooltipLeft:e.x,tooltipTop:e.y-10})}),[i,s]),onMouseLeave:p((()=>{i&&a()}),[i,a]),tooltipOpen:e,tooltipData:n||null,tooltipLeft:l,tooltipTop:r}};export{i as default};
-//# sourceMappingURL=use-chart-mouse-handler.js.map
+import { localPoint } from '@visx/event';
+import { useTooltip } from '@visx/tooltip';
+import { useCallback } from 'react';
+
+/**
+ * Hook to handle mouse interactions for chart components
+ *
+ * @param {UseChartMouseHandlerProps} props - Hook configuration
+ * @return {UseChartMouseHandlerReturn} Object containing handlers and tooltip state
+ */
+const useChartMouseHandler = ({ withTooltips, }) => {
+    const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
+    // TODO: either debounce/throttle or use useTooltipInPortal with built-in debounce
+    const onMouseMove = useCallback((event, data) => {
+        if (!withTooltips) {
+            return;
+        }
+        const coords = localPoint(event);
+        if (!coords) {
+            return;
+        }
+        showTooltip({
+            tooltipData: data,
+            tooltipLeft: coords.x,
+            tooltipTop: coords.y - 10,
+        });
+    }, [withTooltips, showTooltip]);
+    const onMouseLeave = useCallback(() => {
+        if (!withTooltips) {
+            return;
+        }
+        hideTooltip();
+    }, [withTooltips, hideTooltip]);
+    return {
+        onMouseMove,
+        onMouseLeave,
+        tooltipOpen,
+        tooltipData: tooltipData || null,
+        tooltipLeft,
+        tooltipTop,
+    };
+};
+
+export { useChartMouseHandler as default };

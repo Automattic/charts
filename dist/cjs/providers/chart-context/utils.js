@@ -1,2 +1,40 @@
-"use strict";var e=require("react"),t=require("./chart-context.js");exports.useChartId=t=>{const r=e.useId();return t||r},exports.useChartRegistration=(r,s,a,u,c,h)=>{const{registerChart:n,unregisterChart:o}=t.useChartContext(),i=e.useMemo((()=>h),[h]);e.useEffect((()=>(c&&n(r,{legendItems:s,theme:a,chartType:u,metadata:i}),()=>{o(r)})),[r,s,a,u,i,c,n,o])};
-//# sourceMappingURL=utils.js.map
+'use strict';
+
+var react = require('react');
+var chartContext = require('./chart-context.js');
+
+const useChartId = (providedId) => {
+    const generatedId = react.useId();
+    return providedId || generatedId;
+};
+const useChartRegistration = (chartId, legendItems, theme, chartType, isDataValid, metadata) => {
+    const { registerChart, unregisterChart } = chartContext.useChartContext();
+    // Memoize metadata to prevent unnecessary re-renders
+    const memoizedMetadata = react.useMemo(() => metadata, [metadata]);
+    react.useEffect(() => {
+        // Only register if data is valid
+        if (isDataValid) {
+            registerChart(chartId, {
+                legendItems,
+                theme,
+                chartType,
+                metadata: memoizedMetadata,
+            });
+        }
+        return () => {
+            unregisterChart(chartId);
+        };
+    }, [
+        chartId,
+        legendItems,
+        theme,
+        chartType,
+        memoizedMetadata,
+        isDataValid,
+        registerChart,
+        unregisterChart,
+    ]);
+};
+
+exports.useChartId = useChartId;
+exports.useChartRegistration = useChartRegistration;

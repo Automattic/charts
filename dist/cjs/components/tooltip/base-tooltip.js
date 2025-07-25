@@ -1,2 +1,11 @@
-"use strict";var e=require("react/jsx-runtime"),s=require("./base-tooltip.module.scss.js");const t=({data:s})=>e.jsxs(e.Fragment,{children:[s?.label,": ",s?.valueDisplay||s?.value]});exports.BaseTooltip=({data:a,top:l,left:o,component:r=t,children:i,className:c})=>e.jsx("div",{className:s.tooltip,style:{top:l,left:o},role:"tooltip",children:i||a&&e.jsx(r,{data:a,className:c})});
-//# sourceMappingURL=base-tooltip.js.map
+'use strict';
+
+var jsxRuntime = require('react/jsx-runtime');
+var baseTooltip_module = require('./base-tooltip.module.scss.js');
+
+const DefaultTooltipContent = ({ data }) => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [data?.label, ": ", data?.valueDisplay || data?.value] }));
+const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipContent, children, className, }) => {
+    return (jsxRuntime.jsx("div", { className: baseTooltip_module.default.tooltip, style: { top, left }, role: "tooltip", children: children || (data && jsxRuntime.jsx(Component, { data: data, className: className })) }));
+};
+
+exports.BaseTooltip = BaseTooltip;

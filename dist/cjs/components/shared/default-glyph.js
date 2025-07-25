@@ -1,2 +1,12 @@
-"use strict";var e=require("react/jsx-runtime"),t=require("@visx/xychart"),r=require("react");exports.DefaultGlyph=i=>{const{theme:s}=r.useContext(t.DataContext)||{};return e.jsx("circle",{cx:i.x,cy:i.y,r:i.size,fill:i.color,stroke:s?.backgroundColor,strokeWidth:1.5,paintOrder:"fill","data-testid":`start-glyph-${i.index}`,...i.glyphStyle})};
-//# sourceMappingURL=default-glyph.js.map
+'use strict';
+
+var jsxRuntime = require('react/jsx-runtime');
+var xychart = require('@visx/xychart');
+var react = require('react');
+
+const DefaultGlyph = (props) => {
+    const { theme } = react.useContext(xychart.DataContext) || {};
+    return (jsxRuntime.jsx("circle", { cx: props.x, cy: props.y, r: props.size, fill: props.color, stroke: theme?.backgroundColor, strokeWidth: 1.5, paintOrder: "fill", "data-testid": `start-glyph-${props.index}`, ...props.glyphStyle }));
+};
+
+exports.DefaultGlyph = DefaultGlyph;

@@ -1,2 +1,51 @@
-import{useMemo as t}from"react";import{parseAsLocalDate as a}from"./date-parsing.js";const e=e=>t((()=>{const t=e?.[0]?.data?.[0];return t&&("date"in t||"dateString"in t)?e.map((t=>({...t,data:t.data.map((t=>{let e;return"date"in t&&t.date?e=t.date:"dateString"in t&&t.dateString&&(e=a(t.dateString)),{...t,date:e}})).sort(((t,a)=>t.date&&a.date?t.date.getTime()-a.date.getTime():0))}))):e}),[e]);export{e as useChartDataTransform};
-//# sourceMappingURL=use-chart-data-transform.js.map
+import { useMemo } from 'react';
+import { parseAsLocalDate } from './date-parsing.js';
+
+/**
+ * Hook that transforms and sorts chart data, handling date parsing and sorting
+ *
+ * This hook extracts the common data transformation logic used in both line-chart
+ * and bar-chart components. It:
+ * 1. Parses date strings into Date objects using parseAsLocalDate
+ * 2. Sorts data points by date when date properties are present
+ * 3. Returns the original data unchanged when no date properties are found
+ *
+ * @param {SeriesData[]} data - The raw chart data to transform
+ * @return {SeriesData[]} The transformed and sorted data
+ */
+const useChartDataTransform = (data) => {
+    return useMemo(() => {
+        // Check if the first data point has date or dateString properties
+        const firstPoint = data?.[0]?.data?.[0];
+        const hasDateProperties = firstPoint && ('date' in firstPoint || 'dateString' in firstPoint);
+        // If no date properties found, return data unchanged
+        if (!hasDateProperties) {
+            return data;
+        }
+        // Transform and sort data with date properties
+        return data.map(series => ({
+            ...series,
+            data: series.data
+                .map(point => {
+                let date;
+                if ('date' in point && point.date) {
+                    date = point.date;
+                }
+                else if ('dateString' in point && point.dateString) {
+                    date = parseAsLocalDate(point.dateString);
+                }
+                return {
+                    ...point,
+                    date,
+                };
+            })
+                .sort((a, b) => {
+                if (!a.date || !b.date)
+                    return 0;
+                return a.date.getTime() - b.date.getTime();
+            }),
+        }));
+    }, [data]);
+};
+
+export { useChartDataTransform };

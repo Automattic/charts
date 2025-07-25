@@ -1,2 +1,189 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("react/jsx-runtime"),t=require("@visx/annotation"),r=require("@visx/xychart"),i=require("deepmerge"),n=require("react"),l=require("../../providers/theme/theme-provider.js"),a=require("../shared/utils.js"),o=require("./line-chart-annotation-label-popover.js");const s=({subjectType:e,x:t,xMax:r,y:i,yMin:n,yMax:l,maxWidth:a,height:o})=>{const s=o??100;let c=15,u=15,x=!1,d=!1;"line-horizontal"===e&&(c=0,u=20),"line-vertical"===e&&(c=20,u=0);return t+c+(a??125)>r&&(x=!0,"circle"===e?c=-c:"line-vertical"===e&&(c=-20)),"circle"===e?i+u+s>n&&(d=!0,u=-Math.abs(u)):i-s<l?"line-horizontal"===e?(d=!0,u=Math.abs(u)):"line-vertical"===e&&(d=!0):i+s>n&&("line-horizontal"===e?(d=!0,u=-Math.abs(u)):"line-vertical"===e&&(d=!0)),{dx:c,dy:u,isFlippedHorizontally:x,isFlippedVertically:d}},c=(e,t)=>{if("line-horizontal"===e)return t?"end":"start"},u=(e,t,r,i,n)=>{if("line-vertical"===e)return t?r-n<i?"start":"end":"start"};exports.default=({datum:x,title:d,subtitle:y,subjectType:b="circle",styles:h,testId:p,renderLabel:j,renderLabelPopover:m})=>{const M=l.useChartTheme(),{xScale:v,yScale:f}=n.useContext(r.DataContext)||{},S=n.useRef(null),[g,z]=n.useState(null),L=i(M.annotationStyles??{},h??{});n.useEffect((()=>{if(S.current?.getBBox){const e=S.current.getBBox();z(e.height)}}),[]);const q=n.useMemo((()=>{if(!(x&&x.date&&null!=x.value&&v&&f))return null;const e=v(x.date),t=f(x.value);if("number"!=typeof e||"number"!=typeof t)return null;const[r,i]=f.range().map(Number),[n,l]=v.range().map(Number);if(j)return{x:e,dx:0,y:t,dy:0,yMin:r,yMax:i,xMin:n,xMax:l,isFlippedHorizontally:!1,isFlippedVertically:!1};return{x:e,y:t,yMin:r,yMax:i,xMin:n,xMax:l,...s({subjectType:b,x:e,xMax:l,y:t,yMin:r,yMax:i,maxWidth:L?.label?.maxWidth,height:g})}}),[x,v,f,b,L?.label?.maxWidth,g,j]);if(!q)return null;const{x:P,y:T,yMin:O,yMax:B,xMin:F,xMax:_,dx:C,dy:E,isFlippedHorizontally:V,isFlippedVertically:H}=q,N={x:(()=>{const e=L?.label?.x;return"start"===e?F:"end"===e?_:e})(),y:(()=>{const e=L?.label?.y;return"start"===e?B:"end"===e?O:e})()};return e.jsx("g",{"data-testid":p,children:e.jsxs(t.Annotation,{x:P,y:T,dx:C,dy:E,children:[e.jsx(t.Connector,{...L?.connector}),"circle"===b&&e.jsx(t.CircleSubject,{...L?.circleSubject}),"line-vertical"===b&&e.jsx(t.LineSubject,{min:B,max:O,...L?.lineSubject,orientation:"vertical"}),"line-horizontal"===b&&e.jsx(t.LineSubject,{min:F,max:_,...L?.lineSubject,orientation:"horizontal"}),j?e.jsx(t.HtmlLabel,{...L?.label,...N,children:e.jsx("div",{style:(()=>{const e=o.POPOVER_BUTTON_SIZE,t=o.POPOVER_BUTTON_SIZE;return a.isSafari()?{transform:`translate(${P+(C||0)+("number"==typeof N.x?N.x-P:0)-e}px, ${T+(E||0)+("number"==typeof N.y?N.y-T:0)-t}px)`,width:e,height:t}:void 0})(),children:m?e.jsx(o.default,{title:d,subtitle:y,renderLabel:j,renderLabelPopover:m}):j({title:d,subtitle:y})})}):e.jsx("g",{ref:S,children:e.jsx(t.Label,{title:d,subtitle:y,...L?.label,...N,horizontalAnchor:c(b,V),verticalAnchor:u(b,H,T,B,g??100)})})]})})},exports.getLabelPosition=s;
-//# sourceMappingURL=line-chart-annotation.js.map
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var jsxRuntime = require('react/jsx-runtime');
+var annotation = require('@visx/annotation');
+var xychart = require('@visx/xychart');
+var merge = require('deepmerge');
+var react = require('react');
+var themeProvider = require('../../providers/theme/theme-provider.js');
+var utils = require('../shared/utils.js');
+var lineChartAnnotationLabelPopover = require('./line-chart-annotation-label-popover.js');
+
+const ANNOTATION_MAX_WIDTH = 125; // visx default
+const ANNOTATION_INIT_HEIGHT = 100;
+const getLabelPosition = ({ subjectType, x, xMax, y, yMin, yMax, maxWidth, height, }) => {
+    const annotationMaxWidth = maxWidth ?? ANNOTATION_MAX_WIDTH;
+    const annotationHeight = height ?? ANNOTATION_INIT_HEIGHT;
+    let dx = 15;
+    let dy = 15;
+    let isFlippedHorizontally = false;
+    let isFlippedVertically = false;
+    if (subjectType === 'line-horizontal') {
+        dx = 0;
+        dy = 20;
+    }
+    if (subjectType === 'line-vertical') {
+        dx = 20;
+        dy = 0;
+    }
+    // Smart horizontal positioning: if annotation would extend beyond right edge, position it to the left
+    // Account for the connector offset (dx) in boundary calculations
+    const effectiveX = x + dx;
+    if (effectiveX + annotationMaxWidth > xMax) {
+        isFlippedHorizontally = true;
+        if (subjectType === 'circle') {
+            dx = -dx; // Just flip to the left side with same offset
+        }
+        else if (subjectType === 'line-vertical') {
+            dx = -20; // Position to the left of the line
+        }
+    }
+    // Smart vertical positioning: check both top and bottom edges
+    // For circle annotations, they are positioned below by default (dy > 0)
+    // Only flip when close to bottom edge to position above
+    if (subjectType === 'circle') {
+        // Check if positioning below would extend beyond bottom edge
+        if (y + dy + annotationHeight > yMin) {
+            // Too close to bottom edge, position above
+            isFlippedVertically = true;
+            dy = -Math.abs(dy); // Ensure negative value to position above the point
+        }
+        // When close to top edge, keep default below positioning (no flip needed)
+    }
+    else if (y - annotationHeight < yMax) {
+        // Too close to top edge, position below
+        if (subjectType === 'line-horizontal') {
+            isFlippedVertically = true;
+            dy = Math.abs(dy); // Ensure positive value to position below the point
+        }
+        else if (subjectType === 'line-vertical') {
+            isFlippedVertically = true; // For anchor adjustment only
+        }
+    }
+    else if (y + annotationHeight > yMin) {
+        // Too close to bottom edge, position above
+        if (subjectType === 'line-horizontal') {
+            isFlippedVertically = true;
+            dy = -Math.abs(dy); // Ensure negative value to position above the point
+        }
+        else if (subjectType === 'line-vertical') {
+            isFlippedVertically = true; // For anchor adjustment only
+        }
+    }
+    return { dx, dy, isFlippedHorizontally, isFlippedVertically };
+};
+const getHorizontalAnchor = (subjectType, isFlippedHorizontally) => {
+    if (subjectType === 'line-horizontal') {
+        return isFlippedHorizontally ? 'end' : 'start';
+    }
+    return undefined;
+};
+const getVerticalAnchor = (subjectType, isFlippedVertically, y, yMax, height) => {
+    if (subjectType === 'line-vertical') {
+        if (isFlippedVertically) {
+            // If flipped due to top edge, anchor to top; if flipped due to bottom edge, anchor to bottom
+            return y - height < yMax ? 'start' : 'end';
+        }
+        return 'start';
+    }
+    return undefined;
+};
+const LineChartAnnotation = ({ datum, title, subtitle, subjectType = 'circle', styles: datumStyles, testId, renderLabel, renderLabelPopover, }) => {
+    const providerTheme = themeProvider.useChartTheme();
+    const { xScale, yScale } = react.useContext(xychart.DataContext) || {};
+    const labelRef = react.useRef(null);
+    const [height, setHeight] = react.useState(null);
+    // Deep merge styles to preserve nested object properties
+    const styles = merge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
+    // Measure the label height once after initial render
+    react.useEffect(() => {
+        if (labelRef.current?.getBBox) {
+            const bbox = labelRef.current.getBBox();
+            setHeight(bbox.height);
+        }
+    }, []);
+    const positionData = react.useMemo(() => {
+        if (!datum || !datum.date || datum.value == null || !xScale || !yScale)
+            return null;
+        const x = xScale(datum.date);
+        const y = yScale(datum.value);
+        if (typeof x !== 'number' || typeof y !== 'number')
+            return null;
+        const [yMin, yMax] = yScale.range().map(Number);
+        const [xMin, xMax] = xScale.range().map(Number);
+        // If a custom label is provided, use the provided position
+        if (renderLabel) {
+            return {
+                x,
+                dx: 0,
+                y,
+                dy: 0,
+                yMin,
+                yMax,
+                xMin,
+                xMax,
+                isFlippedHorizontally: false,
+                isFlippedVertically: false,
+            };
+        }
+        const position = getLabelPosition({
+            subjectType,
+            x,
+            xMax,
+            y,
+            yMin,
+            yMax,
+            maxWidth: styles?.label?.maxWidth,
+            height,
+        });
+        return { x, y, yMin, yMax, xMin, xMax, ...position };
+    }, [datum, xScale, yScale, subjectType, styles?.label?.maxWidth, height, renderLabel]);
+    if (!positionData)
+        return null;
+    const { x, y, yMin, yMax, xMin, xMax, dx, dy, isFlippedHorizontally, isFlippedVertically } = positionData;
+    const getLabelY = () => {
+        const labelY = styles?.label?.y;
+        if (labelY === 'start')
+            return yMax;
+        if (labelY === 'end')
+            return yMin;
+        return labelY;
+    };
+    const getLabelX = () => {
+        const labelX = styles?.label?.x;
+        if (labelX === 'start')
+            return xMin;
+        if (labelX === 'end')
+            return xMax;
+        return labelX;
+    };
+    const labelPosition = {
+        x: getLabelX(),
+        y: getLabelY(),
+    };
+    // Safari has a bug where children of an SVG foreignObject are not positioned correctly https://bugs.webkit.org/show_bug.cgi?id=23113
+    // This is a workaround to position the label correctly
+    const getSafariHTMLLabelPosition = () => {
+        const labelWidth = lineChartAnnotationLabelPopover.POPOVER_BUTTON_SIZE;
+        const labelHeight = lineChartAnnotationLabelPopover.POPOVER_BUTTON_SIZE;
+        return utils.isSafari()
+            ? {
+                transform: `translate(${x +
+                    (dx || 0) +
+                    (typeof labelPosition.x === 'number' ? labelPosition.x - x : 0) -
+                    labelWidth}px, ${y +
+                    (dy || 0) +
+                    (typeof labelPosition.y === 'number' ? labelPosition.y - y : 0) -
+                    labelHeight}px)`,
+                width: labelWidth,
+                height: labelHeight,
+            }
+            : undefined;
+    };
+    return (jsxRuntime.jsx("g", { "data-testid": testId, children: jsxRuntime.jsxs(annotation.Annotation, { x: x, y: y, dx: dx, dy: dy, children: [jsxRuntime.jsx(annotation.Connector, { ...styles?.connector }), subjectType === 'circle' && jsxRuntime.jsx(annotation.CircleSubject, { ...styles?.circleSubject }), subjectType === 'line-vertical' && (jsxRuntime.jsx(annotation.LineSubject, { min: yMax, max: yMin, ...styles?.lineSubject, orientation: 'vertical' })), subjectType === 'line-horizontal' && (jsxRuntime.jsx(annotation.LineSubject, { min: xMin, max: xMax, ...styles?.lineSubject, orientation: 'horizontal' })), renderLabel ? (jsxRuntime.jsx(annotation.HtmlLabel, { ...styles?.label, ...labelPosition, children: jsxRuntime.jsx("div", { style: getSafariHTMLLabelPosition(), children: renderLabelPopover ? (jsxRuntime.jsx(lineChartAnnotationLabelPopover.default, { title: title, subtitle: subtitle, renderLabel: renderLabel, renderLabelPopover: renderLabelPopover })) : (renderLabel({ title, subtitle })) }) })) : (jsxRuntime.jsx("g", { ref: labelRef, children: jsxRuntime.jsx(annotation.Label, { title: title, subtitle: subtitle, ...styles?.label, ...labelPosition, horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally), verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, height ?? ANNOTATION_INIT_HEIGHT) }) }))] }) }));
+};
+
+exports.default = LineChartAnnotation;
+exports.getLabelPosition = getLabelPosition;

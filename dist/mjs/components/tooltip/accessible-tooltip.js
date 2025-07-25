@@ -1,2 +1,135 @@
-import{jsx as e}from"react/jsx-runtime";import{TooltipContext as t,Tooltip as o}from"@visx/xychart";export{Tooltip}from"@visx/xychart";import{useContext as r,useMemo as i,useEffect as a,useCallback as n}from"react";const d=({renderTooltip:n,selectedIndex:d,tooltipRef:s,keyboardFocusedClassName:l,series:c=[],mode:u="group",...f})=>{const h=r(t),p=i((()=>{if("individual"!==u)return[];if(0===c.length)return[];const e=Math.max(...c.map((e=>e.data.length))),t=[];for(let o=0;o<e;o++)for(let e=0;e<c.length;e++){const r=c[e];o<r.data.length&&t.push({datum:r.data[o],seriesLabel:r.label,seriesIndex:e,dataPointIndex:o})}return t}),[c,u]);a((()=>{if(void 0!==d){if("group"===u)c.forEach(((e,t)=>{if(d<e.data.length){const o=e.data[d];h?.showTooltip({datum:o,key:e.label,index:t})}}));else if("individual"===u&&d<p.length){const e=p[d];h?.showTooltip({datum:e.datum,key:e.seriesLabel,index:e.seriesIndex})}}else h?.hideTooltip()}),[d,p,c]);const v=i((()=>{if(n)return t=>{const o=n(t);return void 0!==d?e("div",{ref:s,tabIndex:-1,role:"tooltip","aria-atomic":"true",className:l,"data-testid":`chart-tooltip-${d}`,children:o},`chart-tooltip-${d}`):e("div",{role:"tooltip","aria-live":"polite",children:o})}}),[n,d,s,l]);return e(o,{...f,renderTooltip:v})},s=({selectedIndex:e,setSelectedIndex:t,isNavigating:o,setIsNavigating:r,chartRef:i,totalPoints:a})=>({tooltipRef:n((t=>{t&&void 0!==e&&t.focus()}),[e]),onChartFocus:n((()=>{o||void 0===e||t(0)}),[o,e,t]),onChartBlur:n((()=>{r(!1)}),[r]),onChartKeyDown:n((o=>{if(0===a)return;if("Tab"===o.key)return i.current?.focus(),t(void 0),void r(!1);const n=void 0===e?-1:e;if(n+1>=a&&["ArrowRight"].includes(o.key))return i.current?.focus(),t(void 0),void r(!1);o.preventDefault(),["ArrowRight"].includes(o.key)?(r(!0),t((n+1)%a)):["ArrowLeft"].includes(o.key)?(r(!0),t((n-1+a)%a)):"Escape"===o.key&&(t(void 0),r(!1),i.current?.focus())}),[a,e,t,r,i])});export{d as AccessibleTooltip,s as useKeyboardNavigation};
-//# sourceMappingURL=accessible-tooltip.js.map
+import { jsx } from 'react/jsx-runtime';
+import { TooltipContext, Tooltip } from '@visx/xychart';
+export { Tooltip } from '@visx/xychart';
+import { useContext, useMemo, useEffect, useCallback } from 'react';
+
+const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = 'group', ...props }) => {
+    const tooltipContext = useContext(TooltipContext);
+    const tooltipData = useMemo(() => {
+        if (mode !== 'individual')
+            return [];
+        if (series.length === 0)
+            return [];
+        const maxDataPoints = Math.max(...series.map(s => s.data.length));
+        const flattened = [];
+        // Pattern: [series1[0], series2[0], series3[0], series1[1], series2[1], series3[1], ...]
+        for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
+            for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
+                const seriesData = series[seriesIndex];
+                if (dataPointIndex < seriesData.data.length) {
+                    flattened.push({
+                        datum: seriesData.data[dataPointIndex],
+                        seriesLabel: seriesData.label,
+                        seriesIndex,
+                        dataPointIndex,
+                    });
+                }
+            }
+        }
+        return flattened;
+    }, [series, mode]);
+    // Handle tooltip highlighting for keyboard navigation
+    useEffect(() => {
+        if (selectedIndex === undefined) {
+            tooltipContext?.hideTooltip();
+            return;
+        }
+        if (mode === 'group') {
+            // Show all series at the selected data point index in single tooltip.
+            series.forEach((s, index) => {
+                if (selectedIndex < s.data.length) {
+                    const datum = s.data[selectedIndex];
+                    tooltipContext?.showTooltip({
+                        datum,
+                        key: s.label,
+                        index,
+                    });
+                }
+            });
+        }
+        else if (mode === 'individual') {
+            // Show individual tooltips for each datapoint from each series.
+            if (selectedIndex < tooltipData.length) {
+                const tooltipItem = tooltipData[selectedIndex];
+                tooltipContext?.showTooltip({
+                    datum: tooltipItem.datum,
+                    key: tooltipItem.seriesLabel,
+                    index: tooltipItem.seriesIndex,
+                });
+            }
+        }
+        // Don't include tooltipContext in the dependency array to avoid loop.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedIndex, tooltipData, series]);
+    // Create a focusable renderTooltip that includes accessibility features
+    const focusableRenderTooltip = useMemo(() => {
+        if (!renderTooltip)
+            return undefined;
+        return (params) => {
+            const tooltipContent = renderTooltip(params);
+            if (selectedIndex !== undefined) {
+                return (jsx("div", { ref: tooltipRef, tabIndex: -1, role: "tooltip", "aria-atomic": "true", className: keyboardFocusedClassName, "data-testid": `chart-tooltip-${selectedIndex}`, children: tooltipContent }, `chart-tooltip-${selectedIndex}`));
+            }
+            return (jsx("div", { role: "tooltip", "aria-live": "polite", children: tooltipContent }));
+        };
+    }, [renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName]);
+    return jsx(Tooltip, { ...props, renderTooltip: focusableRenderTooltip });
+};
+const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, }) => {
+    // Focus the tooltip as soon as it is rendered
+    const tooltipRef = useCallback((element) => {
+        if (element && selectedIndex !== undefined) {
+            element.focus();
+        }
+    }, [selectedIndex]);
+    // On each focus of chart, reset the selectedIndex to 0, if keyboard navigation is not already active
+    const onChartFocus = useCallback(() => {
+        if (!isNavigating && selectedIndex !== undefined) {
+            setSelectedIndex(0);
+        }
+    }, [isNavigating, selectedIndex, setSelectedIndex]);
+    // On each blur of chart, keyboard navigation should restart from first tooltip
+    const onChartBlur = useCallback(() => {
+        setIsNavigating(false);
+    }, [setIsNavigating]);
+    const onChartKeyDown = useCallback((event) => {
+        if (totalPoints === 0)
+            return;
+        // Keep focus on the chart if tab is pressed
+        if (event.key === 'Tab') {
+            chartRef.current?.focus();
+            setSelectedIndex(undefined);
+            setIsNavigating(false);
+            return;
+        }
+        const currentSelectedIndex = selectedIndex === undefined ? -1 : selectedIndex;
+        if (currentSelectedIndex + 1 >= totalPoints && ['ArrowRight'].includes(event.key)) {
+            chartRef.current?.focus();
+            setSelectedIndex(undefined);
+            setIsNavigating(false);
+            return;
+        }
+        event.preventDefault();
+        if (['ArrowRight'].includes(event.key)) {
+            setIsNavigating(true);
+            setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
+        }
+        else if (['ArrowLeft'].includes(event.key)) {
+            setIsNavigating(true);
+            setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
+        }
+        else if (event.key === 'Escape') {
+            setSelectedIndex(undefined);
+            setIsNavigating(false);
+            chartRef.current?.focus();
+        }
+    }, [totalPoints, selectedIndex, setSelectedIndex, setIsNavigating, chartRef]);
+    return {
+        tooltipRef,
+        onChartFocus,
+        onChartBlur,
+        onChartKeyDown,
+    };
+};
+
+export { AccessibleTooltip, useKeyboardNavigation };

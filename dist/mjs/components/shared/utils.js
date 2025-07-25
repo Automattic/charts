@@ -1,2 +1,23 @@
-import{getStringWidth as t}from"@visx/text";const e=(e,r,n)=>{const o=e.map((t=>r(t,0,[]))),a=o.reduce(((t,e)=>t.length>=e.length?t:e),o[0]);return t(a,n)},r=()=>!("undefined"==typeof navigator||!navigator.userAgent)&&/^((?!chrome|android).)*safari/i.test(navigator.userAgent);export{e as getLongestTickWidth,r as isSafari};
-//# sourceMappingURL=utils.js.map
+import { getStringWidth } from '@visx/text';
+
+/**
+ * Returns the width of the longest tick.
+ *
+ * @param          ticks      - Ticks to get the width of.
+ * @param          formatTick - Function to format the tick.
+ * @param {object} labelStyle - Style object for the label.
+ * @return {number} - Width of the longest tick.
+ */
+const getLongestTickWidth = (ticks, formatTick, labelStyle) => {
+    const formattedTicks = ticks.map(tick => formatTick(tick, 0, []));
+    const longestTick = formattedTicks.reduce((longest, current) => (longest.length >= current.length ? longest : current), formattedTicks[0]);
+    return getStringWidth(longestTick, labelStyle);
+};
+const isSafari = () => {
+    if (typeof navigator !== 'undefined' && navigator.userAgent) {
+        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
+    return false;
+};
+
+export { getLongestTickWidth, isSafari };

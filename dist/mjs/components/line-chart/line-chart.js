@@ -1,2 +1,264 @@
-import{jsx as e,jsxs as t}from"react/jsx-runtime";import{forwardRef as a,useId as r,useRef as o,useState as i,useImperativeHandle as n,useMemo as l,createElement as s,useContext as c}from"react";import{formatNumberCompact as h}from"@automattic/number-formatters";import{curveCatmullRom as d,curveLinear as m,curveMonotoneX as p}from"@visx/curve";import{LinearGradient as u}from"@visx/gradient";import{XYChart as y,Grid as g,Axis as f,AreaSeries as v,DataContext as x}from"@visx/xychart";import S from"clsx";import{ChartProvider as w}from"../../providers/chart-context/chart-context.js";import{useChartId as b,useChartRegistration as N}from"../../providers/chart-context/utils.js";import{useChartTheme as j,useXYChartTheme as k}from"../../providers/theme/theme-provider.js";import{BaseLegend as D}from"../legend/base-legend.js";import{DefaultGlyph as T}from"../shared/default-glyph.js";import{useChartDataTransform as C}from"../shared/use-chart-data-transform.js";import{useChartMargin as G}from"../shared/use-chart-margin.js";import{useElementHeight as _}from"../shared/use-element-height.js";import{withResponsive as L}from"../shared/with-responsive.js";import{useKeyboardNavigation as P,AccessibleTooltip as A}from"../tooltip/accessible-tooltip.js";import I from"./line-chart-annotation.js";import O from"./line-chart-annotations-overlay.js";import{LineChartContext as z}from"./line-chart-context.js";import F from"./line-chart.module.scss.js";const M=e=>s(T,{...e,key:e.key}),R=e=>{const t="number"==typeof e?e:parseFloat(e);return isNaN(t)?void 0:t},H=({data:e,index:t,color:a,glyphStyle:r,renderGlyph:o,accessors:i})=>{const{xScale:n,yScale:l}=c(x)||{};if(!n||!l)return null;if(0===e.data.length)return null;const s=e.data[0],h=n(i.xAccessor(s)),d=l(i.yAccessor(s));if("number"!=typeof h||"number"!=typeof d)return null;const m=Math.max(0,R(r?.radius)??4);return o({key:`start-glyph-${e.label}`,index:t,datum:s,color:a,size:m,x:h,y:d,glyphStyle:r})},K=(e,t)=>{if(!e)return t?d:m;switch(e){case"smooth":return d;case"monotone":return p;default:return m}},$=a=>{const{tooltipData:r}=a,o=r?.nearestDatum?.datum;if(!o)return null;const i=Object.entries(r?.datumByKey||{}).map((([e,{datum:t}])=>({key:e,value:t.value}))).sort(((e,t)=>t.value-e.value));return t("div",{className:F["line-chart__tooltip"],children:[e("div",{className:F["line-chart__tooltip-date"],children:o.date?.toLocaleDateString()}),i.map((a=>t("div",{className:F["line-chart__tooltip-row"],children:[t("span",{className:F["line-chart__tooltip-label"],children:[a.key,":"]}),e("span",{className:F["line-chart__tooltip-value"],children:a.value})]},a.key)))]})},B=e=>new Date(e).toLocaleDateString(void 0,{month:"short",day:"numeric"}),V=({chartRef:e,width:t,height:a,margin:r})=>{const o=c(x);return n(e,(()=>({getScales:()=>o?.xScale&&o?.yScale?{xScale:o.xScale,yScale:o.yScale}:null,getChartDimensions:()=>({width:t,height:a,margin:r||{}})})),[o,t,a,r]),null},U=a((({data:a,chartId:s,width:c,height:d,className:m,margin:p,withTooltips:x=!0,withTooltipCrosshairs:w,showLegend:T=!1,legendOrientation:L="horizontal",legendAlignmentHorizontal:I="center",legendAlignmentVertical:O="bottom",renderGlyph:U=M,glyphStyle:E={},legendShape:W="line",withLegendGlyph:X=!1,withGradientFill:Y=!1,smoothing:q=!0,curveType:J,renderTooltip:Q=$,withStartGlyphs:Z=!1,options:ee={},onPointerDown:te,onPointerUp:ae,onPointerMove:re,onPointerOut:oe,children:ie},ne)=>{const le=j(),se=k(a),ce=r(),he=b(s),[de,me]=_(),pe=o(null),[ue,ye]=i(void 0),[ge,fe]=i(!1),ve=o(null);n(ne,(()=>({getScales:()=>ve.current?.getScales()||null,getChartDimensions:()=>ve.current?.getChartDimensions()||{width:0,height:0,margin:{}}})),[ve]);const xe=C(a),{tooltipRef:Se,onChartFocus:we,onChartBlur:be,onChartKeyDown:Ne}=P({selectedIndex:ue,setSelectedIndex:ye,isNavigating:ge,setIsNavigating:fe,chartRef:pe,totalPoints:xe[0]?.data.length||0}),je=l((()=>({axis:{x:{orientation:"bottom",numTicks:Math.min(xe[0]?.data.length,Math.ceil(c/100)),tickFormat:B,...ee?.axis?.x},y:{orientation:"left",numTicks:4,tickFormat:h,...ee?.axis?.y}},xScale:{type:"time",...ee?.xScale},yScale:{type:"linear",nice:!0,zero:!1,...ee?.yScale}})),[ee,xe,c]),ke=l((()=>e=>{const t=xe.findIndex((t=>t.label===e.key||t.data.includes(e.datum))),a=le.glyphs?.[t];return a?a(e):U(e)}),[xe,le.glyphs,U]),De=G(d,je,xe,se),Te=(e=>e?.length?e.some((e=>e.data.some((e=>isNaN(e.value)||null===e.value||void 0===e.value||"date"in e&&e.date&&isNaN(e.date.getTime())))))?"Invalid data":null:"No data available")(xe),Ce=!Te,Ge=l((()=>xe.map(((e,t)=>({label:e.label,value:"",color:e?.options?.stroke??le.colors[t%le.colors.length],shapeStyle:e?.options?.legendShapeStyle,renderGlyph:X?le.glyphs?.[t]??U:void 0,glyphSize:Math.max(0,R(E?.radius)??4)})))),[xe,le.colors,le.glyphs,X,U,E?.radius]);N(he,Ge,le,"line",Ce,{withGradientFill:Y,smoothing:q,curveType:J,withStartGlyphs:Z,withLegendGlyph:X});const _e={xAccessor:e=>e?.date,yAccessor:e=>e?.value};return Te?e("div",{className:S("line-chart",F["line-chart"]),children:Te}):e(z.Provider,{value:{chartId:he,chartRef:ve,chartWidth:c,chartHeight:d-(T?me:0)},children:t("div",{className:S("line-chart",F["line-chart"],m),"data-testid":"line-chart",style:{width:c,height:d,display:"flex",flexDirection:T&&"top"===O?"column-reverse":"column",position:"relative"},children:[e("div",{role:"grid","aria-label":"line chart",tabIndex:0,onKeyDown:Ne,onFocus:we,onBlur:be,ref:pe,children:t(y,{theme:se,width:c,height:d-(T?me:0),margin:{...De,...p,...T&&"top"===O?{top:(De.top||0)+me}:{}},xScale:je.xScale,yScale:je.yScale,onPointerDown:te,onPointerUp:ae,onPointerMove:re,onPointerOut:oe,pointerEventsDataKey:"nearest",children:[e(g,{columns:!1,numTicks:4}),e(f,{...je.axis.x}),e(f,{...je.axis.y}),xe.map(((a,r)=>{const o=a.options?.stroke??se.colors[r%se.colors.length],i=a.options?.seriesLineStyle??le?.seriesLineStyles?.[r%le.seriesLineStyles.length]??{};return t("g",{children:[Z&&e(H,{index:r,data:a,color:o,renderGlyph:le.glyphs?.[r]??U,accessors:_e,glyphStyle:E}),Y&&e(u,{id:`area-gradient-${ce}-${r+1}`,from:o,fromOpacity:.4,toOpacity:.1,to:se.backgroundColor,...a.options?.gradient,"data-testid":"line-gradient"}),e(v,{dataKey:a?.label,data:a.data,..._e,fill:Y?`url(#area-gradient-${ce}-${r+1})`:"transparent",renderLine:!0,curve:K(J,q),lineProps:i},a?.label)]},a?.label||r)})),x&&e(A,{detectBounds:!0,snapTooltipToDatumX:!0,snapTooltipToDatumY:!0,showSeriesGlyphs:!0,renderTooltip:Q,renderGlyph:ke,glyphStyle:E,showVerticalCrosshair:w?.showVertical,showHorizontalCrosshair:w?.showHorizontal,selectedIndex:ue,tooltipRef:Se,keyboardFocusedClassName:F["line-chart__tooltip--keyboard-focused"],series:xe}),e(V,{chartRef:ve,width:c,height:d,margin:p})]})}),T&&e(D,{items:Ge,orientation:L,alignmentHorizontal:I,alignmentVertical:O,className:F["line-chart-legend"],shape:W,ref:de}),ie]})})})),E=a(((t,a)=>e(w,{children:e(U,{...t,ref:a})})));E.displayName="LineChart",E.AnnotationsOverlay=O,E.Annotation=I;const W=Object.assign(L(E),{AnnotationsOverlay:O,Annotation:I});export{E as LineChartUnresponsive,W as default};
-//# sourceMappingURL=line-chart.js.map
+import { jsx, jsxs } from 'react/jsx-runtime';
+import { forwardRef, useId, useRef, useState, useImperativeHandle, useMemo, createElement, useContext } from 'react';
+import { formatNumberCompact } from '@automattic/number-formatters';
+import { curveCatmullRom, curveLinear, curveMonotoneX } from '@visx/curve';
+import { LinearGradient } from '@visx/gradient';
+import { XYChart, Grid, Axis, AreaSeries, DataContext } from '@visx/xychart';
+import clsx from 'clsx';
+import { ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
+import { BaseLegend } from '../legend/base-legend.js';
+import { DefaultGlyph } from '../shared/default-glyph.js';
+import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
+import { useChartMargin } from '../shared/use-chart-margin.js';
+import { useElementHeight } from '../shared/use-element-height.js';
+import { withResponsive } from '../shared/with-responsive.js';
+import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
+import LineChartAnnotation from './line-chart-annotation.js';
+import LineChartAnnotationsOverlay from './line-chart-annotations-overlay.js';
+import { LineChartContext } from './line-chart-context.js';
+import styles from './line-chart.module.scss.js';
+
+const X_TICK_WIDTH = 100;
+const defaultRenderGlyph = (props) => {
+    return createElement(DefaultGlyph, { ...props, key: props.key });
+};
+const toNumber = (val) => {
+    const num = typeof val === 'number' ? val : parseFloat(val);
+    return isNaN(num) ? undefined : num;
+};
+const StartGlyph = ({ data, index, color, glyphStyle, renderGlyph, accessors }) => {
+    const { xScale, yScale } = useContext(DataContext) || {};
+    if (!xScale || !yScale)
+        return null;
+    if (data.data.length === 0)
+        return null;
+    const firstPoint = data.data[0];
+    const x = xScale(accessors.xAccessor(firstPoint));
+    const y = yScale(accessors.yAccessor(firstPoint));
+    if (typeof x !== 'number' || typeof y !== 'number')
+        return null;
+    const size = Math.max(0, toNumber(glyphStyle?.radius) ?? 4);
+    return renderGlyph({
+        key: `start-glyph-${data.label}`,
+        index,
+        datum: firstPoint,
+        color,
+        size,
+        x,
+        y,
+        glyphStyle,
+    });
+};
+/**
+ * Determines the curve type for the line chart based on the provided type and smoothing parameters
+ *
+ * @param {CurveType} type      - The explicit curve type to use
+ * @param {boolean}   smoothing - Legacy smoothing parameter
+ * @return The curve function to use for the line
+ */
+const getCurveType = (type, smoothing) => {
+    // If no type specified, use legacy smoothing behavior
+    if (!type) {
+        return smoothing ? curveCatmullRom : curveLinear;
+    }
+    // Handle explicit curve types
+    switch (type) {
+        case 'smooth':
+            return curveCatmullRom;
+        case 'monotone':
+            return curveMonotoneX;
+        case 'linear':
+            return curveLinear;
+        default:
+            return curveLinear;
+    }
+};
+const renderDefaultTooltip = (params) => {
+    const { tooltipData } = params;
+    const nearestDatum = tooltipData?.nearestDatum?.datum;
+    if (!nearestDatum)
+        return null;
+    const tooltipPoints = Object.entries(tooltipData?.datumByKey || {})
+        .map(([key, { datum }]) => ({
+        key,
+        value: datum.value,
+    }))
+        .sort((a, b) => b.value - a.value);
+    return (jsxs("div", { className: styles['line-chart__tooltip'], children: [jsx("div", { className: styles['line-chart__tooltip-date'], children: nearestDatum.date?.toLocaleDateString() }), tooltipPoints.map(point => (jsxs("div", { className: styles['line-chart__tooltip-row'], children: [jsxs("span", { className: styles['line-chart__tooltip-label'], children: [point.key, ":"] }), jsx("span", { className: styles['line-chart__tooltip-value'], children: point.value })] }, point.key)))] }));
+};
+const formatDateTick = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+    });
+};
+const validateData = (data) => {
+    if (!data?.length)
+        return 'No data available';
+    const hasInvalidData = data.some(series => series.data.some((point) => isNaN(point.value) ||
+        point.value === null ||
+        point.value === undefined ||
+        ('date' in point && point.date && isNaN(point.date.getTime()))));
+    if (hasInvalidData)
+        return 'Invalid data';
+    return null;
+};
+// Inner component to access DataContext and provide scale data to ref
+const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
+    const context = useContext(DataContext);
+    useImperativeHandle(chartRef, () => ({
+        getScales: () => {
+            if (!context?.xScale || !context?.yScale) {
+                return null;
+            }
+            return {
+                xScale: context.xScale,
+                yScale: context.yScale,
+            };
+        },
+        getChartDimensions: () => ({
+            width,
+            height,
+            margin: margin || {},
+        }),
+    }), [context, width, height, margin]);
+    return null; // This component only provides the ref interface
+};
+const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
+    const providerTheme = useChartTheme();
+    const theme = useXYChartTheme(data);
+    const internalChartId = useId(); // Ensure unique ids for gradient fill.
+    const chartId = useChartId(providedChartId);
+    const [legendRef, legendHeight] = useElementHeight();
+    const chartRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(undefined);
+    const [isNavigating, setIsNavigating] = useState(false);
+    const internalChartRef = useRef(null);
+    // Forward the external ref to the internal ref
+    useImperativeHandle(ref, () => ({
+        getScales: () => internalChartRef.current?.getScales() || null,
+        getChartDimensions: () => internalChartRef.current?.getChartDimensions() || { width: 0, height: 0, margin: {} },
+    }), [internalChartRef]);
+    const dataSorted = useChartDataTransform(data);
+    // Use the keyboard navigation hook
+    const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
+        selectedIndex,
+        setSelectedIndex,
+        isNavigating,
+        setIsNavigating,
+        chartRef,
+        totalPoints: dataSorted[0]?.data.length || 0,
+    });
+    const chartOptions = useMemo(() => {
+        const xNumTicks = Math.min(dataSorted[0]?.data.length, Math.ceil(width / X_TICK_WIDTH));
+        return {
+            axis: {
+                x: {
+                    orientation: 'bottom',
+                    numTicks: xNumTicks,
+                    tickFormat: formatDateTick,
+                    ...options?.axis?.x,
+                },
+                y: {
+                    orientation: 'left',
+                    numTicks: 4,
+                    tickFormat: formatNumberCompact,
+                    ...options?.axis?.y,
+                },
+            },
+            xScale: {
+                type: 'time',
+                ...options?.xScale,
+            },
+            yScale: {
+                type: 'linear',
+                nice: true,
+                zero: false,
+                ...options?.yScale,
+            },
+        };
+    }, [options, dataSorted, width]);
+    const tooltipRenderGlyph = useMemo(() => {
+        return (props) => {
+            const seriesIndex = dataSorted.findIndex(series => series.label === props.key || series.data.includes(props.datum));
+            const themeGlyph = providerTheme.glyphs?.[seriesIndex];
+            return themeGlyph ? themeGlyph(props) : renderGlyph(props);
+        };
+    }, [dataSorted, providerTheme.glyphs, renderGlyph]);
+    const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
+    const error = validateData(dataSorted);
+    const isDataValid = !error;
+    // Create legend items (hooks must be called in same order every render)
+    const legendItems = useMemo(() => dataSorted.map((group, index) => ({
+        label: group.label, // Label for each unique group
+        value: '', // Empty string since we don't want to show a specific value
+        color: group?.options?.stroke ?? providerTheme.colors[index % providerTheme.colors.length],
+        shapeStyle: group?.options?.legendShapeStyle,
+        renderGlyph: withLegendGlyph ? providerTheme.glyphs?.[index] ?? renderGlyph : undefined,
+        glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
+    })), [
+        dataSorted,
+        providerTheme.colors,
+        providerTheme.glyphs,
+        withLegendGlyph,
+        renderGlyph,
+        glyphStyle?.radius,
+    ]);
+    // Register chart with context only if data is valid
+    useChartRegistration(chartId, legendItems, providerTheme, 'line', isDataValid, {
+        withGradientFill,
+        smoothing,
+        curveType,
+        withStartGlyphs,
+        withLegendGlyph,
+    });
+    const accessors = {
+        xAccessor: (d) => d?.date,
+        yAccessor: (d) => d?.value,
+    };
+    // Create a custom renderTooltip that includes focus capability
+    if (error) {
+        return jsx("div", { className: clsx('line-chart', styles['line-chart']), children: error });
+    }
+    return (jsx(LineChartContext.Provider, { value: {
+            chartId,
+            chartRef: internalChartRef,
+            chartWidth: width,
+            chartHeight: height - (showLegend ? legendHeight : 0),
+        }, children: jsxs("div", { className: clsx('line-chart', styles['line-chart'], className), "data-testid": "line-chart", style: {
+                width,
+                height,
+                display: 'flex',
+                flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+                position: 'relative',
+            }, children: [jsx("div", { role: "grid", "aria-label": "line chart", tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxs(XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
+                            ...defaultMargin,
+                            ...margin,
+                            ...(showLegend && legendAlignmentVertical === 'top'
+                                ? { top: (defaultMargin.top || 0) + legendHeight }
+                                : {}),
+                        }, 
+                        // xScale and yScale could be set in Axis as well, but they are `scale` props there.
+                        xScale: chartOptions.xScale, yScale: chartOptions.yScale, onPointerDown: onPointerDown, onPointerUp: onPointerUp, onPointerMove: onPointerMove, onPointerOut: onPointerOut, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: false, numTicks: 4 }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), dataSorted.map((seriesData, index) => {
+                                const stroke = seriesData.options?.stroke ?? theme.colors[index % theme.colors.length];
+                                const lineProps = seriesData.options?.seriesLineStyle ??
+                                    providerTheme?.seriesLineStyles?.[index % providerTheme.seriesLineStyles.length] ??
+                                    {};
+                                return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${internalChartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
+                                                ? `url(#area-gradient-${internalChartId}-${index + 1})`
+                                                : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
+                            }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['line-chart-legend'], shape: legendShape, ref: legendRef })), children] }) }));
+});
+const LineChart = forwardRef((props, ref) => (jsx(ChartProvider, { children: jsx(LineChartInternal, { ...props, ref: ref }) })));
+LineChart.displayName = 'LineChart';
+LineChart.AnnotationsOverlay = LineChartAnnotationsOverlay;
+LineChart.Annotation = LineChartAnnotation;
+const ResponsiveLineChart = Object.assign(withResponsive(LineChart), {
+    AnnotationsOverlay: LineChartAnnotationsOverlay,
+    Annotation: LineChartAnnotation,
+});
+
+export { LineChart as LineChartUnresponsive, ResponsiveLineChart as default };

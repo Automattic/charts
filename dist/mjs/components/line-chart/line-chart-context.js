@@ -1,2 +1,12 @@
-import{createContext as t,useContext as r}from"react";const e=t(null),n=()=>{const t=r(e);if(!t)throw new Error("useLineChartContext must be used within a LineChart component");return t};export{e as LineChartContext,n as useLineChartContext};
-//# sourceMappingURL=line-chart-context.js.map
+import { createContext, useContext } from 'react';
+
+const LineChartContext = createContext(null);
+const useLineChartContext = () => {
+    const context = useContext(LineChartContext);
+    if (!context) {
+        throw new Error('useLineChartContext must be used within a LineChart component');
+    }
+    return context;
+};
+
+export { LineChartContext, useLineChartContext };

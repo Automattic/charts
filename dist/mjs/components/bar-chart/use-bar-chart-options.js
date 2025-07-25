@@ -1,2 +1,109 @@
-import{formatNumberCompact as t}from"@automattic/number-formatters";import{useMemo as r}from"react";const a=t=>new Date(t).toLocaleDateString(void 0,{month:"short",day:"numeric"});function i(i,o,e={}){const c=r((()=>{const r={type:"band",padding:.2,paddingInner:.1},o={type:"linear",nice:!0,zero:!1},e=i?.[0]?.data?.[0]?.label?t=>t:a,c=t=>t?.label||t?.date,n=t=>t?.value;return{vertical:{xTickFormat:e,yTickFormat:t,tooltipLabelFormatter:e,xAccessor:c,yAccessor:n,gridVisibility:"x",xScale:r,yScale:o},horizontal:{xTickFormat:t,yTickFormat:e,tooltipLabelFormatter:e,xAccessor:n,yAccessor:c,gridVisibility:"y",xScale:o,yScale:r}}}),[i]);return r((()=>{const t=o?"horizontal":"vertical",{xTickFormat:r,yTickFormat:a,tooltipLabelFormatter:i,xAccessor:n,yAccessor:s,gridVisibility:l,xScale:m,yScale:y}=c[t],x={...m,...e.xScale||{}},d={...y,...e.yScale||{}},p=o?e.axis?.y?.tickFormat:e.axis?.x?.tickFormat;return{gridVisibility:l,xScale:x,yScale:d,accessors:{xAccessor:n,yAccessor:s},axis:{x:{orientation:"bottom",numTicks:4,tickFormat:r,...e.axis?.x||{}},y:{orientation:"left",numTicks:4,tickFormat:a,...e.axis?.y||{}}},barGroup:{padding:(b=o?d:x,"number"==typeof b.paddingInner?b.paddingInner:0)},tooltip:{labelFormatter:p||i}};var b}),[c,e,o])}export{i as useBarChartOptions};
-//# sourceMappingURL=use-bar-chart-options.js.map
+import { formatNumberCompact } from '@automattic/number-formatters';
+import { useMemo } from 'react';
+
+const formatDateTick = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+    });
+};
+/**
+ * Get the group padding of a scale.
+ *
+ * @param scale - The scale to get the group padding of.
+ * @return The group padding of the scale.
+ */
+const getGroupPadding = (scale) => {
+    return typeof scale.paddingInner === 'number' ? scale.paddingInner : 0;
+};
+/**
+ * Returns the merged options for the bar chart, including axis and scale configuration based on the orientation.
+ *
+ * @param data       - The data to be displayed in the chart.
+ * @param horizontal - Whether the chart is horizontal or vertical.
+ * @param options    - The options for the chart.
+ * @return The merged options for the chart.
+ */
+function useBarChartOptions(data, horizontal, options = {}) {
+    const defaultOptions = useMemo(() => {
+        const bandScale = {
+            type: 'band',
+            padding: 0.2,
+            paddingInner: 0.1,
+        };
+        const linearScale = {
+            type: 'linear',
+            nice: true,
+            zero: false,
+        };
+        const labelFormatter = data?.[0]?.data?.[0]?.label
+            ? (label) => label
+            : formatDateTick;
+        const valueFormatter = formatNumberCompact;
+        const labelAccessor = (d) => d?.label || d?.date;
+        const valueAccessor = (d) => d?.value;
+        return {
+            vertical: {
+                xTickFormat: labelFormatter,
+                yTickFormat: valueFormatter,
+                tooltipLabelFormatter: labelFormatter,
+                xAccessor: labelAccessor,
+                yAccessor: valueAccessor,
+                gridVisibility: 'x',
+                xScale: bandScale,
+                yScale: linearScale,
+            },
+            horizontal: {
+                xTickFormat: valueFormatter,
+                yTickFormat: labelFormatter,
+                tooltipLabelFormatter: labelFormatter,
+                xAccessor: valueAccessor,
+                yAccessor: labelAccessor,
+                gridVisibility: 'y',
+                xScale: linearScale,
+                yScale: bandScale,
+            },
+        };
+    }, [data]);
+    return useMemo(() => {
+        const orientationKey = horizontal ? 'horizontal' : 'vertical';
+        const { xTickFormat, yTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale, } = defaultOptions[orientationKey];
+        const xScale = { ...baseXScale, ...(options.xScale || {}) };
+        const yScale = { ...baseYScale, ...(options.yScale || {}) };
+        const providedToolTipLabelFormatter = horizontal
+            ? options.axis?.y?.tickFormat
+            : options.axis?.x?.tickFormat;
+        return {
+            gridVisibility,
+            xScale,
+            yScale,
+            accessors: {
+                xAccessor,
+                yAccessor,
+            },
+            axis: {
+                x: {
+                    orientation: 'bottom',
+                    numTicks: 4,
+                    tickFormat: xTickFormat,
+                    ...(options.axis?.x || {}),
+                },
+                y: {
+                    orientation: 'left',
+                    numTicks: 4,
+                    tickFormat: yTickFormat,
+                    ...(options.axis?.y || {}),
+                },
+            },
+            barGroup: {
+                padding: getGroupPadding(horizontal ? yScale : xScale),
+            },
+            tooltip: {
+                labelFormatter: providedToolTipLabelFormatter || defaultTooltipLabelFormatter,
+            },
+        };
+    }, [defaultOptions, options, horizontal]);
+}
+
+export { useBarChartOptions };

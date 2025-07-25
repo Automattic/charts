@@ -1,2 +1,37 @@
-import{useId as t,useMemo as r,useEffect as e}from"react";import{useChartContext as o}from"./chart-context.js";const a=r=>{const e=t();return r||e},c=(t,a,c,m,n,s)=>{const{registerChart:h,unregisterChart:i}=o(),p=r((()=>s),[s]);e((()=>(n&&h(t,{legendItems:a,theme:c,chartType:m,metadata:p}),()=>{i(t)})),[t,a,c,m,p,n,h,i])};export{a as useChartId,c as useChartRegistration};
-//# sourceMappingURL=utils.js.map
+import { useId, useMemo, useEffect } from 'react';
+import { useChartContext } from './chart-context.js';
+
+const useChartId = (providedId) => {
+    const generatedId = useId();
+    return providedId || generatedId;
+};
+const useChartRegistration = (chartId, legendItems, theme, chartType, isDataValid, metadata) => {
+    const { registerChart, unregisterChart } = useChartContext();
+    // Memoize metadata to prevent unnecessary re-renders
+    const memoizedMetadata = useMemo(() => metadata, [metadata]);
+    useEffect(() => {
+        // Only register if data is valid
+        if (isDataValid) {
+            registerChart(chartId, {
+                legendItems,
+                theme,
+                chartType,
+                metadata: memoizedMetadata,
+            });
+        }
+        return () => {
+            unregisterChart(chartId);
+        };
+    }, [
+        chartId,
+        legendItems,
+        theme,
+        chartType,
+        memoizedMetadata,
+        isDataValid,
+        registerChart,
+        unregisterChart,
+    ]);
+};
+
+export { useChartId, useChartRegistration };

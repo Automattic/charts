@@ -1,2 +1,121 @@
-import{jsx as t,jsxs as e}from"react/jsx-runtime";import{formatNumberCompact as a}from"@automattic/number-formatters";import{Group as r}from"@visx/group";import{createScale as o,scaleBand as n}from"@visx/scale";import{Text as i}from"@visx/text";import{useMemo as l}from"react";import m from"../bar-chart/bar-chart.js";import{withResponsive as s}from"../shared/with-responsive.js";const d=t=>{const e=t;return e&&"bandwidth"in e?e?.bandwidth()??0:0},u=({textProps:e,x:a,y:r,label:o,formatter:n})=>t(i,{...e,textAnchor:"start",x:a,y:r,children:n(o)}),c=({textProps:e,x:a,y:r,value:o,formatter:n})=>t(i,{...e,textAnchor:"end",x:a,y:r,fontWeight:500,children:n(o)}),p=({ticks:a,tickLabelProps:o,yOffset:n,labelPosition:i,valuePosition:l,data:m,labelFormatter:s,valueFormatter:d,LabelComponent:p=u,ValueComponent:f=c})=>{if(0===a.length)return null;const x=a.map((({value:t,index:e})=>"function"==typeof o?o(t,e,a):{}));return a.map((({from:a,formattedValue:o},u)=>{const c=x[u]??{};delete c.textAnchor,delete c.dx;const b=m.reduce(((t,{data:e})=>t+(e[u]?.value??0)),0),h=a.y+n;return e(r,{children:[t(p,{textProps:c,x:i,y:h,label:o,formatter:s}),t(f,{textProps:c,x:l,y:h,value:b,formatter:d,data:m,index:u})]},u)}))},f=(t,e,a,r)=>{if(!r)return 0;const i=t.map((({label:t})=>t)),l=o({type:"band",range:[0,a],domain:i,...e}),m=n({domain:i,range:[0,d(l)],padding:e.paddingInner});return-(d(m)+6)};var x=s((({data:e,width:r,height:o,options:n={},margin:i={left:0,right:20,bottom:0,top:0},...s})=>{const d=l((()=>{const t=e.length>1,i={...{paddingInner:t?.3:.1,padding:t?.3:.1},...n.yScale??{}};return{yScale:i,xScale:{zero:!0,...n.xScale??{}},labelPosition:n.labelPosition??(t?0:10),valueFormatter:n.valueFormatter??(t=>a(t)),labelFormatter:n.labelFormatter??(t=>String(t)),valuePosition:n.valuePosition??r,yOffset:n.yOffset??f(e,i,o,t)}}),[n,r,e,o]);return t(m,{orientation:"horizontal",gridVisibility:"none",data:e,width:r,height:o,margin:i,options:{axis:{y:{children:a=>t(p,{...a,data:e,yOffset:d.yOffset,labelPosition:d.labelPosition,valuePosition:d.valuePosition,labelFormatter:d.labelFormatter,valueFormatter:d.valueFormatter,LabelComponent:n.labelComponent,ValueComponent:n.valueComponent})},x:{children:()=>null}},xScale:d.xScale,yScale:d.yScale},...s})}));export{x as default};
-//# sourceMappingURL=bar-list-chart.js.map
+import { jsx, jsxs } from 'react/jsx-runtime';
+import { formatNumberCompact } from '@automattic/number-formatters';
+import { Group } from '@visx/group';
+import { createScale, scaleBand } from '@visx/scale';
+import { Text } from '@visx/text';
+import { useMemo } from 'react';
+import BarChart from '../bar-chart/bar-chart.js';
+import { withResponsive } from '../shared/with-responsive.js';
+
+/**
+ * Get the bandwidth of a scale
+ * @param scale - The scale to get the bandwidth of
+ * @return The bandwidth of the scale
+ */
+const getScaleBandwidth = (scale) => {
+    // Broaden type before using 'xxx' in s as typeguard.
+    const s = scale;
+    return s && 'bandwidth' in s ? s?.bandwidth() ?? 0 : 0;
+};
+const DefaultLabelComponent = ({ textProps, x, y, label, formatter }) => {
+    return (jsx(Text, { ...textProps, textAnchor: "start", x: x, y: y, children: formatter(label) }));
+};
+const DefaultValueComponent = ({ textProps, x, y, value, formatter }) => {
+    return (jsx(Text, { ...textProps, textAnchor: "end", x: x, y: y, fontWeight: 500, children: formatter(value) }));
+};
+const AxisRenderer = ({ ticks, tickLabelProps, yOffset, labelPosition, valuePosition, data, labelFormatter, valueFormatter, LabelComponent = DefaultLabelComponent, ValueComponent = DefaultValueComponent, }) => {
+    if (ticks.length === 0) {
+        return null;
+    }
+    // compute the max tick label size to compute label offset
+    const allTickLabelProps = ticks.map(({ value, index }) => typeof tickLabelProps === 'function' ? tickLabelProps(value, index, ticks) : {});
+    return ticks.map(({ from, formattedValue }, index) => {
+        const textProps = allTickLabelProps[index] ?? {};
+        // No need to pass textAnchor and dx. It will be handled by the component.
+        delete textProps.textAnchor;
+        delete textProps.dx;
+        const sum = data.reduce((acc, { data: seriesData }) => acc + (seriesData[index]?.value ?? 0), 0);
+        const y = from.y + yOffset;
+        return (jsxs(Group, { children: [jsx(LabelComponent, { textProps: textProps, x: labelPosition, y: y, label: formattedValue, formatter: labelFormatter }), jsx(ValueComponent, { textProps: textProps, x: valuePosition, y: y, value: sum, formatter: valueFormatter, data: data, index: index })] }, index));
+    });
+};
+/**
+ * Calculate the default y offset for the bar list chart.
+ * @param data          - The data to calculate the default y offset for.
+ * @param yScaleConfig  - The y scale configuration.
+ * @param height        - The height of the chart.
+ * @param isMultiSeries - Whether the chart is a multi series chart.
+ * @return The default y offset.
+ */
+const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
+    if (!isMultiSeries) {
+        return 0;
+    }
+    const dataKeys = data.map(({ label }) => label);
+    const yScale = createScale({
+        type: 'band',
+        range: [0, height],
+        domain: dataKeys,
+        ...yScaleConfig,
+    });
+    const groupScale = scaleBand({
+        domain: dataKeys,
+        range: [0, getScaleBandwidth(yScale)],
+        padding: yScaleConfig.paddingInner,
+    });
+    const GAP_BETWEEN_BARS = 6;
+    const barThickness = getScaleBandwidth(groupScale);
+    // Use negative value to move the label up.
+    return -(barThickness + GAP_BETWEEN_BARS);
+};
+const BarListChart = ({ data, width, height, options = {}, margin = {
+    left: 0,
+    right: 20,
+    bottom: 0,
+    top: 0,
+}, ...rest }) => {
+    const chartOptions = useMemo(() => {
+        const isMultiSeries = data.length > 1;
+        const defaultYScale = {
+            // For multi series, set default padding larger to look better.
+            paddingInner: isMultiSeries ? 0.3 : 0.1,
+            padding: isMultiSeries ? 0.3 : 0.1,
+        };
+        const defaultXScale = {
+            // Always begin at zero since the x axis is hidden.
+            zero: true,
+        };
+        const yScale = {
+            ...defaultYScale,
+            ...(options.yScale ?? {}),
+        };
+        const xScale = {
+            ...defaultXScale,
+            ...(options.xScale ?? {}),
+        };
+        return {
+            yScale,
+            xScale,
+            labelPosition: options.labelPosition ?? (isMultiSeries ? 0 : 10),
+            valueFormatter: options.valueFormatter ?? (value => formatNumberCompact(value)),
+            labelFormatter: options.labelFormatter ?? (value => String(value)),
+            valuePosition: options.valuePosition ?? width,
+            yOffset: options.yOffset ?? getDefaultYOffset(data, yScale, height, isMultiSeries),
+        };
+    }, [options, width, data, height]);
+    return (jsx(BarChart, { orientation: "horizontal", gridVisibility: 'none', data: data, width: width, height: height, margin: margin, options: {
+            axis: {
+                y: {
+                    children: (renderProps) => (jsx(AxisRenderer, { ...renderProps, data: data, yOffset: chartOptions.yOffset, labelPosition: chartOptions.labelPosition, valuePosition: chartOptions.valuePosition, labelFormatter: chartOptions.labelFormatter, valueFormatter: chartOptions.valueFormatter, LabelComponent: options.labelComponent, ValueComponent: options.valueComponent })),
+                },
+                x: {
+                    children: () => null,
+                },
+            },
+            xScale: chartOptions.xScale,
+            yScale: chartOptions.yScale,
+        }, ...rest }));
+};
+var barListChart = withResponsive(BarListChart);
+
+export { barListChart as default };

@@ -1,2 +1,33 @@
-import{useState as e,useRef as n,useCallback as t}from"react";function r({initialHeight:r=0}={}){const[i,c]=e(r),o=n(null);return[t((e=>{if(o.current&&(o.current.disconnect(),o.current=null),e){const n=()=>{c(e.getBoundingClientRect().height||0)};n();const t=new window.ResizeObserver(n);t.observe(e),o.current=t}}),[]),i]}export{r as useElementHeight};
-//# sourceMappingURL=use-element-height.js.map
+import { useState, useRef, useCallback } from 'react';
+
+/**
+ * Hook to measure the height of a DOM element.
+ * Returns a ref to attach to the element and the current height in pixels.
+ *
+ * @param {object} props               - Optional props.
+ * @param {number} props.initialHeight - The initial height to use.
+ *
+ * @return {[Function, number]} A tuple containing a ref to attach to the element and the current height in pixels
+ */
+function useElementHeight({ initialHeight = 0, } = {}) {
+    const [height, setHeight] = useState(initialHeight);
+    const observerRef = useRef(null);
+    const refCallback = useCallback((node) => {
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+            observerRef.current = null;
+        }
+        if (node) {
+            const handleResize = () => {
+                setHeight(node.getBoundingClientRect().height || 0);
+            };
+            handleResize();
+            const resizeObserver = new window.ResizeObserver(handleResize);
+            resizeObserver.observe(node);
+            observerRef.current = resizeObserver;
+        }
+    }, []);
+    return [refCallback, height];
+}
+
+export { useElementHeight };

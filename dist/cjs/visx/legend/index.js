@@ -1,2 +1,18 @@
-"use strict";var e=require("@visx/legend");const p=e.LineShape,r=e.CircleShape,t=e.RectShape;exports.CircleShape=r,exports.LineShape=p,exports.RectShape=t;
-//# sourceMappingURL=index.js.map
+'use strict';
+
+var legend = require('@visx/legend');
+
+
+
+Object.defineProperty(exports, 'CircleShape', {
+	enumerable: true,
+	get: function () { return legend.CircleShape; }
+});
+Object.defineProperty(exports, 'LineShape', {
+	enumerable: true,
+	get: function () { return legend.LineShape; }
+});
+Object.defineProperty(exports, 'RectShape', {
+	enumerable: true,
+	get: function () { return legend.RectShape; }
+});
