@@ -33,6 +33,14 @@ const defaultTheme = {
             radius: 5,
         },
     },
+    leaderboardChart: {
+        rowGap: 12,
+        columnGap: 4,
+        labelSpacing: 1.5,
+        primaryColor: '#3858E9',
+        secondaryColor: '#80C8FF',
+        deltaColors: ['#D63638', '#757575', '#008A20'], // [negative, neutral, positive]
+    },
 };
 /**
  * Jetpack theme configuration
@@ -66,6 +74,14 @@ const jetpackTheme = {
             fill: 'var(--jp-gray-80, #2c3338)',
             radius: 5,
         },
+    },
+    leaderboardChart: {
+        rowGap: 12,
+        columnGap: 4,
+        labelSpacing: 1.5,
+        primaryColor: '#006DAB',
+        secondaryColor: '#98C8DF',
+        deltaColors: ['#FF8C8F', '#757575', '#1F9828'], // [negative, neutral, positive]
     },
 };
 /**
@@ -105,6 +121,14 @@ const wooTheme = {
             fill: 'black',
             radius: 5,
         },
+    },
+    leaderboardChart: {
+        rowGap: 12,
+        columnGap: 4,
+        labelSpacing: 1.5,
+        primaryColor: '#3858E9',
+        secondaryColor: '#80C8FF',
+        deltaColors: ['#D63638', '#757575', '#008A20'], // [negative, neutral, positive]
     },
 };
 

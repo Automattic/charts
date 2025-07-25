@@ -4,11 +4,24 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var jsxRuntime = require('react/jsx-runtime');
 var components = require('@wordpress/components');
+var element = require('@wordpress/element');
 var clsx = require('clsx');
 require('react');
+var themeProvider = require('../../providers/theme/theme-provider.js');
 var formatMetricValue = require('../shared/format-metric-value.js');
 var leaderboardChart_module = require('./leaderboard-chart.module.scss.js');
 
+/**
+ * Default settings for LeaderboardChart component
+ */
+const DEFAULT_LEADERBOARD_SETTINGS = {
+    labelSpacing: 1.5,
+    rowGap: 12,
+    columnGap: 4,
+    primaryColor: '#3858E9',
+    secondaryColor: '#66BDFF',
+    deltaColors: ['#D63638', '#757575', '#008A20'],
+};
 /**
  * Default value formatter using formatMetricValue
  *
@@ -49,25 +62,33 @@ const defaultDeltaFormatter = (value) => {
  * @param props.style          - Custom styling for the chart container
  * @return JSX element representing the leaderboard chart
  */
-const LeaderboardChart = ({ data, withComparison = false, primaryColor = '#3858E9', secondaryColor = '#66BDFF', valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
-    // TODO: Integrate with ThemeProvider:
-    // 1. Use theme.colors for primaryColor/secondaryColor defaults
-    // 2. Get delta sign colors from theme instead of hardcoding
-    // 3. Add useChartTheme() hook like other chart components
-    const signColors = ['#D63638', '#757575', '#008A20'];
+const LeaderboardChart = ({ data, withComparison = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
+    const theme = themeProvider.useChartTheme();
+    // Get component settings from theme with fallbacks
+    const leaderboardSettings = theme.leaderboardChart;
+    const labelSpacing = leaderboardSettings?.labelSpacing ?? DEFAULT_LEADERBOARD_SETTINGS.labelSpacing;
+    const rowGap = leaderboardSettings?.rowGap ?? DEFAULT_LEADERBOARD_SETTINGS.rowGap;
+    const columnGap = leaderboardSettings?.columnGap ?? DEFAULT_LEADERBOARD_SETTINGS.columnGap;
+    // Use theme colors with prop overrides, fallback to defaults
+    const finalPrimaryColor = primaryColor || leaderboardSettings?.primaryColor || DEFAULT_LEADERBOARD_SETTINGS.primaryColor;
+    const finalSecondaryColor = secondaryColor ||
+        leaderboardSettings?.secondaryColor ||
+        DEFAULT_LEADERBOARD_SETTINGS.secondaryColor;
+    // Delta sign colors: negative, neutral, positive
+    const signColors = leaderboardSettings?.deltaColors ?? DEFAULT_LEADERBOARD_SETTINGS.deltaColors;
     const chartStyle = {
-        '--primary-color': primaryColor,
-        '--secondary-color': secondaryColor,
+        '--primary-color': finalPrimaryColor,
+        '--secondary-color': finalSecondaryColor,
         ...style,
     };
     // Handle empty or undefined data
     if (!data || data.length === 0) {
         return (jsxRuntime.jsx("div", { className: clsx(leaderboardChart_module.default.leaderboardChart, loading && leaderboardChart_module.default.loading, className), style: chartStyle, children: jsxRuntime.jsx("div", { className: leaderboardChart_module.default.emptyState, children: loading ? 'Loading...' : 'No data available' }) }));
     }
-    return (jsxRuntime.jsx("div", { className: clsx(leaderboardChart_module.default.leaderboardChart, loading && leaderboardChart_module.default.loading, className), style: chartStyle, children: data.map(entry => {
+    return (jsxRuntime.jsx(components.__experimentalGrid, { className: clsx(leaderboardChart_module.default.leaderboardChart, loading && leaderboardChart_module.default.loading, className), templateColumns: "minmax(0, 1fr) auto", rowGap: rowGap, columnGap: columnGap, style: chartStyle, children: data.map(entry => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = signColors[colorIndex];
-            return (jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.entryContainer, children: [jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.labelContainer, children: [jsxRuntime.jsx("span", { className: leaderboardChart_module.default.entryLabel, children: entry.label }), jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.progressContainer, children: [jsxRuntime.jsx(components.ProgressBar, { value: entry.currentShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.primaryBar) }), withComparison && (jsxRuntime.jsx(components.ProgressBar, { value: entry.previousShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.secondaryBar) }))] })] }), jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.valueContainer, children: [jsxRuntime.jsx("span", { className: leaderboardChart_module.default.currentValue, children: valueFormatter(entry.currentValue) }), withComparison && (jsxRuntime.jsx("span", { className: leaderboardChart_module.default.deltaValue, style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
+            return (jsxRuntime.jsxs(element.Fragment, { children: [jsxRuntime.jsxs(components.__experimentalVStack, { spacing: labelSpacing, children: [jsxRuntime.jsx(components.__experimentalText, { children: entry.label }), jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.progressContainer, children: [jsxRuntime.jsx(components.ProgressBar, { value: entry.currentShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.primaryBar) }), withComparison && (jsxRuntime.jsx(components.ProgressBar, { value: entry.previousShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.secondaryBar) }))] })] }), jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.valueContainer, children: [jsxRuntime.jsx(components.__experimentalText, { children: valueFormatter(entry.currentValue) }), withComparison && (jsxRuntime.jsx(components.__experimentalText, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
         }) }));
 };
 

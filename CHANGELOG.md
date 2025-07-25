@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Add documentation
 - Charts: adds a standalone chart legend component
 
+### Changed
+- Apply theme to the LeaderboardChart component.
+
 ## [0.21.0] - 2025-07-25
 ### Added
 - Add Storybook docs introduction [#44427]
