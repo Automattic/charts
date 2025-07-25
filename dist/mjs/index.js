@@ -6,7 +6,9 @@ export { default as BarListChart } from './components/bar-list-chart/bar-list-ch
 export { LeaderboardChart } from './components/leaderboard-chart/leaderboard-chart.js';
 export { formatMetricValue } from './components/shared/format-metric-value.js';
 export { BaseTooltip } from './components/tooltip/base-tooltip.js';
-export { BaseLegend as Legend } from './components/legend/base-legend.js';
+export { Legend } from './components/legend/legend.js';
+export { BaseLegend } from './components/legend/base-legend.js';
+export { useChartLegendData } from './components/legend/use-chart-legend-data.js';
 export { Text, getStringWidth, useText } from '@visx/text';
 export { Group } from '@visx/group';
 export { CircleShape, LineShape, RectShape } from '@visx/legend';

@@ -3,8 +3,7 @@ import { ResponsiveConfig } from '../shared/with-responsive.js';
 import { BaseChartProps, DataPointPercentage } from '../../types.js';
 import { ReactNode } from 'react';
 
-type OmitBaseChartProps = Omit<BaseChartProps<DataPointPercentage[]>, 'width' | 'height'>;
-interface PieChartProps extends OmitBaseChartProps {
+interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
      * Inner radius in pixels. If > 0, creates a donut chart. Defaults to 0.
      */

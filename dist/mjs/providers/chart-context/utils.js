@@ -22,6 +22,7 @@ const useChartRegistration = (chartId, legendItems, theme, chartType, isDataVali
         return () => {
             unregisterChart(chartId);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         chartId,
         legendItems,
@@ -29,8 +30,8 @@ const useChartRegistration = (chartId, legendItems, theme, chartType, isDataVali
         chartType,
         memoizedMetadata,
         isDataValid,
-        registerChart,
-        unregisterChart,
+        // Removed registerChart and unregisterChart from dependencies
+        // They are stable functions created with useCallback and empty deps
     ]);
 };
 

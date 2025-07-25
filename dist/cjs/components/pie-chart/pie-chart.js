@@ -12,7 +12,9 @@ var chartContext = require('../../providers/chart-context/chart-context.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
 var themes = require('../../providers/theme/themes.js');
-var baseLegend = require('../legend/base-legend.js');
+var legend = require('../legend/legend.js');
+require('../legend/base-legend.js');
+var useChartLegendData = require('../legend/use-chart-legend-data.js');
 var useElementHeight = require('../shared/use-element-height.js');
 var withResponsive = require('../shared/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
@@ -53,19 +55,19 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler.default({
         withTooltips,
     });
+    // Memoize legend options to prevent unnecessary re-calculations
+    const legendOptions = react.useMemo(() => ({ showValues: true }), []);
+    // Create legend items using the reusable hook
+    const legendItems = useChartLegendData.useChartLegendData(data, providerTheme, legendOptions);
     const { isValid, message } = validateData(data);
-    // Create legend items (hooks must be called in same order every render)
-    const legendItems = react.useMemo(() => data.map((item, index) => ({
-        label: item.label,
-        value: item.value.toString(),
-        color: providerTheme.colors[index % providerTheme.colors.length],
-    })), [data, providerTheme.colors]);
-    // Register chart with context only if data is valid
-    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, {
+    // Memoize metadata to prevent unnecessary re-registration
+    const chartMetadata = react.useMemo(() => ({
         thickness,
         gapScale,
         cornerScale,
-    });
+    }), [thickness, gapScale, cornerScale]);
+    // Register chart with context only if data is valid
+    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, chartMetadata);
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), children: jsxRuntime.jsx("div", { className: pieChart_module.default['error-message'], children: message }) }));
     }
@@ -111,11 +113,19 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                     }
                                     return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || themes.defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
-                            } }), children] }) }), showLegend && (jsxRuntime.jsx(baseLegend.BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                            } }), children] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',
                 } }))] }));
 };
-const PieChart = (props) => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieChartInternal, { ...props }) }));
+const PieChart = (props) => {
+    const existingContext = react.useContext(chartContext.ChartContext);
+    // If we're already in a ChartProvider context, don't create a new one
+    if (existingContext) {
+        return jsxRuntime.jsx(PieChartInternal, { ...props });
+    }
+    // Otherwise, create our own ChartProvider
+    return (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieChartInternal, { ...props }) }));
+};
 PieChart.displayName = 'PieChart';
 var pieChart = withResponsive.withResponsive(PieChart);
 

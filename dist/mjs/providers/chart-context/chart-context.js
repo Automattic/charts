@@ -1,24 +1,28 @@
 import { jsx } from 'react/jsx-runtime';
-import { createContext, useRef, useCallback, useMemo, useContext } from 'react';
+import { createContext, useState, useCallback, useMemo, useContext } from 'react';
 
 const ChartContext = createContext(null);
 const ChartProvider = ({ children }) => {
-    const chartsRef = useRef(new Map());
+    const [charts, setCharts] = useState(() => new Map());
     const registerChart = useCallback((id, data) => {
-        chartsRef.current.set(id, data);
+        setCharts(prev => new Map(prev).set(id, data));
     }, []);
     const unregisterChart = useCallback((id) => {
-        chartsRef.current.delete(id);
+        setCharts(prev => {
+            const newMap = new Map(prev);
+            newMap.delete(id);
+            return newMap;
+        });
     }, []);
     const getChartData = useCallback((id) => {
-        return chartsRef.current.get(id);
-    }, []);
+        return charts.get(id);
+    }, [charts]);
     const value = useMemo(() => ({
-        charts: chartsRef.current,
+        charts,
         registerChart,
         unregisterChart,
         getChartData,
-    }), [registerChart, unregisterChart, getChartData]);
+    }), [charts, registerChart, unregisterChart, getChartData]);
     return jsx(ChartContext.Provider, { value: value, children: children });
 };
 const useChartContext = () => {
@@ -29,4 +33,4 @@ const useChartContext = () => {
     return context;
 };
 
-export { ChartProvider, useChartContext };
+export { ChartContext, ChartProvider, useChartContext };

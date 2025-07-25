@@ -8,10 +8,12 @@ var barListChart = require('./components/bar-list-chart/bar-list-chart.js');
 var leaderboardChart = require('./components/leaderboard-chart/leaderboard-chart.js');
 var formatMetricValue = require('./components/shared/format-metric-value.js');
 var baseTooltip = require('./components/tooltip/base-tooltip.js');
+var legend = require('./components/legend/legend.js');
 var baseLegend = require('./components/legend/base-legend.js');
+var useChartLegendData = require('./components/legend/use-chart-legend-data.js');
 var text = require('@visx/text');
 var group = require('@visx/group');
-var legend = require('@visx/legend');
+var legend$1 = require('@visx/legend');
 var themeProvider = require('./providers/theme/theme-provider.js');
 var themes = require('./providers/theme/themes.js');
 var useChartMouseHandler = require('./hooks/use-chart-mouse-handler.js');
@@ -26,7 +28,9 @@ exports.BarListChart = barListChart.default;
 exports.LeaderboardChart = leaderboardChart.LeaderboardChart;
 exports.formatMetricValue = formatMetricValue.formatMetricValue;
 exports.BaseTooltip = baseTooltip.BaseTooltip;
-exports.Legend = baseLegend.BaseLegend;
+exports.Legend = legend.Legend;
+exports.BaseLegend = baseLegend.BaseLegend;
+exports.useChartLegendData = useChartLegendData.useChartLegendData;
 Object.defineProperty(exports, 'Text', {
 	enumerable: true,
 	get: function () { return text.Text; }
@@ -45,15 +49,15 @@ Object.defineProperty(exports, 'Group', {
 });
 Object.defineProperty(exports, 'CircleShape', {
 	enumerable: true,
-	get: function () { return legend.CircleShape; }
+	get: function () { return legend$1.CircleShape; }
 });
 Object.defineProperty(exports, 'LineShape', {
 	enumerable: true,
-	get: function () { return legend.LineShape; }
+	get: function () { return legend$1.LineShape; }
 });
 Object.defineProperty(exports, 'RectShape', {
 	enumerable: true,
-	get: function () { return legend.RectShape; }
+	get: function () { return legend$1.RectShape; }
 });
 exports.ThemeProvider = themeProvider.ThemeProvider;
 exports.defaultTheme = themes.defaultTheme;

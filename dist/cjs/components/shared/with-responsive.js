@@ -28,8 +28,8 @@ WrappedComponent) {
             aspectRatio,
         });
         return (jsxRuntime.jsx("div", { ref: parentRef, style: {
-                width: '100%',
-                height: chartProps.height ?? 'auto',
+                width: chartProps.size ?? chartProps.width ?? '100%',
+                height: chartProps.size ?? chartProps.height ?? 'auto',
             }, children: jsxRuntime.jsx(WrappedComponent, { width: containerWidth, height: containerHeight, size: containerWidth, ...chartProps }) }));
     };
 }

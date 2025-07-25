@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Bar chart: Add documentation
+- Charts: adds a standalone chart legend component
 
 ## [0.21.0] - 2025-07-25
 ### Added

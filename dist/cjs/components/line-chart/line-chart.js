@@ -12,7 +12,9 @@ var clsx = require('clsx');
 var chartContext = require('../../providers/chart-context/chart-context.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
-var baseLegend = require('../legend/base-legend.js');
+var legend = require('../legend/legend.js');
+require('../legend/base-legend.js');
+var useChartLegendData = require('../legend/use-chart-legend-data.js');
 var defaultGlyph = require('../shared/default-glyph.js');
 var useChartDataTransform = require('../shared/use-chart-data-transform.js');
 var useChartMargin = require('../shared/use-chart-margin.js');
@@ -195,30 +197,24 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
     const defaultMargin = useChartMargin.useChartMargin(height, chartOptions, dataSorted, theme);
     const error = validateData(dataSorted);
     const isDataValid = !error;
-    // Create legend items (hooks must be called in same order every render)
-    const legendItems = react.useMemo(() => dataSorted.map((group, index) => ({
-        label: group.label, // Label for each unique group
-        value: '', // Empty string since we don't want to show a specific value
-        color: group?.options?.stroke ?? providerTheme.colors[index % providerTheme.colors.length],
-        shapeStyle: group?.options?.legendShapeStyle,
-        renderGlyph: withLegendGlyph ? providerTheme.glyphs?.[index] ?? renderGlyph : undefined,
+    // Memoize legend options to prevent unnecessary re-calculations
+    const legendOptions = react.useMemo(() => ({
+        withGlyph: withLegendGlyph,
         glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
-    })), [
-        dataSorted,
-        providerTheme.colors,
-        providerTheme.glyphs,
-        withLegendGlyph,
         renderGlyph,
-        glyphStyle?.radius,
-    ]);
-    // Register chart with context only if data is valid
-    utils.useChartRegistration(chartId, legendItems, providerTheme, 'line', isDataValid, {
+    }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
+    // Create legend items using the reusable hook
+    const legendItems = useChartLegendData.useChartLegendData(dataSorted, providerTheme, legendOptions);
+    // Memoize metadata to prevent unnecessary re-registration
+    const chartMetadata = react.useMemo(() => ({
         withGradientFill,
         smoothing,
         curveType,
         withStartGlyphs,
         withLegendGlyph,
-    });
+    }), [withGradientFill, smoothing, curveType, withStartGlyphs, withLegendGlyph]);
+    // Register chart with context only if data is valid
+    utils.useChartRegistration(chartId, legendItems, providerTheme, 'line', isDataValid, chartMetadata);
     const accessors = {
         xAccessor: (d) => d?.date,
         yAccessor: (d) => d?.value,
@@ -254,9 +250,17 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
                                 return (jsxRuntime.jsxs("g", { children: [withStartGlyphs && (jsxRuntime.jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsxRuntime.jsx(gradient.LinearGradient, { id: `area-gradient-${internalChartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsxRuntime.jsx(xychart.AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
                                                 ? `url(#area-gradient-${internalChartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
-                            }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: lineChart_module.default['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsxRuntime.jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsxRuntime.jsx(baseLegend.BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: lineChart_module.default['line-chart-legend'], shape: legendShape, ref: legendRef })), children] }) }));
+                            }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: lineChart_module.default['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsxRuntime.jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: lineChart_module.default['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
 });
-const LineChart = react.forwardRef((props, ref) => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(LineChartInternal, { ...props, ref: ref }) })));
+const LineChart = react.forwardRef((props, ref) => {
+    const existingContext = react.useContext(chartContext.ChartContext);
+    // If we're already in a ChartProvider context, don't create a new one
+    if (existingContext) {
+        return jsxRuntime.jsx(LineChartInternal, { ...props, ref: ref });
+    }
+    // Otherwise, create our own ChartProvider
+    return (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(LineChartInternal, { ...props, ref: ref }) }));
+});
 LineChart.displayName = 'LineChart';
 LineChart.AnnotationsOverlay = lineChartAnnotationsOverlay.default;
 LineChart.Annotation = lineChartAnnotation.default;

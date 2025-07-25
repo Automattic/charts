@@ -9,7 +9,8 @@ import { useCallback, useMemo } from 'react';
 import { ChartProvider } from '../../providers/chart-context/chart-context.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme } from '../../providers/theme/theme-provider.js';
-import { BaseLegend } from '../legend/base-legend.js';
+import { Legend } from '../legend/legend.js';
+import '../legend/base-legend.js';
 import { useElementHeight } from '../shared/use-element-height.js';
 import { withResponsive } from '../shared/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
@@ -66,17 +67,19 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
         // Use the color property from the data object as a last resort. The theme provides colours by default.
         fill: (d) => d.color || providerTheme.colors[d.index % providerTheme.colors.length],
     }), [providerTheme.colors]);
-    // Create legend items (hooks must be called in same order every render)
+    // Create legend items with color from accessors (which respects item.color)
     const legendItems = useMemo(() => data.map((item, index) => ({
         label: item.label,
         value: item.valueDisplay || item.value.toString(),
         color: accessors.fill({ ...item, index }),
     })), [data, accessors]);
-    // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, {
+    // Memoize metadata to prevent unnecessary re-registration
+    const chartMetadata = useMemo(() => ({
         thickness,
         clockwise,
-    });
+    }), [thickness, clockwise]);
+    // Register chart with context only if data is valid
+    useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, chartMetadata);
     if (!isValid) {
         return (jsx("div", { className: styles['pie-semi-circle-chart'], children: jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: styles.error, children: message }) }) }));
     }
@@ -104,7 +107,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     label: tooltipData.label,
                     value: tooltipData.value,
                     valueDisplay: tooltipData.valueDisplay,
-                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef }))] }));
+                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const PieSemiCircleChart = props => (jsx(ChartProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';

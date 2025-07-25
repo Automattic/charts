@@ -5,9 +5,12 @@ import { Optional, BaseChartProps, SeriesData, DataPointDate } from '../../types
 import { ResponsiveConfig } from '../shared/with-responsive.js';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { ReactNode, SVGProps } from 'react';
+import { SVGProps, ReactNode } from 'react';
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
+type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
+    glyphStyle?: SVGProps<SVGCircleElement>;
+};
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
     smoothing?: boolean;
@@ -31,4 +34,4 @@ type LineChartBaseProps = Optional<LineChartProps, 'width' | 'height' | 'size'>;
 type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<LineChartRef>> & LineChartAnnotationComponents;
 declare const ResponsiveLineChart: LineChartResponsiveComponent;
 
-export { ResponsiveLineChart as default };
+export { type RenderLineStartGlyphProps, ResponsiveLineChart as default };

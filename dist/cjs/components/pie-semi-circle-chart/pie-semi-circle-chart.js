@@ -13,7 +13,8 @@ var react = require('react');
 var chartContext = require('../../providers/chart-context/chart-context.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
-var baseLegend = require('../legend/base-legend.js');
+var legend = require('../legend/legend.js');
+require('../legend/base-legend.js');
 var useElementHeight = require('../shared/use-element-height.js');
 var withResponsive = require('../shared/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
@@ -70,17 +71,19 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
         // Use the color property from the data object as a last resort. The theme provides colours by default.
         fill: (d) => d.color || providerTheme.colors[d.index % providerTheme.colors.length],
     }), [providerTheme.colors]);
-    // Create legend items (hooks must be called in same order every render)
+    // Create legend items with color from accessors (which respects item.color)
     const legendItems = react.useMemo(() => data.map((item, index) => ({
         label: item.label,
         value: item.valueDisplay || item.value.toString(),
         color: accessors.fill({ ...item, index }),
     })), [data, accessors]);
-    // Register chart with context only if data is valid
-    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, {
+    // Memoize metadata to prevent unnecessary re-registration
+    const chartMetadata = react.useMemo(() => ({
         thickness,
         clockwise,
-    });
+    }), [thickness, clockwise]);
+    // Register chart with context only if data is valid
+    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, chartMetadata);
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: pieSemiCircleChart_module.default['pie-semi-circle-chart'], children: jsxRuntime.jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsxRuntime.jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: pieSemiCircleChart_module.default.error, children: message }) }) }));
     }
@@ -108,7 +111,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     label: tooltipData.label,
                     value: tooltipData.value,
                     valueDisplay: tooltipData.valueDisplay,
-                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(baseLegend.BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieSemiCircleChart_module.default['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef }))] }));
+                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieSemiCircleChart_module.default['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const PieSemiCircleChart = props => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';

@@ -19,11 +19,15 @@ type LegendItemWithoutGlyph = BaseLegendItem & {
     renderGlyph?: never;
     glyphSize?: number;
 };
-type LegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
+type BaseLegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
     items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
     orientation?: 'horizontal' | 'vertical';
     alignmentHorizontal?: 'left' | 'center' | 'right';
     alignmentVertical?: 'top' | 'bottom';
 };
+type LegendProps = Omit<BaseLegendProps, 'items'> & {
+    items?: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    chartId?: string;
+};
 
-export type { BaseLegendItem, LegendItemWithGlyph, LegendItemWithoutGlyph, LegendProps };
+export type { BaseLegendItem, BaseLegendProps, LegendItemWithGlyph, LegendItemWithoutGlyph, LegendProps };

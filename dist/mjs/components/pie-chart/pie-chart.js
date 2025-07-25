@@ -2,13 +2,15 @@ import { jsx, jsxs } from 'react/jsx-runtime';
 import { Group } from '@visx/group';
 import { Pie } from '@visx/shape';
 import clsx from 'clsx';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import useChartMouseHandler from '../../hooks/use-chart-mouse-handler.js';
-import { ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme } from '../../providers/theme/theme-provider.js';
 import { defaultTheme } from '../../providers/theme/themes.js';
-import { BaseLegend } from '../legend/base-legend.js';
+import { Legend } from '../legend/legend.js';
+import '../legend/base-legend.js';
+import { useChartLegendData } from '../legend/use-chart-legend-data.js';
 import { useElementHeight } from '../shared/use-element-height.js';
 import { withResponsive } from '../shared/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
@@ -49,19 +51,19 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler({
         withTooltips,
     });
+    // Memoize legend options to prevent unnecessary re-calculations
+    const legendOptions = useMemo(() => ({ showValues: true }), []);
+    // Create legend items using the reusable hook
+    const legendItems = useChartLegendData(data, providerTheme, legendOptions);
     const { isValid, message } = validateData(data);
-    // Create legend items (hooks must be called in same order every render)
-    const legendItems = useMemo(() => data.map((item, index) => ({
-        label: item.label,
-        value: item.value.toString(),
-        color: providerTheme.colors[index % providerTheme.colors.length],
-    })), [data, providerTheme.colors]);
-    // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, {
+    // Memoize metadata to prevent unnecessary re-registration
+    const chartMetadata = useMemo(() => ({
         thickness,
         gapScale,
         cornerScale,
-    });
+    }), [thickness, gapScale, cornerScale]);
+    // Register chart with context only if data is valid
+    useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, chartMetadata);
     if (!isValid) {
         return (jsx("div", { className: clsx('pie-chart', styles['pie-chart'], className), children: jsx("div", { className: styles['error-message'], children: message }) }));
     }
@@ -107,11 +109,19 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                     }
                                     return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
-                            } }), children] }) }), showLegend && (jsx(BaseLegend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                            } }), children] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',
                 } }))] }));
 };
-const PieChart = (props) => (jsx(ChartProvider, { children: jsx(PieChartInternal, { ...props }) }));
+const PieChart = (props) => {
+    const existingContext = useContext(ChartContext);
+    // If we're already in a ChartProvider context, don't create a new one
+    if (existingContext) {
+        return jsx(PieChartInternal, { ...props });
+    }
+    // Otherwise, create our own ChartProvider
+    return (jsx(ChartProvider, { children: jsx(PieChartInternal, { ...props }) }));
+};
 PieChart.displayName = 'PieChart';
 var pieChart = withResponsive(PieChart);
 
