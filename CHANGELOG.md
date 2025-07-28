@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Add docs for bar list chart
+- Add docs for Semi Circle chart
 - Add documentation for pie and donut charts
 - Bar chart: Add documentation
 - Charts: adds a standalone chart legend component
