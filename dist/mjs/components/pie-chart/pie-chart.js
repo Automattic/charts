@@ -69,12 +69,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     }
     const width = size;
     const height = size;
+    const adjustedHeight = showLegend && legendAlignmentVertical === 'top' ? height - legendHeight : height;
     // Calculate radius based on width/height
-    const radius = Math.min(width, height) / 2;
-    // Center the chart in the available space, adjusting for legend position
+    const radius = Math.min(width, adjustedHeight) / 2;
+    // Center the chart in the available space
     const centerX = width / 2;
-    const legendOffset = showLegend && legendAlignmentVertical === 'top' ? legendHeight / 2 : 0;
-    const centerY = height / 2 + legendOffset;
+    const centerY = adjustedHeight / 2;
     // Calculate the angle between each
     const padAngle = gapScale * ((2 * Math.PI) / data.length);
     const outerRadius = radius - padding;
@@ -94,7 +94,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     return (jsxs("div", { className: clsx('pie-chart', styles['pie-chart'], className), style: {
             display: 'flex',
             flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
-        }, children: [jsx("svg", { viewBox: `0 0 ${size} ${size}`, preserveAspectRatio: "xMidYMid meet", width: size, height: size, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
+        }, children: [jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
                                 return pie.arcs.map((arc, index) => {
                                     const [centroidX, centroidY] = pie.path.centroid(arc);
                                     const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;

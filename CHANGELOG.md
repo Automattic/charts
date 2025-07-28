@@ -19,6 +19,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Apply theme to the LeaderboardChart component.
 
+### Fixed
+- Fixed pie chart cut off issue
+
 ## [0.21.0] - 2025-07-25
 ### Added
 - Add Storybook docs introduction [#44427]
