@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.22.1-alpha] - unreleased
+## [0.23.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Add component ConversionFunnelChart.
 
 ### Fixed
 - Charts: Fix TS errors related to missing React import in stories
@@ -334,7 +337,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.22.1-alpha]: https://github.com/Automattic/charts/compare/v0.22.0...v0.22.1-alpha
+[0.23.0-alpha]: https://github.com/Automattic/charts/compare/v0.22.0...v0.23.0-alpha
 [0.22.0]: https://github.com/Automattic/charts/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/Automattic/charts/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/Automattic/charts/compare/v0.19.1...v0.20.0

@@ -19,3 +19,4 @@ export { default as useChartMouseHandler } from './hooks/use-chart-mouse-handler
 export { BaseChartProps, ButtonWithPopover, ChartTheme, DataPoint, DataPointDate, DataPointPercentage, GridProps, MultipleDataPointsDate, Optional, OrientationType, PopoverButtonAttributes, PopoverElement, PopoverElementAttributes, ScaleOptions, SeriesData, ToggleEvent } from './types.js';
 export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 export { GridStyles, LineStyles } from '@visx/xychart';
+export { ConversionFunnelChartProps, FunnelStep } from './components/conversion-funnel-chart/conversion-funnel-chart.js';
