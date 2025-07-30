@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Add component ConversionFunnelChart.
+- Add showZeroValues option to BarChart to render zero-value with a small visible value
 
 ### Fixed
 - Charts: Fix TS errors related to missing React import in stories

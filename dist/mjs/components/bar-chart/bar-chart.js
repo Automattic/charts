@@ -12,6 +12,7 @@ import { useChartLegendData } from '../legend/use-chart-legend-data.js';
 import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
 import { useChartMargin } from '../shared/use-chart-margin.js';
 import { useElementHeight } from '../shared/use-element-height.js';
+import { useZeroValueDisplay } from '../shared/use-zero-value-display.js';
 import { withResponsive } from '../shared/with-responsive.js';
 import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
 import styles from './bar-chart.module.scss.js';
@@ -31,7 +32,7 @@ const validateData = (data) => {
     return null;
 };
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
-const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, }) => {
     const horizontal = orientation === 'horizontal';
     // Generate a unique chart ID to avoid pattern conflicts with multiple charts
     const internalChartId = useId();
@@ -39,9 +40,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     const providerTheme = useChartTheme();
     const theme = useXYChartTheme(data);
     const dataSorted = useChartDataTransform(data);
+    // Transform data to add a small value for zero bars to make them visible
+    const dataWithVisibleZeros = useZeroValueDisplay(dataSorted, {
+        enabled: showZeroValues,
+    });
     // Create legend items using the reusable hook
     const legendItems = useChartLegendData(dataSorted, providerTheme);
-    const chartOptions = useBarChartOptions(dataSorted, horizontal, options);
+    const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
     const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
     const [legendRef, legendHeight] = useElementHeight();
     const chartRef = useRef(null);
@@ -153,7 +158,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
                     ...(showLegend && legendAlignmentVertical === 'top'
                         ? { top: (defaultMargin.top || 0) + legendHeight }
                         : {}),
-                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxs(Fragment, { children: [jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsx("style", { children: highlightedBarStyle }), jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: dataSorted.map((seriesData, index) => (jsx(BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxs(Fragment, { children: [jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsx("style", { children: highlightedBarStyle }), jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsx(BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const BarChart = props => {
     const existingContext = useContext(ChartContext);

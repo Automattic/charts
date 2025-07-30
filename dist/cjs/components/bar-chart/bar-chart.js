@@ -16,6 +16,7 @@ var useChartLegendData = require('../legend/use-chart-legend-data.js');
 var useChartDataTransform = require('../shared/use-chart-data-transform.js');
 var useChartMargin = require('../shared/use-chart-margin.js');
 var useElementHeight = require('../shared/use-element-height.js');
+var useZeroValueDisplay = require('../shared/use-zero-value-display.js');
 var withResponsive = require('../shared/with-responsive.js');
 var accessibleTooltip = require('../tooltip/accessible-tooltip.js');
 var barChart_module = require('./bar-chart.module.scss.js');
@@ -35,7 +36,7 @@ const validateData = (data) => {
     return null;
 };
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
-const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, }) => {
     const horizontal = orientation === 'horizontal';
     // Generate a unique chart ID to avoid pattern conflicts with multiple charts
     const internalChartId = react.useId();
@@ -43,9 +44,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     const providerTheme = themeProvider.useChartTheme();
     const theme = themeProvider.useXYChartTheme(data);
     const dataSorted = useChartDataTransform.useChartDataTransform(data);
+    // Transform data to add a small value for zero bars to make them visible
+    const dataWithVisibleZeros = useZeroValueDisplay.useZeroValueDisplay(dataSorted, {
+        enabled: showZeroValues,
+    });
     // Create legend items using the reusable hook
     const legendItems = useChartLegendData.useChartLegendData(dataSorted, providerTheme);
-    const chartOptions = useBarChartOptions.useBarChartOptions(dataSorted, horizontal, options);
+    const chartOptions = useBarChartOptions.useBarChartOptions(dataWithVisibleZeros, horizontal, options);
     const defaultMargin = useChartMargin.useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
     const chartRef = react.useRef(null);
@@ -157,7 +162,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
                     ...(showLegend && legendAlignmentVertical === 'top'
                         ? { top: (defaultMargin.top || 0) + legendHeight }
                         : {}),
-                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsxRuntime.jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsxRuntime.jsx("style", { children: highlightedBarStyle }), jsxRuntime.jsx(xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataSorted.map((seriesData, index) => (jsxRuntime.jsx(xychart.BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: barChart_module.default['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: barChart_module.default['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsxRuntime.jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsxRuntime.jsx("style", { children: highlightedBarStyle }), jsxRuntime.jsx(xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsxRuntime.jsx(xychart.BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: barChart_module.default['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: barChart_module.default['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const BarChart = props => {
     const existingContext = react.useContext(chartContext.ChartContext);

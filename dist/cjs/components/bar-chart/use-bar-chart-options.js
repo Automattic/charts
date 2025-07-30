@@ -44,7 +44,11 @@ function useBarChartOptions(data, horizontal, options = {}) {
             : formatDateTick;
         const valueFormatter = numberFormatters.formatNumberCompact;
         const labelAccessor = (d) => d?.label || d?.date;
-        const valueAccessor = (d) => d?.value;
+        const valueAccessor = (d) => {
+            // Use visualValue for bar rendering if available (for zero values), otherwise use value
+            const enhancedPoint = d;
+            return enhancedPoint?.visualValue !== undefined ? enhancedPoint.visualValue : d?.value;
+        };
         return {
             vertical: {
                 xTickFormat: labelFormatter,

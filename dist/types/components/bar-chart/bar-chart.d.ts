@@ -8,6 +8,7 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
+    showZeroValues?: boolean;
 }
 declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
