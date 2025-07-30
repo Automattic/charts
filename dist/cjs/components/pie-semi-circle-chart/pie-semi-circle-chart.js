@@ -20,6 +20,7 @@ var withResponsive = require('../shared/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
 var pieSemiCircleChart_module = require('./pie-semi-circle-chart.module.scss.js');
 
+const PAD_ANGLE = 0.03; // Padding between segments
 /**
  * Validates the semi-circle pie chart data
  * @param data - The data to validate
@@ -87,31 +88,34 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: pieSemiCircleChart_module.default['pie-semi-circle-chart'], children: jsxRuntime.jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsxRuntime.jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: pieSemiCircleChart_module.default.error, children: message }) }) }));
     }
+    // Calculate chart dimensions
+    // TODO: we might want to accept height as a prop in the future, because the height of container might not always be enough.
     const height = width / 2;
-    const pad = 0.03;
-    // Use padding for the overall chart dimensions
-    const chartWidth = width - pad * 2;
-    const chartHeight = height - pad;
-    const radius = Math.min(chartWidth, chartHeight * 2) / 2;
-    const innerRadius = radius * (1 - thickness + pad);
-    // Map the data to include index for color assignment
+    // The chart only takes the height minus the legend height.
+    const chartHeight = height - (showLegend && legendAlignmentVertical === 'top' ? legendHeight : 0);
+    const radius = Math.min(width / 2, chartHeight);
+    const innerRadius = radius * (1 - thickness);
+    // Map data with index for color assignment
     const dataWithIndex = data.map((d, index) => ({
         ...d,
         index,
     }));
-    // Set the clockwise direction based on the prop
+    // Configure pie angles based on clockwise direction
     const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
     const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
     return (jsxRuntime.jsxs("div", { className: clsx('pie-semi-circle-chart', pieSemiCircleChart_module.default['pie-semi-circle-chart'], className), "data-testid": "pie-chart-container", style: {
             display: 'flex',
             flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
-        }, children: [jsxRuntime.jsx("svg", { width: width, height: height + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0), viewBox: `0 0 ${width} ${height + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0)}`, "data-testid": "pie-chart-svg", children: jsxRuntime.jsxs(group.Group, { top: radius + (showLegend && legendAlignmentVertical === 'top' ? legendHeight + 20 : 0), left: radius, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: radius, innerRadius: innerRadius, cornerRadius: 3, padAngle: pad, startAngle: startAngle, endAngle: endAngle, pieSort: accessors.sort, children: pie => {
+        }, children: [jsxRuntime.jsx("svg", { width: width, height: radius, viewBox: `0 0 ${width} ${chartHeight}`, "data-testid": "pie-chart-svg", children: jsxRuntime.jsxs(group.Group, { top: chartHeight, left: width / 2, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: radius, innerRadius: innerRadius, cornerRadius: 3, padAngle: PAD_ANGLE, startAngle: startAngle, endAngle: endAngle, pieSort: accessors.sort, children: pie => {
                                 return pie.arcs.map(arc => (jsxRuntime.jsx("g", { onMouseMove: handleArcMouseMove(arc), onMouseLeave: handleMouseLeave, children: jsxRuntime.jsx("path", { d: pie.path(arc) || '', fill: accessors.fill(arc.data), "data-testid": "pie-segment" }) }, arc.data.label)));
                             } }), jsxRuntime.jsxs(group.Group, { children: [jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -40, className: pieSemiCircleChart_module.default.label, children: label }), jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -20, className: pieSemiCircleChart_module.default.note, children: note })] })] }) }), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: {
                     label: tooltipData.label,
                     value: tooltipData.value,
                     valueDisplay: tooltipData.valueDisplay,
-                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieSemiCircleChart_module.default['pie-semi-circle-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: clsx(pieSemiCircleChart_module.default['pie-semi-circle-chart-legend'], {
+                    [pieSemiCircleChart_module.default['is-on-top']]: legendAlignmentVertical === 'top',
+                    [pieSemiCircleChart_module.default['is-on-bottom']]: legendAlignmentVertical === 'bottom',
+                }), shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const PieSemiCircleChart = props => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';

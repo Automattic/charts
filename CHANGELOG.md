@@ -15,6 +15,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Charts: Fix TS errors related to missing React import in stories
+- Fixed top margin for semi cicle chart
 
 ## [0.22.0] - 2025-07-28
 ### Added
