@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Add Conversion Funnel Chart doc to storybook index page.
 
+### Fixed
+- Tests: Specify locale in tooltip tests.
+
 ## [0.23.1] - 2025-08-01
 ### Fixed
 - Line Chart: Improve pointer event types [#44510]
