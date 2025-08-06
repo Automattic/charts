@@ -11,6 +11,7 @@ import { useChartId, useChartRegistration } from '../../providers/chart-context/
 import { useChartTheme } from '../../providers/theme/theme-provider.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
+import { useChartLegendData } from '../legend/use-chart-legend-data.js';
 import { useElementHeight } from '../shared/use-element-height.js';
 import { withResponsive } from '../shared/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
@@ -68,12 +69,10 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
         // Use the color property from the data object as a last resort. The theme provides colours by default.
         fill: (d) => d.color || providerTheme.colors[d.index % providerTheme.colors.length],
     }), [providerTheme.colors]);
-    // Create legend items with color from accessors (which respects item.color)
-    const legendItems = useMemo(() => data.map((item, index) => ({
-        label: item.label,
-        value: item.valueDisplay || item.value.toString(),
-        color: accessors.fill({ ...item, index }),
-    })), [data, accessors]);
+    // Memoize legend options to prevent unnecessary re-calculations
+    const legendOptions = useMemo(() => ({ showValues: true }), []);
+    // Create legend items using the reusable hook
+    const legendItems = useChartLegendData(data, providerTheme, legendOptions);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         thickness,
@@ -108,10 +107,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     label: tooltipData.label,
                     value: tooltipData.value,
                     valueDisplay: tooltipData.valueDisplay,
-                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: clsx(styles['pie-semi-circle-chart-legend'], {
-                    [styles['is-on-top']]: legendAlignmentVertical === 'top',
-                    [styles['is-on-bottom']]: legendAlignmentVertical === 'bottom',
-                }), shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const PieSemiCircleChart = props => (jsx(ChartProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';

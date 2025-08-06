@@ -16,7 +16,8 @@ const orientationToFlexDirection = {
  * Base legend component that displays color-coded items with labels based on visx LegendOrdinal.
  * We avoid using LegendOrdinal directly to enable support for advanced features such as interactivity.
  */
-const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '1', labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
+const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
+labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = useChartTheme();
     const legendScale = scaleOrdinal({
         domain: items.map(item => item.label),
@@ -42,7 +43,7 @@ const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', a
                             flex: labelFlex,
                             margin: labelMargin,
                             ...theme.legendLabelStyles,
-                        }, ...legendLabelProps, children: [label.text, items.find(item => item.label === label.text)?.value && (jsx("span", { className: styles['legend-item-value'], children: items.find(item => item.label === label.text)?.value }))] })] }, `legend-${label.text}-${i}`))) })) }));
+                        }, ...legendLabelProps, children: [label.text, items.find(item => item.label === label.text)?.value && (jsxs("span", { className: styles['legend-item-value'], children: ['\u00A0', items.find(item => item.label === label.text)?.value] }))] })] }, `legend-${label.text}-${i}`))) })) }));
 });
 
 export { BaseLegend };

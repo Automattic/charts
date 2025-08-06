@@ -18,7 +18,8 @@ const orientationToFlexDirection = {
  * Base legend component that displays color-coded items with labels based on visx LegendOrdinal.
  * We avoid using LegendOrdinal directly to enable support for advanced features such as interactivity.
  */
-const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '1', labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
+const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
+labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = themeProvider.useChartTheme();
     const legendScale = scale.scaleOrdinal({
         domain: items.map(item => item.label),
@@ -44,7 +45,7 @@ const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizont
                             flex: labelFlex,
                             margin: labelMargin,
                             ...theme.legendLabelStyles,
-                        }, ...legendLabelProps, children: [label.text, items.find(item => item.label === label.text)?.value && (jsxRuntime.jsx("span", { className: legend_module.default['legend-item-value'], children: items.find(item => item.label === label.text)?.value }))] })] }, `legend-${label.text}-${i}`))) })) }));
+                        }, ...legendLabelProps, children: [label.text, items.find(item => item.label === label.text)?.value && (jsxRuntime.jsxs("span", { className: legend_module.default['legend-item-value'], children: ['\u00A0', items.find(item => item.label === label.text)?.value] }))] })] }, `legend-${label.text}-${i}`))) })) }));
 });
 
 exports.BaseLegend = BaseLegend;

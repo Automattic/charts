@@ -44,7 +44,7 @@ const validateData = (data) => {
  * @param {PieChartProps} props - Component props
  * @return {JSX.Element} The rendered chart component
  */
-const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend, legendOrientation, legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
+const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
     const providerTheme = useChartTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
