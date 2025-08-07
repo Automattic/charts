@@ -1,4 +1,5 @@
 import { jsxs, jsx } from 'react/jsx-runtime';
+import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import Gridicon from 'gridicons';
 import { useId, useRef, useState, useEffect } from 'react';
@@ -46,10 +47,10 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
                     width: `${POPOVER_BUTTON_SIZE}px`,
                     height: `${POPOVER_BUTTON_SIZE}px`,
                     transform: `translate(${POPOVER_BUTTON_SIZE / 2}px, 0)`,
-                }, "aria-label": title || 'View details', children: renderLabel({ title, subtitle }) }), jsx("div", { ref: popoverRef, id: popoverId, ...{ popover: 'auto' }, className: clsx(styles['line-chart__annotation-label-popover'], isPositioned && styles['line-chart__annotation-label-popover--visible'], isBrowserSafari && styles['line-chart__annotation-label-popover--safari']), "data-testid": "line-chart-annotation-label-popover", children: jsxs("div", { className: styles['line-chart__annotation-label-popover-header'], children: [jsx("div", { className: styles['line-chart__annotation-label-popover-content'], children: renderLabelPopover({ title, subtitle }) }), jsx("button", { ...{
+                }, "aria-label": title || __('View details', 'jetpack-charts'), children: renderLabel({ title, subtitle }) }), jsx("div", { ref: popoverRef, id: popoverId, ...{ popover: 'auto' }, className: clsx(styles['line-chart__annotation-label-popover'], isPositioned && styles['line-chart__annotation-label-popover--visible'], isBrowserSafari && styles['line-chart__annotation-label-popover--safari']), "data-testid": "line-chart-annotation-label-popover", children: jsxs("div", { className: styles['line-chart__annotation-label-popover-header'], children: [jsx("div", { className: styles['line-chart__annotation-label-popover-content'], children: renderLabelPopover({ title, subtitle }) }), jsx("button", { ...{
                                 popovertarget: popoverId,
                                 popovertargetaction: 'hide',
-                            }, className: styles['line-chart__annotation-label-popover-close-button'], "aria-label": "Close", children: jsx(Gridicon, { icon: "cross", size: 16 }) })] }) })] }));
+                            }, className: styles['line-chart__annotation-label-popover-close-button'], "aria-label": __('Close', 'jetpack-charts'), children: jsx(Gridicon, { icon: "cross", size: 16 }) })] }) })] }));
 };
 
 export { POPOVER_BUTTON_SIZE, LineChartAnnotationLabelWithPopover as default };

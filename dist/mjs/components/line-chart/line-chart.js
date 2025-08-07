@@ -4,6 +4,7 @@ import { formatNumberCompact } from '@automattic/number-formatters';
 import { curveCatmullRom, curveLinear, curveMonotoneX } from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
 import { XYChart, Grid, Axis, AreaSeries, DataContext } from '@visx/xychart';
+import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
@@ -230,7 +231,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                 display: 'flex',
                 flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
                 position: 'relative',
-            }, children: [jsx("div", { role: "grid", "aria-label": "line chart", tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxs(XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
+            }, children: [jsx("div", { role: "grid", "aria-label": __('Line chart', 'jetpack-charts'), tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxs(XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
                             ...defaultMargin,
                             ...margin,
                             ...(showLegend && legendAlignmentVertical === 'top'

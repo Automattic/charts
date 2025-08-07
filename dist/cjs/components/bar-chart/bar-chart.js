@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var jsxRuntime = require('react/jsx-runtime');
 var pattern = require('@visx/pattern');
 var xychart = require('@visx/xychart');
+var i18n = require('@wordpress/i18n');
 var clsx = require('clsx');
 var react = require('react');
 var chartContext = require('../../providers/chart-context/chart-context.js');
@@ -151,7 +152,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     }
     const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
     const highlightedBarStyle = createKeyboardHighlightStyle();
-    return (jsxRuntime.jsxs("div", { className: clsx('bar-chart', barChart_module.default['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": "bar chart", style: {
+    return (jsxRuntime.jsxs("div", { className: clsx('bar-chart', barChart_module.default['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": i18n.__('Bar chart', 'jetpack-charts'), style: {
             width,
             height,
             display: 'flex',

@@ -8,6 +8,7 @@ var numberFormatters = require('@automattic/number-formatters');
 var curve = require('@visx/curve');
 var gradient = require('@visx/gradient');
 var xychart = require('@visx/xychart');
+var i18n = require('@wordpress/i18n');
 var clsx = require('clsx');
 var chartContext = require('../../providers/chart-context/chart-context.js');
 var utils = require('../../providers/chart-context/utils.js');
@@ -234,7 +235,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
                 display: 'flex',
                 flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
                 position: 'relative',
-            }, children: [jsxRuntime.jsx("div", { role: "grid", "aria-label": "line chart", tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxRuntime.jsxs(xychart.XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
+            }, children: [jsxRuntime.jsx("div", { role: "grid", "aria-label": i18n.__('Line chart', 'jetpack-charts'), tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxRuntime.jsxs(xychart.XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
                             ...defaultMargin,
                             ...margin,
                             ...(showLegend && legendAlignmentVertical === 'top'

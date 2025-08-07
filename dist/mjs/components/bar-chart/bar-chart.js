@@ -1,6 +1,7 @@
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { PatternHexagons, PatternWaves, PatternCircles, PatternLines } from '@visx/pattern';
 import { XYChart, Grid, BarGroup, BarSeries, Axis } from '@visx/xychart';
+import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { useContext, useId, useRef, useState, useCallback, useMemo } from 'react';
 import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
@@ -147,7 +148,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     }
     const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
     const highlightedBarStyle = createKeyboardHighlightStyle();
-    return (jsxs("div", { className: clsx('bar-chart', styles['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": "bar chart", style: {
+    return (jsxs("div", { className: clsx('bar-chart', styles['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": __('Bar chart', 'jetpack-charts'), style: {
             width,
             height,
             display: 'flex',
