@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: updates charts to improve legend functionality and tidy up some legend layout issues
+- Update package dependencies.
 
 ## [0.24.0] - 2025-08-04
 ### Added
