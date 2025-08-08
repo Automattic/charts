@@ -24,13 +24,16 @@ labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps
         range: items.map(item => item.color),
     });
     const domain = legendScale.domain();
+    // For right-aligned vertical legends, use row-reverse to align text consistently
     const getShapeStyle = useCallback(({ index }) => {
         return items[index]?.shapeStyle ?? theme.legendShapeStyles?.[index] ?? {};
     }, [items, theme]);
     return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--horizontal-align-${alignmentHorizontal}`], styles[`legend--vertical-align-${alignmentVertical}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,
-            }, children: labels.map((label, i) => (jsxs(LegendItem, { className: styles['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsx(Group, { children: items[i]?.renderGlyph({
+            }, children: labels.map((label, i) => (jsxs(LegendItem, { className: styles['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: orientation === 'vertical' && alignmentHorizontal === 'right'
+                    ? 'row-reverse'
+                    : itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsx(Group, { children: items[i]?.renderGlyph({
                                 key: `legend-glyph-${label.text}`,
                                 datum: {},
                                 index: i,
