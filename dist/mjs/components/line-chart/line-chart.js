@@ -1,5 +1,5 @@
 import { jsx, jsxs } from 'react/jsx-runtime';
-import { forwardRef, useId, useRef, useState, useImperativeHandle, useMemo, useContext, createElement } from 'react';
+import { forwardRef, useRef, useState, useImperativeHandle, useMemo, useContext, createElement } from 'react';
 import { formatNumberCompact } from '@automattic/number-formatters';
 import { curveCatmullRom, curveLinear, curveMonotoneX } from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
@@ -133,7 +133,6 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
     const providerTheme = useChartTheme();
     const theme = useXYChartTheme(data);
-    const internalChartId = useId(); // Ensure unique ids for gradient fill.
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
     const chartRef = useRef(null);
@@ -244,8 +243,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                                 const lineProps = seriesData.options?.seriesLineStyle ??
                                     providerTheme?.seriesLineStyles?.[index % providerTheme.seriesLineStyles.length] ??
                                     {};
-                                return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${internalChartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
-                                                ? `url(#area-gradient-${internalChartId}-${index + 1})`
+                                return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
+                                                ? `url(#area-gradient-${chartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
                             }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
 });

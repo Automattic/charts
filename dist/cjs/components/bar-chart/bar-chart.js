@@ -39,8 +39,6 @@ const validateData = (data) => {
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
 const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, }) => {
     const horizontal = orientation === 'horizontal';
-    // Generate a unique chart ID to avoid pattern conflicts with multiple charts
-    const internalChartId = react.useId();
     const chartId = utils.useChartId(providedChartId);
     const providerTheme = themeProvider.useChartTheme();
     const theme = themeProvider.useXYChartTheme(data);
@@ -69,8 +67,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     });
     const getColor = react.useCallback((seriesData, index) => seriesData?.options?.stroke || theme.colors[index % theme.colors.length], [theme]);
     const getBarBackground = react.useCallback((index) => () => withPatterns
-        ? `url(#${getPatternId(internalChartId, index)})`
-        : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, internalChartId]);
+        ? `url(#${getPatternId(chartId, index)})`
+        : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, chartId]);
     const renderDefaultTooltip = react.useCallback(({ tooltipData }) => {
         const nearestDatum = tooltipData?.nearestDatum?.datum;
         if (!nearestDatum)
@@ -79,7 +77,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     }, [chartOptions.tooltip]);
     const renderPattern = react.useCallback((index, color) => {
         const patternType = index % 4;
-        const id = getPatternId(internalChartId, index);
+        const id = getPatternId(chartId, index);
         const commonProps = {
             id,
             stroke: 'white',
@@ -97,16 +95,16 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
             case 3:
                 return jsxRuntime.jsx(pattern.PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
         }
-    }, [internalChartId]);
+    }, [chartId]);
     const createPatternBorderStyle = react.useCallback((index, color) => {
-        const patternId = getPatternId(internalChartId, index);
+        const patternId = getPatternId(chartId, index);
         return `
 			.visx-bar[fill="url(#${patternId})"] {
 				stroke: ${color};
 				stroke-width: 1;
 				}
 			`;
-    }, [internalChartId]);
+    }, [chartId]);
     const createKeyboardHighlightStyle = react.useCallback(() => {
         if (selectedIndex === undefined)
             return '';

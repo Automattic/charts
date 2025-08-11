@@ -3,7 +3,7 @@ import { PatternHexagons, PatternWaves, PatternCircles, PatternLines } from '@vi
 import { XYChart, Grid, BarGroup, BarSeries, Axis } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
-import { useContext, useId, useRef, useState, useCallback, useMemo } from 'react';
+import { useContext, useRef, useState, useCallback, useMemo } from 'react';
 import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
@@ -35,8 +35,6 @@ const validateData = (data) => {
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
 const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, }) => {
     const horizontal = orientation === 'horizontal';
-    // Generate a unique chart ID to avoid pattern conflicts with multiple charts
-    const internalChartId = useId();
     const chartId = useChartId(providedChartId);
     const providerTheme = useChartTheme();
     const theme = useXYChartTheme(data);
@@ -65,8 +63,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     });
     const getColor = useCallback((seriesData, index) => seriesData?.options?.stroke || theme.colors[index % theme.colors.length], [theme]);
     const getBarBackground = useCallback((index) => () => withPatterns
-        ? `url(#${getPatternId(internalChartId, index)})`
-        : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, internalChartId]);
+        ? `url(#${getPatternId(chartId, index)})`
+        : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, chartId]);
     const renderDefaultTooltip = useCallback(({ tooltipData }) => {
         const nearestDatum = tooltipData?.nearestDatum?.datum;
         if (!nearestDatum)
@@ -75,7 +73,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     }, [chartOptions.tooltip]);
     const renderPattern = useCallback((index, color) => {
         const patternType = index % 4;
-        const id = getPatternId(internalChartId, index);
+        const id = getPatternId(chartId, index);
         const commonProps = {
             id,
             stroke: 'white',
@@ -93,16 +91,16 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
             case 3:
                 return jsx(PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
         }
-    }, [internalChartId]);
+    }, [chartId]);
     const createPatternBorderStyle = useCallback((index, color) => {
-        const patternId = getPatternId(internalChartId, index);
+        const patternId = getPatternId(chartId, index);
         return `
 			.visx-bar[fill="url(#${patternId})"] {
 				stroke: ${color};
 				stroke-width: 1;
 				}
 			`;
-    }, [internalChartId]);
+    }, [chartId]);
     const createKeyboardHighlightStyle = useCallback(() => {
         if (selectedIndex === undefined)
             return '';

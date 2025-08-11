@@ -16,6 +16,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: updates charts to improve legend functionality and tidy up some legend layout issues
 - Update package dependencies.
 
+### Removed
+- Removed redundant internal chart ID
+
 ### Fixed
 - Charts: fix legend alignment issues for right-aligned vertical legends by using visx-native itemDirection prop
 
