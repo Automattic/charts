@@ -1,3 +1,3 @@
-export { ChartContext, ChartProvider, useChartContext } from './chart-context.js';
+export { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from './global-charts-provider.js';
 export { useChartId, useChartRegistration } from './utils.js';
 export { ChartContextValue, ChartRegistration } from './types.js';

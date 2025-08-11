@@ -1,14 +1,14 @@
 'use strict';
 
 var react = require('react');
-var chartContext = require('./chart-context.js');
+var globalChartsProvider = require('./global-charts-provider.js');
 
 const useChartId = (providedId) => {
     const generatedId = react.useId();
     return providedId || generatedId;
 };
 const useChartRegistration = (chartId, legendItems, theme, chartType, isDataValid, metadata) => {
-    const { registerChart, unregisterChart } = chartContext.useChartContext();
+    const { registerChart, unregisterChart } = globalChartsProvider.useGlobalChartsContext();
     // Memoize metadata to prevent unnecessary re-renders
     const memoizedMetadata = react.useMemo(() => metadata, [metadata]);
     react.useEffect(() => {

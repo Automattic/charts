@@ -10,7 +10,7 @@ var text = require('@visx/text');
 var tooltip = require('@visx/tooltip');
 var clsx = require('clsx');
 var react = require('react');
-var chartContext = require('../../providers/chart-context/chart-context.js');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
 var legend = require('../legend/legend.js');
@@ -113,7 +113,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     valueDisplay: tooltipData.valueDisplay,
                 }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
-const PieSemiCircleChart = props => (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
+const PieSemiCircleChart = props => (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';
 var pieSemiCircleChart = withResponsive.withResponsive(PieSemiCircleChart);
 

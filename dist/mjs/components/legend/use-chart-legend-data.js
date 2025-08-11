@@ -44,7 +44,7 @@ function createBaseLegendItem(label, value, color) {
  */
 function processSeriesData(seriesData, theme, showValues, withGlyph, glyphSize, renderGlyph) {
     const mapper = (series, index) => {
-        const baseItem = createBaseLegendItem(series.label, showValues ? series.data?.length?.toString() || '0' : '', theme.colors[index % theme.colors.length]);
+        const baseItem = createBaseLegendItem(series.label, showValues ? series.data?.length?.toString() || '0' : '', series?.options?.stroke ?? theme.colors[index % theme.colors.length]);
         if (withGlyph && renderGlyph) {
             return {
                 ...baseItem,

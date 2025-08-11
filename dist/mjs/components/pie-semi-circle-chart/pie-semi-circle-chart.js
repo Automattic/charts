@@ -6,7 +6,7 @@ import { Text } from '@visx/text';
 import { useTooltip } from '@visx/tooltip';
 import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
-import { ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme } from '../../providers/theme/theme-provider.js';
 import { Legend } from '../legend/legend.js';
@@ -109,7 +109,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     valueDisplay: tooltipData.valueDisplay,
                 }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
-const PieSemiCircleChart = props => (jsx(ChartProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
+const PieSemiCircleChart = props => (jsx(GlobalChartsProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';
 var pieSemiCircleChart = withResponsive(PieSemiCircleChart);
 

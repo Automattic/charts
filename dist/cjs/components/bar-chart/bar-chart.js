@@ -8,7 +8,7 @@ var xychart = require('@visx/xychart');
 var i18n = require('@wordpress/i18n');
 var clsx = require('clsx');
 var react = require('react');
-var chartContext = require('../../providers/chart-context/chart-context.js');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
 var legend = require('../legend/legend.js');
@@ -164,13 +164,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
                 }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsxRuntime.jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsxRuntime.jsx("style", { children: highlightedBarStyle }), jsxRuntime.jsx(xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsxRuntime.jsx(xychart.BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: barChart_module.default['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: barChart_module.default['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const BarChart = props => {
-    const existingContext = react.useContext(chartContext.ChartContext);
-    // If we're already in a ChartProvider context, don't create a new one
+    const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
         return jsxRuntime.jsx(BarChartInternal, { ...props });
     }
-    // Otherwise, create our own ChartProvider
-    return (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(BarChartInternal, { ...props }) }));
+    // Otherwise, create our own GlobalChartsProvider
+    return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(BarChartInternal, { ...props }) }));
 };
 BarChart.displayName = 'BarChart';
 var BarChart$1 = withResponsive.withResponsive(BarChart);

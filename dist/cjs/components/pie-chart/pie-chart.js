@@ -8,7 +8,7 @@ var shape = require('@visx/shape');
 var clsx = require('clsx');
 var react = require('react');
 var useChartMouseHandler = require('../../hooks/use-chart-mouse-handler.js');
-var chartContext = require('../../providers/chart-context/chart-context.js');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
 var themes = require('../../providers/theme/themes.js');
@@ -118,13 +118,13 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                 } }))] }));
 };
 const PieChart = (props) => {
-    const existingContext = react.useContext(chartContext.ChartContext);
-    // If we're already in a ChartProvider context, don't create a new one
+    const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
         return jsxRuntime.jsx(PieChartInternal, { ...props });
     }
-    // Otherwise, create our own ChartProvider
-    return (jsxRuntime.jsx(chartContext.ChartProvider, { children: jsxRuntime.jsx(PieChartInternal, { ...props }) }));
+    // Otherwise, create our own GlobalChartsProvider
+    return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(PieChartInternal, { ...props }) }));
 };
 PieChart.displayName = 'PieChart';
 var pieChart = withResponsive.withResponsive(PieChart);

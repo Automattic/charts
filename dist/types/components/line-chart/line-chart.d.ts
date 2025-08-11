@@ -1,11 +1,12 @@
+import { Legend } from '../legend/legend.js';
+import { SVGProps, ReactNode } from 'react';
+import { GlyphProps } from '@visx/xychart';
+import { Optional, BaseChartProps, SeriesData, DataPointDate } from '../../types.js';
+import { SingleChartRef } from '../shared/single-chart-context.js';
 import LineChartAnnotation from './line-chart-annotation.js';
 import LineChartAnnotationsOverlay from './line-chart-annotations-overlay.js';
-import { LineChartRef } from './line-chart-context.js';
-import { Optional, BaseChartProps, SeriesData, DataPointDate } from '../../types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
-import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { SVGProps, ReactNode } from 'react';
 
 type CurveType = 'smooth' | 'linear' | 'monotone';
 type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
@@ -29,9 +30,10 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
 type LineChartAnnotationComponents = {
     AnnotationsOverlay: typeof LineChartAnnotationsOverlay;
     Annotation: typeof LineChartAnnotation;
+    Legend: typeof Legend;
 };
 type LineChartBaseProps = Optional<LineChartProps, 'width' | 'height' | 'size'>;
-type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<LineChartRef>> & LineChartAnnotationComponents;
-declare const ResponsiveLineChart: LineChartResponsiveComponent;
+type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<SingleChartRef>> & LineChartAnnotationComponents;
+declare const LineChartResponsive: LineChartResponsiveComponent;
 
-export { type RenderLineStartGlyphProps, ResponsiveLineChart as default };
+export { type RenderLineStartGlyphProps, LineChartResponsive as default };

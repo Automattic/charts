@@ -4,7 +4,7 @@ import { Pie } from '@visx/shape';
 import clsx from 'clsx';
 import { useContext, useMemo } from 'react';
 import useChartMouseHandler from '../../hooks/use-chart-mouse-handler.js';
-import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme } from '../../providers/theme/theme-provider.js';
 import { defaultTheme } from '../../providers/theme/themes.js';
@@ -114,13 +114,13 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                 } }))] }));
 };
 const PieChart = (props) => {
-    const existingContext = useContext(ChartContext);
-    // If we're already in a ChartProvider context, don't create a new one
+    const existingContext = useContext(GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
         return jsx(PieChartInternal, { ...props });
     }
-    // Otherwise, create our own ChartProvider
-    return (jsx(ChartProvider, { children: jsx(PieChartInternal, { ...props }) }));
+    // Otherwise, create our own GlobalChartsProvider
+    return (jsx(GlobalChartsProvider, { children: jsx(PieChartInternal, { ...props }) }));
 };
 PieChart.displayName = 'PieChart';
 var pieChart = withResponsive(PieChart);

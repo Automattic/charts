@@ -1,12 +1,12 @@
 import { useId, useMemo, useEffect } from 'react';
-import { useChartContext } from './chart-context.js';
+import { useGlobalChartsContext } from './global-charts-provider.js';
 
 const useChartId = (providedId) => {
     const generatedId = useId();
     return providedId || generatedId;
 };
 const useChartRegistration = (chartId, legendItems, theme, chartType, isDataValid, metadata) => {
-    const { registerChart, unregisterChart } = useChartContext();
+    const { registerChart, unregisterChart } = useGlobalChartsContext();
     // Memoize metadata to prevent unnecessary re-renders
     const memoizedMetadata = useMemo(() => metadata, [metadata]);
     useEffect(() => {

@@ -1,11 +1,11 @@
 import { jsx } from 'react/jsx-runtime';
 import { DataContext } from '@visx/xychart';
 import { useState, useCallback, useEffect } from 'react';
-import { useLineChartContext } from './line-chart-context.js';
+import { useSingleChartContext } from '../shared/single-chart-context.js';
 import styles from './line-chart.module.scss.js';
 
 const LineChartAnnotationsOverlay = ({ children }) => {
-    const { chartRef, chartWidth, chartHeight } = useLineChartContext();
+    const { chartRef, chartWidth, chartHeight } = useSingleChartContext();
     const [scales, setScales] = useState(null);
     const [scalesStable, setScalesStable] = useState(false);
     // Create a signature for scale data to enable easy comparison

@@ -1,17 +1,24 @@
 import { jsx } from 'react/jsx-runtime';
 import { forwardRef, useContext, useMemo } from 'react';
-import { ChartContext } from '../../providers/chart-context/chart-context.js';
+import { GlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
+import { SingleChartContext } from '../shared/single-chart-context.js';
 import { BaseLegend } from './base-legend.js';
 
 const Legend = forwardRef(({ chartId, items, ...props }, ref) => {
     // Get context but don't throw if it doesn't exist
-    const context = useContext(ChartContext);
+    const context = useContext(GlobalChartsContext);
+    const singleChartContext = useContext(SingleChartContext);
+    // When chartId is used, it is standalone mode
+    // When chartId is not provided, we use the context's chartId, meaning it is in a single chart context
+    const contextChartId = chartId ?? singleChartContext?.chartId;
     // Use useMemo to ensure re-rendering when context changes
     const contextItems = useMemo(() => {
-        return chartId && context ? context.getChartData(chartId)?.legendItems : undefined;
-    }, [chartId, context]);
-    // Use context items if available, otherwise fall back to provided items
-    const legendItems = (contextItems || items);
+        return contextChartId && context
+            ? context.getChartData(contextChartId)?.legendItems
+            : undefined;
+    }, [contextChartId, context]);
+    // Provided items take precedence over context items
+    const legendItems = (items || contextItems);
     if (!legendItems) {
         return null;
     }

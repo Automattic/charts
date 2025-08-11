@@ -5,11 +5,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var jsxRuntime = require('react/jsx-runtime');
 var xychart = require('@visx/xychart');
 var react = require('react');
-var lineChartContext = require('./line-chart-context.js');
+var singleChartContext = require('../shared/single-chart-context.js');
 var lineChart_module = require('./line-chart.module.scss.js');
 
 const LineChartAnnotationsOverlay = ({ children }) => {
-    const { chartRef, chartWidth, chartHeight } = lineChartContext.useLineChartContext();
+    const { chartRef, chartWidth, chartHeight } = singleChartContext.useSingleChartContext();
     const [scales, setScales] = react.useState(null);
     const [scalesStable, setScalesStable] = react.useState(false);
     // Create a signature for scale data to enable easy comparison

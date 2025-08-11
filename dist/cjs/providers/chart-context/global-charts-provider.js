@@ -3,8 +3,8 @@
 var jsxRuntime = require('react/jsx-runtime');
 var react = require('react');
 
-const ChartContext = react.createContext(null);
-const ChartProvider = ({ children }) => {
+const GlobalChartsContext = react.createContext(null);
+const GlobalChartsProvider = ({ children }) => {
     const [charts, setCharts] = react.useState(() => new Map());
     const registerChart = react.useCallback((id, data) => {
         setCharts(prev => new Map(prev).set(id, data));
@@ -25,16 +25,16 @@ const ChartProvider = ({ children }) => {
         unregisterChart,
         getChartData,
     }), [charts, registerChart, unregisterChart, getChartData]);
-    return jsxRuntime.jsx(ChartContext.Provider, { value: value, children: children });
+    return jsxRuntime.jsx(GlobalChartsContext.Provider, { value: value, children: children });
 };
-const useChartContext = () => {
-    const context = react.useContext(ChartContext);
+const useGlobalChartsContext = () => {
+    const context = react.useContext(GlobalChartsContext);
     if (!context) {
-        throw new Error('useChartContext must be used within a ChartProvider');
+        throw new Error('useGlobalChartsContext must be used within a GlobalChartsProvider');
     }
     return context;
 };
 
-exports.ChartContext = ChartContext;
-exports.ChartProvider = ChartProvider;
-exports.useChartContext = useChartContext;
+exports.GlobalChartsContext = GlobalChartsContext;
+exports.GlobalChartsProvider = GlobalChartsProvider;
+exports.useGlobalChartsContext = useGlobalChartsContext;

@@ -4,7 +4,7 @@ import { XYChart, Grid, BarGroup, BarSeries, Axis } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { useContext, useRef, useState, useCallback, useMemo } from 'react';
-import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
 import { Legend } from '../legend/legend.js';
@@ -160,13 +160,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
                 }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxs(Fragment, { children: [jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsx("style", { children: highlightedBarStyle }), jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsx(BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
 const BarChart = props => {
-    const existingContext = useContext(ChartContext);
-    // If we're already in a ChartProvider context, don't create a new one
+    const existingContext = useContext(GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
         return jsx(BarChartInternal, { ...props });
     }
-    // Otherwise, create our own ChartProvider
-    return (jsx(ChartProvider, { children: jsx(BarChartInternal, { ...props }) }));
+    // Otherwise, create our own GlobalChartsProvider
+    return (jsx(GlobalChartsProvider, { children: jsx(BarChartInternal, { ...props }) }));
 };
 BarChart.displayName = 'BarChart';
 var BarChart$1 = withResponsive(BarChart);

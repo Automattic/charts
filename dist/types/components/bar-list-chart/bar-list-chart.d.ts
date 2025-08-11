@@ -2,8 +2,8 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/bar-chart.js';
-import { ScaleOptions, SeriesData } from '../../types.js';
 import { ComponentType } from 'react';
+import { ScaleOptions, SeriesData } from '../../types.js';
 
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
     options?: {

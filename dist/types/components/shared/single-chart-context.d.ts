@@ -1,4 +1,4 @@
-interface LineChartRef {
+interface ChartInstanceRef {
     getScales: () => {
         xScale: unknown;
         yScale: unknown;
@@ -14,5 +14,6 @@ interface LineChartRef {
         };
     };
 }
+type SingleChartRef = ChartInstanceRef;
 
-export type { LineChartRef };
+export type { ChartInstanceRef, SingleChartRef };

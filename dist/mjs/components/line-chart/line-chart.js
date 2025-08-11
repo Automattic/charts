@@ -6,13 +6,15 @@ import { LinearGradient } from '@visx/gradient';
 import { XYChart, Grid, Axis, AreaSeries, DataContext } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
-import { ChartContext, ChartProvider } from '../../providers/chart-context/chart-context.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
+import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
 import { DefaultGlyph } from '../shared/default-glyph.js';
+import { SingleChartContext } from '../shared/single-chart-context.js';
 import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
 import { useChartMargin } from '../shared/use-chart-margin.js';
 import { useElementHeight } from '../shared/use-element-height.js';
@@ -20,7 +22,6 @@ import { withResponsive } from '../shared/with-responsive.js';
 import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
 import LineChartAnnotation from './line-chart-annotation.js';
 import LineChartAnnotationsOverlay from './line-chart-annotations-overlay.js';
-import { LineChartContext } from './line-chart-context.js';
 import styles from './line-chart.module.scss.js';
 
 const X_TICK_WIDTH = 100;
@@ -219,7 +220,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
     if (error) {
         return jsx("div", { className: clsx('line-chart', styles['line-chart']), children: error });
     }
-    return (jsx(LineChartContext.Provider, { value: {
+    return (jsx(SingleChartContext.Provider, { value: {
             chartId,
             chartRef: internalChartRef,
             chartWidth: width,
@@ -248,21 +249,25 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
                             }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
 });
-const LineChart = forwardRef((props, ref) => {
-    const existingContext = useContext(ChartContext);
-    // If we're already in a ChartProvider context, don't create a new one
+const LineChartWithProvider = forwardRef((props, ref) => {
+    const existingContext = useContext(GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, render the core component directly
     if (existingContext) {
         return jsx(LineChartInternal, { ...props, ref: ref });
     }
-    // Otherwise, create our own ChartProvider
-    return (jsx(ChartProvider, { children: jsx(LineChartInternal, { ...props, ref: ref }) }));
+    // Otherwise, wrap with our own GlobalChartsProvider
+    return (jsx(GlobalChartsProvider, { children: jsx(LineChartInternal, { ...props, ref: ref }) }));
 });
-LineChart.displayName = 'LineChart';
-LineChart.AnnotationsOverlay = LineChartAnnotationsOverlay;
-LineChart.Annotation = LineChartAnnotation;
-const ResponsiveLineChart = Object.assign(withResponsive(LineChart), {
+LineChartWithProvider.displayName = 'LineChart';
+attachSubComponents(LineChartWithProvider, {
+    Legend: Legend,
+    AnnotationsOverlay: LineChartAnnotationsOverlay,
+    Annotation: LineChartAnnotation,
+});
+const LineChartResponsive = attachSubComponents(withResponsive(LineChartWithProvider), {
+    Legend: Legend,
     AnnotationsOverlay: LineChartAnnotationsOverlay,
     Annotation: LineChartAnnotation,
 });
 
-export { LineChart as LineChartUnresponsive, ResponsiveLineChart as default };
+export { LineChartResponsive as default };
