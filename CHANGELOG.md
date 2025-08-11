@@ -5,22 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.25.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.25.0] - 2025-08-11
 ### Added
-- Charts: Add internationalization
+- Add internationalization. [#44652]
 
 ### Changed
-- Charts: updates charts to improve legend functionality and tidy up some legend layout issues
-- Update package dependencies.
+- Improve legend functionality and tidy up some legend layout issues. [#44573]
+- Update package dependencies. [#44677]
 
 ### Removed
-- Removed redundant internal chart ID
+- Remove redundant internal chart ID. [#44728]
 
 ### Fixed
-- Charts: fix legend alignment issues for right-aligned vertical legends by using visx-native itemDirection prop
+- Fix legend alignment issues for right-aligned vertical legends. [#44622]
 
 ## [0.24.0] - 2025-08-04
 ### Added
@@ -364,7 +361,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.25.0-alpha]: https://github.com/Automattic/charts/compare/v0.24.0...v0.25.0-alpha
+[0.25.0]: https://github.com/Automattic/charts/compare/v0.24.0...v0.25.0
 [0.24.0]: https://github.com/Automattic/charts/compare/v0.23.1...v0.24.0
 [0.23.1]: https://github.com/Automattic/charts/compare/v0.23.0...v0.23.1
 [0.23.0]: https://github.com/Automattic/charts/compare/v0.22.0...v0.23.0
