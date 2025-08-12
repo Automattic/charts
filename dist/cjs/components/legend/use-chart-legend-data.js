@@ -1,6 +1,8 @@
 'use strict';
 
+require('@visx/xychart');
 var react = require('react');
+var getStyles = require('../../utils/get-styles.js');
 
 /**
  * Formats the value for a data point based on its type
@@ -22,16 +24,18 @@ function formatPointValue(point, showValues) {
 }
 /**
  * Creates a base legend item with common properties
- * @param label - The label for the legend item
- * @param value - The value for the legend item
- * @param color - The color for the legend item
+ * @param label      - The label for the legend item
+ * @param value      - The value for the legend item
+ * @param color      - The color for the legend item
+ * @param shapeStyle - The shape style for the legend item
  * @return Base legend item object
  */
-function createBaseLegendItem(label, value, color) {
+function createBaseLegendItem(label, value, color, shapeStyle) {
     return {
         label,
         value,
         color,
+        shapeStyle,
     };
 }
 /**
@@ -42,11 +46,14 @@ function createBaseLegendItem(label, value, color) {
  * @param withGlyph   - Whether to include glyph rendering
  * @param glyphSize   - Size of the glyph
  * @param renderGlyph - Component to render the glyph
+ * @param legendShape - The shape to use for the legend
  * @return Array of processed legend items
  */
-function processSeriesData(seriesData, theme, showValues, withGlyph, glyphSize, renderGlyph) {
+function processSeriesData(seriesData, theme, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
     const mapper = (series, index) => {
-        const baseItem = createBaseLegendItem(series.label, showValues ? series.data?.length?.toString() || '0' : '', series?.options?.stroke ?? theme.colors[index % theme.colors.length]);
+        const { stroke } = getStyles.getSeriesStyles(series, index, theme);
+        const { shapeStyles } = getStyles.getItemShapeStyles(series, index, theme, legendShape);
+        const baseItem = createBaseLegendItem(series.label, showValues ? series.data?.length?.toString() || '0' : '', stroke, shapeStyles);
         if (withGlyph && renderGlyph) {
             return {
                 ...baseItem,
@@ -84,12 +91,13 @@ function processPointData(pointData, theme, showValues, withGlyph, glyphSize, re
 }
 /**
  * Hook to transform chart data into legend items
- * @param data    - The chart data to transform
- * @param theme   - The chart theme for colors
- * @param options - Configuration options for legend generation
+ * @param data        - The chart data to transform
+ * @param theme       - The chart theme for colors
+ * @param options     - Configuration options for legend generation
+ * @param legendShape - The shape type for legend items (string literal or React component)
  * @return Array of legend items ready for display
  */
-function useChartLegendData(data, theme, options = {}) {
+function useChartLegendData(data, theme, options = {}, legendShape) {
     const { showValues = false, withGlyph = false, glyphSize = 8, renderGlyph } = options;
     return react.useMemo(() => {
         if (!data || !Array.isArray(data) || data.length === 0) {
@@ -97,11 +105,11 @@ function useChartLegendData(data, theme, options = {}) {
         }
         // Handle SeriesData (multiple series with data points)
         if ('data' in data[0]) {
-            return processSeriesData(data, theme, showValues, withGlyph, glyphSize, renderGlyph);
+            return processSeriesData(data, theme, showValues, withGlyph, glyphSize, renderGlyph, legendShape);
         }
         // Handle DataPointDate or DataPointPercentage (single data points)
         return processPointData(data, theme, showValues, withGlyph, glyphSize, renderGlyph);
-    }, [data, theme, showValues, withGlyph, glyphSize, renderGlyph]);
+    }, [data, theme, showValues, withGlyph, glyphSize, renderGlyph, legendShape]);
 }
 
 exports.useChartLegendData = useChartLegendData;

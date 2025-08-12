@@ -1,5 +1,5 @@
 import { LegendOrdinal } from '@visx/legend';
-import { GlyphProps } from '@visx/xychart';
+import { GlyphProps, LineStyles } from '@visx/xychart';
 import { ComponentProps, ReactNode, CSSProperties } from 'react';
 
 type LegendOrdinalProps = Omit<ComponentProps<typeof LegendOrdinal>, 'scale' | 'direction'>;
@@ -9,7 +9,7 @@ type BaseLegendItem = {
     color: string;
     glyphSize?: number;
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
-    shapeStyle?: CSSProperties;
+    shapeStyle?: CSSProperties & LineStyles;
 };
 type LegendItemWithGlyph = BaseLegendItem & {
     renderGlyph: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;

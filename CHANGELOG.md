@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Composition legends for Line Chart
+- Line Chart: Add comparison style to theme
 
 ## [0.25.0] - 2025-08-11
 ### Added

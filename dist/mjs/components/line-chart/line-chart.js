@@ -10,6 +10,7 @@ import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
+import { getSeriesStyles } from '../../utils/get-styles.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
@@ -201,7 +202,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
         renderGlyph,
     }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(dataSorted, providerTheme, legendOptions);
+    const legendItems = useChartLegendData(dataSorted, providerTheme, legendOptions, legendShape);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         withGradientFill,
@@ -240,10 +241,11 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                         }, 
                         // xScale and yScale could be set in Axis as well, but they are `scale` props there.
                         xScale: chartOptions.xScale, yScale: chartOptions.yScale, onPointerDown: onPointerDown, onPointerUp: onPointerUp, onPointerMove: onPointerMove, onPointerOut: onPointerOut, pointerEventsDataKey: "nearest", children: [jsx(Grid, { columns: false, numTicks: 4 }), jsx(Axis, { ...chartOptions.axis.x }), jsx(Axis, { ...chartOptions.axis.y }), dataSorted.map((seriesData, index) => {
-                                const stroke = seriesData.options?.stroke ?? theme.colors[index % theme.colors.length];
-                                const lineProps = seriesData.options?.seriesLineStyle ??
-                                    providerTheme?.seriesLineStyles?.[index % providerTheme.seriesLineStyles.length] ??
-                                    {};
+                                const { stroke, lineStyles } = getSeriesStyles(seriesData, index, providerTheme);
+                                const lineProps = {
+                                    stroke,
+                                    ...lineStyles,
+                                };
                                 return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
                                                 ? `url(#area-gradient-${chartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));

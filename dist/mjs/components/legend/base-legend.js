@@ -25,9 +25,7 @@ labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps
     });
     const domain = legendScale.domain();
     // For right-aligned vertical legends, use row-reverse to align text consistently
-    const getShapeStyle = useCallback(({ index }) => {
-        return items[index]?.shapeStyle ?? theme.legendShapeStyles?.[index] ?? {};
-    }, [items, theme]);
+    const getShapeStyle = useCallback(({ index }) => items[index]?.shapeStyle, [items]);
     return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--horizontal-align-${alignmentHorizontal}`], styles[`legend--vertical-align-${alignmentVertical}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,

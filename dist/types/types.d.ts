@@ -29,21 +29,23 @@ type DataPointDate = {
     value: number | null;
     label?: string;
 };
+type SeriesDataOptions = {
+    gradient?: {
+        from: string;
+        to: string;
+        fromOpacity?: number;
+        toOpacity?: number;
+    };
+    stroke?: string;
+    seriesLineStyle?: LineStyles;
+    legendShapeStyle?: CSSProperties;
+    type?: 'comparison';
+};
 type SeriesData = {
     group?: string;
     label: string;
     data: DataPointDate[] | DataPoint[];
-    options?: {
-        gradient?: {
-            from: string;
-            to: string;
-            fromOpacity?: number;
-            toOpacity?: number;
-        };
-        stroke?: string;
-        seriesLineStyle?: LineStyles;
-        legendShapeStyle?: CSSProperties;
-    };
+    options?: SeriesDataOptions;
 };
 type MultipleDataPointsDate = {
     label: string;
@@ -96,7 +98,7 @@ type ChartTheme = {
     /** Styles for series lines */
     seriesLineStyles?: LineStyles[];
     /** Styles for legend shapes */
-    legendShapeStyles?: CSSProperties[];
+    legendShapeStyles?: (CSSProperties & LineStyles)[];
     /** Array of render functions for glyphs */
     glyphs?: Array<(<Datum extends object>(props: GlyphProps<Datum>) => ReactNode)>;
     /** Styles for legend labels */
@@ -129,6 +131,9 @@ type ChartTheme = {
         positiveChangeColor?: string;
         /** Color for negative change indicators */
         negativeChangeColor?: string;
+    };
+    lineChart?: {
+        lineStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, LineStyles>>;
     };
 };
 declare type AxisOptions = {
@@ -313,4 +318,4 @@ interface ToggleEvent extends Event {
     oldState: 'open' | 'closed';
 }
 
-export type { BaseChartProps, ButtonWithPopover, ChartTheme, DataPoint, DataPointDate, DataPointPercentage, GridProps, MultipleDataPointsDate, Optional, OrientationType, PopoverButtonAttributes, PopoverElement, PopoverElementAttributes, ScaleOptions, SeriesData, ToggleEvent };
+export type { BaseChartProps, ButtonWithPopover, ChartTheme, DataPoint, DataPointDate, DataPointPercentage, GridProps, MultipleDataPointsDate, Optional, OrientationType, PopoverButtonAttributes, PopoverElement, PopoverElementAttributes, ScaleOptions, SeriesData, SeriesDataOptions, ToggleEvent };
