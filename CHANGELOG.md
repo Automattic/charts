@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Composition legends for Line Chart
 - Line Chart: Add comparison style to theme
 
+### Changed
+- Update package dependencies.
+
 ## [0.25.0] - 2025-08-11
 ### Added
 - Add internationalization. [#44652]
