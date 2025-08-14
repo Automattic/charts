@@ -16,7 +16,7 @@ const orientationToFlexDirection = {
  * Base legend component that displays color-coded items with labels based on visx LegendOrdinal.
  * We avoid using LegendOrdinal directly to enable support for advanced features such as interactivity.
  */
-const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
+const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', position = 'bottom', alignment = 'center', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
 labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = useChartTheme();
     const legendScale = scaleOrdinal({
@@ -26,12 +26,10 @@ labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps
     const domain = legendScale.domain();
     // For right-aligned vertical legends, use row-reverse to align text consistently
     const getShapeStyle = useCallback(({ index }) => items[index]?.shapeStyle, [items]);
-    return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--horizontal-align-${alignmentHorizontal}`], styles[`legend--vertical-align-${alignmentVertical}`], className), style: {
+    return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--alignment-${alignment}`], styles[`legend--position-${position}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,
-            }, children: labels.map((label, i) => (jsxs(LegendItem, { className: styles['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: orientation === 'vertical' && alignmentHorizontal === 'right'
-                    ? 'row-reverse'
-                    : itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsx(Group, { children: items[i]?.renderGlyph({
+            }, children: labels.map((label, i) => (jsxs(LegendItem, { className: styles['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: orientation === 'vertical' && alignment === 'end' ? 'row-reverse' : itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsx(Group, { children: items[i]?.renderGlyph({
                                 key: `legend-glyph-${label.text}`,
                                 datum: {},
                                 index: i,

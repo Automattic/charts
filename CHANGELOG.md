@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Line Chart: Add comparison style to theme
 
 ### Changed
+- Charts: updated legend positioning and alignment
 - Update package dependencies.
 
 ## [0.25.0] - 2025-08-11

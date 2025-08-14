@@ -18,7 +18,7 @@ const orientationToFlexDirection = {
  * Base legend component that displays color-coded items with labels based on visx LegendOrdinal.
  * We avoid using LegendOrdinal directly to enable support for advanced features such as interactivity.
  */
-const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', alignmentHorizontal = 'center', alignmentVertical = 'bottom', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
+const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', position = 'bottom', alignment = 'center', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
 labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = themeProvider.useChartTheme();
     const legendScale = scale.scaleOrdinal({
@@ -28,12 +28,10 @@ labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps
     const domain = legendScale.domain();
     // For right-aligned vertical legends, use row-reverse to align text consistently
     const getShapeStyle = react.useCallback(({ index }) => items[index]?.shapeStyle, [items]);
-    return (jsxRuntime.jsx(legend.LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsxRuntime.jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(legend_module.default.legend, legend_module.default[`legend--${orientation}`], legend_module.default[`legend--horizontal-align-${alignmentHorizontal}`], legend_module.default[`legend--vertical-align-${alignmentVertical}`], className), style: {
+    return (jsxRuntime.jsx(legend.LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsxRuntime.jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(legend_module.default.legend, legend_module.default[`legend--${orientation}`], legend_module.default[`legend--alignment-${alignment}`], legend_module.default[`legend--position-${position}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,
-            }, children: labels.map((label, i) => (jsxRuntime.jsxs(legend.LegendItem, { className: legend_module.default['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: orientation === 'vertical' && alignmentHorizontal === 'right'
-                    ? 'row-reverse'
-                    : itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsxRuntime.jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsxRuntime.jsx(group.Group, { children: items[i]?.renderGlyph({
+            }, children: labels.map((label, i) => (jsxRuntime.jsxs(legend.LegendItem, { className: legend_module.default['legend-item'], "data-testid": "legend-item", margin: itemMargin, flexDirection: orientation === 'vertical' && alignment === 'end' ? 'row-reverse' : itemDirection, ...legendItemProps, children: [items[i]?.renderGlyph ? (jsxRuntime.jsx("svg", { width: items[i]?.glyphSize * 2, height: items[i]?.glyphSize * 2, "data-testid": "legend-glyph", children: jsxRuntime.jsx(group.Group, { children: items[i]?.renderGlyph({
                                 key: `legend-glyph-${label.text}`,
                                 datum: {},
                                 index: i,

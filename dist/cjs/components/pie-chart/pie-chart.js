@@ -48,7 +48,7 @@ const validateData = (data) => {
  * @param {PieChartProps} props - Component props
  * @return {JSX.Element} The rendered chart component
  */
-const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
+const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
     const providerTheme = themeProvider.useChartTheme();
     const chartId = utils.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
@@ -73,7 +73,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     }
     const width = size;
     const height = size;
-    const adjustedHeight = showLegend && legendAlignmentVertical === 'top' ? height - legendHeight : height;
+    const adjustedHeight = showLegend && legendPosition === 'top' ? height - legendHeight : height;
     // Calculate radius based on width/height
     const radius = Math.min(width, adjustedHeight) / 2;
     // Center the chart in the available space
@@ -97,7 +97,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     };
     return (jsxRuntime.jsxs("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), style: {
             display: 'flex',
-            flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+            flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
         }, children: [jsxRuntime.jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxRuntime.jsxs(group.Group, { top: centerY, left: centerX, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
                                 return pie.arcs.map((arc, index) => {
                                     const [centroidX, centroidY] = pie.path.centroid(arc);
@@ -113,7 +113,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                     }
                                     return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || themes.defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
-                            } }), children] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                            } }), children] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',
                 } }))] }));
 };

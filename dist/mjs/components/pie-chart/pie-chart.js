@@ -44,7 +44,7 @@ const validateData = (data) => {
  * @param {PieChartProps} props - Component props
  * @return {JSX.Element} The rendered chart component
  */
-const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
+const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
     const providerTheme = useChartTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
@@ -69,7 +69,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     }
     const width = size;
     const height = size;
-    const adjustedHeight = showLegend && legendAlignmentVertical === 'top' ? height - legendHeight : height;
+    const adjustedHeight = showLegend && legendPosition === 'top' ? height - legendHeight : height;
     // Calculate radius based on width/height
     const radius = Math.min(width, adjustedHeight) / 2;
     // Center the chart in the available space
@@ -93,7 +93,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     };
     return (jsxs("div", { className: clsx('pie-chart', styles['pie-chart'], className), style: {
             display: 'flex',
-            flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+            flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
         }, children: [jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
                                 return pie.arcs.map((arc, index) => {
                                     const [centroidX, centroidY] = pie.path.centroid(arc);
@@ -109,7 +109,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                     }
                                     return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
-                            } }), children] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                            } }), children] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',
                 } }))] }));
 };

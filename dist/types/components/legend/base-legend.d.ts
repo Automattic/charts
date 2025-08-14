@@ -46,8 +46,8 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
 }, "shapeStyle"> & {
     items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
     orientation?: "horizontal" | "vertical";
-    alignmentHorizontal?: "left" | "center" | "right";
-    alignmentVertical?: "top" | "bottom";
+    position?: "top" | "bottom";
+    alignment?: "start" | "center" | "end";
 } & react.RefAttributes<HTMLDivElement>>;
 
 export { BaseLegend };

@@ -132,7 +132,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
     }), [context, width, height, margin]);
     return null; // This component only provides the ref interface
 };
-const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignmentHorizontal = 'center', legendAlignmentVertical = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
+const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignment = 'center', legendPosition = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
     const providerTheme = useChartTheme();
     const theme = useXYChartTheme(data);
     const chartId = useChartId(providedChartId);
@@ -230,12 +230,12 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                 width,
                 height,
                 display: 'flex',
-                flexDirection: showLegend && legendAlignmentVertical === 'top' ? 'column-reverse' : 'column',
+                flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
                 position: 'relative',
             }, children: [jsx("div", { role: "grid", "aria-label": __('Line chart', 'jetpack-charts'), tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, children: jsxs(XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
                             ...defaultMargin,
                             ...margin,
-                            ...(showLegend && legendAlignmentVertical === 'top'
+                            ...(showLegend && legendPosition === 'top'
                                 ? { top: (defaultMargin.top || 0) + legendHeight }
                                 : {}),
                         }, 
@@ -249,7 +249,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                                 return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
                                                 ? `url(#area-gradient-${chartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
-                            }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignmentHorizontal: legendAlignmentHorizontal, alignmentVertical: legendAlignmentVertical, className: styles['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
+                            }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignment: legendAlignment, position: legendPosition, className: styles['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
 });
 const LineChartWithProvider = forwardRef((props, ref) => {
     const existingContext = useContext(GlobalChartsContext);
