@@ -4,7 +4,7 @@ import { Group } from '@visx/group';
 import { createScale, scaleBand } from '@visx/scale';
 import { Text } from '@visx/text';
 import { useMemo } from 'react';
-import BarChart from '../bar-chart/bar-chart.js';
+import BarChartResponsive from '../bar-chart/bar-chart.js';
 import { withResponsive } from '../shared/with-responsive.js';
 
 /**
@@ -103,7 +103,7 @@ const BarListChart = ({ data, width, height, options = {}, margin = {
             yOffset: options.yOffset ?? getDefaultYOffset(data, yScale, height, isMultiSeries),
         };
     }, [options, width, data, height]);
-    return (jsx(BarChart, { orientation: "horizontal", gridVisibility: 'none', data: data, width: width, height: height, margin: margin, options: {
+    return (jsx(BarChartResponsive, { orientation: "horizontal", gridVisibility: 'none', data: data, width: width, height: height, margin: margin, options: {
             axis: {
                 y: {
                     children: (renderProps) => (jsx(AxisRenderer, { ...renderProps, data: data, yOffset: chartOptions.yOffset, labelPosition: chartOptions.labelPosition, valuePosition: chartOptions.valuePosition, labelFormatter: chartOptions.labelFormatter, valueFormatter: chartOptions.valueFormatter, LabelComponent: options.labelComponent, ValueComponent: options.valueComponent })),

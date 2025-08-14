@@ -1,15 +1,21 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
+import { Legend } from '../legend/legend.js';
+import { FC, ReactNode, ComponentType } from 'react';
+import { BaseChartProps, SeriesData, DataPointDate, Optional } from '../../types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
-import { BaseChartProps, SeriesData, DataPointDate } from '../../types.js';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { ReactNode } from 'react';
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
     showZeroValues?: boolean;
+    children?: ReactNode;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarChartProps>, "height" | "size" | "width"> & Omit<BarChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
+interface BarChartSubComponents {
+    Legend: ComponentType<React.ComponentProps<typeof Legend>>;
+}
+type BarChartResponsiveComponent = FC<BarChartBaseProps & ResponsiveConfig> & BarChartSubComponents;
+declare const BarChartResponsive: BarChartResponsiveComponent;
 
-export { type BarChartProps, _default as default };
+export { type BarChartProps, BarChartResponsive as default };

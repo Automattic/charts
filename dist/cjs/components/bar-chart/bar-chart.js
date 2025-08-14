@@ -11,9 +11,11 @@ var react = require('react');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
 var themeProvider = require('../../providers/theme/theme-provider.js');
+var createComposition = require('../../utils/create-composition.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
+var singleChartContext = require('../shared/single-chart-context.js');
 var useChartDataTransform = require('../shared/use-chart-data-transform.js');
 var useChartMargin = require('../shared/use-chart-margin.js');
 var useElementHeight = require('../shared/use-element-height.js');
@@ -37,7 +39,7 @@ const validateData = (data) => {
     return null;
 };
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
-const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, children, }) => {
     const horizontal = orientation === 'horizontal';
     const chartId = utils.useChartId(providedChartId);
     const providerTheme = themeProvider.useChartTheme();
@@ -150,20 +152,24 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
     }
     const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
     const highlightedBarStyle = createKeyboardHighlightStyle();
-    return (jsxRuntime.jsxs("div", { className: clsx('bar-chart', barChart_module.default['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": i18n.__('Bar chart', 'jetpack-charts'), style: {
-            width,
-            height,
-            display: 'flex',
-            flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
-        }, tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, "data-chart-id": `bar-chart-${chartId}`, children: [jsxRuntime.jsxs(xychart.XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
-                    ...defaultMargin,
-                    ...margin,
-                    ...(showLegend && legendPosition === 'top'
-                        ? { top: (defaultMargin.top || 0) + legendHeight }
-                        : {}),
-                }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsxRuntime.jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsxRuntime.jsx("style", { children: highlightedBarStyle }), jsxRuntime.jsx(xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsxRuntime.jsx(xychart.BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: barChart_module.default['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: barChart_module.default['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+    return (jsxRuntime.jsx(singleChartContext.SingleChartContext.Provider, { value: {
+            chartId,
+            chartWidth: width,
+            chartHeight: height - (showLegend ? legendHeight : 0),
+        }, children: jsxRuntime.jsxs("div", { className: clsx('bar-chart', barChart_module.default['bar-chart'], className), "data-testid": "bar-chart", role: "grid", "aria-label": i18n.__('Bar chart', 'jetpack-charts'), style: {
+                width,
+                height,
+                display: 'flex',
+                flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
+            }, tabIndex: 0, onKeyDown: onChartKeyDown, onFocus: onChartFocus, onBlur: onChartBlur, ref: chartRef, "data-chart-id": `bar-chart-${chartId}`, children: [jsxRuntime.jsxs(xychart.XYChart, { theme: theme, width: width, height: height - (showLegend ? legendHeight : 0), margin: {
+                        ...defaultMargin,
+                        ...margin,
+                        ...(showLegend && legendPosition === 'top'
+                            ? { top: (defaultMargin.top || 0) + legendHeight }
+                            : {}),
+                    }, xScale: chartOptions.xScale, yScale: chartOptions.yScale, horizontal: horizontal, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: gridVisibility.includes('y'), rows: gridVisibility.includes('x'), numTicks: 4 }), withPatterns && (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map((seriesData, index) => renderPattern(index, getColor(seriesData, index))) }), jsxRuntime.jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getColor(seriesData, index))) })] })), highlightedBarStyle && jsxRuntime.jsx("style", { children: highlightedBarStyle }), jsxRuntime.jsx(xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => (jsxRuntime.jsx(xychart.BarSeries, { dataKey: seriesData?.label, data: seriesData.data, yAccessor: chartOptions.accessors.yAccessor, xAccessor: chartOptions.accessors.xAccessor, colorAccessor: getBarBackground(index) }, seriesData?.label))) }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, renderTooltip: renderTooltip || renderDefaultTooltip, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: barChart_module.default['bar-chart__tooltip--keyboard-focused'], series: data, mode: "individual" }))] }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: barChart_module.default['bar-chart__legend'], shape: legendShape, ref: legendRef, chartId: chartId })), children] }) }));
 };
-const BarChart = props => {
+const BarChartWithProvider = props => {
     const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
     // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
@@ -172,7 +178,14 @@ const BarChart = props => {
     // Otherwise, create our own GlobalChartsProvider
     return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(BarChartInternal, { ...props }) }));
 };
-BarChart.displayName = 'BarChart';
-var BarChart$1 = withResponsive.withResponsive(BarChart);
+BarChartWithProvider.displayName = 'BarChart';
+// Create BarChart with composition API
+createComposition.attachSubComponents(BarChartWithProvider, {
+    Legend: legend.Legend,
+});
+// Create responsive BarChart with composition API
+const BarChartResponsive = createComposition.attachSubComponents(withResponsive.withResponsive(BarChartWithProvider), {
+    Legend: legend.Legend,
+});
 
-exports.default = BarChart$1;
+exports.default = BarChartResponsive;
