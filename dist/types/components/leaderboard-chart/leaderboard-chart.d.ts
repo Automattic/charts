@@ -6,9 +6,9 @@ interface LeaderboardEntry {
      */
     id: string;
     /**
-     * Human-readable name (e.g., 'Direct')
+     * Human-readable name (e.g., 'Direct') or a JSX element (e.g., <h4>Direct</h4>)
      */
-    label: string;
+    label: string | JSX.Element;
     /**
      * Value of the entry
      */
@@ -40,6 +40,10 @@ interface LeaderboardChartProps {
      */
     withComparison?: boolean;
     /**
+     * Whether to overlay the label on top of bar
+     */
+    withOverlayLabel?: boolean;
+    /**
      * Primary color for current period bars
      */
     primaryColor?: string;
@@ -66,22 +70,27 @@ interface LeaderboardChartProps {
     /**
      * Custom styling for the chart container
      */
-    style?: React.CSSProperties;
+    style?: React.CSSProperties & {
+        '--bar-border'?: string;
+        '--primary-color'?: string;
+        '--secondary-color'?: string;
+    };
 }
 /**
  * LeaderboardChart component displays a ranked list of data with progress bars
  * and optional comparison values.
  *
- * @param props                - Component props
- * @param props.data           - Array of leaderboard entries to display
- * @param props.withComparison - Whether to show comparison data
- * @param props.primaryColor   - Primary color for current period bars
- * @param props.secondaryColor - Secondary color for comparison period bars
- * @param props.valueFormatter - Custom formatter for values
- * @param props.deltaFormatter - Custom formatter for delta values
- * @param props.loading        - Whether the chart is in loading state
- * @param props.className      - Additional CSS class name
- * @param props.style          - Custom styling for the chart container
+ * @param props                  - Component props
+ * @param props.data             - Array of leaderboard entries to display
+ * @param props.withComparison   - Whether to show comparison data
+ * @param props.withOverlayLabel - Whether to overlay the label on top of the bar
+ * @param props.primaryColor     - Primary color for current period bars
+ * @param props.secondaryColor   - Secondary color for comparison period bars
+ * @param props.valueFormatter   - Custom formatter for values
+ * @param props.deltaFormatter   - Custom formatter for delta values
+ * @param props.loading          - Whether the chart is in loading state
+ * @param props.className        - Additional CSS class name
+ * @param props.style            - Custom styling for the chart container
  * @return JSX element representing the leaderboard chart
  */
 declare const LeaderboardChart: FC<LeaderboardChartProps>;

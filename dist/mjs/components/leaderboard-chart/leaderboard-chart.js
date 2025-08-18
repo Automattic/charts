@@ -1,4 +1,4 @@
-import { jsx, jsxs } from 'react/jsx-runtime';
+import { jsx, jsxs, Fragment as Fragment$1 } from 'react/jsx-runtime';
 import { __experimentalGrid, __experimentalVStack, __experimentalText, ProgressBar } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 import clsx from 'clsx';
@@ -42,23 +42,26 @@ const defaultDeltaFormatter = (value) => {
         signDisplay: 'exceptZero',
     });
 };
+const ProgressBarWithOverlayLabel = ({ entry }) => (jsxs("div", { className: styles.progressContainerWithOverlayLabel, children: [typeof entry.label === 'string' ? (jsx(__experimentalText, { className: styles.progressBarLabel, children: entry.label })) : (entry.label), jsx("div", { className: styles.progressBar, style: { width: entry.currentShare + '%' } })] }));
+const ProgressBarWithLabel = ({ entry, withComparison, }) => (jsxs(Fragment$1, { children: [typeof entry.label === 'string' ? jsx(__experimentalText, { children: entry.label }) : entry.label, jsxs("div", { className: styles.progressContainer, children: [jsx(ProgressBar, { value: entry.currentShare, className: clsx(styles.progressBar, styles.primaryBar) }), withComparison && (jsx(ProgressBar, { value: entry.previousShare, className: clsx(styles.progressBar, styles.secondaryBar) }))] })] }));
 /**
  * LeaderboardChart component displays a ranked list of data with progress bars
  * and optional comparison values.
  *
- * @param props                - Component props
- * @param props.data           - Array of leaderboard entries to display
- * @param props.withComparison - Whether to show comparison data
- * @param props.primaryColor   - Primary color for current period bars
- * @param props.secondaryColor - Secondary color for comparison period bars
- * @param props.valueFormatter - Custom formatter for values
- * @param props.deltaFormatter - Custom formatter for delta values
- * @param props.loading        - Whether the chart is in loading state
- * @param props.className      - Additional CSS class name
- * @param props.style          - Custom styling for the chart container
+ * @param props                  - Component props
+ * @param props.data             - Array of leaderboard entries to display
+ * @param props.withComparison   - Whether to show comparison data
+ * @param props.withOverlayLabel - Whether to overlay the label on top of the bar
+ * @param props.primaryColor     - Primary color for current period bars
+ * @param props.secondaryColor   - Secondary color for comparison period bars
+ * @param props.valueFormatter   - Custom formatter for values
+ * @param props.deltaFormatter   - Custom formatter for delta values
+ * @param props.loading          - Whether the chart is in loading state
+ * @param props.className        - Additional CSS class name
+ * @param props.style            - Custom styling for the chart container
  * @return JSX element representing the leaderboard chart
  */
-const LeaderboardChart = ({ data, withComparison = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
+const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
     const theme = useChartTheme();
     // Get component settings from theme with fallbacks
     const leaderboardSettings = theme.leaderboardChart;
@@ -84,7 +87,9 @@ const LeaderboardChart = ({ data, withComparison = false, primaryColor, secondar
     return (jsx(__experimentalGrid, { className: clsx(styles.leaderboardChart, loading && styles.loading, className), templateColumns: "minmax(0, 1fr) auto", rowGap: rowGap, columnGap: columnGap, style: chartStyle, children: data.map(entry => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = signColors[colorIndex];
-            return (jsxs(Fragment, { children: [jsxs(__experimentalVStack, { spacing: labelSpacing, children: [jsx(__experimentalText, { children: entry.label }), jsxs("div", { className: styles.progressContainer, children: [jsx(ProgressBar, { value: entry.currentShare, className: clsx(styles.progressBar, styles.primaryBar) }), withComparison && (jsx(ProgressBar, { value: entry.previousShare, className: clsx(styles.progressBar, styles.secondaryBar) }))] })] }), jsxs("div", { className: styles.valueContainer, children: [jsx(__experimentalText, { children: valueFormatter(entry.currentValue) }), withComparison && (jsx(__experimentalText, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
+            return (jsxs(Fragment, { children: [jsx(__experimentalVStack, { spacing: labelSpacing, children: withOverlayLabel ? (jsx(ProgressBarWithOverlayLabel, { entry: entry })) : (jsx(ProgressBarWithLabel, { entry: entry, withComparison: withComparison })) }), jsxs("div", { className: clsx(styles.valueContainer, {
+                            [styles.overlayLabel]: withOverlayLabel,
+                        }), children: [jsx(__experimentalText, { children: valueFormatter(entry.currentValue) }), withComparison && (jsx(__experimentalText, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
         }) }));
 };
 
