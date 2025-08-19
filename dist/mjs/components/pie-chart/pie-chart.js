@@ -1,17 +1,19 @@
-import { jsx, jsxs } from 'react/jsx-runtime';
+import { jsx, Fragment, jsxs } from 'react/jsx-runtime';
 import { Group } from '@visx/group';
 import { Pie } from '@visx/shape';
 import clsx from 'clsx';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, Children, isValidElement } from 'react';
 import 'fast-deep-equal';
 import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import { useChartMouseHandler } from '../../hooks/use-chart-mouse-handler.js';
 import '@visx/xychart';
 import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
+import { SingleChartContext } from '../shared/single-chart-context.js';
 import { useElementHeight } from '../shared/use-element-height.js';
 import { withResponsive } from '../shared/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
@@ -40,6 +42,32 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 /**
+ * Compound component for SVG children in the PieChart
+ * @param {PropsWithChildren} props          - Component props
+ * @param {ReactNode}         props.children - Child elements to render
+ * @return {JSX.Element} The children wrapped in a fragment
+ */
+const PieChartSVG = ({ children }) => {
+    // This component doesn't render directly - its children are extracted by PieChart
+    // We just return the children as-is
+    return jsx(Fragment, { children: children });
+};
+// Set displayName for better debugging and type checking
+PieChartSVG.displayName = 'PieChart.SVG';
+/**
+ * Compound component for HTML children in the PieChart
+ * @param {PropsWithChildren} props          - Component props
+ * @param {ReactNode}         props.children - Child elements to render
+ * @return {JSX.Element} The children wrapped in a fragment
+ */
+const PieChartHTML = ({ children }) => {
+    // This component doesn't render directly - its children are extracted by PieChart
+    // We just return the children as-is
+    return jsx(Fragment, { children: children });
+};
+// Set displayName for better debugging and type checking
+PieChartHTML.displayName = 'PieChart.HTML';
+/**
  * Renders a pie or donut chart using the provided data.
  *
  * @param {PieChartProps} props - Component props
@@ -57,6 +85,39 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     // Create legend items using the reusable hook
     const legendItems = useChartLegendData(data, legendOptions);
     const { isValid, message } = validateData(data);
+    // Process children to extract compound components
+    const { svgChildren, htmlChildren, otherChildren } = useMemo(() => {
+        const svg = [];
+        const html = [];
+        const other = [];
+        Children.forEach(children, child => {
+            if (isValidElement(child)) {
+                // Check displayName for compound components
+                const childType = child.type;
+                const displayName = childType?.displayName;
+                if (displayName === 'PieChart.SVG') {
+                    // Extract children from PieChart.SVG
+                    Children.forEach(child.props.children, svgChild => {
+                        svg.push(svgChild);
+                    });
+                }
+                else if (displayName === 'PieChart.HTML') {
+                    // Extract children from PieChart.HTML
+                    Children.forEach(child.props.children, htmlChild => {
+                        html.push(htmlChild);
+                    });
+                }
+                else if (child.type === Group) {
+                    // Legacy support: still check for Group type for backward compatibility
+                    svg.push(child);
+                }
+                else {
+                    other.push(child);
+                }
+            }
+        });
+        return { svgChildren: svg, htmlChildren: html, otherChildren: other };
+    }, [children]);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         thickness,
@@ -98,29 +159,33 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         // Use the color property from the data object as a last resort. The theme provides colours by default.
         fill: (d) => d?.color || providerTheme.colors[d.index],
     };
-    return (jsxs("div", { className: clsx('pie-chart', styles['pie-chart'], className), style: {
-            display: 'flex',
-            flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
-        }, children: [jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
-                                return pie.arcs.map((arc, index) => {
-                                    const [centroidX, centroidY] = pie.path.centroid(arc);
-                                    const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
-                                    const handleMouseMove = (event) => onMouseMove(event, arc.data);
-                                    const pathProps = {
-                                        d: pie.path(arc) || '',
-                                        fill: accessors.fill(arc.data),
-                                    };
-                                    if (withTooltips) {
-                                        pathProps.onMouseMove = handleMouseMove;
-                                        pathProps.onMouseLeave = onMouseLeave;
-                                    }
-                                    return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
-                                });
-                            } }), children] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
-                    transform: 'translate(-50%, -100%)',
-                } }))] }));
+    return (jsx(SingleChartContext.Provider, { value: {
+            chartId,
+            chartWidth: size,
+            chartHeight: adjustedHeight,
+        }, children: jsxs("div", { className: clsx('pie-chart', styles['pie-chart'], className), style: {
+                display: 'flex',
+                flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
+            }, children: [jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
+                                    return pie.arcs.map((arc, index) => {
+                                        const [centroidX, centroidY] = pie.path.centroid(arc);
+                                        const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
+                                        const handleMouseMove = (event) => onMouseMove(event, arc.data);
+                                        const pathProps = {
+                                            d: pie.path(arc) || '',
+                                            fill: accessors.fill(arc.data),
+                                        };
+                                        if (withTooltips) {
+                                            pathProps.onMouseMove = handleMouseMove;
+                                            pathProps.onMouseLeave = onMouseLeave;
+                                        }
+                                        return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || '#333', fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
+                                    });
+                                } }), svgChildren] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                        transform: 'translate(-50%, -100%)',
+                    } })), htmlChildren, otherChildren] }) }));
 };
-const PieChart = (props) => {
+const PieChartWithProvider = props => {
     const existingContext = useContext(GlobalChartsContext);
     // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
@@ -129,7 +194,18 @@ const PieChart = (props) => {
     // Otherwise, create our own GlobalChartsProvider
     return (jsx(GlobalChartsProvider, { children: jsx(PieChartInternal, { ...props }) }));
 };
-PieChart.displayName = 'PieChart';
-var pieChart = withResponsive(PieChart);
+PieChartWithProvider.displayName = 'PieChart';
+// Create PieChart with composition API
+const PieChart = attachSubComponents(PieChartWithProvider, {
+    Legend: Legend,
+    SVG: PieChartSVG,
+    HTML: PieChartHTML,
+});
+// Create responsive PieChart with composition API
+const PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider), {
+    Legend: Legend,
+    SVG: PieChartSVG,
+    HTML: PieChartHTML,
+});
 
-export { pieChart as default };
+export { PieChart as PieChartUnresponsive, PieChartResponsive as default };

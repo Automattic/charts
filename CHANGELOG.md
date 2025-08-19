@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Charts: adds composition legend to pie family charts
 - Charts: Add theme to global context and use instead of that from theme provider
 
 ## [0.27.0] - 2025-08-18
