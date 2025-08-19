@@ -6,7 +6,11 @@ var legend = require('@visx/legend');
 var scale = require('@visx/scale');
 var clsx = require('clsx');
 var react = require('react');
-var themeProvider = require('../../providers/theme/theme-provider.js');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
+require('@visx/event');
+require('@visx/tooltip');
+require('@visx/xychart');
 var legend_module = require('./legend.module.scss.js');
 var utils = require('./utils.js');
 
@@ -20,7 +24,7 @@ const orientationToFlexDirection = {
  */
 const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', position = 'bottom', alignment = 'center', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
 labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
-    const theme = themeProvider.useChartTheme();
+    const theme = useGlobalChartTheme.useGlobalChartTheme();
     const legendScale = scale.scaleOrdinal({
         domain: items.map(item => item.label),
         range: items.map(item => item.color),

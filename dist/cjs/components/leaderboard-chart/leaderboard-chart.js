@@ -7,7 +7,11 @@ var components = require('@wordpress/components');
 var element = require('@wordpress/element');
 var clsx = require('clsx');
 require('react');
-var themeProvider = require('../../providers/theme/theme-provider.js');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
+require('@visx/event');
+require('@visx/tooltip');
+require('@visx/xychart');
 var formatMetricValue = require('../shared/format-metric-value.js');
 var leaderboardChart_module = require('./leaderboard-chart.module.scss.js');
 
@@ -66,7 +70,7 @@ const ProgressBarWithLabel = ({ entry, withComparison, }) => (jsxRuntime.jsxs(js
  * @return JSX element representing the leaderboard chart
  */
 const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
-    const theme = themeProvider.useChartTheme();
+    const theme = useGlobalChartTheme.useGlobalChartTheme();
     // Get component settings from theme with fallbacks
     const leaderboardSettings = theme.leaderboardChart;
     const labelSpacing = leaderboardSettings?.labelSpacing ?? DEFAULT_LEADERBOARD_SETTINGS.labelSpacing;

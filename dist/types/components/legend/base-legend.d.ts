@@ -10,15 +10,21 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
         text: string;
         value?: any;
     }[]) => React.ReactNode;
-    shape?: _visx_legend_lib_types.LegendShape<unknown, any>;
+    className?: string;
+    style?: React.CSSProperties;
+    fill?: (label: {
+        datum: unknown;
+        index: number;
+        text: string;
+        value?: any;
+    }) => string | undefined;
     size?: (label: {
         datum: unknown;
         index: number;
         text: string;
         value?: any;
     }) => string | number | undefined;
-    className?: string;
-    style?: React.CSSProperties;
+    shape?: _visx_legend_lib_types.LegendShape<unknown, any>;
     domain?: unknown[];
     shapeWidth?: string | number;
     shapeHeight?: string | number;
@@ -28,12 +34,6 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
     labelMargin?: string | number;
     itemMargin?: string | number;
     itemDirection?: _visx_legend_lib_types.FlexDirection;
-    fill?: (label: {
-        datum: unknown;
-        index: number;
-        text: string;
-        value?: any;
-    }) => string | undefined;
     shapeStyle?: (label: {
         datum: unknown;
         index: number;

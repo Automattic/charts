@@ -2,10 +2,12 @@
 
 var jsxRuntime = require('react/jsx-runtime');
 var react = require('react');
+var themes = require('../theme/themes.js');
 
 const GlobalChartsContext = react.createContext(null);
-const GlobalChartsProvider = ({ children }) => {
+const GlobalChartsProvider = ({ children, theme = {}, }) => {
     const [charts, setCharts] = react.useState(() => new Map());
+    const providerTheme = react.useMemo(() => ({ ...themes.defaultTheme, ...theme }), [theme]);
     const registerChart = react.useCallback((id, data) => {
         setCharts(prev => new Map(prev).set(id, data));
     }, []);
@@ -24,7 +26,8 @@ const GlobalChartsProvider = ({ children }) => {
         registerChart,
         unregisterChart,
         getChartData,
-    }), [charts, registerChart, unregisterChart, getChartData]);
+        theme: providerTheme,
+    }), [charts, registerChart, unregisterChart, getChartData, providerTheme]);
     return jsxRuntime.jsx(GlobalChartsContext.Provider, { value: value, children: children });
 };
 const useGlobalChartsContext = () => {

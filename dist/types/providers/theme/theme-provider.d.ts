@@ -1,13 +1,11 @@
-import * as _visx_xychart from '@visx/xychart';
-import { ChartTheme, SeriesData } from '../../types.js';
+import { ChartTheme } from '../../types.js';
 import { FC, ReactNode } from 'react';
 
 /**
  * Hook to access chart theme
  * @return {object} A built theme configuration compatible with visx charts
  */
-declare const useChartTheme: () => ChartTheme;
-declare const useXYChartTheme: (data: SeriesData[]) => _visx_xychart.XYChartTheme;
+declare const useChartTheme: () => Partial<ChartTheme>;
 /**
  * Props for the ThemeProvider component
  */
@@ -19,4 +17,4 @@ type ThemeProviderProps = {
 };
 declare const ThemeProvider: FC<ThemeProviderProps>;
 
-export { ThemeProvider, useChartTheme, useXYChartTheme };
+export { ThemeProvider, useChartTheme };

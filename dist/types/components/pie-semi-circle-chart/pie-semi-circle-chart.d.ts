@@ -25,6 +25,6 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      */
     note?: string;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "height" | "size" | "width"> & Omit<PieSemiCircleChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const PieSemiCircleChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "width" | "height" | "size"> & Omit<PieSemiCircleChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { _default as default };
+export { PieSemiCircleChartResponsive as default };

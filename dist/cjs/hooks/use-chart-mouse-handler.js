@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var event = require('@visx/event');
 var tooltip = require('@visx/tooltip');
 var react = require('react');
@@ -45,4 +43,4 @@ const useChartMouseHandler = ({ withTooltips, }) => {
     };
 };
 
-exports.default = useChartMouseHandler;
+exports.useChartMouseHandler = useChartMouseHandler;

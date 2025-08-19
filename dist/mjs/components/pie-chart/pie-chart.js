@@ -3,11 +3,12 @@ import { Group } from '@visx/group';
 import { Pie } from '@visx/shape';
 import clsx from 'clsx';
 import { useContext, useMemo } from 'react';
-import useChartMouseHandler from '../../hooks/use-chart-mouse-handler.js';
+import 'fast-deep-equal';
+import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
+import { useChartMouseHandler } from '../../hooks/use-chart-mouse-handler.js';
+import '@visx/xychart';
 import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
-import { useChartTheme } from '../../providers/theme/theme-provider.js';
-import { defaultTheme } from '../../providers/theme/themes.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
@@ -45,7 +46,7 @@ const validateData = (data) => {
  * @return {JSX.Element} The rendered chart component
  */
 const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
-    const providerTheme = useChartTheme();
+    const providerTheme = useGlobalChartTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
     const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler({
@@ -54,7 +55,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(data, providerTheme, legendOptions);
+    const legendItems = useChartLegendData(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
@@ -63,7 +64,13 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         cornerScale,
     }), [thickness, gapScale, cornerScale]);
     // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, chartMetadata);
+    useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'pie',
+        isDataValid: isValid,
+        metadata: chartMetadata,
+    });
     if (!isValid) {
         return (jsx("div", { className: clsx('pie-chart', styles['pie-chart'], className), children: jsx("div", { className: styles['error-message'], children: message }) }));
     }
@@ -107,7 +114,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                         pathProps.onMouseMove = handleMouseMove;
                                         pathProps.onMouseLeave = onMouseLeave;
                                     }
-                                    return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
+                                    return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
                             } }), children] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',

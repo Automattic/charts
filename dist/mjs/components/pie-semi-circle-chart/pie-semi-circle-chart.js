@@ -5,10 +5,12 @@ import { Pie } from '@visx/shape';
 import { Text } from '@visx/text';
 import { useTooltip } from '@visx/tooltip';
 import clsx from 'clsx';
-import { useCallback, useMemo } from 'react';
-import { GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { useContext, useCallback, useMemo } from 'react';
+import 'fast-deep-equal';
+import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
+import '@visx/xychart';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
-import { useChartTheme } from '../../providers/theme/theme-provider.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
@@ -40,7 +42,7 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, }) => {
-    const providerTheme = useChartTheme();
+    const providerTheme = useGlobalChartTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
@@ -72,14 +74,20 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(data, providerTheme, legendOptions);
+    const legendItems = useChartLegendData(data, legendOptions);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         thickness,
         clockwise,
     }), [thickness, clockwise]);
     // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, chartMetadata);
+    useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'pie-semi-circle',
+        isDataValid: isValid,
+        metadata: chartMetadata,
+    });
     if (!isValid) {
         return (jsx("div", { className: styles['pie-semi-circle-chart'], children: jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: styles.error, children: message }) }) }));
     }
@@ -109,8 +117,16 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     valueDisplay: tooltipData.valueDisplay,
                 }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
-const PieSemiCircleChart = props => (jsx(GlobalChartsProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
+const PieSemiCircleChart = props => {
+    const existingContext = useContext(GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, render the core component directly
+    if (existingContext) {
+        return jsx(PieSemiCircleChartInternal, { ...props });
+    }
+    // Otherwise, wrap with our own GlobalChartsProvider
+    return (jsx(GlobalChartsProvider, { children: jsx(PieSemiCircleChartInternal, { ...props }) }));
+};
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';
-var pieSemiCircleChart = withResponsive(PieSemiCircleChart);
+const PieSemiCircleChartResponsive = withResponsive(PieSemiCircleChart);
 
-export { pieSemiCircleChart as default };
+export { PieSemiCircleChart as PieSemiCircleChartUnresponsive, PieSemiCircleChartResponsive as default };

@@ -4,9 +4,13 @@ import { XYChart, Grid, BarGroup, BarSeries, Axis } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { useContext, useRef, useState, useCallback, useMemo } from 'react';
+import 'fast-deep-equal';
+import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
+import '@visx/event';
+import '@visx/tooltip';
+import { useXYChartTheme } from '../../hooks/use-xychart-theme.js';
 import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
-import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
@@ -38,7 +42,7 @@ const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
 const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, children, }) => {
     const horizontal = orientation === 'horizontal';
     const chartId = useChartId(providedChartId);
-    const providerTheme = useChartTheme();
+    const providerTheme = useGlobalChartTheme();
     const theme = useXYChartTheme(data);
     const dataSorted = useChartDataTransform(data);
     // Transform data to add a small value for zero bars to make them visible
@@ -46,7 +50,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         enabled: showZeroValues,
     });
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(dataSorted, providerTheme);
+    const legendItems = useChartLegendData(dataSorted);
     const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
     const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
     const [legendRef, legendHeight] = useElementHeight();
@@ -63,7 +67,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         chartRef,
         totalPoints,
     });
-    const getColor = useCallback((seriesData, index) => seriesData?.options?.stroke || theme.colors[index % theme.colors.length], [theme]);
+    const getColor = useCallback((seriesData, index) => seriesData?.options?.stroke || providerTheme.colors[index % providerTheme.colors.length], [providerTheme]);
     const getBarBackground = useCallback((index) => () => withPatterns
         ? `url(#${getPatternId(chartId, index)})`
         : getColor(dataSorted[index], index), [withPatterns, getColor, dataSorted, chartId]);
@@ -142,7 +146,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         withPatterns,
     }), [orientation, withPatterns]);
     // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'bar', isDataValid, chartMetadata);
+    useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'bar',
+        isDataValid,
+        metadata: chartMetadata,
+    });
     if (error) {
         return jsx("div", { className: clsx('bar-chart', styles['bar-chart']), children: error });
     }

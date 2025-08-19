@@ -7,11 +7,12 @@ var group = require('@visx/group');
 var shape = require('@visx/shape');
 var clsx = require('clsx');
 var react = require('react');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 var useChartMouseHandler = require('../../hooks/use-chart-mouse-handler.js');
+require('@visx/xychart');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
-var themeProvider = require('../../providers/theme/theme-provider.js');
-var themes = require('../../providers/theme/themes.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
@@ -49,16 +50,16 @@ const validateData = (data) => {
  * @return {JSX.Element} The rendered chart component
  */
 const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
-    const providerTheme = themeProvider.useChartTheme();
+    const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
     const chartId = utils.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
-    const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler.default({
+    const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler.useChartMouseHandler({
         withTooltips,
     });
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = react.useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(data, providerTheme, legendOptions);
+    const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
@@ -67,7 +68,13 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         cornerScale,
     }), [thickness, gapScale, cornerScale]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie', isValid, chartMetadata);
+    utils.useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'pie',
+        isDataValid: isValid,
+        metadata: chartMetadata,
+    });
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), children: jsxRuntime.jsx("div", { className: pieChart_module.default['error-message'], children: message }) }));
     }
@@ -111,7 +118,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                         pathProps.onMouseMove = handleMouseMove;
                                         pathProps.onMouseLeave = onMouseLeave;
                                     }
-                                    return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || themes.defaultTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
+                                    return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor, fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                 });
                             } }), children] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                     transform: 'translate(-50%, -100%)',

@@ -41,4 +41,4 @@ type UseChartMouseHandlerReturn = {
  */
 declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
-export { useChartMouseHandler as default };
+export { useChartMouseHandler };

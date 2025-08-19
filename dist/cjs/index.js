@@ -16,7 +16,11 @@ var group = require('@visx/group');
 var legend$1 = require('@visx/legend');
 var themeProvider = require('./providers/theme/theme-provider.js');
 var themes = require('./providers/theme/themes.js');
+var mergeThemes = require('./utils/merge-themes.js');
+var useDeepMemo = require('./hooks/use-deep-memo.js');
+var useGlobalChartTheme = require('./hooks/use-global-chart-theme.js');
 var useChartMouseHandler = require('./hooks/use-chart-mouse-handler.js');
+var useXychartTheme = require('./hooks/use-xychart-theme.js');
 
 
 
@@ -63,4 +67,8 @@ exports.ThemeProvider = themeProvider.ThemeProvider;
 exports.defaultTheme = themes.defaultTheme;
 exports.jetpackTheme = themes.jetpackTheme;
 exports.wooTheme = themes.wooTheme;
-exports.useChartMouseHandler = useChartMouseHandler.default;
+exports.mergeThemes = mergeThemes.mergeThemes;
+exports.useDeepMemo = useDeepMemo.useDeepMemo;
+exports.useGlobalChartTheme = useGlobalChartTheme.useGlobalChartTheme;
+exports.useChartMouseHandler = useChartMouseHandler.useChartMouseHandler;
+exports.useXYChartTheme = useXychartTheme.useXYChartTheme;

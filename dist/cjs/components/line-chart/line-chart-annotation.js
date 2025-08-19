@@ -5,9 +5,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var jsxRuntime = require('react/jsx-runtime');
 var annotation = require('@visx/annotation');
 var xychart = require('@visx/xychart');
-var merge = require('deepmerge');
+var deepmerge = require('deepmerge');
 var react = require('react');
-var themeProvider = require('../../providers/theme/theme-provider.js');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
+require('@visx/event');
+require('@visx/tooltip');
 var utils = require('../shared/utils.js');
 var lineChartAnnotationLabelPopover = require('./line-chart-annotation-label-popover.js');
 
@@ -91,12 +94,12 @@ const getVerticalAnchor = (subjectType, isFlippedVertically, y, yMax, height) =>
     return undefined;
 };
 const LineChartAnnotation = ({ datum, title, subtitle, subjectType = 'circle', styles: datumStyles, testId, renderLabel, renderLabelPopover, }) => {
-    const providerTheme = themeProvider.useChartTheme();
+    const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
     const { xScale, yScale } = react.useContext(xychart.DataContext) || {};
     const labelRef = react.useRef(null);
     const [height, setHeight] = react.useState(null);
     // Deep merge styles to preserve nested object properties
-    const styles = merge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
+    const styles = deepmerge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
     // Measure the label height once after initial render
     react.useEffect(() => {
         if (labelRef.current?.getBBox) {

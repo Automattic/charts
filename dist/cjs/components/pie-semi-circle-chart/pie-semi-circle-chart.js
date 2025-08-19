@@ -10,9 +10,11 @@ var text = require('@visx/text');
 var tooltip = require('@visx/tooltip');
 var clsx = require('clsx');
 var react = require('react');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
+require('@visx/xychart');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
-var themeProvider = require('../../providers/theme/theme-provider.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
@@ -44,7 +46,7 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, }) => {
-    const providerTheme = themeProvider.useChartTheme();
+    const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
     const chartId = utils.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = tooltip.useTooltip();
@@ -76,14 +78,20 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = react.useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(data, providerTheme, legendOptions);
+    const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
         thickness,
         clockwise,
     }), [thickness, clockwise]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration(chartId, legendItems, providerTheme, 'pie-semi-circle', isValid, chartMetadata);
+    utils.useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'pie-semi-circle',
+        isDataValid: isValid,
+        metadata: chartMetadata,
+    });
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: pieSemiCircleChart_module.default['pie-semi-circle-chart'], children: jsxRuntime.jsx("svg", { width: width, height: width / 2, "data-testid": "pie-chart-svg", children: jsxRuntime.jsx("text", { x: "50%", y: "50%", textAnchor: "middle", className: pieSemiCircleChart_module.default.error, children: message }) }) }));
     }
@@ -113,8 +121,17 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                     valueDisplay: tooltipData.valueDisplay,
                 }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
 };
-const PieSemiCircleChart = props => (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
+const PieSemiCircleChart = props => {
+    const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, render the core component directly
+    if (existingContext) {
+        return jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props });
+    }
+    // Otherwise, wrap with our own GlobalChartsProvider
+    return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
+};
 PieSemiCircleChart.displayName = 'PieSemiCircleChart';
-var pieSemiCircleChart = withResponsive.withResponsive(PieSemiCircleChart);
+const PieSemiCircleChartResponsive = withResponsive.withResponsive(PieSemiCircleChart);
 
-exports.default = pieSemiCircleChart;
+exports.PieSemiCircleChartUnresponsive = PieSemiCircleChart;
+exports.default = PieSemiCircleChartResponsive;

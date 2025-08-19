@@ -1,9 +1,11 @@
 import { jsx } from 'react/jsx-runtime';
-import { createContext, useState, useCallback, useMemo, useContext } from 'react';
+import { createContext, useState, useMemo, useCallback, useContext } from 'react';
+import { defaultTheme } from '../theme/themes.js';
 
 const GlobalChartsContext = createContext(null);
-const GlobalChartsProvider = ({ children }) => {
+const GlobalChartsProvider = ({ children, theme = {}, }) => {
     const [charts, setCharts] = useState(() => new Map());
+    const providerTheme = useMemo(() => ({ ...defaultTheme, ...theme }), [theme]);
     const registerChart = useCallback((id, data) => {
         setCharts(prev => new Map(prev).set(id, data));
     }, []);
@@ -22,7 +24,8 @@ const GlobalChartsProvider = ({ children }) => {
         registerChart,
         unregisterChart,
         getChartData,
-    }), [charts, registerChart, unregisterChart, getChartData]);
+        theme: providerTheme,
+    }), [charts, registerChart, unregisterChart, getChartData, providerTheme]);
     return jsx(GlobalChartsContext.Provider, { value: value, children: children });
 };
 const useGlobalChartsContext = () => {

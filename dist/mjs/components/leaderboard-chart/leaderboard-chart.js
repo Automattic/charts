@@ -3,7 +3,11 @@ import { __experimentalGrid, __experimentalVStack, __experimentalText, ProgressB
 import { Fragment } from '@wordpress/element';
 import clsx from 'clsx';
 import 'react';
-import { useChartTheme } from '../../providers/theme/theme-provider.js';
+import 'fast-deep-equal';
+import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
+import '@visx/event';
+import '@visx/tooltip';
+import '@visx/xychart';
 import { formatMetricValue } from '../shared/format-metric-value.js';
 import styles from './leaderboard-chart.module.scss.js';
 
@@ -62,7 +66,7 @@ const ProgressBarWithLabel = ({ entry, withComparison, }) => (jsxs(Fragment$1, {
  * @return JSX element representing the leaderboard chart
  */
 const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
-    const theme = useChartTheme();
+    const theme = useGlobalChartTheme();
     // Get component settings from theme with fallbacks
     const leaderboardSettings = theme.leaderboardChart;
     const labelSpacing = leaderboardSettings?.labelSpacing ?? DEFAULT_LEADERBOARD_SETTINGS.labelSpacing;

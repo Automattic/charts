@@ -2,6 +2,10 @@
 
 require('@visx/xychart');
 var react = require('react');
+require('fast-deep-equal');
+var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
+require('@visx/event');
+require('@visx/tooltip');
 var getStyles = require('../../utils/get-styles.js');
 
 /**
@@ -92,13 +96,13 @@ function processPointData(pointData, theme, showValues, withGlyph, glyphSize, re
 /**
  * Hook to transform chart data into legend items
  * @param data        - The chart data to transform
- * @param theme       - The chart theme for colors
  * @param options     - Configuration options for legend generation
  * @param legendShape - The shape type for legend items (string literal or React component)
  * @return Array of legend items ready for display
  */
-function useChartLegendData(data, theme, options = {}, legendShape) {
+function useChartLegendData(data, options = {}, legendShape) {
     const { showValues = false, withGlyph = false, glyphSize = 8, renderGlyph } = options;
+    const theme = useGlobalChartTheme.useGlobalChartTheme();
     return react.useMemo(() => {
         if (!data || !Array.isArray(data) || data.length === 0) {
             return [];

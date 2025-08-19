@@ -6,9 +6,13 @@ import { LinearGradient } from '@visx/gradient';
 import { XYChart, Grid, Axis, AreaSeries, DataContext } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
+import 'fast-deep-equal';
+import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
+import '@visx/event';
+import '@visx/tooltip';
+import { useXYChartTheme } from '../../hooks/use-xychart-theme.js';
 import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
-import { useChartTheme, useXYChartTheme } from '../../providers/theme/theme-provider.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
 import { getSeriesStyles } from '../../utils/get-styles.js';
 import { Legend } from '../legend/legend.js';
@@ -133,7 +137,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
     return null; // This component only provides the ref interface
 };
 const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignment = 'center', legendPosition = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
-    const providerTheme = useChartTheme();
+    const providerTheme = useGlobalChartTheme();
     const theme = useXYChartTheme(data);
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
@@ -202,7 +206,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
         renderGlyph,
     }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(dataSorted, providerTheme, legendOptions, legendShape);
+    const legendItems = useChartLegendData(dataSorted, legendOptions, legendShape);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         withGradientFill,
@@ -212,7 +216,13 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
         withLegendGlyph,
     }), [withGradientFill, smoothing, curveType, withStartGlyphs, withLegendGlyph]);
     // Register chart with context only if data is valid
-    useChartRegistration(chartId, legendItems, providerTheme, 'line', isDataValid, chartMetadata);
+    useChartRegistration({
+        chartId,
+        legendItems,
+        chartType: 'line',
+        isDataValid,
+        metadata: chartMetadata,
+    });
     const accessors = {
         xAccessor: (d) => d?.date,
         yAccessor: (d) => d?.value,
@@ -246,7 +256,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
                                     stroke,
                                     ...lineStyles,
                                 };
-                                return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: theme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
+                                return (jsxs("g", { children: [withStartGlyphs && (jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsx(LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: providerTheme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsx(AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
                                                 ? `url(#area-gradient-${chartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
                             }), withTooltips && (jsx(AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: styles['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, alignment: legendAlignment, position: legendPosition, className: styles['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));

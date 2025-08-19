@@ -33,6 +33,6 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      */
     children?: ReactNode;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "height" | "size" | "width"> & Omit<PieChartProps, "height" | "size" | "width"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "width" | "height" | "size"> & Omit<PieChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 export { _default as default };

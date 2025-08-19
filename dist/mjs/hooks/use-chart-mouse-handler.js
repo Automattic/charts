@@ -41,4 +41,4 @@ const useChartMouseHandler = ({ withTooltips, }) => {
     };
 };
 
-export { useChartMouseHandler as default };
+export { useChartMouseHandler };

@@ -3,7 +3,6 @@ import { ChartTheme } from '../../types.js';
 
 interface ChartRegistration {
     legendItems: BaseLegendItem[];
-    theme: ChartTheme;
     chartType: string;
     metadata?: Record<string, unknown>;
 }
@@ -12,6 +11,8 @@ interface ChartContextValue {
     registerChart: (id: string, data: ChartRegistration) => void;
     unregisterChart: (id: string) => void;
     getChartData: (id: string) => ChartRegistration | undefined;
+    /** Theme provided by the GlobalChartsProvider (merged with defaults) */
+    theme: ChartTheme;
 }
 
 export type { ChartContextValue, ChartRegistration };
