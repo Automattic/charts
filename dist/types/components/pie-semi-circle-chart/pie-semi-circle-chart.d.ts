@@ -1,6 +1,7 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
+import { Legend } from '../legend/legend.js';
+import { FC, ComponentType, PropsWithChildren, ReactNode } from 'react';
+import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
-import { BaseChartProps, DataPointPercentage } from '../../types.js';
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -24,7 +25,18 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * Note text to display below the label
      */
     note?: string;
+    /**
+     * Use the children prop to render additional elements on the chart.
+     */
+    children?: ReactNode;
 }
-declare const PieSemiCircleChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieSemiCircleChartProps>, "width" | "height" | "size"> & Omit<PieSemiCircleChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
+interface PieSemiCircleChartSubComponents {
+    Legend: ComponentType<React.ComponentProps<typeof Legend>>;
+    SVG: FC<PropsWithChildren>;
+    HTML: FC<PropsWithChildren>;
+}
+type PieSemiCircleChartResponsiveComponent = FC<PieSemiCircleChartBaseProps & ResponsiveConfig> & PieSemiCircleChartSubComponents;
+declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
 export { PieSemiCircleChartResponsive as default };

@@ -15,9 +15,11 @@ var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 require('@visx/xychart');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var utils = require('../../providers/chart-context/utils.js');
+var createComposition = require('../../utils/create-composition.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
+var singleChartContext = require('../shared/single-chart-context.js');
 var useElementHeight = require('../shared/use-element-height.js');
 var withResponsive = require('../shared/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
@@ -45,7 +47,33 @@ const validateData = (data) => {
     }
     return { isValid: true, message: '' };
 };
-const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, }) => {
+/**
+ * Compound component for SVG children in the PieSemiCircleChart
+ * @param {PropsWithChildren} props          - Component props
+ * @param {ReactNode}         props.children - Child elements to render
+ * @return {JSX.Element} The children wrapped in a fragment
+ */
+const PieSemiCircleChartSVG = ({ children }) => {
+    // This component doesn't render directly - its children are extracted by PieSemiCircleChart
+    // We just return the children as-is
+    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
+};
+// Set displayName for better debugging and type checking
+PieSemiCircleChartSVG.displayName = 'PieSemiCircleChart.SVG';
+/**
+ * Compound component for HTML children in the PieSemiCircleChart
+ * @param {PropsWithChildren} props          - Component props
+ * @param {ReactNode}         props.children - Child elements to render
+ * @return {JSX.Element} The children wrapped in a fragment
+ */
+const PieSemiCircleChartHTML = ({ children }) => {
+    // This component doesn't render directly - its children are extracted by PieSemiCircleChart
+    // We just return the children as-is
+    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
+};
+// Set displayName for better debugging and type checking
+PieSemiCircleChartHTML.displayName = 'PieSemiCircleChart.HTML';
+const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, children, }) => {
     const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
     const chartId = utils.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
@@ -79,6 +107,39 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     const legendOptions = react.useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
     const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
+    // Process children to extract compound components
+    const { svgChildren, htmlChildren, otherChildren } = react.useMemo(() => {
+        const svg = [];
+        const html = [];
+        const other = [];
+        react.Children.forEach(children, child => {
+            if (react.isValidElement(child)) {
+                // Check displayName for compound components
+                const childType = child.type;
+                const displayName = childType?.displayName;
+                if (displayName === 'PieSemiCircleChart.SVG') {
+                    // Extract children from PieSemiCircleChart.SVG
+                    react.Children.forEach(child.props.children, svgChild => {
+                        svg.push(svgChild);
+                    });
+                }
+                else if (displayName === 'PieSemiCircleChart.HTML') {
+                    // Extract children from PieSemiCircleChart.HTML
+                    react.Children.forEach(child.props.children, htmlChild => {
+                        html.push(htmlChild);
+                    });
+                }
+                else if (child.type === group.Group) {
+                    // Legacy support: still check for Group type for backward compatibility
+                    svg.push(child);
+                }
+                else {
+                    other.push(child);
+                }
+            }
+        });
+        return { svgChildren: svg, htmlChildren: html, otherChildren: other };
+    }, [children]);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
         thickness,
@@ -110,28 +171,42 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Configure pie angles based on clockwise direction
     const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
     const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
-    return (jsxRuntime.jsxs("div", { className: clsx('pie-semi-circle-chart', pieSemiCircleChart_module.default['pie-semi-circle-chart'], className), "data-testid": "pie-chart-container", style: {
-            display: 'flex',
-            flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
-        }, children: [jsxRuntime.jsx("svg", { width: width, height: radius, viewBox: `0 0 ${width} ${chartHeight}`, "data-testid": "pie-chart-svg", children: jsxRuntime.jsxs(group.Group, { top: chartHeight, left: width / 2, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: radius, innerRadius: innerRadius, cornerRadius: 3, padAngle: PAD_ANGLE, startAngle: startAngle, endAngle: endAngle, pieSort: accessors.sort, children: pie => {
-                                return pie.arcs.map(arc => (jsxRuntime.jsx("g", { onMouseMove: handleArcMouseMove(arc), onMouseLeave: handleMouseLeave, children: jsxRuntime.jsx("path", { d: pie.path(arc) || '', fill: accessors.fill(arc.data), "data-testid": "pie-segment" }) }, arc.data.label)));
-                            } }), jsxRuntime.jsxs(group.Group, { children: [jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -40, className: pieSemiCircleChart_module.default.label, children: label }), jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -20, className: pieSemiCircleChart_module.default.note, children: note })] })] }) }), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: {
-                    label: tooltipData.label,
-                    value: tooltipData.value,
-                    valueDisplay: tooltipData.valueDisplay,
-                }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId }))] }));
+    return (jsxRuntime.jsx(singleChartContext.SingleChartContext.Provider, { value: {
+            chartId,
+            chartWidth: width,
+            chartHeight: radius,
+        }, children: jsxRuntime.jsxs("div", { className: clsx('pie-semi-circle-chart', pieSemiCircleChart_module.default['pie-semi-circle-chart'], className), "data-testid": "pie-chart-container", style: {
+                display: 'flex',
+                flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
+            }, children: [jsxRuntime.jsx("svg", { width: width, height: radius, viewBox: `0 0 ${width} ${chartHeight}`, "data-testid": "pie-chart-svg", children: jsxRuntime.jsxs(group.Group, { top: chartHeight, left: width / 2, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: radius, innerRadius: innerRadius, cornerRadius: 3, padAngle: PAD_ANGLE, startAngle: startAngle, endAngle: endAngle, pieSort: accessors.sort, children: pie => {
+                                    return pie.arcs.map(arc => (jsxRuntime.jsx("g", { onMouseMove: handleArcMouseMove(arc), onMouseLeave: handleMouseLeave, children: jsxRuntime.jsx("path", { d: pie.path(arc) || '', fill: accessors.fill(arc.data), "data-testid": "pie-segment" }) }, arc.data.label)));
+                                } }), jsxRuntime.jsxs(group.Group, { children: [jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -40, className: pieSemiCircleChart_module.default.label, children: label }), jsxRuntime.jsx(text.Text, { textAnchor: "middle", verticalAnchor: "start", y: -20, className: pieSemiCircleChart_module.default.note, children: note })] }), svgChildren] }) }), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: {
+                        label: tooltipData.label,
+                        value: tooltipData.value,
+                        valueDisplay: tooltipData.valueDisplay,
+                    }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId })), htmlChildren, otherChildren] }) }));
 };
-const PieSemiCircleChart = props => {
+const PieSemiCircleChartWithProvider = props => {
     const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
-    // If we're already in a GlobalChartsProvider context, render the core component directly
+    // If we're already in a GlobalChartsProvider context, don't create a new one
     if (existingContext) {
         return jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props });
     }
-    // Otherwise, wrap with our own GlobalChartsProvider
+    // Otherwise, create our own GlobalChartsProvider
     return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(PieSemiCircleChartInternal, { ...props }) }));
 };
-PieSemiCircleChart.displayName = 'PieSemiCircleChart';
-const PieSemiCircleChartResponsive = withResponsive.withResponsive(PieSemiCircleChart);
+PieSemiCircleChartWithProvider.displayName = 'PieSemiCircleChart';
+// Create PieSemiCircleChart with composition API
+createComposition.attachSubComponents(PieSemiCircleChartWithProvider, {
+    Legend: legend.Legend,
+    SVG: PieSemiCircleChartSVG,
+    HTML: PieSemiCircleChartHTML,
+});
+// Create responsive PieSemiCircleChart with composition API
+const PieSemiCircleChartResponsive = createComposition.attachSubComponents(withResponsive.withResponsive(PieSemiCircleChartWithProvider), {
+    Legend: legend.Legend,
+    SVG: PieSemiCircleChartSVG,
+    HTML: PieSemiCircleChartHTML,
+});
 
-exports.PieSemiCircleChartUnresponsive = PieSemiCircleChart;
 exports.default = PieSemiCircleChartResponsive;

@@ -1,7 +1,7 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
+import { Legend } from '../legend/legend.js';
+import { FC, ComponentType, PropsWithChildren, ReactNode } from 'react';
+import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
-import { BaseChartProps, DataPointPercentage } from '../../types.js';
-import { ReactNode } from 'react';
 
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -33,6 +33,15 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      */
     children?: ReactNode;
 }
-declare const _default: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<PieChartProps>, "width" | "height" | "size"> & Omit<PieChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+type PieChartBaseProps = Optional<PieChartProps, 'size'>;
+interface PieChartSubComponents {
+    Legend: ComponentType<React.ComponentProps<typeof Legend>>;
+    SVG: FC<PropsWithChildren>;
+    HTML: FC<PropsWithChildren>;
+}
+type PieChartComponent = FC<PieChartBaseProps> & PieChartSubComponents;
+type PieChartResponsiveComponent = FC<PieChartBaseProps & ResponsiveConfig> & PieChartSubComponents;
+declare const PieChart: PieChartComponent;
+declare const PieChartResponsive: PieChartResponsiveComponent;
 
-export { _default as default };
+export { PieChart as PieChartUnresponsive, PieChartResponsive as default };
