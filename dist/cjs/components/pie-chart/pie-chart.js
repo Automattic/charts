@@ -17,6 +17,9 @@ var createComposition = require('../../utils/create-composition.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
+var chartSvg = require('../shared/chart-composition/chart-svg.js');
+var chartHtml = require('../shared/chart-composition/chart-html.js');
+var useChartChildren = require('../shared/chart-composition/use-chart-children.js');
 var singleChartContext = require('../shared/single-chart-context.js');
 var useElementHeight = require('../shared/use-element-height.js');
 var withResponsive = require('../shared/with-responsive.js');
@@ -46,32 +49,6 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 /**
- * Compound component for SVG children in the PieChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieChartSVG = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieChart
-    // We just return the children as-is
-    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieChartSVG.displayName = 'PieChart.SVG';
-/**
- * Compound component for HTML children in the PieChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieChartHTML = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieChart
-    // We just return the children as-is
-    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieChartHTML.displayName = 'PieChart.HTML';
-/**
  * Renders a pie or donut chart using the provided data.
  *
  * @param {PieChartProps} props - Component props
@@ -90,38 +67,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Process children to extract compound components
-    const { svgChildren, htmlChildren, otherChildren } = react.useMemo(() => {
-        const svg = [];
-        const html = [];
-        const other = [];
-        react.Children.forEach(children, child => {
-            if (react.isValidElement(child)) {
-                // Check displayName for compound components
-                const childType = child.type;
-                const displayName = childType?.displayName;
-                if (displayName === 'PieChart.SVG') {
-                    // Extract children from PieChart.SVG
-                    react.Children.forEach(child.props.children, svgChild => {
-                        svg.push(svgChild);
-                    });
-                }
-                else if (displayName === 'PieChart.HTML') {
-                    // Extract children from PieChart.HTML
-                    react.Children.forEach(child.props.children, htmlChild => {
-                        html.push(htmlChild);
-                    });
-                }
-                else if (child.type === group.Group) {
-                    // Legacy support: still check for Group type for backward compatibility
-                    svg.push(child);
-                }
-                else {
-                    other.push(child);
-                }
-            }
-        });
-        return { svgChildren: svg, htmlChildren: html, otherChildren: other };
-    }, [children]);
+    const { svgChildren, htmlChildren, otherChildren } = useChartChildren.useChartChildren(children, 'PieChart');
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
         thickness,
@@ -202,14 +148,14 @@ PieChartWithProvider.displayName = 'PieChart';
 // Create PieChart with composition API
 const PieChart = createComposition.attachSubComponents(PieChartWithProvider, {
     Legend: legend.Legend,
-    SVG: PieChartSVG,
-    HTML: PieChartHTML,
+    SVG: chartSvg.ChartSVG,
+    HTML: chartHtml.ChartHTML,
 });
 // Create responsive PieChart with composition API
 const PieChartResponsive = createComposition.attachSubComponents(withResponsive.withResponsive(PieChartWithProvider), {
     Legend: legend.Legend,
-    SVG: PieChartSVG,
-    HTML: PieChartHTML,
+    SVG: chartSvg.ChartSVG,
+    HTML: chartHtml.ChartHTML,
 });
 
 exports.PieChartUnresponsive = PieChart;

@@ -1,6 +1,6 @@
-import { Legend } from '../legend/legend.js';
-import { FC, ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
+import { ReactNode } from 'react';
+import { ChartComponentWithComposition } from '../shared/chart-composition/types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
@@ -31,12 +31,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
     children?: ReactNode;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
-interface PieSemiCircleChartSubComponents {
-    Legend: ComponentType<React.ComponentProps<typeof Legend>>;
-    SVG: FC<PropsWithChildren>;
-    HTML: FC<PropsWithChildren>;
-}
-type PieSemiCircleChartResponsiveComponent = FC<PieSemiCircleChartBaseProps & ResponsiveConfig> & PieSemiCircleChartSubComponents;
+type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
 export { PieSemiCircleChartResponsive as default };

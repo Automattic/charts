@@ -1,8 +1,8 @@
-import { jsx, Fragment, jsxs } from 'react/jsx-runtime';
+import { jsx, jsxs } from 'react/jsx-runtime';
 import { Group } from '@visx/group';
 import { Pie } from '@visx/shape';
 import clsx from 'clsx';
-import { useContext, useMemo, Children, isValidElement } from 'react';
+import { useContext, useMemo } from 'react';
 import 'fast-deep-equal';
 import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import { useChartMouseHandler } from '../../hooks/use-chart-mouse-handler.js';
@@ -13,6 +13,9 @@ import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
 import '../legend/base-legend.js';
 import { useChartLegendData } from '../legend/use-chart-legend-data.js';
+import { ChartSVG } from '../shared/chart-composition/chart-svg.js';
+import { ChartHTML } from '../shared/chart-composition/chart-html.js';
+import { useChartChildren } from '../shared/chart-composition/use-chart-children.js';
 import { SingleChartContext } from '../shared/single-chart-context.js';
 import { useElementHeight } from '../shared/use-element-height.js';
 import { withResponsive } from '../shared/with-responsive.js';
@@ -42,32 +45,6 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 /**
- * Compound component for SVG children in the PieChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieChartSVG = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieChart
-    // We just return the children as-is
-    return jsx(Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieChartSVG.displayName = 'PieChart.SVG';
-/**
- * Compound component for HTML children in the PieChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieChartHTML = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieChart
-    // We just return the children as-is
-    return jsx(Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieChartHTML.displayName = 'PieChart.HTML';
-/**
  * Renders a pie or donut chart using the provided data.
  *
  * @param {PieChartProps} props - Component props
@@ -86,38 +63,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const legendItems = useChartLegendData(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Process children to extract compound components
-    const { svgChildren, htmlChildren, otherChildren } = useMemo(() => {
-        const svg = [];
-        const html = [];
-        const other = [];
-        Children.forEach(children, child => {
-            if (isValidElement(child)) {
-                // Check displayName for compound components
-                const childType = child.type;
-                const displayName = childType?.displayName;
-                if (displayName === 'PieChart.SVG') {
-                    // Extract children from PieChart.SVG
-                    Children.forEach(child.props.children, svgChild => {
-                        svg.push(svgChild);
-                    });
-                }
-                else if (displayName === 'PieChart.HTML') {
-                    // Extract children from PieChart.HTML
-                    Children.forEach(child.props.children, htmlChild => {
-                        html.push(htmlChild);
-                    });
-                }
-                else if (child.type === Group) {
-                    // Legacy support: still check for Group type for backward compatibility
-                    svg.push(child);
-                }
-                else {
-                    other.push(child);
-                }
-            }
-        });
-        return { svgChildren: svg, htmlChildren: html, otherChildren: other };
-    }, [children]);
+    const { svgChildren, htmlChildren, otherChildren } = useChartChildren(children, 'PieChart');
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         thickness,
@@ -198,14 +144,14 @@ PieChartWithProvider.displayName = 'PieChart';
 // Create PieChart with composition API
 const PieChart = attachSubComponents(PieChartWithProvider, {
     Legend: Legend,
-    SVG: PieChartSVG,
-    HTML: PieChartHTML,
+    SVG: ChartSVG,
+    HTML: ChartHTML,
 });
 // Create responsive PieChart with composition API
 const PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider), {
     Legend: Legend,
-    SVG: PieChartSVG,
-    HTML: PieChartHTML,
+    SVG: ChartSVG,
+    HTML: ChartHTML,
 });
 
 export { PieChart as PieChartUnresponsive, PieChartResponsive as default };

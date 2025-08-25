@@ -19,6 +19,9 @@ var createComposition = require('../../utils/create-composition.js');
 var legend = require('../legend/legend.js');
 require('../legend/base-legend.js');
 var useChartLegendData = require('../legend/use-chart-legend-data.js');
+var chartSvg = require('../shared/chart-composition/chart-svg.js');
+var chartHtml = require('../shared/chart-composition/chart-html.js');
+var useChartChildren = require('../shared/chart-composition/use-chart-children.js');
 var singleChartContext = require('../shared/single-chart-context.js');
 var useElementHeight = require('../shared/use-element-height.js');
 var withResponsive = require('../shared/with-responsive.js');
@@ -47,32 +50,6 @@ const validateData = (data) => {
     }
     return { isValid: true, message: '' };
 };
-/**
- * Compound component for SVG children in the PieSemiCircleChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieSemiCircleChartSVG = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieSemiCircleChart
-    // We just return the children as-is
-    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieSemiCircleChartSVG.displayName = 'PieSemiCircleChart.SVG';
-/**
- * Compound component for HTML children in the PieSemiCircleChart
- * @param {PropsWithChildren} props          - Component props
- * @param {ReactNode}         props.children - Child elements to render
- * @return {JSX.Element} The children wrapped in a fragment
- */
-const PieSemiCircleChartHTML = ({ children }) => {
-    // This component doesn't render directly - its children are extracted by PieSemiCircleChart
-    // We just return the children as-is
-    return jsxRuntime.jsx(jsxRuntime.Fragment, { children: children });
-};
-// Set displayName for better debugging and type checking
-PieSemiCircleChartHTML.displayName = 'PieSemiCircleChart.HTML';
 const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, children, }) => {
     const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
     const chartId = utils.useChartId(providedChartId);
@@ -108,38 +85,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Create legend items using the reusable hook
     const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
     // Process children to extract compound components
-    const { svgChildren, htmlChildren, otherChildren } = react.useMemo(() => {
-        const svg = [];
-        const html = [];
-        const other = [];
-        react.Children.forEach(children, child => {
-            if (react.isValidElement(child)) {
-                // Check displayName for compound components
-                const childType = child.type;
-                const displayName = childType?.displayName;
-                if (displayName === 'PieSemiCircleChart.SVG') {
-                    // Extract children from PieSemiCircleChart.SVG
-                    react.Children.forEach(child.props.children, svgChild => {
-                        svg.push(svgChild);
-                    });
-                }
-                else if (displayName === 'PieSemiCircleChart.HTML') {
-                    // Extract children from PieSemiCircleChart.HTML
-                    react.Children.forEach(child.props.children, htmlChild => {
-                        html.push(htmlChild);
-                    });
-                }
-                else if (child.type === group.Group) {
-                    // Legacy support: still check for Group type for backward compatibility
-                    svg.push(child);
-                }
-                else {
-                    other.push(child);
-                }
-            }
-        });
-        return { svgChildren: svg, htmlChildren: html, otherChildren: other };
-    }, [children]);
+    const { svgChildren, htmlChildren, otherChildren } = useChartChildren.useChartChildren(children, 'PieSemiCircleChart');
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
         thickness,
@@ -199,14 +145,14 @@ PieSemiCircleChartWithProvider.displayName = 'PieSemiCircleChart';
 // Create PieSemiCircleChart with composition API
 createComposition.attachSubComponents(PieSemiCircleChartWithProvider, {
     Legend: legend.Legend,
-    SVG: PieSemiCircleChartSVG,
-    HTML: PieSemiCircleChartHTML,
+    SVG: chartSvg.ChartSVG,
+    HTML: chartHtml.ChartHTML,
 });
 // Create responsive PieSemiCircleChart with composition API
 const PieSemiCircleChartResponsive = createComposition.attachSubComponents(withResponsive.withResponsive(PieSemiCircleChartWithProvider), {
     Legend: legend.Legend,
-    SVG: PieSemiCircleChartSVG,
-    HTML: PieSemiCircleChartHTML,
+    SVG: chartSvg.ChartSVG,
+    HTML: chartHtml.ChartHTML,
 });
 
 exports.default = PieSemiCircleChartResponsive;

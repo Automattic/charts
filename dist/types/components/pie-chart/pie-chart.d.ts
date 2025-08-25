@@ -1,6 +1,6 @@
-import { Legend } from '../legend/legend.js';
-import { FC, ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
+import { ReactNode } from 'react';
+import { ChartComponentWithComposition } from '../shared/chart-composition/types.js';
 import { ResponsiveConfig } from '../shared/with-responsive.js';
 
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
@@ -34,13 +34,8 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     children?: ReactNode;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
-interface PieChartSubComponents {
-    Legend: ComponentType<React.ComponentProps<typeof Legend>>;
-    SVG: FC<PropsWithChildren>;
-    HTML: FC<PropsWithChildren>;
-}
-type PieChartComponent = FC<PieChartBaseProps> & PieChartSubComponents;
-type PieChartResponsiveComponent = FC<PieChartBaseProps & ResponsiveConfig> & PieChartSubComponents;
+type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;
+type PieChartResponsiveComponent = ChartComponentWithComposition<PieChartBaseProps & ResponsiveConfig>;
 declare const PieChart: PieChartComponent;
 declare const PieChartResponsive: PieChartResponsiveComponent;
 
