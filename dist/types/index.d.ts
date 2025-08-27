@@ -5,6 +5,7 @@ export { default as PieSemiCircleChart } from './components/pie-semi-circle-char
 export { default as BarListChart } from './components/bar-list-chart/bar-list-chart.js';
 export { default as LeaderboardChart } from './components/leaderboard-chart/leaderboard-chart.js';
 export { formatMetricValue } from './components/shared/format-metric-value.js';
+export { default as ConversionFunnelChart, ConversionFunnelChartProps, FunnelStep } from './components/conversion-funnel-chart/conversion-funnel-chart.js';
 export { BaseTooltip } from './components/tooltip/base-tooltip.js';
 export { Legend } from './components/legend/legend.js';
 export { BaseLegend } from './components/legend/base-legend.js';
@@ -23,4 +24,3 @@ export { useXYChartTheme } from './hooks/use-xychart-theme.js';
 export { BaseChartProps, ButtonWithPopover, ChartTheme, DataPoint, DataPointDate, DataPointPercentage, GridProps, MultipleDataPointsDate, Optional, OrientationType, PopoverButtonAttributes, PopoverElement, PopoverElementAttributes, ScaleOptions, SeriesData, SeriesDataOptions, ToggleEvent } from './types.js';
 export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
-export { ConversionFunnelChartProps, FunnelStep } from './components/conversion-funnel-chart/conversion-funnel-chart.js';

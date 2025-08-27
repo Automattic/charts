@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 /**
  * Represents a single step in the conversion funnel
  */
@@ -28,5 +30,18 @@ interface ConversionFunnelChartProps {
     /** Custom styling */
     style?: React.CSSProperties;
 }
+/**
+ * ConversionFunnelChart component displays a conversion funnel with main metric and visualization
+ *
+ * @param props                 - Component props
+ * @param props.mainRate        - Main conversion rate to highlight
+ * @param props.changeIndicator - Change indicator (e.g., +2%, -1.5%)
+ * @param props.steps           - Array of funnel steps
+ * @param props.loading         - Whether the chart is in loading state
+ * @param props.className       - Additional CSS class name
+ * @param props.style           - Custom styling
+ * @return JSX element representing the conversion funnel chart
+ */
+declare const ConversionFunnelChart: FC<ConversionFunnelChartProps>;
 
-export type { ConversionFunnelChartProps, FunnelStep };
+export { ConversionFunnelChart, type ConversionFunnelChartProps, type FunnelStep, ConversionFunnelChart as default };

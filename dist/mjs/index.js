@@ -5,6 +5,7 @@ export { default as PieSemiCircleChart } from './components/pie-semi-circle-char
 export { default as BarListChart } from './components/bar-list-chart/bar-list-chart.js';
 export { LeaderboardChart } from './components/leaderboard-chart/leaderboard-chart.js';
 export { formatMetricValue } from './components/shared/format-metric-value.js';
+export { ConversionFunnelChart } from './components/conversion-funnel-chart/conversion-funnel-chart.js';
 export { BaseTooltip } from './components/tooltip/base-tooltip.js';
 export { Legend } from './components/legend/legend.js';
 export { BaseLegend } from './components/legend/base-legend.js';
