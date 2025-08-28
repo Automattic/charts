@@ -10,17 +10,12 @@ type BaseLegendItem = {
     glyphSize?: number;
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     shapeStyle?: CSSProperties & LineStyles;
-};
-type LegendItemWithGlyph = BaseLegendItem & {
-    renderGlyph: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
-    glyphSize: number;
-};
-type LegendItemWithoutGlyph = BaseLegendItem & {
-    renderGlyph?: never;
-    glyphSize?: number;
+    group?: string;
+    index?: number;
+    overrideColor?: string;
 };
 type BaseLegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
-    items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    items: BaseLegendItem[];
     orientation?: 'horizontal' | 'vertical';
     /**
      * TODO: Add 'left' | 'right' positioning support in future implementation
@@ -29,8 +24,8 @@ type BaseLegendProps = Omit<LegendOrdinalProps, 'shapeStyle'> & {
     alignment?: 'start' | 'center' | 'end';
 };
 type LegendProps = Omit<BaseLegendProps, 'items'> & {
-    items?: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    items?: BaseLegendItem[];
     chartId?: string;
 };
 
-export type { BaseLegendItem, BaseLegendProps, LegendItemWithGlyph, LegendItemWithoutGlyph, LegendProps };
+export type { BaseLegendItem, BaseLegendProps, LegendProps };

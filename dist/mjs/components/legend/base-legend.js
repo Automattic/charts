@@ -3,12 +3,13 @@ import { Group } from '@visx/group';
 import { LegendOrdinal, LegendItem, LegendShape, LegendLabel } from '@visx/legend';
 import { scaleOrdinal } from '@visx/scale';
 import clsx from 'clsx';
-import { forwardRef, useCallback } from 'react';
+import { forwardRef, useContext, useMemo, useCallback } from 'react';
 import 'fast-deep-equal';
 import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import '@visx/event';
 import '@visx/tooltip';
 import '@visx/xychart';
+import { GlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
 import styles from './legend.module.scss.js';
 import { valueOrIdentityString, valueOrIdentity, labelTransformFactory } from './utils.js';
 
@@ -23,13 +24,31 @@ const orientationToFlexDirection = {
 const BaseLegend = forwardRef(({ items, className, orientation = 'horizontal', position = 'bottom', alignment = 'center', shape = 'rect', fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
 labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = useGlobalChartTheme();
+    const context = useContext(GlobalChartsContext);
+    const resolveGroupColor = context?.resolveGroupColor;
+    // Resolve colors dynamically for items that have group info
+    const itemsWithResolvedColors = useMemo(() => {
+        return items.map(item => {
+            // If item has group info and we have a context, resolve color dynamically
+            if (item.group !== undefined && item.index !== undefined && resolveGroupColor) {
+                const resolvedColor = resolveGroupColor({
+                    group: item.group,
+                    index: item.index,
+                    overrideColor: item.overrideColor,
+                });
+                return { ...item, color: resolvedColor };
+            }
+            // Otherwise use the static color
+            return item;
+        });
+    }, [items, resolveGroupColor]);
     const legendScale = scaleOrdinal({
-        domain: items.map(item => item.label),
-        range: items.map(item => item.color),
+        domain: itemsWithResolvedColors.map(item => item.label),
+        range: itemsWithResolvedColors.map(item => item.color),
     });
     const domain = legendScale.domain();
     // For right-aligned vertical legends, use row-reverse to align text consistently
-    const getShapeStyle = useCallback(({ index }) => items[index]?.shapeStyle, [items]);
+    const getShapeStyle = useCallback(({ index }) => itemsWithResolvedColors[index]?.shapeStyle, [itemsWithResolvedColors]);
     return (jsx(LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(styles.legend, styles[`legend--${orientation}`], styles[`legend--alignment-${alignment}`], styles[`legend--position-${position}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,

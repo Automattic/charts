@@ -155,6 +155,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
         getChartDimensions: () => internalChartRef.current?.getChartDimensions() || { width: 0, height: 0, margin: {} },
     }), [internalChartRef]);
     const dataSorted = useChartDataTransform.useChartDataTransform(data);
+    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
     // Use the keyboard navigation hook
     const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = accessibleTooltip.useKeyboardNavigation({
         selectedIndex,
@@ -196,10 +197,22 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
     const tooltipRenderGlyph = react.useMemo(() => {
         return (props) => {
             const seriesIndex = dataSorted.findIndex(series => series.label === props.key || series.data.includes(props.datum));
+            // Resolve group color for tooltip glyph
+            const seriesData = dataSorted[seriesIndex];
+            const resolvedColor = seriesData
+                ? resolveGroupColor({
+                    group: seriesData.group,
+                    index: seriesIndex,
+                    overrideColor: seriesData.options?.stroke,
+                })
+                : props.color;
+            const propsWithResolvedColor = { ...props, color: resolvedColor };
             const themeGlyph = providerTheme.glyphs?.[seriesIndex];
-            return themeGlyph ? themeGlyph(props) : renderGlyph(props);
+            return themeGlyph
+                ? themeGlyph(propsWithResolvedColor)
+                : renderGlyph(propsWithResolvedColor);
         };
-    }, [dataSorted, providerTheme.glyphs, renderGlyph]);
+    }, [dataSorted, providerTheme.glyphs, renderGlyph, resolveGroupColor]);
     const defaultMargin = useChartMargin.useChartMargin(height, chartOptions, dataSorted, theme);
     const error = validateData(dataSorted);
     const isDataValid = !error;
@@ -255,7 +268,12 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
                         }, 
                         // xScale and yScale could be set in Axis as well, but they are `scale` props there.
                         xScale: chartOptions.xScale, yScale: chartOptions.yScale, onPointerDown: onPointerDown, onPointerUp: onPointerUp, onPointerMove: onPointerMove, onPointerOut: onPointerOut, pointerEventsDataKey: "nearest", children: [jsxRuntime.jsx(xychart.Grid, { columns: false, numTicks: 4 }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.x }), jsxRuntime.jsx(xychart.Axis, { ...chartOptions.axis.y }), dataSorted.map((seriesData, index) => {
-                                const { stroke, lineStyles } = getStyles.getSeriesStyles(seriesData, index, providerTheme);
+                                const stroke = resolveGroupColor({
+                                    group: seriesData.group,
+                                    index,
+                                    overrideColor: seriesData.options?.stroke,
+                                });
+                                const lineStyles = getStyles.getSeriesLineStyles(seriesData, index, providerTheme);
                                 const lineProps = {
                                     stroke,
                                     ...lineStyles,
@@ -263,7 +281,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
                                 return (jsxRuntime.jsxs("g", { children: [withStartGlyphs && (jsxRuntime.jsx(StartGlyph, { index: index, data: seriesData, color: stroke, renderGlyph: providerTheme.glyphs?.[index] ?? renderGlyph, accessors: accessors, glyphStyle: glyphStyle })), withGradientFill && (jsxRuntime.jsx(gradient.LinearGradient, { id: `area-gradient-${chartId}-${index + 1}`, from: stroke, fromOpacity: 0.4, toOpacity: 0.1, to: providerTheme.backgroundColor, ...seriesData.options?.gradient, "data-testid": "line-gradient" })), jsxRuntime.jsx(xychart.AreaSeries, { dataKey: seriesData?.label, data: seriesData.data, ...accessors, fill: withGradientFill
                                                 ? `url(#area-gradient-${chartId}-${index + 1})`
                                                 : 'transparent', renderLine: true, curve: getCurveType(curveType, smoothing), lineProps: lineProps }, seriesData?.label)] }, seriesData?.label || index));
-                            }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: lineChart_module.default['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsxRuntime.jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, alignment: legendAlignment, position: legendPosition, className: lineChart_module.default['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
+                            }), withTooltips && (jsxRuntime.jsx(accessibleTooltip.AccessibleTooltip, { detectBounds: true, snapTooltipToDatumX: true, snapTooltipToDatumY: true, showSeriesGlyphs: true, renderTooltip: renderTooltip, renderGlyph: tooltipRenderGlyph, glyphStyle: glyphStyle, showVerticalCrosshair: withTooltipCrosshairs?.showVertical, showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal, selectedIndex: selectedIndex, tooltipRef: tooltipRef, keyboardFocusedClassName: lineChart_module.default['line-chart__tooltip--keyboard-focused'], series: dataSorted })), jsxRuntime.jsx(LineChartScalesRef, { chartRef: internalChartRef, width: width, height: height, margin: margin })] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { orientation: legendOrientation, alignment: legendAlignment, position: legendPosition, className: lineChart_module.default['line-chart-legend'], shape: legendShape, chartId: chartId, ref: legendRef })), children] }) }));
 });
 const LineChartWithProvider = react.forwardRef((props, ref) => {
     const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);

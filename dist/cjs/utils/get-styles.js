@@ -32,19 +32,6 @@ function getSeriesStroke(seriesData, index, themeColors) {
     return seriesData.options?.stroke ?? themeColors[index % themeColors.length];
 }
 /**
- * Combined utility that returns both stroke and line styles
- *
- * @param {SeriesData} seriesData    - The series data containing styling options
- * @param {number}     index         - The index of the series in the data array
- * @param {ChartTheme} providerTheme - The chart theme configuration
- * @return {object} Object containing stroke color and line styles
- */
-function getSeriesStyles(seriesData, index, providerTheme) {
-    const stroke = getSeriesStroke(seriesData, index, providerTheme.colors);
-    const lineStyles = getSeriesLineStyles(seriesData, index, providerTheme);
-    return { stroke, lineStyles };
-}
-/**
  * Utility function to get shape styles for a legend item
  *
  * @param {SeriesData}  series      - The series data containing styling options
@@ -72,4 +59,3 @@ function getItemShapeStyles(series, index, theme, legendShape) {
 exports.getItemShapeStyles = getItemShapeStyles;
 exports.getSeriesLineStyles = getSeriesLineStyles;
 exports.getSeriesStroke = getSeriesStroke;
-exports.getSeriesStyles = getSeriesStyles;

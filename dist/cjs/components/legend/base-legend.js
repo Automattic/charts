@@ -11,6 +11,7 @@ var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 require('@visx/event');
 require('@visx/tooltip');
 require('@visx/xychart');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 var legend_module = require('./legend.module.scss.js');
 var utils = require('./utils.js');
 
@@ -25,13 +26,31 @@ const orientationToFlexDirection = {
 const BaseLegend = react.forwardRef(({ items, className, orientation = 'horizontal', position = 'bottom', alignment = 'center', shape = 'rect', fill = utils.valueOrIdentityString, size = utils.valueOrIdentityString, labelFormat = utils.valueOrIdentity, labelTransform = utils.labelTransformFactory, shapeWidth = 16, shapeHeight = 16, shapeMargin = '2px 4px 2px 0', labelAlign = 'left', labelFlex = '0 0 auto', // Use natural width instead of expanding to fill space
 labelMargin = '0 4px', itemMargin = '0', itemDirection = 'row', legendLabelProps, ...legendItemProps }, ref) => {
     const theme = useGlobalChartTheme.useGlobalChartTheme();
+    const context = react.useContext(globalChartsProvider.GlobalChartsContext);
+    const resolveGroupColor = context?.resolveGroupColor;
+    // Resolve colors dynamically for items that have group info
+    const itemsWithResolvedColors = react.useMemo(() => {
+        return items.map(item => {
+            // If item has group info and we have a context, resolve color dynamically
+            if (item.group !== undefined && item.index !== undefined && resolveGroupColor) {
+                const resolvedColor = resolveGroupColor({
+                    group: item.group,
+                    index: item.index,
+                    overrideColor: item.overrideColor,
+                });
+                return { ...item, color: resolvedColor };
+            }
+            // Otherwise use the static color
+            return item;
+        });
+    }, [items, resolveGroupColor]);
     const legendScale = scale.scaleOrdinal({
-        domain: items.map(item => item.label),
-        range: items.map(item => item.color),
+        domain: itemsWithResolvedColors.map(item => item.label),
+        range: itemsWithResolvedColors.map(item => item.color),
     });
     const domain = legendScale.domain();
     // For right-aligned vertical legends, use row-reverse to align text consistently
-    const getShapeStyle = react.useCallback(({ index }) => items[index]?.shapeStyle, [items]);
+    const getShapeStyle = react.useCallback(({ index }) => itemsWithResolvedColors[index]?.shapeStyle, [itemsWithResolvedColors]);
     return (jsxRuntime.jsx(legend.LegendOrdinal, { scale: legendScale, labelFormat: labelFormat, labelTransform: labelTransform, children: labels => (jsxRuntime.jsx("div", { ref: ref, role: "list", "data-testid": `legend-${orientation}`, className: clsx(legend_module.default.legend, legend_module.default[`legend--${orientation}`], legend_module.default[`legend--alignment-${alignment}`], legend_module.default[`legend--position-${position}`], className), style: {
                 flexDirection: orientationToFlexDirection[orientation],
                 ...theme.legendContainerStyles,

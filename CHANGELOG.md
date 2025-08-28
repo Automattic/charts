@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: adds an agents.md file to project root
+- Charts: Stable colors for series groups
 - Refactor Pie Chart to improve readability.
 
 ### Fixed

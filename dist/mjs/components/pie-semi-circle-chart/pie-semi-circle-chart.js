@@ -6,10 +6,7 @@ import { Text } from '@visx/text';
 import { useTooltip } from '@visx/tooltip';
 import clsx from 'clsx';
 import { useContext, useCallback, useMemo } from 'react';
-import 'fast-deep-equal';
-import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
-import '@visx/xychart';
-import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
@@ -47,7 +44,6 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, children, }) => {
-    const providerTheme = useGlobalChartTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
@@ -69,13 +65,13 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     }, [handleMouseMove]);
     // Validate data first to get validation result
     const { isValid, message } = validateData(data);
+    const { resolveGroupColor } = useGlobalChartsContext();
     // Define accessors with useMemo to avoid changing dependencies
     const accessors = useMemo(() => ({
         value: (d) => d.value,
         sort: (a, b) => b.value - a.value,
-        // Use the color property from the data object as a last resort. The theme provides colours by default.
-        fill: (d) => d.color || providerTheme.colors[d.index % providerTheme.colors.length],
-    }), [providerTheme.colors]);
+        fill: ({ group, index, color: overrideColor }) => resolveGroupColor({ group, index, overrideColor }),
+    }), [resolveGroupColor]);
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
@@ -126,7 +122,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
                         label: tooltipData.label,
                         value: tooltipData.value,
                         valueDisplay: tooltipData.valueDisplay,
-                    }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId })), htmlChildren, otherChildren] }) }));
+                    }, top: tooltipTop || 0, left: tooltipLeft || 0 })), showLegend && (jsx(Legend, { orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, shape: legendShape, ref: legendRef, chartId: chartId })), htmlChildren, otherChildren] }) }));
 };
 const PieSemiCircleChartWithProvider = props => {
     const existingContext = useContext(GlobalChartsContext);

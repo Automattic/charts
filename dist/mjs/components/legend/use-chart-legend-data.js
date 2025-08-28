@@ -1,10 +1,10 @@
-import '@visx/xychart';
 import { useMemo } from 'react';
 import 'fast-deep-equal';
 import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import '@visx/event';
 import '@visx/tooltip';
-import { getSeriesStyles, getItemShapeStyles } from '../../utils/get-styles.js';
+import '@visx/xychart';
+import { getItemShapeStyles, getSeriesStroke } from '../../utils/get-styles.js';
 
 /**
  * Formats the value for a data point based on its type
@@ -25,22 +25,6 @@ function formatPointValue(point, showValues) {
     return '';
 }
 /**
- * Creates a base legend item with common properties
- * @param label      - The label for the legend item
- * @param value      - The value for the legend item
- * @param color      - The color for the legend item
- * @param shapeStyle - The shape style for the legend item
- * @return Base legend item object
- */
-function createBaseLegendItem(label, value, color, shapeStyle) {
-    return {
-        label,
-        value,
-        color,
-        shapeStyle,
-    };
-}
-/**
  * Processes SeriesData into legend items
  * @param seriesData  - The series data to process
  * @param theme       - The chart theme for colors
@@ -53,9 +37,16 @@ function createBaseLegendItem(label, value, color, shapeStyle) {
  */
 function processSeriesData(seriesData, theme, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
     const mapper = (series, index) => {
-        const { stroke } = getSeriesStyles(series, index, theme);
         const { shapeStyles } = getItemShapeStyles(series, index, theme, legendShape);
-        const baseItem = createBaseLegendItem(series.label, showValues ? series.data?.length?.toString() || '0' : '', stroke, shapeStyles);
+        const baseItem = {
+            label: series.label,
+            value: showValues ? series.data?.length?.toString() || '0' : '',
+            color: getSeriesStroke(series, index, theme.colors),
+            shapeStyle: shapeStyles,
+            group: series.group,
+            index,
+            overrideColor: series.options?.stroke,
+        };
         if (withGlyph && renderGlyph) {
             return {
                 ...baseItem,
@@ -79,13 +70,21 @@ function processSeriesData(seriesData, theme, showValues, withGlyph, glyphSize, 
  */
 function processPointData(pointData, theme, showValues, withGlyph, glyphSize, renderGlyph) {
     const mapper = (point, index) => {
-        const baseItem = createBaseLegendItem(point.label, formatPointValue(point, showValues), theme.colors[index % theme.colors.length]);
+        const baseItem = {
+            label: point.label,
+            value: formatPointValue(point, showValues),
+            color: point.color ?? theme.colors[index % theme.colors.length],
+            group: point.group,
+            index,
+            overrideColor: point.color,
+        };
         if (withGlyph && renderGlyph) {
-            return {
+            const itemWithGlyph = {
                 ...baseItem,
                 glyphSize,
                 renderGlyph,
             };
+            return itemWithGlyph;
         }
         return baseItem;
     };

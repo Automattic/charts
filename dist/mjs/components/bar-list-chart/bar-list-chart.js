@@ -3,7 +3,14 @@ import { formatNumberCompact } from '@automattic/number-formatters';
 import { Group } from '@visx/group';
 import { createScale, scaleBand } from '@visx/scale';
 import { Text } from '@visx/text';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import 'fast-deep-equal';
+import '../../providers/theme/theme-provider.js';
+import 'deepmerge';
+import '@visx/event';
+import '@visx/tooltip';
+import '@visx/xychart';
 import BarChartResponsive from '../bar-chart/bar-chart.js';
 import { withResponsive } from '../shared/with-responsive.js';
 
@@ -68,7 +75,7 @@ const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
     // Use negative value to move the label up.
     return -(barThickness + GAP_BETWEEN_BARS);
 };
-const BarListChart = ({ data, width, height, options = {}, margin = {
+const BarListChartInternal = ({ data, width, height, options = {}, margin = {
     left: 0,
     right: 20,
     bottom: 0,
@@ -116,6 +123,16 @@ const BarListChart = ({ data, width, height, options = {}, margin = {
             yScale: chartOptions.yScale,
         }, ...rest }));
 };
-var barListChart = withResponsive(BarListChart);
+const BarListChart = props => {
+    const existingContext = useContext(GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, render the core component directly
+    if (existingContext) {
+        return jsx(BarListChartInternal, { ...props });
+    }
+    // Otherwise, wrap with our own GlobalChartsProvider
+    return (jsx(GlobalChartsProvider, { children: jsx(BarListChartInternal, { ...props }) }));
+};
+BarListChart.displayName = 'BarListChart';
+const BarListChartResponsive = withResponsive(BarListChart);
 
-export { barListChart as default };
+export { BarListChart as BarListChartUnresponsive, BarListChartResponsive as default };

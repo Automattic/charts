@@ -72,6 +72,10 @@ type DataPointPercentage = {
      * Color code for the segment, by default colours are taken from the theme but this property can overrides it
      */
     color?: string;
+    /**
+     * Group for the data point, used to match color with groups on other charts
+     */
+    group?: string;
 };
 /**
  * Theme configuration for chart components

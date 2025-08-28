@@ -1,11 +1,13 @@
-import { LegendItemWithGlyph, LegendItemWithoutGlyph } from './types.js';
+import { BaseLegendItem } from './types.js';
 import { SeriesData, DataPointDate, DataPointPercentage } from '../../types.js';
 import { LegendShape } from '@visx/legend/lib/types';
+import { GlyphProps } from '@visx/xychart';
+import { ReactNode } from 'react';
 
 interface ChartLegendOptions {
     withGlyph?: boolean;
     glyphSize?: number;
-    renderGlyph?: React.ComponentType<unknown>;
+    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     showValues?: boolean;
 }
 /**
@@ -15,6 +17,6 @@ interface ChartLegendOptions {
  * @param legendShape - The shape type for legend items (string literal or React component)
  * @return Array of legend items ready for display
  */
-declare function useChartLegendData<T extends SeriesData[] | DataPointDate[] | DataPointPercentage[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+declare function useChartLegendData<T extends SeriesData[] | DataPointDate[] | DataPointPercentage[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 
 export { type ChartLegendOptions, useChartLegendData };

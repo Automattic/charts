@@ -1,8 +1,8 @@
 import * as react from 'react';
-import { BaseLegendProps, LegendItemWithGlyph, LegendItemWithoutGlyph } from './types.js';
+import { BaseLegendProps, BaseLegendItem } from './types.js';
 
 declare const Legend: react.ForwardRefExoticComponent<Omit<BaseLegendProps, "items"> & {
-    items?: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    items?: BaseLegendItem[];
     chartId?: string;
 } & react.RefAttributes<HTMLDivElement>>;
 

@@ -82,6 +82,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         isDataValid: isValid,
         metadata: chartMetadata,
     });
+    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), children: jsxRuntime.jsx("div", { className: pieChart_module.default['error-message'], children: message }) }));
     }
@@ -107,7 +108,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const accessors = {
         value: (d) => d.value,
         // Use the color property from the data object as a last resort. The theme provides colours by default.
-        fill: (d) => d?.color || providerTheme.colors[d.index],
+        fill: ({ group, index, color: overrideColor }) => resolveGroupColor({ group, index, overrideColor }),
     };
     return (jsxRuntime.jsx(singleChartContext.SingleChartContext.Provider, { value: {
             chartId,
@@ -131,7 +132,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                         }
                                         return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || '#333', fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                     });
-                                } }), svgChildren] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                                } }), svgChildren] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                         transform: 'translate(-50%, -100%)',
                     } })), htmlChildren, otherChildren] }) }));
 };

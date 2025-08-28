@@ -7,7 +7,7 @@ import 'fast-deep-equal';
 import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import { useChartMouseHandler } from '../../hooks/use-chart-mouse-handler.js';
 import '@visx/xychart';
-import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
 import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
 import { Legend } from '../legend/legend.js';
@@ -78,6 +78,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         isDataValid: isValid,
         metadata: chartMetadata,
     });
+    const { resolveGroupColor } = useGlobalChartsContext();
     if (!isValid) {
         return (jsx("div", { className: clsx('pie-chart', styles['pie-chart'], className), children: jsx("div", { className: styles['error-message'], children: message }) }));
     }
@@ -103,7 +104,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     const accessors = {
         value: (d) => d.value,
         // Use the color property from the data object as a last resort. The theme provides colours by default.
-        fill: (d) => d?.color || providerTheme.colors[d.index],
+        fill: ({ group, index, color: overrideColor }) => resolveGroupColor({ group, index, overrideColor }),
     };
     return (jsx(SingleChartContext.Provider, { value: {
             chartId,
@@ -127,7 +128,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                         }
                                         return (jsxs("g", { children: [jsx("path", { ...pathProps }), hasSpaceForLabel && (jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || '#333', fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
                                     });
-                                } }), svgChildren] }) }), showLegend && (jsx(Legend, { items: legendItems, orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
+                                } }), svgChildren] }) }), showLegend && (jsx(Legend, { orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: styles['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsx(BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                         transform: 'translate(-50%, -100%)',
                     } })), htmlChildren, otherChildren] }) }));
 };

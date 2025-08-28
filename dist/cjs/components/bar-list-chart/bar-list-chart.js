@@ -8,6 +8,13 @@ var group = require('@visx/group');
 var scale = require('@visx/scale');
 var text = require('@visx/text');
 var react = require('react');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
+require('fast-deep-equal');
+require('../../providers/theme/theme-provider.js');
+require('deepmerge');
+require('@visx/event');
+require('@visx/tooltip');
+require('@visx/xychart');
 var barChart = require('../bar-chart/bar-chart.js');
 var withResponsive = require('../shared/with-responsive.js');
 
@@ -72,7 +79,7 @@ const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
     // Use negative value to move the label up.
     return -(barThickness + GAP_BETWEEN_BARS);
 };
-const BarListChart = ({ data, width, height, options = {}, margin = {
+const BarListChartInternal = ({ data, width, height, options = {}, margin = {
     left: 0,
     right: 20,
     bottom: 0,
@@ -120,6 +127,17 @@ const BarListChart = ({ data, width, height, options = {}, margin = {
             yScale: chartOptions.yScale,
         }, ...rest }));
 };
-var barListChart = withResponsive.withResponsive(BarListChart);
+const BarListChart = props => {
+    const existingContext = react.useContext(globalChartsProvider.GlobalChartsContext);
+    // If we're already in a GlobalChartsProvider context, render the core component directly
+    if (existingContext) {
+        return jsxRuntime.jsx(BarListChartInternal, { ...props });
+    }
+    // Otherwise, wrap with our own GlobalChartsProvider
+    return (jsxRuntime.jsx(globalChartsProvider.GlobalChartsProvider, { children: jsxRuntime.jsx(BarListChartInternal, { ...props }) }));
+};
+BarListChart.displayName = 'BarListChart';
+const BarListChartResponsive = withResponsive.withResponsive(BarListChart);
 
-exports.default = barListChart;
+exports.BarListChartUnresponsive = BarListChart;
+exports.default = BarListChartResponsive;

@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { LegendItemWithGlyph, LegendItemWithoutGlyph } from './types.js';
+import { BaseLegendItem } from './types.js';
 import * as _visx_legend_lib_legends_Legend_LegendLabel from '@visx/legend/lib/legends/Legend/LegendLabel';
 import * as _visx_legend_lib_types from '@visx/legend/lib/types';
 
@@ -44,7 +44,7 @@ declare const BaseLegend: react.ForwardRefExoticComponent<Omit<{
     labelTransform?: _visx_legend_lib_types.LabelFormatterFactory<ScaleOrdinal<DiscreteInput, Output>>;
     legendLabelProps?: Partial<_visx_legend_lib_legends_Legend_LegendLabel.LegendLabelProps>;
 }, "shapeStyle"> & {
-    items: LegendItemWithGlyph[] | LegendItemWithoutGlyph[];
+    items: BaseLegendItem[];
     orientation?: "horizontal" | "vertical";
     position?: "top" | "bottom";
     alignment?: "start" | "center" | "end";
