@@ -50,8 +50,10 @@ const defaultDeltaFormatter = (value) => {
         signDisplay: 'exceptZero',
     });
 };
-const ProgressBarWithOverlayLabel = ({ entry }) => (jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.progressContainerWithOverlayLabel, children: [typeof entry.label === 'string' ? (jsxRuntime.jsx(components.__experimentalText, { className: leaderboardChart_module.default.progressBarLabel, children: entry.label })) : (entry.label), jsxRuntime.jsx("div", { className: leaderboardChart_module.default.progressBar, style: { width: entry.currentShare + '%' } })] }));
-const ProgressBarWithLabel = ({ entry, withComparison, }) => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [typeof entry.label === 'string' ? jsxRuntime.jsx(components.__experimentalText, { children: entry.label }) : entry.label, jsxRuntime.jsxs("div", { className: leaderboardChart_module.default.progressContainer, children: [jsxRuntime.jsx(components.ProgressBar, { value: entry.currentShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.primaryBar) }), withComparison && (jsxRuntime.jsx(components.ProgressBar, { value: entry.previousShare, className: clsx(leaderboardChart_module.default.progressBar, leaderboardChart_module.default.secondaryBar) }))] })] }));
+const BarLabel = ({ label }) => (jsxRuntime.jsx(jsxRuntime.Fragment, { children: typeof label === 'string' ? jsxRuntime.jsx(components.__experimentalText, { className: leaderboardChart_module.default.label, children: label }) : label }));
+const BarWithLabel = ({ entry, withComparison, withOverlayLabel, }) => (jsxRuntime.jsxs("div", { className: clsx(leaderboardChart_module.default.barWithLabelContainer, {
+        [leaderboardChart_module.default['is-overlay']]: withOverlayLabel,
+    }), children: [jsxRuntime.jsx(BarLabel, { label: entry.label }), jsxRuntime.jsx("div", { className: clsx(leaderboardChart_module.default.bar, leaderboardChart_module.default.primaryBar), style: { width: entry.currentShare + '%' } }), withComparison && !withOverlayLabel && (jsxRuntime.jsx("div", { className: clsx(leaderboardChart_module.default.bar, leaderboardChart_module.default.secondaryBar), style: { width: entry.previousShare + '%' } }))] }));
 /**
  * LeaderboardChart component displays a ranked list of data with progress bars
  * and optional comparison values.
@@ -95,7 +97,7 @@ const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = fal
     return (jsxRuntime.jsx(components.__experimentalGrid, { className: clsx(leaderboardChart_module.default.leaderboardChart, loading && leaderboardChart_module.default.loading, className), templateColumns: "minmax(0, 1fr) auto", rowGap: rowGap, columnGap: columnGap, style: chartStyle, children: data.map(entry => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = signColors[colorIndex];
-            return (jsxRuntime.jsxs(element.Fragment, { children: [jsxRuntime.jsx(components.__experimentalVStack, { spacing: labelSpacing, children: withOverlayLabel ? (jsxRuntime.jsx(ProgressBarWithOverlayLabel, { entry: entry })) : (jsxRuntime.jsx(ProgressBarWithLabel, { entry: entry, withComparison: withComparison })) }), jsxRuntime.jsxs("div", { className: clsx(leaderboardChart_module.default.valueContainer, {
+            return (jsxRuntime.jsxs(element.Fragment, { children: [jsxRuntime.jsx(components.__experimentalVStack, { spacing: labelSpacing, children: jsxRuntime.jsx(BarWithLabel, { entry: entry, withComparison: withComparison, withOverlayLabel: withOverlayLabel }) }), jsxRuntime.jsxs("div", { className: clsx(leaderboardChart_module.default.valueContainer, {
                             [leaderboardChart_module.default.overlayLabel]: withOverlayLabel,
                         }), children: [jsxRuntime.jsx(components.__experimentalText, { children: valueFormatter(entry.currentValue) }), withComparison && (jsxRuntime.jsx(components.__experimentalText, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
         }) }));

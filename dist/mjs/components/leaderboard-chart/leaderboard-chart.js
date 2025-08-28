@@ -1,5 +1,5 @@
 import { jsx, jsxs, Fragment as Fragment$1 } from 'react/jsx-runtime';
-import { __experimentalGrid, __experimentalVStack, __experimentalText, ProgressBar } from '@wordpress/components';
+import { __experimentalGrid, __experimentalVStack, __experimentalText } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
 import clsx from 'clsx';
 import 'react';
@@ -46,8 +46,10 @@ const defaultDeltaFormatter = (value) => {
         signDisplay: 'exceptZero',
     });
 };
-const ProgressBarWithOverlayLabel = ({ entry }) => (jsxs("div", { className: styles.progressContainerWithOverlayLabel, children: [typeof entry.label === 'string' ? (jsx(__experimentalText, { className: styles.progressBarLabel, children: entry.label })) : (entry.label), jsx("div", { className: styles.progressBar, style: { width: entry.currentShare + '%' } })] }));
-const ProgressBarWithLabel = ({ entry, withComparison, }) => (jsxs(Fragment$1, { children: [typeof entry.label === 'string' ? jsx(__experimentalText, { children: entry.label }) : entry.label, jsxs("div", { className: styles.progressContainer, children: [jsx(ProgressBar, { value: entry.currentShare, className: clsx(styles.progressBar, styles.primaryBar) }), withComparison && (jsx(ProgressBar, { value: entry.previousShare, className: clsx(styles.progressBar, styles.secondaryBar) }))] })] }));
+const BarLabel = ({ label }) => (jsx(Fragment$1, { children: typeof label === 'string' ? jsx(__experimentalText, { className: styles.label, children: label }) : label }));
+const BarWithLabel = ({ entry, withComparison, withOverlayLabel, }) => (jsxs("div", { className: clsx(styles.barWithLabelContainer, {
+        [styles['is-overlay']]: withOverlayLabel,
+    }), children: [jsx(BarLabel, { label: entry.label }), jsx("div", { className: clsx(styles.bar, styles.primaryBar), style: { width: entry.currentShare + '%' } }), withComparison && !withOverlayLabel && (jsx("div", { className: clsx(styles.bar, styles.secondaryBar), style: { width: entry.previousShare + '%' } }))] }));
 /**
  * LeaderboardChart component displays a ranked list of data with progress bars
  * and optional comparison values.
@@ -91,7 +93,7 @@ const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = fal
     return (jsx(__experimentalGrid, { className: clsx(styles.leaderboardChart, loading && styles.loading, className), templateColumns: "minmax(0, 1fr) auto", rowGap: rowGap, columnGap: columnGap, style: chartStyle, children: data.map(entry => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = signColors[colorIndex];
-            return (jsxs(Fragment, { children: [jsx(__experimentalVStack, { spacing: labelSpacing, children: withOverlayLabel ? (jsx(ProgressBarWithOverlayLabel, { entry: entry })) : (jsx(ProgressBarWithLabel, { entry: entry, withComparison: withComparison })) }), jsxs("div", { className: clsx(styles.valueContainer, {
+            return (jsxs(Fragment, { children: [jsx(__experimentalVStack, { spacing: labelSpacing, children: jsx(BarWithLabel, { entry: entry, withComparison: withComparison, withOverlayLabel: withOverlayLabel }) }), jsxs("div", { className: clsx(styles.valueContainer, {
                             [styles.overlayLabel]: withOverlayLabel,
                         }), children: [jsx(__experimentalText, { children: valueFormatter(entry.currentValue) }), withComparison && (jsx(__experimentalText, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) }))] })] }, entry.id));
         }) }));

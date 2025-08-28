@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: adds an agents.md file to project root
 
+### Fixed
+- Refactored leaderboard chart to remove progressbar.
+
 ## [0.30.0] - 2025-08-27
 ### Added
 - Export ConversionFunnelChart for usage outside. [#44952]
