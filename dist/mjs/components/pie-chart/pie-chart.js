@@ -107,12 +107,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     };
     return (jsx(SingleChartContext.Provider, { value: {
             chartId,
-            chartWidth: size,
+            chartWidth: width,
             chartHeight: adjustedHeight,
         }, children: jsxs("div", { className: clsx('pie-chart', styles['pie-chart'], className), style: {
                 display: 'flex',
                 flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
-            }, children: [jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
+            }, children: [jsx("svg", { viewBox: `0 0 ${width} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: width, height: adjustedHeight, children: jsxs(Group, { top: centerY, left: centerX, children: [jsx(Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
                                     return pie.arcs.map((arc, index) => {
                                         const [centroidX, centroidY] = pie.path.centroid(arc);
                                         const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;

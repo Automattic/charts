@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: adds an agents.md file to project root
+- Refactor Pie Chart to improve readability.
 
 ### Fixed
 - Refactored leaderboard chart to remove progressbar.

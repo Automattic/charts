@@ -111,12 +111,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     };
     return (jsxRuntime.jsx(singleChartContext.SingleChartContext.Provider, { value: {
             chartId,
-            chartWidth: size,
+            chartWidth: width,
             chartHeight: adjustedHeight,
         }, children: jsxRuntime.jsxs("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), style: {
                 display: 'flex',
                 flexDirection: showLegend && legendPosition === 'top' ? 'column-reverse' : 'column',
-            }, children: [jsxRuntime.jsx("svg", { viewBox: `0 0 ${size} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: size, height: adjustedHeight, children: jsxRuntime.jsxs(group.Group, { top: centerY, left: centerX, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
+            }, children: [jsxRuntime.jsx("svg", { viewBox: `0 0 ${width} ${adjustedHeight}`, preserveAspectRatio: "xMidYMid meet", width: width, height: adjustedHeight, children: jsxRuntime.jsxs(group.Group, { top: centerY, left: centerX, children: [jsxRuntime.jsx(shape.Pie, { data: dataWithIndex, pieValue: accessors.value, outerRadius: outerRadius, innerRadius: innerRadius, padAngle: padAngle, cornerRadius: cornerRadius, children: pie => {
                                     return pie.arcs.map((arc, index) => {
                                         const [centroidX, centroidY] = pie.path.centroid(arc);
                                         const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
