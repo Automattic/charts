@@ -14,7 +14,7 @@ import { useGlobalChartsTheme } from '../../providers/chart-context/hooks/use-gl
 import { attachSubComponents } from '../../utils/create-composition.js';
 import 'date-fns';
 import '@automattic/number-formatters';
-import '@visx/text';
+import { getStringWidth } from '@visx/text';
 import 'deepmerge';
 import '@visx/scale';
 import { useElementHeight } from '../../hooks/use-element-height.js';
@@ -134,7 +134,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                         }
                                         // Estimate text width more accurately for background sizing
                                         const fontSize = 12;
-                                        const estimatedTextWidth = arc.data.label.length * fontSize * 0.6; // Rough estimate
+                                        const estimatedTextWidth = getStringWidth(arc.data.label, { fontSize });
                                         const labelPadding = 6;
                                         const backgroundWidth = estimatedTextWidth + labelPadding * 2;
                                         const backgroundHeight = fontSize + labelPadding * 2;

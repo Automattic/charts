@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: Use a global context provider for theme configuration in all stories
+- Charts: use getStringWidth for label size calculations
 - Fix the conversion-funnel-chart component exportation
 
 ## [0.31.0] - 2025-09-01
