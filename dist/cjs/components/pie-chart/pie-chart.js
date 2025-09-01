@@ -136,7 +136,13 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
                                             pathProps.onMouseMove = handleMouseMove;
                                             pathProps.onMouseLeave = onMouseLeave;
                                         }
-                                        return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelBackgroundColor || '#333', fontSize: 12, textAnchor: "middle", pointerEvents: "none", children: arc.data.label }))] }, `arc-${index}`));
+                                        // Estimate text width more accurately for background sizing
+                                        const fontSize = 12;
+                                        const estimatedTextWidth = arc.data.label.length * fontSize * 0.6; // Rough estimate
+                                        const labelPadding = 6;
+                                        const backgroundWidth = estimatedTextWidth + labelPadding * 2;
+                                        const backgroundHeight = fontSize + labelPadding * 2;
+                                        return (jsxRuntime.jsxs("g", { children: [jsxRuntime.jsx("path", { ...pathProps }), hasSpaceForLabel && (jsxRuntime.jsxs("g", { children: [providerTheme.labelBackgroundColor && (jsxRuntime.jsx("rect", { x: centroidX - backgroundWidth / 2, y: centroidY - backgroundHeight / 2, width: backgroundWidth, height: backgroundHeight, fill: providerTheme.labelBackgroundColor, rx: 4, ry: 4, pointerEvents: "none" })), jsxRuntime.jsx("text", { x: centroidX, y: centroidY, dy: ".33em", fill: providerTheme.labelTextColor || '#333', fontSize: fontSize, textAnchor: "middle", pointerEvents: "none", children: arc.data.label })] }))] }, `arc-${index}`));
                                     });
                                 } }), svgChildren] }) }), showLegend && (jsxRuntime.jsx(legend.Legend, { orientation: legendOrientation, position: legendPosition, alignment: legendAlignment, className: pieChart_module.default['pie-chart-legend'], shape: legendShape, ref: legendRef, chartId: chartId })), withTooltips && tooltipOpen && tooltipData && (jsxRuntime.jsx(baseTooltip.BaseTooltip, { data: tooltipData, top: tooltipTop || 0, left: tooltipLeft || 0, style: {
                         transform: 'translate(-50%, -100%)',

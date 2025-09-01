@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 - Refactor Pie Chart to improve readability.
 
 ### Fixed
+- Charts: fix label background colour and text colour
 - Refactored leaderboard chart to remove progressbar.
 
 ## [0.30.0] - 2025-08-27
