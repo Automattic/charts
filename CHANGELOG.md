@@ -15,6 +15,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Stable colors for series groups
 - Refactor Pie Chart to improve readability.
 
+### Changed
+- Enhanced ConversionFunnelChart with render props and TooltipInPortal
+
 ### Fixed
 - Charts: fix label background colour and text colour
 - Refactored leaderboard chart to remove progressbar.

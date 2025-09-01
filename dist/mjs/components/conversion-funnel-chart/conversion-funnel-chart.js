@@ -1,11 +1,10 @@
-import { jsx, jsxs } from 'react/jsx-runtime';
-import { __experimentalText } from '@wordpress/components';
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
+import { localPoint } from '@visx/event';
+import { useTooltip, useTooltipInPortal } from '@visx/tooltip';
 import clsx from 'clsx';
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import '../../providers/chart-context/global-charts-provider.js';
 import 'fast-deep-equal';
-import '@visx/event';
-import '@visx/tooltip';
 import '@visx/xychart';
 import 'date-fns';
 import '@automattic/number-formatters';
@@ -29,45 +28,131 @@ const DEFAULT_FUNNEL_SETTINGS = {
 /**
  * ConversionFunnelChart component displays a conversion funnel with main metric and visualization
  *
- * @param props                 - Component props
- * @param props.mainRate        - Main conversion rate to highlight
- * @param props.changeIndicator - Change indicator (e.g., +2%, -1.5%)
- * @param props.steps           - Array of funnel steps
- * @param props.loading         - Whether the chart is in loading state
- * @param props.className       - Additional CSS class name
- * @param props.style           - Custom styling
+ * @param props                  - Component props
+ * @param props.mainRate         - Main conversion rate to highlight
+ * @param props.changeIndicator  - Change indicator (e.g., +2%, -1.5%)
+ * @param props.steps            - Array of funnel steps
+ * @param props.loading          - Whether the chart is in loading state
+ * @param props.className        - Additional CSS class name
+ * @param props.style            - Custom styling
+ * @param props.renderStepLabel  - Custom render function for step labels
+ * @param props.renderStepRate   - Custom render function for step rates
+ * @param props.renderMainMetric - Custom render function for the entire main metric section
+ * @param props.renderTooltip    - Custom render function for tooltip content
  * @return JSX element representing the conversion funnel chart
  */
-const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = false, className, style, }) => {
+const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = false, className, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, }) => {
     const theme = useGlobalChartsTheme();
     const chartRef = useRef(null);
     const selectedBarRef = useRef(null);
+    // Use @visx/tooltip hooks for tooltip positioning
+    const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
     // Use custom hook for selection management
-    const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection();
+    const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
+    const { containerRef: portalContainerRef, TooltipInPortal } = useTooltipInPortal({
+        // use TooltipWithBounds for boundary detection
+        detectBounds: true,
+        // when tooltip containers are scrolled, this will correctly update the Tooltip position
+        scroll: true,
+    });
     // Wrapper to clear selectedBarRef after clearing selection
     const clearSelectionAndRef = useCallback(() => {
         clearSelection();
         selectedBarRef.current = null;
-    }, [clearSelection]);
+        hideTooltip();
+    }, [clearSelection, hideTooltip]);
+    // Helper function to show tooltip at specific coordinates
+    const showTooltipAt = useCallback((step, x, y) => {
+        showTooltip({
+            tooltipData: step,
+            tooltipLeft: x,
+            tooltipTop: y - 10,
+        });
+    }, [showTooltip]);
+    // Helper function to get tooltip coordinates for mouse events
+    const getMouseTooltipCoords = useCallback((event) => {
+        const containerElement = chartRef.current;
+        if (containerElement) {
+            const coords = localPoint(containerElement, event.nativeEvent);
+            if (coords) {
+                return { x: coords.x, y: coords.y };
+            }
+        }
+        return null;
+    }, []);
+    // Helper function to get tooltip coordinates for keyboard events
+    const getKeyboardTooltipCoords = useCallback((event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const containerElement = chartRef.current;
+        if (containerElement) {
+            const containerRect = containerElement.getBoundingClientRect();
+            const x = rect.left + rect.width / 2 - containerRect.left;
+            const y = rect.top - containerRect.top;
+            return { x, y };
+        }
+        return null;
+    }, []);
+    // Helper function to handle step interaction (both click and keyboard)
+    const handleStepInteraction = useCallback((step, event, interactionType) => {
+        // Store reference to the interacted element
+        selectedBarRef.current = event.currentTarget;
+        // Check if deselecting the same step
+        const { isClicked } = getStepState(step.id);
+        if (isClicked) {
+            // Deselecting - clear selection (tooltip will be hidden by hook)
+            if (interactionType === 'click') {
+                handleBarClick(step.id);
+            }
+            else {
+                handleBarKeyDown(step.id, event);
+            }
+            return;
+        }
+        // Selecting - handle selection and show tooltip
+        if (interactionType === 'click') {
+            handleBarClick(step.id);
+            const coords = getMouseTooltipCoords(event);
+            if (coords) {
+                showTooltipAt(step, coords.x, coords.y);
+            }
+        }
+        else {
+            handleBarKeyDown(step.id, event);
+            const coords = getKeyboardTooltipCoords(event);
+            if (coords) {
+                showTooltipAt(step, coords.x, coords.y);
+            }
+        }
+    }, [
+        getStepState,
+        handleBarClick,
+        handleBarKeyDown,
+        showTooltipAt,
+        getMouseTooltipCoords,
+        getKeyboardTooltipCoords,
+    ]);
     // Create handler factories to avoid arrow functions in JSX
     const stepHandlers = useMemo(() => {
         const handlers = new Map();
         steps.forEach(step => {
             const onClick = (event) => {
                 event.stopPropagation();
-                // Store reference to the clicked bar element
-                selectedBarRef.current = event.currentTarget;
-                handleBarClick(step.id);
+                handleStepInteraction(step, event, 'click');
             };
             const onKeyDown = (event) => {
-                // Store reference to the focused bar element for keyboard interactions
-                selectedBarRef.current = event.currentTarget;
-                handleBarKeyDown(step.id, event);
+                if (event.key === 'Enter' || event.key === ' ') {
+                    handleStepInteraction(step, event, 'keyboard');
+                }
+                else {
+                    // For other keys (like Escape), just handle the selection
+                    selectedBarRef.current = event.currentTarget;
+                    handleBarKeyDown(step.id, event);
+                }
             };
             handlers.set(step.id, { onClick, onKeyDown });
         });
         return handlers;
-    }, [steps, handleBarClick, handleBarKeyDown]);
+    }, [steps, handleStepInteraction, handleBarKeyDown]);
     // Handle document-level click to clear selection when clicking outside selected bar
     useEffect(() => {
         const handleDocumentClick = (event) => {
@@ -94,23 +179,62 @@ const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = fal
     const chartStyle = {
         '--primary-color': primaryColor,
         '--light-background-color': lightBackgroundColor,
-        '--change-color': changeColor,
+        '--change-indicator-color': changeColor,
         ...style,
     };
+    // Default main metric rendering function
+    const renderDefaultMainMetric = () => (jsxs(Fragment, { children: [jsxs("span", { className: styles['main-rate'], children: [mainRate.toFixed(1), "%"] }), changeIndicator && (jsx("span", { className: styles['change-indicator'], children: changeIndicator }))] }));
+    // Default tooltip rendering function
+    const renderDefaultTooltip = (step) => (jsxs(Fragment, { children: [jsx("div", { className: styles['tooltip-title'], children: step.label }), jsxs("div", { className: styles['tooltip-content'], children: [step.rate.toFixed(1), "%", step.count && ` • ${step.count.toLocaleString()} items`] })] }));
     // Handle empty or undefined data
     if (!steps || steps.length === 0) {
-        return (jsx("div", { className: clsx(styles.conversionFunnelChart, loading && styles.loading, className), style: chartStyle, children: jsx("div", { className: styles.emptyState, children: loading ? 'Loading...' : 'No data available' }) }));
+        return (jsx("div", { className: clsx(styles.conversionFunnelChart, loading && styles.loading, className), style: chartStyle, children: jsx("div", { className: styles['empty-state'], children: loading ? 'Loading...' : 'No data available' }) }));
     }
     // Calculate bar heights relative to the maximum (first step)
     const maxRate = Math.max(...steps.map(step => step.rate));
-    return (jsxs("div", { ref: chartRef, className: clsx(styles.conversionFunnelChart, loading && styles.loading, className), style: chartStyle, children: [jsxs("div", { className: styles.mainMetric, children: [jsxs(__experimentalText, { className: styles.mainRate, children: [mainRate.toFixed(1), "%"] }), changeIndicator && (jsx(__experimentalText, { className: styles.changeIndicator, style: { color: changeColor }, children: changeIndicator }))] }), jsx("div", { className: styles.funnelContainer, children: steps.map(step => {
-                    const barHeight = (step.rate / maxRate) * 100;
-                    const { isClicked, isBlurred } = getStepState(step.id);
-                    return (jsxs("div", { className: clsx(styles.funnelStep, isBlurred && styles.blurred), children: [jsxs("div", { className: styles.stepHeader, children: [jsx(__experimentalText, { className: styles.stepLabel, children: step.label }), jsxs(__experimentalText, { className: styles.stepRate, children: [step.rate.toFixed(1), "%"] })] }), jsxs("div", { className: clsx(styles.barContainer, isClicked && styles.selected, isBlurred && styles.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: [jsx("div", { className: clsx(styles.funnelBar, isClicked && styles.selected), style: {
-                                            height: `${barHeight}%`,
-                                            backgroundColor: primaryColor,
-                                        } }), isClicked && (jsx("div", { className: styles.tooltip, children: jsxs("div", { className: styles.tooltipContent, children: [jsx(__experimentalText, { className: styles.tooltipTitle, children: step.label }), jsxs(__experimentalText, { className: styles.tooltipRate, children: [step.rate.toFixed(1), "%", step.count && ` • ${step.count.toLocaleString()} items`] })] }) }))] })] }, step.id));
-                }) })] }));
+    return (jsxs(Fragment, { children: [jsxs("div", { ref: node => {
+                    // Set containerRef for @visx coordinate system
+                    portalContainerRef(node);
+                    chartRef.current = node;
+                }, className: clsx(styles.conversionFunnelChart, loading && styles.loading, className), style: chartStyle, children: [renderMainMetric ? (renderMainMetric({
+                        mainRate,
+                        changeIndicator,
+                        className: styles['main-metric'],
+                        changeColor,
+                    })) : (jsx("div", { className: styles['main-metric'], children: renderDefaultMainMetric() })), jsx("div", { className: styles['funnel-container'], children: steps.map((step, index) => {
+                            const barHeight = (step.rate / maxRate) * 100;
+                            const { isClicked, isBlurred } = getStepState(step.id);
+                            return (jsxs("div", { className: clsx(styles['funnel-step'], isBlurred && styles.blurred), children: [jsxs("div", { className: styles['step-header'], children: [renderStepLabel ? (renderStepLabel({
+                                                step,
+                                                index,
+                                                className: styles['step-label'],
+                                            })) : (jsx("span", { className: styles['step-label'], children: step.label })), renderStepRate ? (renderStepRate({
+                                                step,
+                                                index,
+                                                className: styles['step-rate'],
+                                            })) : (jsxs("span", { className: styles['step-rate'], children: [step.rate.toFixed(1), "%"] }))] }), jsx("div", { className: clsx(styles['bar-container'], isClicked && styles.selected, isBlurred && styles.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: jsx("div", { className: clsx(styles['funnel-bar'], isClicked && styles.selected), style: {
+                                                height: `${barHeight}%`,
+                                                backgroundColor: primaryColor,
+                                            } }) })] }, step.id));
+                        }) })] }), tooltipOpen &&
+                tooltipData &&
+                (() => {
+                    const tooltipContent = renderTooltip
+                        ? renderTooltip({
+                            step: tooltipData,
+                            index: steps.findIndex(s => s.id === tooltipData.id),
+                            top: tooltipTop,
+                            left: tooltipLeft,
+                            className: styles['tooltip-wrapper'],
+                        })
+                        : renderDefaultTooltip(tooltipData);
+                    // Don't render tooltip if renderTooltip returns falsy
+                    if (!tooltipContent)
+                        return null;
+                    return (jsx(TooltipInPortal
+                    // set this to random so it correctly updates with parent bounds
+                    , { top: tooltipTop, left: tooltipLeft, className: styles['tooltip-wrapper'], children: tooltipContent }, Math.random()));
+                })()] }));
 };
 
 export { ConversionFunnelChart, ConversionFunnelChart as default };
