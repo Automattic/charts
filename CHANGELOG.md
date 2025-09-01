@@ -5,22 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.31.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.31.0] - 2025-09-01
 ### Added
-- Charts: adds an agents.md file to project root
-- Charts: Refactor shared components, hooks and utils
-- Charts: Stable colors for series groups
-- Refactor Pie Chart to improve readability.
+- Charts: adds an agents.md file to project root [#44954]
+- Charts: Refactor shared components, hooks and utils [#44971]
+- Charts: Stable colors for series groups [#44730]
+- Refactor Pie Chart to improve readability. [#44989]
 
 ### Changed
-- Enhanced ConversionFunnelChart with render props and TooltipInPortal
+- Enhanced ConversionFunnelChart with render props and TooltipInPortal [#45019]
 
 ### Fixed
-- Charts: fix label background colour and text colour
-- Refactored leaderboard chart to remove progressbar.
+- Charts: fix label background colour and text colour [#44990]
+- Refactored leaderboard chart to remove progressbar. [#44982]
 
 ## [0.30.0] - 2025-08-27
 ### Added
@@ -408,7 +405,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.31.0-alpha]: https://github.com/Automattic/charts/compare/v0.30.0...v0.31.0-alpha
+[0.31.0]: https://github.com/Automattic/charts/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/Automattic/charts/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/Automattic/charts/compare/v0.28.0...v0.29.0
 [0.28.0]: https://github.com/Automattic/charts/compare/v0.27.0...v0.28.0
