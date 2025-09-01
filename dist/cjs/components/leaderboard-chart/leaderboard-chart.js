@@ -7,12 +7,17 @@ var components = require('@wordpress/components');
 var element = require('@wordpress/element');
 var clsx = require('clsx');
 require('react');
+require('../../providers/chart-context/global-charts-provider.js');
 require('fast-deep-equal');
-var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 require('@visx/event');
 require('@visx/tooltip');
 require('@visx/xychart');
-var formatMetricValue = require('../shared/format-metric-value.js');
+require('date-fns');
+var formatMetricValue = require('../../utils/format-metric-value.js');
+require('@visx/text');
+require('deepmerge');
+require('@visx/scale');
+var useGlobalChartsTheme = require('../../providers/chart-context/hooks/use-global-charts-theme.js');
 var leaderboardChart_module = require('./leaderboard-chart.module.scss.js');
 
 /**
@@ -72,7 +77,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, }) => (jsxRunti
  * @return JSX element representing the leaderboard chart
  */
 const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
-    const theme = useGlobalChartTheme.useGlobalChartTheme();
+    const theme = useGlobalChartsTheme.useGlobalChartsTheme();
     // Get component settings from theme with fallbacks
     const leaderboardSettings = theme.leaderboardChart;
     const labelSpacing = leaderboardSettings?.labelSpacing ?? DEFAULT_LEADERBOARD_SETTINGS.labelSpacing;

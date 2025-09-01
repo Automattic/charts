@@ -6,7 +6,7 @@ interface ChartRegistration {
     chartType: string;
     metadata?: Record<string, unknown>;
 }
-interface ChartContextValue {
+interface GlobalChartsContextValue {
     charts: Map<string, ChartRegistration>;
     registerChart: (id: string, data: ChartRegistration) => void;
     unregisterChart: (id: string) => void;
@@ -26,4 +26,4 @@ interface ChartContextValue {
     }) => string;
 }
 
-export type { ChartContextValue, ChartRegistration };
+export type { ChartRegistration, GlobalChartsContextValue };

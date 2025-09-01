@@ -1,5 +1,5 @@
 import { jsx } from 'react/jsx-runtime';
-import { createContext, useState, useMemo, useRef, useEffect, useCallback, useContext } from 'react';
+import { createContext, useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { defaultTheme } from '../theme/themes.js';
 
 const GlobalChartsContext = createContext(null);
@@ -56,12 +56,5 @@ const GlobalChartsProvider = ({ children, theme = {}, }) => {
     }), [charts, registerChart, unregisterChart, getChartData, providerTheme, resolveGroupColor]);
     return jsx(GlobalChartsContext.Provider, { value: value, children: children });
 };
-const useGlobalChartsContext = () => {
-    const context = useContext(GlobalChartsContext);
-    if (!context) {
-        throw new Error('useGlobalChartsContext must be used within a GlobalChartsProvider');
-    }
-    return context;
-};
 
-export { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext };
+export { GlobalChartsContext, GlobalChartsProvider };

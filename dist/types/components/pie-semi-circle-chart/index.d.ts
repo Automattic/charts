@@ -1,1 +1,1 @@
-export { default as PieSemiCircleChart } from './pie-semi-circle-chart.js';
+export { ArcData, default as PieSemiCircleChart, PieSemiCircleChartProps } from './pie-semi-circle-chart.js';

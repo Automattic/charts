@@ -1,1 +1,1 @@
-export { default as PieChart, PieChartUnresponsive } from './pie-chart.js';
+export { default as PieChart, PieChartProps, PieChartUnresponsive } from './pie-chart.js';

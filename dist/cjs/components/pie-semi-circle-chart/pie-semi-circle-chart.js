@@ -10,18 +10,26 @@ var text = require('@visx/text');
 var tooltip = require('@visx/tooltip');
 var clsx = require('clsx');
 var react = require('react');
+require('fast-deep-equal');
+require('@visx/xychart');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
-var utils = require('../../providers/chart-context/utils.js');
+var useGlobalChartsContext = require('../../providers/chart-context/hooks/use-global-charts-context.js');
+var useChartId = require('../../providers/chart-context/hooks/use-chart-id.js');
+var useChartRegistration = require('../../providers/chart-context/hooks/use-chart-registration.js');
 var createComposition = require('../../utils/create-composition.js');
+require('date-fns');
+require('@automattic/number-formatters');
+require('deepmerge');
+require('../../providers/theme/theme-provider.js');
+require('@visx/scale');
+var useElementHeight = require('../../hooks/use-element-height.js');
 var legend = require('../legend/legend.js');
-require('../legend/base-legend.js');
-var useChartLegendData = require('../legend/use-chart-legend-data.js');
-var chartSvg = require('../shared/chart-composition/chart-svg.js');
-var chartHtml = require('../shared/chart-composition/chart-html.js');
-var useChartChildren = require('../shared/chart-composition/use-chart-children.js');
-var singleChartContext = require('../shared/single-chart-context.js');
-var useElementHeight = require('../shared/use-element-height.js');
-var withResponsive = require('../shared/with-responsive.js');
+var useChartLegendItems = require('../legend/hooks/use-chart-legend-items.js');
+var chartSvg = require('../private/chart-composition/chart-svg.js');
+var chartHtml = require('../private/chart-composition/chart-html.js');
+var useChartChildren = require('../private/chart-composition/use-chart-children.js');
+var singleChartContext = require('../private/single-chart-context/single-chart-context.js');
+var withResponsive = require('../private/with-responsive/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
 var pieSemiCircleChart_module = require('./pie-semi-circle-chart.module.scss.js');
 
@@ -48,7 +56,7 @@ const validateData = (data) => {
     return { isValid: true, message: '' };
 };
 const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 400, thickness = 0.4, clockwise = true, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', label, note, className, children, }) => {
-    const chartId = utils.useChartId(providedChartId);
+    const chartId = useChartId.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = tooltip.useTooltip();
     const handleMouseMove = react.useCallback((event$1, arc) => {
@@ -69,7 +77,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     }, [handleMouseMove]);
     // Validate data first to get validation result
     const { isValid, message } = validateData(data);
-    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
+    const { resolveGroupColor } = useGlobalChartsContext.useGlobalChartsContext();
     // Define accessors with useMemo to avoid changing dependencies
     const accessors = react.useMemo(() => ({
         value: (d) => d.value,
@@ -79,7 +87,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = react.useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
+    const legendItems = useChartLegendItems.useChartLegendItems(data, legendOptions);
     // Process children to extract compound components
     const { svgChildren, htmlChildren, otherChildren } = useChartChildren.useChartChildren(children, 'PieSemiCircleChart');
     // Memoize metadata to prevent unnecessary re-registration
@@ -88,7 +96,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
         clockwise,
     }), [thickness, clockwise]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration({
+    useChartRegistration.useChartRegistration({
         chartId,
         legendItems,
         chartType: 'pie-semi-circle',

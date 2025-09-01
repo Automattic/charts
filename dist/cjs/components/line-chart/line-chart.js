@@ -11,27 +11,32 @@ var xychart = require('@visx/xychart');
 var i18n = require('@wordpress/i18n');
 var clsx = require('clsx');
 require('fast-deep-equal');
-var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 require('@visx/event');
 require('@visx/tooltip');
 var useXychartTheme = require('../../hooks/use-xychart-theme.js');
+var useChartDataTransform = require('../../hooks/use-chart-data-transform.js');
+var useChartMargin = require('../../hooks/use-chart-margin.js');
+var useElementHeight = require('../../hooks/use-element-height.js');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
-var utils = require('../../providers/chart-context/utils.js');
+var useGlobalChartsContext = require('../../providers/chart-context/hooks/use-global-charts-context.js');
+var useChartId = require('../../providers/chart-context/hooks/use-chart-id.js');
+var useChartRegistration = require('../../providers/chart-context/hooks/use-chart-registration.js');
+var useGlobalChartsTheme = require('../../providers/chart-context/hooks/use-global-charts-theme.js');
 var createComposition = require('../../utils/create-composition.js');
+require('date-fns');
+require('@visx/text');
 var getStyles = require('../../utils/get-styles.js');
+require('deepmerge');
 var legend = require('../legend/legend.js');
-require('../legend/base-legend.js');
-var useChartLegendData = require('../legend/use-chart-legend-data.js');
-var defaultGlyph = require('../shared/default-glyph.js');
-var singleChartContext = require('../shared/single-chart-context.js');
-var useChartDataTransform = require('../shared/use-chart-data-transform.js');
-var useChartMargin = require('../shared/use-chart-margin.js');
-var useElementHeight = require('../shared/use-element-height.js');
-var withResponsive = require('../shared/with-responsive.js');
+var useChartLegendItems = require('../legend/hooks/use-chart-legend-items.js');
+var defaultGlyph = require('../private/default-glyph/default-glyph.js');
+var singleChartContext = require('../private/single-chart-context/single-chart-context.js');
+var withResponsive = require('../private/with-responsive/with-responsive.js');
 var accessibleTooltip = require('../tooltip/accessible-tooltip.js');
-var lineChartAnnotation = require('./line-chart-annotation.js');
-var lineChartAnnotationsOverlay = require('./line-chart-annotations-overlay.js');
 var lineChart_module = require('./line-chart.module.scss.js');
+require('gridicons');
+var lineChartAnnotationsOverlay = require('./private/line-chart-annotations-overlay.js');
+var lineChartAnnotation = require('./private/line-chart-annotation.js');
 
 const X_TICK_WIDTH = 100;
 const defaultRenderGlyph = (props) => {
@@ -141,9 +146,9 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
     return null; // This component only provides the ref interface
 };
 const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignment = 'center', legendPosition = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
-    const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
+    const providerTheme = useGlobalChartsTheme.useGlobalChartsTheme();
     const theme = useXychartTheme.useXYChartTheme(data);
-    const chartId = utils.useChartId(providedChartId);
+    const chartId = useChartId.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
     const chartRef = react.useRef(null);
     const [selectedIndex, setSelectedIndex] = react.useState(undefined);
@@ -155,7 +160,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
         getChartDimensions: () => internalChartRef.current?.getChartDimensions() || { width: 0, height: 0, margin: {} },
     }), [internalChartRef]);
     const dataSorted = useChartDataTransform.useChartDataTransform(data);
-    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
+    const { resolveGroupColor } = useGlobalChartsContext.useGlobalChartsContext();
     // Use the keyboard navigation hook
     const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = accessibleTooltip.useKeyboardNavigation({
         selectedIndex,
@@ -223,7 +228,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
         renderGlyph,
     }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(dataSorted, legendOptions, legendShape);
+    const legendItems = useChartLegendItems.useChartLegendItems(dataSorted, legendOptions, legendShape);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = react.useMemo(() => ({
         withGradientFill,
@@ -233,7 +238,7 @@ const LineChartInternal = react.forwardRef(({ data, chartId: providedChartId, wi
         withLegendGlyph,
     }), [withGradientFill, smoothing, curveType, withStartGlyphs, withLegendGlyph]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration({
+    useChartRegistration.useChartRegistration({
         chartId,
         legendItems,
         chartType: 'line',

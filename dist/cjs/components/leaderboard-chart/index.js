@@ -1,7 +1,10 @@
 'use strict';
 
 var leaderboardChart = require('./leaderboard-chart.js');
-var formatMetricValue = require('../shared/format-metric-value.js');
+require('date-fns');
+var formatMetricValue = require('../../utils/format-metric-value.js');
+require('@visx/text');
+require('deepmerge');
 
 
 

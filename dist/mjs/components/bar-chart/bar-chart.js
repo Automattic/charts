@@ -5,26 +5,30 @@ import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import { useContext, useRef, useState, useCallback, useMemo } from 'react';
 import 'fast-deep-equal';
-import { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
-import '../../providers/theme/theme-provider.js';
-import 'deepmerge';
 import '@visx/event';
 import '@visx/tooltip';
 import { useXYChartTheme } from '../../hooks/use-xychart-theme.js';
-import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { useChartDataTransform } from '../../hooks/use-chart-data-transform.js';
+import { useChartMargin } from '../../hooks/use-chart-margin.js';
+import { useElementHeight } from '../../hooks/use-element-height.js';
+import { useZeroValueDisplay } from '../../hooks/use-zero-value-display.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { useGlobalChartsContext } from '../../providers/chart-context/hooks/use-global-charts-context.js';
+import { useChartId } from '../../providers/chart-context/hooks/use-chart-id.js';
+import { useChartRegistration } from '../../providers/chart-context/hooks/use-chart-registration.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
+import 'date-fns';
+import '@automattic/number-formatters';
+import '@visx/text';
+import 'deepmerge';
+import '../../providers/theme/theme-provider.js';
 import { Legend } from '../legend/legend.js';
-import '../legend/base-legend.js';
-import { useChartLegendData } from '../legend/use-chart-legend-data.js';
-import { SingleChartContext } from '../shared/single-chart-context.js';
-import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
-import { useChartMargin } from '../shared/use-chart-margin.js';
-import { useElementHeight } from '../shared/use-element-height.js';
-import { useZeroValueDisplay } from '../shared/use-zero-value-display.js';
-import { withResponsive } from '../shared/with-responsive.js';
+import { useChartLegendItems } from '../legend/hooks/use-chart-legend-items.js';
+import { SingleChartContext } from '../private/single-chart-context/single-chart-context.js';
+import { withResponsive } from '../private/with-responsive/with-responsive.js';
 import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
 import styles from './bar-chart.module.scss.js';
-import { useBarChartOptions } from './use-bar-chart-options.js';
+import { useBarChartOptions } from './private/use-bar-chart-options.js';
 
 // Validation function similar to LineChart
 const validateData = (data) => {
@@ -50,7 +54,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         enabled: showZeroValues,
     });
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(dataSorted);
+    const legendItems = useChartLegendItems(dataSorted);
     const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
     const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
     const [legendRef, legendHeight] = useElementHeight();

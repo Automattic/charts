@@ -1,7 +1,7 @@
 import { Legend } from '../legend/legend.js';
-import { FC, ReactNode, ComponentType } from 'react';
 import { BaseChartProps, SeriesData, DataPointDate, Optional } from '../../types.js';
-import { ResponsiveConfig } from '../shared/with-responsive.js';
+import { ReactNode, FC, ComponentType } from 'react';
+import { ResponsiveConfig } from '../private/with-responsive/with-responsive.js';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {

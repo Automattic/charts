@@ -1,7 +1,8 @@
-import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
+import { BaseChartProps, DataPointPercentage, Optional } from '../../types.js';
 import { ReactNode } from 'react';
-import { ChartComponentWithComposition } from '../shared/chart-composition/types.js';
-import { ResponsiveConfig } from '../shared/with-responsive.js';
+import { ChartComponentWithComposition } from '../private/chart-composition/types.js';
+import { ResponsiveConfig } from '../private/with-responsive/with-responsive.js';
+import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -32,6 +33,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;
+type ArcData = PieArcDatum<DataPointPercentage>;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
-export { PieSemiCircleChartResponsive as default };
+export { type ArcData, type PieSemiCircleChartProps, PieSemiCircleChartResponsive as default };

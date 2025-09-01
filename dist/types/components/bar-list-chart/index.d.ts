@@ -1,1 +1,1 @@
-export { default as BarListChart } from './bar-list-chart.js';
+export { default as BarListChart, BarListChartProps, RenderLabelProps, RenderValueProps } from './bar-list-chart.js';

@@ -1,7 +1,7 @@
-import { Optional, BaseChartProps, DataPointPercentage } from '../../types.js';
+import { BaseChartProps, DataPointPercentage, Optional } from '../../types.js';
 import { ReactNode } from 'react';
-import { ChartComponentWithComposition } from '../shared/chart-composition/types.js';
-import { ResponsiveConfig } from '../shared/with-responsive.js';
+import { ChartComponentWithComposition } from '../private/chart-composition/types.js';
+import { ResponsiveConfig } from '../private/with-responsive/with-responsive.js';
 
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -39,4 +39,4 @@ type PieChartResponsiveComponent = ChartComponentWithComposition<PieChartBasePro
 declare const PieChart: PieChartComponent;
 declare const PieChartResponsive: PieChartResponsiveComponent;
 
-export { PieChart as PieChartUnresponsive, PieChartResponsive as default };
+export { type PieChartProps, PieChart as PieChartUnresponsive, PieChartResponsive as default };

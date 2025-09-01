@@ -58,14 +58,6 @@ const GlobalChartsProvider = ({ children, theme = {}, }) => {
     }), [charts, registerChart, unregisterChart, getChartData, providerTheme, resolveGroupColor]);
     return jsxRuntime.jsx(GlobalChartsContext.Provider, { value: value, children: children });
 };
-const useGlobalChartsContext = () => {
-    const context = react.useContext(GlobalChartsContext);
-    if (!context) {
-        throw new Error('useGlobalChartsContext must be used within a GlobalChartsProvider');
-    }
-    return context;
-};
 
 exports.GlobalChartsContext = GlobalChartsContext;
 exports.GlobalChartsProvider = GlobalChartsProvider;
-exports.useGlobalChartsContext = useGlobalChartsContext;

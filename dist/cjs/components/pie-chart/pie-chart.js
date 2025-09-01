@@ -8,21 +8,27 @@ var shape = require('@visx/shape');
 var clsx = require('clsx');
 var react = require('react');
 require('fast-deep-equal');
-var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 var useChartMouseHandler = require('../../hooks/use-chart-mouse-handler.js');
 require('@visx/xychart');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
-var utils = require('../../providers/chart-context/utils.js');
+var useGlobalChartsContext = require('../../providers/chart-context/hooks/use-global-charts-context.js');
+var useChartId = require('../../providers/chart-context/hooks/use-chart-id.js');
+var useChartRegistration = require('../../providers/chart-context/hooks/use-chart-registration.js');
+var useGlobalChartsTheme = require('../../providers/chart-context/hooks/use-global-charts-theme.js');
 var createComposition = require('../../utils/create-composition.js');
+require('date-fns');
+require('@automattic/number-formatters');
+require('@visx/text');
+require('deepmerge');
+require('@visx/scale');
+var useElementHeight = require('../../hooks/use-element-height.js');
 var legend = require('../legend/legend.js');
-require('../legend/base-legend.js');
-var useChartLegendData = require('../legend/use-chart-legend-data.js');
-var chartSvg = require('../shared/chart-composition/chart-svg.js');
-var chartHtml = require('../shared/chart-composition/chart-html.js');
-var useChartChildren = require('../shared/chart-composition/use-chart-children.js');
-var singleChartContext = require('../shared/single-chart-context.js');
-var useElementHeight = require('../shared/use-element-height.js');
-var withResponsive = require('../shared/with-responsive.js');
+var useChartLegendItems = require('../legend/hooks/use-chart-legend-items.js');
+var chartSvg = require('../private/chart-composition/chart-svg.js');
+var chartHtml = require('../private/chart-composition/chart-html.js');
+var useChartChildren = require('../private/chart-composition/use-chart-children.js');
+var singleChartContext = require('../private/single-chart-context/single-chart-context.js');
+var withResponsive = require('../private/with-responsive/with-responsive.js');
 var baseTooltip = require('../tooltip/base-tooltip.js');
 var pieChart_module = require('./pie-chart.module.scss.js');
 
@@ -55,8 +61,8 @@ const validateData = (data) => {
  * @return {JSX.Element} The rendered chart component
  */
 const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
-    const providerTheme = useGlobalChartTheme.useGlobalChartTheme();
-    const chartId = utils.useChartId(providedChartId);
+    const providerTheme = useGlobalChartsTheme.useGlobalChartsTheme();
+    const chartId = useChartId.useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
     const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler.useChartMouseHandler({
         withTooltips,
@@ -64,7 +70,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = react.useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(data, legendOptions);
+    const legendItems = useChartLegendItems.useChartLegendItems(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Process children to extract compound components
     const { svgChildren, htmlChildren, otherChildren } = useChartChildren.useChartChildren(children, 'PieChart');
@@ -75,14 +81,14 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
         cornerScale,
     }), [thickness, gapScale, cornerScale]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration({
+    useChartRegistration.useChartRegistration({
         chartId,
         legendItems,
         chartType: 'pie',
         isDataValid: isValid,
         metadata: chartMetadata,
     });
-    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
+    const { resolveGroupColor } = useGlobalChartsContext.useGlobalChartsContext();
     if (!isValid) {
         return (jsxRuntime.jsx("div", { className: clsx('pie-chart', pieChart_module.default['pie-chart'], className), children: jsxRuntime.jsx("div", { className: pieChart_module.default['error-message'], children: message }) }));
     }

@@ -1,5 +1,5 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { ResponsiveConfig } from '../shared/with-responsive.js';
+import { ResponsiveConfig } from '../private/with-responsive/with-responsive.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/bar-chart.js';
 import { ComponentType } from 'react';
@@ -67,6 +67,6 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
-declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "width" | "height" | "size"> & Omit<BarListChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "height" | "width" | "size"> & Omit<BarListChartProps, "height" | "width" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { BarListChartResponsive as default };
+export { type BarListChartProps, type RenderLabelProps, type RenderValueProps, BarListChartResponsive as default };

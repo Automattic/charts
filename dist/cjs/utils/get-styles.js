@@ -1,8 +1,5 @@
 'use strict';
 
-require('@visx/xychart');
-require('react');
-
 /**
  * Utility function to get consolidated line styles for a series
  * This consolidates the logic used by both LineChart and Legend components

@@ -9,26 +9,30 @@ var i18n = require('@wordpress/i18n');
 var clsx = require('clsx');
 var react = require('react');
 require('fast-deep-equal');
-var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
-require('../../providers/theme/theme-provider.js');
-require('deepmerge');
 require('@visx/event');
 require('@visx/tooltip');
 var useXychartTheme = require('../../hooks/use-xychart-theme.js');
-var utils = require('../../providers/chart-context/utils.js');
+var useChartDataTransform = require('../../hooks/use-chart-data-transform.js');
+var useChartMargin = require('../../hooks/use-chart-margin.js');
+var useElementHeight = require('../../hooks/use-element-height.js');
+var useZeroValueDisplay = require('../../hooks/use-zero-value-display.js');
+var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
+var useGlobalChartsContext = require('../../providers/chart-context/hooks/use-global-charts-context.js');
+var useChartId = require('../../providers/chart-context/hooks/use-chart-id.js');
+var useChartRegistration = require('../../providers/chart-context/hooks/use-chart-registration.js');
 var createComposition = require('../../utils/create-composition.js');
+require('date-fns');
+require('@automattic/number-formatters');
+require('@visx/text');
+require('deepmerge');
+require('../../providers/theme/theme-provider.js');
 var legend = require('../legend/legend.js');
-require('../legend/base-legend.js');
-var useChartLegendData = require('../legend/use-chart-legend-data.js');
-var singleChartContext = require('../shared/single-chart-context.js');
-var useChartDataTransform = require('../shared/use-chart-data-transform.js');
-var useChartMargin = require('../shared/use-chart-margin.js');
-var useElementHeight = require('../shared/use-element-height.js');
-var useZeroValueDisplay = require('../shared/use-zero-value-display.js');
-var withResponsive = require('../shared/with-responsive.js');
+var useChartLegendItems = require('../legend/hooks/use-chart-legend-items.js');
+var singleChartContext = require('../private/single-chart-context/single-chart-context.js');
+var withResponsive = require('../private/with-responsive/with-responsive.js');
 var accessibleTooltip = require('../tooltip/accessible-tooltip.js');
 var barChart_module = require('./bar-chart.module.scss.js');
-var useBarChartOptions = require('./use-bar-chart-options.js');
+var useBarChartOptions = require('./private/use-bar-chart-options.js');
 
 // Validation function similar to LineChart
 const validateData = (data) => {
@@ -46,7 +50,7 @@ const validateData = (data) => {
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
 const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400, className, margin, withTooltips = false, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'rect', gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = 'vertical', withPatterns = false, showZeroValues = false, children, }) => {
     const horizontal = orientation === 'horizontal';
-    const chartId = utils.useChartId(providedChartId);
+    const chartId = useChartId.useChartId(providedChartId);
     const theme = useXychartTheme.useXYChartTheme(data);
     const dataSorted = useChartDataTransform.useChartDataTransform(data);
     // Transform data to add a small value for zero bars to make them visible
@@ -54,7 +58,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         enabled: showZeroValues,
     });
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData.useChartLegendData(dataSorted);
+    const legendItems = useChartLegendItems.useChartLegendItems(dataSorted);
     const chartOptions = useBarChartOptions.useBarChartOptions(dataWithVisibleZeros, horizontal, options);
     const defaultMargin = useChartMargin.useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
     const [legendRef, legendHeight] = useElementHeight.useElementHeight();
@@ -71,7 +75,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         chartRef,
         totalPoints,
     });
-    const { resolveGroupColor } = globalChartsProvider.useGlobalChartsContext();
+    const { resolveGroupColor } = useGlobalChartsContext.useGlobalChartsContext();
     const getColor = react.useCallback((seriesData, index) => resolveGroupColor({
         group: seriesData.group,
         index,
@@ -155,7 +159,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height = 400,
         withPatterns,
     }), [orientation, withPatterns]);
     // Register chart with context only if data is valid
-    utils.useChartRegistration({
+    useChartRegistration.useChartRegistration({
         chartId,
         legendItems,
         chartType: 'bar',

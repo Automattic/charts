@@ -6,14 +6,20 @@ var jsxRuntime = require('react/jsx-runtime');
 var components = require('@wordpress/components');
 var clsx = require('clsx');
 var react = require('react');
+require('../../providers/chart-context/global-charts-provider.js');
 require('fast-deep-equal');
-var useGlobalChartTheme = require('../../hooks/use-global-chart-theme.js');
 require('@visx/event');
 require('@visx/tooltip');
 require('@visx/xychart');
+require('date-fns');
+require('@automattic/number-formatters');
+require('@visx/text');
+require('deepmerge');
+var colorUtils = require('../../utils/color-utils.js');
+require('@visx/scale');
+var useGlobalChartsTheme = require('../../providers/chart-context/hooks/use-global-charts-theme.js');
 var conversionFunnelChart_module = require('./conversion-funnel-chart.module.scss.js');
-var useFunnelSelection = require('./hooks/use-funnel-selection.js');
-var colorUtils = require('./utils/color-utils.js');
+var useFunnelSelection = require('./private/use-funnel-selection.js');
 
 /**
  * Default settings for ConversionFunnelChart component
@@ -37,7 +43,7 @@ const DEFAULT_FUNNEL_SETTINGS = {
  * @return JSX element representing the conversion funnel chart
  */
 const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = false, className, style, }) => {
-    const theme = useGlobalChartTheme.useGlobalChartTheme();
+    const theme = useGlobalChartsTheme.useGlobalChartsTheme();
     const chartRef = react.useRef(null);
     const selectedBarRef = react.useRef(null);
     // Use custom hook for selection management

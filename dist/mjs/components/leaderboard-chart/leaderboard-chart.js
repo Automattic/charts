@@ -3,12 +3,17 @@ import { __experimentalGrid, __experimentalVStack, __experimentalText } from '@w
 import { Fragment } from '@wordpress/element';
 import clsx from 'clsx';
 import 'react';
+import '../../providers/chart-context/global-charts-provider.js';
 import 'fast-deep-equal';
-import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import '@visx/event';
 import '@visx/tooltip';
 import '@visx/xychart';
-import { formatMetricValue } from '../shared/format-metric-value.js';
+import 'date-fns';
+import { formatMetricValue } from '../../utils/format-metric-value.js';
+import '@visx/text';
+import 'deepmerge';
+import '@visx/scale';
+import { useGlobalChartsTheme } from '../../providers/chart-context/hooks/use-global-charts-theme.js';
 import styles from './leaderboard-chart.module.scss.js';
 
 /**
@@ -68,7 +73,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, }) => (jsxs("di
  * @return JSX element representing the leaderboard chart
  */
 const LeaderboardChart = ({ data, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, loading = false, className, style, }) => {
-    const theme = useGlobalChartTheme();
+    const theme = useGlobalChartsTheme();
     // Get component settings from theme with fallbacks
     const leaderboardSettings = theme.leaderboardChart;
     const labelSpacing = leaderboardSettings?.labelSpacing ?? DEFAULT_LEADERBOARD_SETTINGS.labelSpacing;

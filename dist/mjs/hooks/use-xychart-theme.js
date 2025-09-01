@@ -1,9 +1,18 @@
 import { buildChartTheme } from '@visx/xychart';
 import { useMemo } from 'react';
-import { useGlobalChartTheme } from './use-global-chart-theme.js';
+import '../providers/chart-context/global-charts-provider.js';
+import 'fast-deep-equal';
+import '@visx/event';
+import '@visx/tooltip';
+import 'date-fns';
+import '@automattic/number-formatters';
+import '@visx/text';
+import 'deepmerge';
+import '@visx/scale';
+import { useGlobalChartsTheme } from '../providers/chart-context/hooks/use-global-charts-theme.js';
 
 const useXYChartTheme = (data) => {
-    const theme = useGlobalChartTheme();
+    const theme = useGlobalChartsTheme();
     return useMemo(() => {
         const seriesColors = (data ?? [])
             .map(series => series.options?.stroke)

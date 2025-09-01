@@ -1,2 +1,5 @@
 export { LeaderboardChart } from './leaderboard-chart.js';
-export { formatMetricValue } from '../shared/format-metric-value.js';
+import 'date-fns';
+export { formatMetricValue } from '../../utils/format-metric-value.js';
+import '@visx/text';
+import 'deepmerge';

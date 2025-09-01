@@ -4,21 +4,27 @@ import { Pie } from '@visx/shape';
 import clsx from 'clsx';
 import { useContext, useMemo } from 'react';
 import 'fast-deep-equal';
-import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import { useChartMouseHandler } from '../../hooks/use-chart-mouse-handler.js';
 import '@visx/xychart';
-import { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
-import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { useGlobalChartsContext } from '../../providers/chart-context/hooks/use-global-charts-context.js';
+import { useChartId } from '../../providers/chart-context/hooks/use-chart-id.js';
+import { useChartRegistration } from '../../providers/chart-context/hooks/use-chart-registration.js';
+import { useGlobalChartsTheme } from '../../providers/chart-context/hooks/use-global-charts-theme.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
+import 'date-fns';
+import '@automattic/number-formatters';
+import '@visx/text';
+import 'deepmerge';
+import '@visx/scale';
+import { useElementHeight } from '../../hooks/use-element-height.js';
 import { Legend } from '../legend/legend.js';
-import '../legend/base-legend.js';
-import { useChartLegendData } from '../legend/use-chart-legend-data.js';
-import { ChartSVG } from '../shared/chart-composition/chart-svg.js';
-import { ChartHTML } from '../shared/chart-composition/chart-html.js';
-import { useChartChildren } from '../shared/chart-composition/use-chart-children.js';
-import { SingleChartContext } from '../shared/single-chart-context.js';
-import { useElementHeight } from '../shared/use-element-height.js';
-import { withResponsive } from '../shared/with-responsive.js';
+import { useChartLegendItems } from '../legend/hooks/use-chart-legend-items.js';
+import { ChartSVG } from '../private/chart-composition/chart-svg.js';
+import { ChartHTML } from '../private/chart-composition/chart-html.js';
+import { useChartChildren } from '../private/chart-composition/use-chart-children.js';
+import { SingleChartContext } from '../private/single-chart-context/single-chart-context.js';
+import { withResponsive } from '../private/with-responsive/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
 import styles from './pie-chart.module.scss.js';
 
@@ -51,7 +57,7 @@ const validateData = (data) => {
  * @return {JSX.Element} The rendered chart component
  */
 const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legendOrientation = 'horizontal', legendPosition = 'bottom', legendAlignment = 'center', legendShape = 'circle', size, thickness = 1, padding = 20, gapScale = 0, cornerScale = 0, children = null, }) => {
-    const providerTheme = useGlobalChartTheme();
+    const providerTheme = useGlobalChartsTheme();
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
     const { onMouseMove, onMouseLeave, tooltipOpen, tooltipData, tooltipLeft, tooltipTop } = useChartMouseHandler({
@@ -60,7 +66,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(data, legendOptions);
+    const legendItems = useChartLegendItems(data, legendOptions);
     const { isValid, message } = validateData(data);
     // Process children to extract compound components
     const { svgChildren, htmlChildren, otherChildren } = useChartChildren(children, 'PieChart');

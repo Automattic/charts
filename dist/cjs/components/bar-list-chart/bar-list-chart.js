@@ -10,13 +10,14 @@ var text = require('@visx/text');
 var react = require('react');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
 require('fast-deep-equal');
-require('../../providers/theme/theme-provider.js');
-require('deepmerge');
 require('@visx/event');
 require('@visx/tooltip');
 require('@visx/xychart');
+require('date-fns');
+require('deepmerge');
+require('../../providers/theme/theme-provider.js');
 var barChart = require('../bar-chart/bar-chart.js');
-var withResponsive = require('../shared/with-responsive.js');
+var withResponsive = require('../private/with-responsive/with-responsive.js');
 
 /**
  * Get the bandwidth of a scale

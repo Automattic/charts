@@ -3,8 +3,8 @@
 var jsxRuntime = require('react/jsx-runtime');
 var react = require('react');
 var globalChartsProvider = require('../../providers/chart-context/global-charts-provider.js');
-var singleChartContext = require('../shared/single-chart-context.js');
-var baseLegend = require('./base-legend.js');
+var singleChartContext = require('../private/single-chart-context/single-chart-context.js');
+var baseLegend = require('./private/base-legend.js');
 
 const Legend = react.forwardRef(({ chartId, items, ...props }, ref) => {
     // Get context but don't throw if it doesn't exist

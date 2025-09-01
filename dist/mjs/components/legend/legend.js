@@ -1,8 +1,8 @@
 import { jsx } from 'react/jsx-runtime';
 import { forwardRef, useContext, useMemo } from 'react';
 import { GlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
-import { SingleChartContext } from '../shared/single-chart-context.js';
-import { BaseLegend } from './base-legend.js';
+import { SingleChartContext } from '../private/single-chart-context/single-chart-context.js';
+import { BaseLegend } from './private/base-legend.js';
 
 const Legend = forwardRef(({ chartId, items, ...props }, ref) => {
     // Get context but don't throw if it doesn't exist

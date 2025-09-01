@@ -6,13 +6,14 @@ import { Text } from '@visx/text';
 import { useContext, useMemo } from 'react';
 import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
 import 'fast-deep-equal';
-import '../../providers/theme/theme-provider.js';
-import 'deepmerge';
 import '@visx/event';
 import '@visx/tooltip';
 import '@visx/xychart';
+import 'date-fns';
+import 'deepmerge';
+import '../../providers/theme/theme-provider.js';
 import BarChartResponsive from '../bar-chart/bar-chart.js';
-import { withResponsive } from '../shared/with-responsive.js';
+import { withResponsive } from '../private/with-responsive/with-responsive.js';
 
 /**
  * Get the bandwidth of a scale

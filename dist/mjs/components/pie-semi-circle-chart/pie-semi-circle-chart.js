@@ -6,18 +6,26 @@ import { Text } from '@visx/text';
 import { useTooltip } from '@visx/tooltip';
 import clsx from 'clsx';
 import { useContext, useCallback, useMemo } from 'react';
-import { GlobalChartsContext, GlobalChartsProvider, useGlobalChartsContext } from '../../providers/chart-context/global-charts-provider.js';
-import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import 'fast-deep-equal';
+import '@visx/xychart';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { useGlobalChartsContext } from '../../providers/chart-context/hooks/use-global-charts-context.js';
+import { useChartId } from '../../providers/chart-context/hooks/use-chart-id.js';
+import { useChartRegistration } from '../../providers/chart-context/hooks/use-chart-registration.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
+import 'date-fns';
+import '@automattic/number-formatters';
+import 'deepmerge';
+import '../../providers/theme/theme-provider.js';
+import '@visx/scale';
+import { useElementHeight } from '../../hooks/use-element-height.js';
 import { Legend } from '../legend/legend.js';
-import '../legend/base-legend.js';
-import { useChartLegendData } from '../legend/use-chart-legend-data.js';
-import { ChartSVG } from '../shared/chart-composition/chart-svg.js';
-import { ChartHTML } from '../shared/chart-composition/chart-html.js';
-import { useChartChildren } from '../shared/chart-composition/use-chart-children.js';
-import { SingleChartContext } from '../shared/single-chart-context.js';
-import { useElementHeight } from '../shared/use-element-height.js';
-import { withResponsive } from '../shared/with-responsive.js';
+import { useChartLegendItems } from '../legend/hooks/use-chart-legend-items.js';
+import { ChartSVG } from '../private/chart-composition/chart-svg.js';
+import { ChartHTML } from '../private/chart-composition/chart-html.js';
+import { useChartChildren } from '../private/chart-composition/use-chart-children.js';
+import { SingleChartContext } from '../private/single-chart-context/single-chart-context.js';
+import { withResponsive } from '../private/with-responsive/with-responsive.js';
 import { BaseTooltip } from '../tooltip/base-tooltip.js';
 import styles from './pie-semi-circle-chart.module.scss.js';
 
@@ -75,7 +83,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width = 40
     // Memoize legend options to prevent unnecessary re-calculations
     const legendOptions = useMemo(() => ({ showValues: true }), []);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(data, legendOptions);
+    const legendItems = useChartLegendItems(data, legendOptions);
     // Process children to extract compound components
     const { svgChildren, htmlChildren, otherChildren } = useChartChildren(children, 'PieSemiCircleChart');
     // Memoize metadata to prevent unnecessary re-registration

@@ -2,14 +2,20 @@ import { jsx, jsxs } from 'react/jsx-runtime';
 import { __experimentalText } from '@wordpress/components';
 import clsx from 'clsx';
 import { useRef, useCallback, useMemo, useEffect } from 'react';
+import '../../providers/chart-context/global-charts-provider.js';
 import 'fast-deep-equal';
-import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import '@visx/event';
 import '@visx/tooltip';
 import '@visx/xychart';
+import 'date-fns';
+import '@automattic/number-formatters';
+import '@visx/text';
+import 'deepmerge';
+import { hexToRgba } from '../../utils/color-utils.js';
+import '@visx/scale';
+import { useGlobalChartsTheme } from '../../providers/chart-context/hooks/use-global-charts-theme.js';
 import styles from './conversion-funnel-chart.module.scss.js';
-import { useFunnelSelection } from './hooks/use-funnel-selection.js';
-import { hexToRgba } from './utils/color-utils.js';
+import { useFunnelSelection } from './private/use-funnel-selection.js';
 
 /**
  * Default settings for ConversionFunnelChart component
@@ -33,7 +39,7 @@ const DEFAULT_FUNNEL_SETTINGS = {
  * @return JSX element representing the conversion funnel chart
  */
 const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = false, className, style, }) => {
-    const theme = useGlobalChartTheme();
+    const theme = useGlobalChartsTheme();
     const chartRef = useRef(null);
     const selectedBarRef = useRef(null);
     // Use custom hook for selection management

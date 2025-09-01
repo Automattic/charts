@@ -7,27 +7,32 @@ import { XYChart, Grid, Axis, AreaSeries, DataContext } from '@visx/xychart';
 import { __ } from '@wordpress/i18n';
 import clsx from 'clsx';
 import 'fast-deep-equal';
-import { useGlobalChartTheme } from '../../hooks/use-global-chart-theme.js';
 import '@visx/event';
 import '@visx/tooltip';
 import { useXYChartTheme } from '../../hooks/use-xychart-theme.js';
-import { useGlobalChartsContext, GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
-import { useChartId, useChartRegistration } from '../../providers/chart-context/utils.js';
+import { useChartDataTransform } from '../../hooks/use-chart-data-transform.js';
+import { useChartMargin } from '../../hooks/use-chart-margin.js';
+import { useElementHeight } from '../../hooks/use-element-height.js';
+import { GlobalChartsContext, GlobalChartsProvider } from '../../providers/chart-context/global-charts-provider.js';
+import { useGlobalChartsContext } from '../../providers/chart-context/hooks/use-global-charts-context.js';
+import { useChartId } from '../../providers/chart-context/hooks/use-chart-id.js';
+import { useChartRegistration } from '../../providers/chart-context/hooks/use-chart-registration.js';
+import { useGlobalChartsTheme } from '../../providers/chart-context/hooks/use-global-charts-theme.js';
 import { attachSubComponents } from '../../utils/create-composition.js';
+import 'date-fns';
+import '@visx/text';
 import { getSeriesLineStyles } from '../../utils/get-styles.js';
+import 'deepmerge';
 import { Legend } from '../legend/legend.js';
-import '../legend/base-legend.js';
-import { useChartLegendData } from '../legend/use-chart-legend-data.js';
-import { DefaultGlyph } from '../shared/default-glyph.js';
-import { SingleChartContext } from '../shared/single-chart-context.js';
-import { useChartDataTransform } from '../shared/use-chart-data-transform.js';
-import { useChartMargin } from '../shared/use-chart-margin.js';
-import { useElementHeight } from '../shared/use-element-height.js';
-import { withResponsive } from '../shared/with-responsive.js';
+import { useChartLegendItems } from '../legend/hooks/use-chart-legend-items.js';
+import { DefaultGlyph } from '../private/default-glyph/default-glyph.js';
+import { SingleChartContext } from '../private/single-chart-context/single-chart-context.js';
+import { withResponsive } from '../private/with-responsive/with-responsive.js';
 import { useKeyboardNavigation, AccessibleTooltip } from '../tooltip/accessible-tooltip.js';
-import LineChartAnnotation from './line-chart-annotation.js';
-import LineChartAnnotationsOverlay from './line-chart-annotations-overlay.js';
 import styles from './line-chart.module.scss.js';
+import 'gridicons';
+import LineChartAnnotationsOverlay from './private/line-chart-annotations-overlay.js';
+import LineChartAnnotation from './private/line-chart-annotation.js';
 
 const X_TICK_WIDTH = 100;
 const defaultRenderGlyph = (props) => {
@@ -137,7 +142,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
     return null; // This component only provides the ref interface
 };
 const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legendOrientation = 'horizontal', legendAlignment = 'center', legendPosition = 'bottom', renderGlyph = defaultRenderGlyph, glyphStyle = {}, legendShape = 'line', withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, options = {}, onPointerDown = undefined, onPointerUp = undefined, onPointerMove = undefined, onPointerOut = undefined, children, }, ref) => {
-    const providerTheme = useGlobalChartTheme();
+    const providerTheme = useGlobalChartsTheme();
     const theme = useXYChartTheme(data);
     const chartId = useChartId(providedChartId);
     const [legendRef, legendHeight] = useElementHeight();
@@ -219,7 +224,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
         renderGlyph,
     }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
     // Create legend items using the reusable hook
-    const legendItems = useChartLegendData(dataSorted, legendOptions, legendShape);
+    const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
     // Memoize metadata to prevent unnecessary re-registration
     const chartMetadata = useMemo(() => ({
         withGradientFill,

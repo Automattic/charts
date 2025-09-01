@@ -1,9 +1,9 @@
-import { AnnotationStyles } from './components/line-chart/line-chart-annotation.js';
+import { CSSProperties, ReactNode, PointerEvent } from 'react';
+import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleType, ScaleInput } from '@visx/scale';
-import { LineStyles, GridStyles, GlyphProps, EventHandlerParams } from '@visx/xychart';
-import { CSSProperties, ReactNode, PointerEvent } from 'react';
+import { AnnotationStyles } from './components/line-chart/types.js';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
