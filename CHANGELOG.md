@@ -18,6 +18,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: use getStringWidth for label size calculations
 - Fix the conversion-funnel-chart component exportation
 
+### Fixed
+- All charts were affected due to z-index.
+
 ## [0.31.0] - 2025-09-01
 ### Added
 - Add an agents.md file to project root. [#44954]
