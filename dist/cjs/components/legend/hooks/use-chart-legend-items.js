@@ -8,6 +8,7 @@ require('@visx/tooltip');
 require('@visx/xychart');
 require('date-fns');
 require('@automattic/number-formatters');
+var formatPercentage = require('../../../utils/format-percentage.js');
 require('@visx/text');
 var getStyles = require('../../../utils/get-styles.js');
 require('deepmerge');
@@ -25,7 +26,7 @@ function formatPointValue(point, showValues) {
         return '';
     }
     if ('percentage' in point) {
-        return `${point.percentage}%`;
+        return formatPercentage.formatPercentage(point.percentage);
     }
     else if ('value' in point) {
         return point.value.toString();

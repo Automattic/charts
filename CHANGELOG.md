@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
+- Charts: format percentage values to be prettier
 - Charts: Use a global context provider for theme configuration in all stories
 - Charts: use getStringWidth for label size calculations
 - Fix the conversion-funnel-chart component exportation

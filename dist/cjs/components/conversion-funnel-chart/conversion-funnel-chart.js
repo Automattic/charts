@@ -12,6 +12,7 @@ require('fast-deep-equal');
 require('@visx/xychart');
 require('date-fns');
 require('@automattic/number-formatters');
+var formatPercentage = require('../../utils/format-percentage.js');
 require('@visx/text');
 require('deepmerge');
 var colorUtils = require('../../utils/color-utils.js');
@@ -187,9 +188,9 @@ const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = fal
         ...style,
     };
     // Default main metric rendering function
-    const renderDefaultMainMetric = () => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsxs("span", { className: conversionFunnelChart_module.default['main-rate'], children: [mainRate.toFixed(1), "%"] }), changeIndicator && (jsxRuntime.jsx("span", { className: conversionFunnelChart_module.default['change-indicator'], children: changeIndicator }))] }));
+    const renderDefaultMainMetric = () => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("span", { className: conversionFunnelChart_module.default['main-rate'], children: formatPercentage.formatPercentage(mainRate) }), changeIndicator && (jsxRuntime.jsx("span", { className: conversionFunnelChart_module.default['change-indicator'], children: changeIndicator }))] }));
     // Default tooltip rendering function
-    const renderDefaultTooltip = (step) => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("div", { className: conversionFunnelChart_module.default['tooltip-title'], children: step.label }), jsxRuntime.jsxs("div", { className: conversionFunnelChart_module.default['tooltip-content'], children: [step.rate.toFixed(1), "%", step.count && ` • ${step.count.toLocaleString()} items`] })] }));
+    const renderDefaultTooltip = (step) => (jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [jsxRuntime.jsx("div", { className: conversionFunnelChart_module.default['tooltip-title'], children: step.label }), jsxRuntime.jsxs("div", { className: conversionFunnelChart_module.default['tooltip-content'], children: [formatPercentage.formatPercentage(step.rate), step.count && ` • ${step.count.toLocaleString()} items`] })] }));
     // Handle empty or undefined data
     if (!steps || steps.length === 0) {
         return (jsxRuntime.jsx("div", { className: clsx(conversionFunnelChart_module.default.conversionFunnelChart, loading && conversionFunnelChart_module.default.loading, className), style: chartStyle, children: jsxRuntime.jsx("div", { className: conversionFunnelChart_module.default['empty-state'], children: loading ? 'Loading...' : 'No data available' }) }));
@@ -216,7 +217,7 @@ const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = fal
                                                 step,
                                                 index,
                                                 className: conversionFunnelChart_module.default['step-rate'],
-                                            })) : (jsxRuntime.jsxs("span", { className: conversionFunnelChart_module.default['step-rate'], children: [step.rate.toFixed(1), "%"] }))] }), jsxRuntime.jsx("div", { className: clsx(conversionFunnelChart_module.default['bar-container'], isClicked && conversionFunnelChart_module.default.selected, isBlurred && conversionFunnelChart_module.default.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: jsxRuntime.jsx("div", { className: clsx(conversionFunnelChart_module.default['funnel-bar'], isClicked && conversionFunnelChart_module.default.selected), style: {
+                                            })) : (jsxRuntime.jsx("span", { className: conversionFunnelChart_module.default['step-rate'], children: formatPercentage.formatPercentage(step.rate) }))] }), jsxRuntime.jsx("div", { className: clsx(conversionFunnelChart_module.default['bar-container'], isClicked && conversionFunnelChart_module.default.selected, isBlurred && conversionFunnelChart_module.default.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: jsxRuntime.jsx("div", { className: clsx(conversionFunnelChart_module.default['funnel-bar'], isClicked && conversionFunnelChart_module.default.selected), style: {
                                                 height: `${barHeight}%`,
                                                 backgroundColor: primaryColor,
                                             } }) })] }, step.id));

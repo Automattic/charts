@@ -6,6 +6,7 @@ import '@visx/tooltip';
 import '@visx/xychart';
 import 'date-fns';
 import '@automattic/number-formatters';
+import { formatPercentage } from '../../../utils/format-percentage.js';
 import '@visx/text';
 import { getItemShapeStyles, getSeriesStroke } from '../../../utils/get-styles.js';
 import 'deepmerge';
@@ -23,7 +24,7 @@ function formatPointValue(point, showValues) {
         return '';
     }
     if ('percentage' in point) {
-        return `${point.percentage}%`;
+        return formatPercentage(point.percentage);
     }
     else if ('value' in point) {
         return point.value.toString();

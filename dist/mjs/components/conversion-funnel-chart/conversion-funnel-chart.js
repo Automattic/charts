@@ -8,6 +8,7 @@ import 'fast-deep-equal';
 import '@visx/xychart';
 import 'date-fns';
 import '@automattic/number-formatters';
+import { formatPercentage } from '../../utils/format-percentage.js';
 import '@visx/text';
 import 'deepmerge';
 import { hexToRgba } from '../../utils/color-utils.js';
@@ -183,9 +184,9 @@ const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = fal
         ...style,
     };
     // Default main metric rendering function
-    const renderDefaultMainMetric = () => (jsxs(Fragment, { children: [jsxs("span", { className: styles['main-rate'], children: [mainRate.toFixed(1), "%"] }), changeIndicator && (jsx("span", { className: styles['change-indicator'], children: changeIndicator }))] }));
+    const renderDefaultMainMetric = () => (jsxs(Fragment, { children: [jsx("span", { className: styles['main-rate'], children: formatPercentage(mainRate) }), changeIndicator && (jsx("span", { className: styles['change-indicator'], children: changeIndicator }))] }));
     // Default tooltip rendering function
-    const renderDefaultTooltip = (step) => (jsxs(Fragment, { children: [jsx("div", { className: styles['tooltip-title'], children: step.label }), jsxs("div", { className: styles['tooltip-content'], children: [step.rate.toFixed(1), "%", step.count && ` • ${step.count.toLocaleString()} items`] })] }));
+    const renderDefaultTooltip = (step) => (jsxs(Fragment, { children: [jsx("div", { className: styles['tooltip-title'], children: step.label }), jsxs("div", { className: styles['tooltip-content'], children: [formatPercentage(step.rate), step.count && ` • ${step.count.toLocaleString()} items`] })] }));
     // Handle empty or undefined data
     if (!steps || steps.length === 0) {
         return (jsx("div", { className: clsx(styles.conversionFunnelChart, loading && styles.loading, className), style: chartStyle, children: jsx("div", { className: styles['empty-state'], children: loading ? 'Loading...' : 'No data available' }) }));
@@ -212,7 +213,7 @@ const ConversionFunnelChart = ({ mainRate, changeIndicator, steps, loading = fal
                                                 step,
                                                 index,
                                                 className: styles['step-rate'],
-                                            })) : (jsxs("span", { className: styles['step-rate'], children: [step.rate.toFixed(1), "%"] }))] }), jsx("div", { className: clsx(styles['bar-container'], isClicked && styles.selected, isBlurred && styles.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: jsx("div", { className: clsx(styles['funnel-bar'], isClicked && styles.selected), style: {
+                                            })) : (jsx("span", { className: styles['step-rate'], children: formatPercentage(step.rate) }))] }), jsx("div", { className: clsx(styles['bar-container'], isClicked && styles.selected, isBlurred && styles.disabled), onClick: stepHandlers.get(step.id)?.onClick, onKeyDown: stepHandlers.get(step.id)?.onKeyDown, role: "button", tabIndex: isBlurred ? -1 : 0, "aria-label": step.label, children: jsx("div", { className: clsx(styles['funnel-bar'], isClicked && styles.selected), style: {
                                                 height: `${barHeight}%`,
                                                 backgroundColor: primaryColor,
                                             } }) })] }, step.id));

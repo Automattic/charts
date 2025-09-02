@@ -14,6 +14,7 @@ require('@visx/tooltip');
 require('@visx/xychart');
 require('date-fns');
 var formatMetricValue = require('../../utils/format-metric-value.js');
+require('@automattic/number-formatters');
 require('@visx/text');
 require('deepmerge');
 require('@visx/scale');

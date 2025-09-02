@@ -10,6 +10,7 @@ import '@visx/tooltip';
 import '@visx/xychart';
 import 'date-fns';
 import { formatMetricValue } from '../../utils/format-metric-value.js';
+import '@automattic/number-formatters';
 import '@visx/text';
 import 'deepmerge';
 import '@visx/scale';
