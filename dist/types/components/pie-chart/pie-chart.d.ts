@@ -29,6 +29,10 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      */
     cornerScale?: number;
     /**
+     * Whether to show labels on pie segments. Defaults to true.
+     */
+    showLabels?: boolean;
+    /**
      * Use the children prop to render additional elements on the chart.
      */
     children?: ReactNode;
