@@ -1,7 +1,0 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var styles = {"line-chart":"line-chart-module_line-chart__ITM3d","line-chart__tooltip":"line-chart-module_line-chart__tooltip__aqcme","line-chart__annotation-label-popover":"line-chart-module_line-chart__annotation-label-popover__TqNZk","line-chart__tooltip-date":"line-chart-module_line-chart__tooltip-date__4Dzab","line-chart__tooltip-row":"line-chart-module_line-chart__tooltip-row__6A37G","line-chart__tooltip-label":"line-chart-module_line-chart__tooltip-label__IvnFF","line-chart__annotations-overlay":"line-chart-module_line-chart__annotations-overlay__4nR2p","line-chart__annotation-label":"line-chart-module_line-chart__annotation-label__OmgiT","line-chart__annotation-label-trigger-button":"line-chart-module_line-chart__annotation-label-trigger-button__mcIb3","line-chart__annotation-label-popover--visible":"line-chart-module_line-chart__annotation-label-popover--visible__dE0cV","line-chart__annotation-label-popover--safari":"line-chart-module_line-chart__annotation-label-popover--safari__i3NHT","line-chart__annotation-label-popover-header":"line-chart-module_line-chart__annotation-label-popover-header__Owypo","line-chart__annotation-label-popover-content":"line-chart-module_line-chart__annotation-label-popover-content__vtgQt","line-chart__annotation-label-popover-close-button":"line-chart-module_line-chart__annotation-label-popover-close-button__i8KUc"};
-
-exports.default = styles;

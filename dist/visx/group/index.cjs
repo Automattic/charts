@@ -1,0 +1,2 @@
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});require('../../chunk-WH6WPZPG.cjs');var _group = require('@visx/group');exports.Group = _group.Group;
+//# sourceMappingURL=index.cjs.map

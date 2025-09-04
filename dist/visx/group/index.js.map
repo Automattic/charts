@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/visx/group/index.ts"],"sourcesContent":["// Re-export Group component from visx\nexport { Group } from '@visx/group';\n"],"mappings":"gCACA,OAAS,SAAAA,MAAa","names":["Group"]}

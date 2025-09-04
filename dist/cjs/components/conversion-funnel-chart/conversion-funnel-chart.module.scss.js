@@ -1,7 +1,0 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var styles = {"conversionFunnelChart":"conversion-funnel-chart-module_conversionFunnelChart__-9Qsb","loading":"conversion-funnel-chart-module_loading__Kw-iZ","main-metric":"conversion-funnel-chart-module_main-metric__8mIwV","main-rate":"conversion-funnel-chart-module_main-rate__D93Ub","change-indicator":"conversion-funnel-chart-module_change-indicator__QWypV","funnel-container":"conversion-funnel-chart-module_funnel-container__RR7xa","funnel-step":"conversion-funnel-chart-module_funnel-step__VIVzt","blurred":"conversion-funnel-chart-module_blurred__Ax4cu","step-header":"conversion-funnel-chart-module_step-header__bUrZ0","step-label":"conversion-funnel-chart-module_step-label__SCy8F","step-rate":"conversion-funnel-chart-module_step-rate__A0irB","bar-container":"conversion-funnel-chart-module_bar-container__5Dl5-","selected":"conversion-funnel-chart-module_selected__W40FY","disabled":"conversion-funnel-chart-module_disabled__Reovk","funnel-bar":"conversion-funnel-chart-module_funnel-bar__tG5m3","tooltip-wrapper":"conversion-funnel-chart-module_tooltip-wrapper__NohPt","tooltip-title":"conversion-funnel-chart-module_tooltip-title__hjZr3","tooltip-content":"conversion-funnel-chart-module_tooltip-content__ocwAP","empty-state":"conversion-funnel-chart-module_empty-state__9c0ps"};
-
-exports.default = styles;

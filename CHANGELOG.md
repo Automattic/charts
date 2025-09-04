@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.32.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Chart: use tsup for builds
+
 ## [0.32.0] - 2025-09-02
 ### Added
 - Charts: adds controls for label visibility [#45040]
@@ -418,6 +425,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.32.1-alpha]: https://github.com/Automattic/charts/compare/v0.32.0...v0.32.1-alpha
 [0.32.0]: https://github.com/Automattic/charts/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/Automattic/charts/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/Automattic/charts/compare/v0.29.0...v0.30.0

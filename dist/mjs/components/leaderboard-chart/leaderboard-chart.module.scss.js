@@ -1,3 +1,0 @@
-var styles = {"leaderboardChart":"leaderboard-chart-module_leaderboardChart__zxakP","loading":"leaderboard-chart-module_loading__-AGv-","barWithLabelContainer":"leaderboard-chart-module_barWithLabelContainer__9RE0U","is-overlay":"leaderboard-chart-module_is-overlay__Fqdi5","label":"leaderboard-chart-module_label__7ZUu0","bar":"leaderboard-chart-module_bar__CnJvg","primaryBar":"leaderboard-chart-module_primaryBar__iybII","secondaryBar":"leaderboard-chart-module_secondaryBar__A7tLz","valueContainer":"leaderboard-chart-module_valueContainer__ZlLh4","overlayLabel":"leaderboard-chart-module_overlayLabel__pRqSh","emptyState":"leaderboard-chart-module_emptyState__0dkfy"};
-
-export { styles as default };
