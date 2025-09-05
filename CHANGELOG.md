@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Chart: use tsup for builds
+- Update package dependencies.
 
 ## [0.32.0] - 2025-09-02
 ### Added
