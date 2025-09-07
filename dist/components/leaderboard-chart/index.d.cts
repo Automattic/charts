@@ -1,4 +1,4 @@
-export { L as LeaderboardChart, a as LeaderboardChartProps, b as LeaderboardEntry } from '../../leaderboard-chart-10aCW2HF.cjs';
+export { L as LeaderboardChart, a as LeaderboardChartProps, b as LeaderboardEntry } from '../../leaderboard-chart-D8KNIPOq.cjs';
 import 'react';
 
 /**

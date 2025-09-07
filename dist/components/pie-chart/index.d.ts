@@ -1,5 +1,5 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-B0lF6x8l.js';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DdYRE7ga.js';
 import { ReactNode } from 'react';
 import { C as ChartComponentWithComposition } from '../../types-UkvpmJXU.js';
 import '@visx/annotation/lib/components/CircleSubject';

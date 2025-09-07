@@ -3,7 +3,7 @@ import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.js';
 import { ComponentType } from 'react';
-import { e as ScaleOptions, c as SeriesData } from '../../types-B0lF6x8l.js';
+import { f as ScaleOptions, c as SeriesData } from '../../types-DdYRE7ga.js';
 import '../../legend-iXnk1-uq.js';
 import '../../types-4lieC41v.js';
 import '@visx/legend';
