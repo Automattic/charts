@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Chart: use tsup for builds
 - Update package dependencies.
 
+### Fixed
+- Charts: Allow typechecking of tests and stories
+
 ## [0.32.0] - 2025-09-02
 ### Added
 - Charts: adds controls for label visibility [#45040]
