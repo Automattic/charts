@@ -13,11 +13,13 @@ import '@visx/axis';
 import '@visx/scale';
 import '@visx/legend';
 
+type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';
 interface ChartLegendOptions {
     withGlyph?: boolean;
     glyphSize?: number;
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     showValues?: boolean;
+    legendValueDisplay?: LegendValueDisplay;
 }
 /**
  * Hook to transform chart data into legend items
@@ -28,4 +30,4 @@ interface ChartLegendOptions {
  */
 declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentage[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 
-export { BaseLegendItem, type ChartLegendOptions, useChartLegendItems };
+export { BaseLegendItem, type ChartLegendOptions, type LegendValueDisplay, useChartLegendItems };

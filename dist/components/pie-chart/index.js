@@ -1,2 +1,2 @@
-import{a,b}from"../../chunk-3BKLF5IF.js";import"../../chunk-Z7T2M5EL.js";import"../../chunk-ALC6I6HA.js";import"../../chunk-GRHWUZHQ.js";import"../../chunk-A6B522YL.js";import"../../chunk-TWNZ6JI5.js";import"../../chunk-6HERQ6UJ.js";import"../../chunk-RFBBAUMM.js";export{b as PieChart,a as PieChartUnresponsive};
+import{a,b}from"../../chunk-DBGSHU4Q.js";import"../../chunk-Z7T2M5EL.js";import"../../chunk-ALC6I6HA.js";import"../../chunk-GRHWUZHQ.js";import"../../chunk-A6B522YL.js";import"../../chunk-7C6PJGWI.js";import"../../chunk-6HERQ6UJ.js";import"../../chunk-RFBBAUMM.js";export{b as PieChart,a as PieChartUnresponsive};
 //# sourceMappingURL=index.js.map

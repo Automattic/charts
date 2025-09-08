@@ -1,6 +1,7 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DdYRE7ga.js';
 import { ReactNode } from 'react';
+import { LegendValueDisplay } from '../legend/index.js';
 import { C as ChartComponentWithComposition } from '../../types-UkvpmJXU.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
@@ -43,6 +44,14 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      * Whether to show labels on pie segments. Defaults to true.
      */
     showLabels?: boolean;
+    /**
+     * What type of value to display in the legend when showValues is true.
+     * - 'percentage': Shows percentage values (e.g., "23%") [default]
+     * - 'value': Shows raw numeric values (e.g., "30000")
+     * - 'valueDisplay': Shows formatted values (e.g., "30K")
+     * - 'none': Shows no values, only labels
+     */
+    legendValueDisplay?: LegendValueDisplay;
     /**
      * Use the children prop to render additional elements on the chart.
      */
