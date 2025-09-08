@@ -1,5 +1,6 @@
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-pVkkGIaQ.js';
 import { ReactNode } from 'react';
+import { LegendValueDisplay } from '../legend/index.js';
 import { C as ChartComponentWithComposition } from '../../types-UkvpmJXU.js';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
@@ -41,6 +42,14 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * Use the children prop to render additional elements on the chart.
      */
     children?: ReactNode;
+    /**
+     * What type of value to display in the legend when showValues is true.
+     * - 'percentage': Shows percentage values (e.g., "23%") [default]
+     * - 'value': Shows raw numeric values (e.g., "30000")
+     * - 'valueDisplay': Shows formatted values (e.g., "30K")
+     * - 'none': Shows no values, only labels
+     */
+    legendValueDisplay?: LegendValueDisplay;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;

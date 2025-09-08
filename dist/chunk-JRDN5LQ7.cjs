@@ -69,6 +69,7 @@ var PieSemiCircleChartInternal = ({
   legendPosition = "bottom",
   legendAlignment = "center",
   legendShape = "circle",
+  legendValueDisplay = "percentage",
   label,
   note,
   className,
@@ -108,7 +109,10 @@ var PieSemiCircleChartInternal = ({
     }),
     [resolveGroupColor]
   );
-  const legendOptions = _react.useMemo.call(void 0, () => ({ showValues: true }), []);
+  const legendOptions = _react.useMemo.call(void 0, 
+    () => ({ showValues: true, legendValueDisplay }),
+    [legendValueDisplay]
+  );
   const legendItems = _chunkMFROL3SYcjs.useChartLegendItems.call(void 0, data, legendOptions);
   const { svgChildren, htmlChildren, otherChildren } = _chunk3Z526IL2cjs.useChartChildren.call(void 0, 
     children,
@@ -281,4 +285,4 @@ var PieSemiCircleChartResponsive = _chunkBS3VZTWUcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-4J6P3XTQ.cjs.map
+//# sourceMappingURL=chunk-JRDN5LQ7.cjs.map

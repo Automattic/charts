@@ -6,7 +6,7 @@ import {
 } from "./chunk-CZDSDFHD.js";
 import {
   PieSemiCircleChartResponsive
-} from "./chunk-YPW7GVEY.js";
+} from "./chunk-LGCQRR2I.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-NFRB2POF.js";
 import {
