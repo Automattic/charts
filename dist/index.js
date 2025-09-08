@@ -24,7 +24,7 @@ import {
 } from "./chunk-5JUW6JQO.js";
 import {
   leaderboard_chart_default
-} from "./chunk-FHCTY6TB.js";
+} from "./chunk-AMY2POSB.js";
 import {
   Legend,
   useChartLegendItems

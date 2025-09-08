@@ -1,6 +1,6 @@
 import {
   leaderboard_chart_default
-} from "../../chunk-FHCTY6TB.js";
+} from "../../chunk-AMY2POSB.js";
 import {
   formatMetricValue
 } from "../../chunk-NB3M3ZHU.js";

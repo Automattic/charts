@@ -1,5 +1,5 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DdYRE7ga.js';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-pVkkGIaQ.js';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.js';
 import { C as ChartComponentWithComposition } from '../../types-UkvpmJXU.js';

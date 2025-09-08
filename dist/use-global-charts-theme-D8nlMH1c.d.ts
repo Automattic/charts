@@ -1,7 +1,7 @@
-import { C as ChartTheme, e as CompleteChartTheme } from './types-DdYRE7ga.cjs';
+import { C as ChartTheme, e as CompleteChartTheme } from './types-pVkkGIaQ.js';
 import * as react from 'react';
 import { FC, ReactNode } from 'react';
-import { a as BaseLegendItem } from './types-4lieC41v.cjs';
+import { a as BaseLegendItem } from './types-4lieC41v.js';
 
 /**
  * Hook to access chart theme

@@ -1,5 +1,14 @@
-export { L as LeaderboardChart, a as LeaderboardChartProps, b as LeaderboardEntry } from '../../leaderboard-chart-D8KNIPOq.cjs';
+export { L as LeaderboardChart, a as LeaderboardChartProps } from '../../leaderboard-chart-BQwp7N9o.cjs';
+export { L as LeaderboardEntry } from '../../types-pVkkGIaQ.cjs';
 import 'react';
+import '@visx/annotation/lib/components/CircleSubject';
+import '@visx/annotation/lib/components/Connector';
+import '@visx/annotation/lib/components/Label';
+import '@visx/annotation/lib/components/LineSubject';
+import '@visx/axis';
+import '@visx/legend/lib/types';
+import '@visx/scale';
+import '@visx/xychart';
 
 /**
  * Types for formatMetricValue
