@@ -10,6 +10,9 @@ import {
 import "./chunk-D3DZT2EK.js";
 import "./chunk-NFRB2POF.js";
 import {
+  conversion_funnel_chart_default
+} from "./chunk-5JUW6JQO.js";
+import {
   BarListChartResponsive
 } from "./chunk-MNVVKT7E.js";
 import {
@@ -19,9 +22,6 @@ import "./chunk-TYYW4BG3.js";
 import {
   BaseTooltip
 } from "./chunk-6KOC7ZWU.js";
-import {
-  conversion_funnel_chart_default
-} from "./chunk-5JUW6JQO.js";
 import {
   leaderboard_chart_default
 } from "./chunk-AMY2POSB.js";
