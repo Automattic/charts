@@ -447,5 +447,6 @@ var BarChartResponsive = _chunkP6GF5KEQcjs.attachSubComponents.call(void 0,
 
 
 
-exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-I5WKONCL.cjs.map
+
+exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
+//# sourceMappingURL=chunk-XMWED6FQ.cjs.map

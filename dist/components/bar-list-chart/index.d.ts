@@ -2,7 +2,7 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.js';
-import { ComponentType } from 'react';
+import { ComponentType, FC } from 'react';
 import { f as ScaleOptions, c as SeriesData } from '../../types-pVkkGIaQ.js';
 import '../../legend-iXnk1-uq.js';
 import '../../types-4lieC41v.js';
@@ -79,6 +79,7 @@ interface RenderValueProps {
     index: number;
     formatter: (value: number) => string;
 }
+declare const BarListChart: FC<BarListChartProps>;
 declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "width" | "height" | "size"> & Omit<BarListChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { BarListChartResponsive as BarListChart, type BarListChartProps, type RenderLabelProps, type RenderValueProps };
+export { BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type RenderLabelProps, type RenderValueProps };

@@ -85,7 +85,9 @@ type LineChartAnnotationComponents = {
     Legend: typeof Legend;
 };
 type LineChartBaseProps = Optional<LineChartProps, 'width' | 'height' | 'size'>;
+type LineChartComponent = React.ForwardRefExoticComponent<LineChartBaseProps & React.RefAttributes<SingleChartRef>> & LineChartAnnotationComponents;
 type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<SingleChartRef>> & LineChartAnnotationComponents;
+declare const LineChart: LineChartComponent;
 declare const LineChartResponsive: LineChartResponsiveComponent;
 
-export { AnnotationStyles, type CurveType, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, type RenderLineStartGlyphProps, type TooltipDatum };
+export { AnnotationStyles, type CurveType, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type RenderLineStartGlyphProps, type TooltipDatum };

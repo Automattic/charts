@@ -446,6 +446,7 @@ var BarChartResponsive = attachSubComponents(
 );
 
 export {
+  BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-MTAUEPYK.js.map
+//# sourceMappingURL=chunk-5DJGRRZP.js.map

@@ -1,6 +1,6 @@
 import {
   BarChartResponsive
-} from "./chunk-MTAUEPYK.js";
+} from "./chunk-5DJGRRZP.js";
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
@@ -190,6 +190,7 @@ BarListChart.displayName = "BarListChart";
 var BarListChartResponsive = withResponsive(BarListChart);
 
 export {
+  BarListChart,
   BarListChartResponsive
 };
-//# sourceMappingURL=chunk-XWRK2GYD.js.map
+//# sourceMappingURL=chunk-JWIZ6GSM.js.map

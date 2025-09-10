@@ -25,7 +25,9 @@ type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
 interface BarChartSubComponents {
     Legend: ComponentType<React.ComponentProps<typeof Legend>>;
 }
+type BarChartComponent = FC<BarChartBaseProps> & BarChartSubComponents;
 type BarChartResponsiveComponent = FC<BarChartBaseProps & ResponsiveConfig> & BarChartSubComponents;
+declare const BarChart: BarChartComponent;
 declare const BarChartResponsive: BarChartResponsiveComponent;
 
-export { BarChartResponsive as BarChart, type BarChartProps };
+export { BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive };

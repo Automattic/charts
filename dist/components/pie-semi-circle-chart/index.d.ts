@@ -52,8 +52,10 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
     legendValueDisplay?: LegendValueDisplay;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
+type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;
 type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;
 type ArcData = PieArcDatum<DataPointPercentage>;
+declare const PieSemiCircleChart: PieSemiCircleChartComponent;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
-export { type ArcData, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps };
+export { type ArcData, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, PieSemiCircleChart as PieSemiCircleChartUnresponsive };
