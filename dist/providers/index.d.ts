@@ -1,5 +1,6 @@
-export { C as ChartRegistration, b as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, T as ThemeProvider, d as defaultTheme, j as jetpackTheme, e as useChartTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from '../use-global-charts-theme-D8nlMH1c.js';
+export { C as ChartRegistration, b as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from '../themes-Da5U_G9I.js';
 import { a as BaseLegendItem } from '../types-4lieC41v.js';
+import 'react';
 import '../types-pVkkGIaQ.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
@@ -9,7 +10,6 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/xychart';
-import 'react';
 import '@visx/legend';
 
 declare const useChartId: (providedId?: string) => string;

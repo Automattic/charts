@@ -11,7 +11,7 @@ export { ConversionFunnelChart } from './components/conversion-funnel-chart/inde
 export { B as BaseTooltip } from './base-tooltip-Dlq8KmQA.cjs';
 export { L as Legend } from './legend-CGLLcxnk.cjs';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.cjs';
-export { b as GlobalChartsContext, G as GlobalChartsProvider, T as ThemeProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from './use-global-charts-theme-Cr2-_NOr.cjs';
+export { b as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from './themes-mV3n_Yuf.cjs';
 import 'react';
 import './with-responsive-Cp2qnQPo.cjs';
 import '@visx/annotation/lib/components/CircleSubject';

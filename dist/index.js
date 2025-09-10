@@ -1,44 +1,43 @@
 import {
   LineChartResponsive
-} from "./chunk-3F4KXMJ5.js";
+} from "./chunk-3SD6GN2V.js";
 import {
   PieChartResponsive
-} from "./chunk-CZDSDFHD.js";
+} from "./chunk-UXWSFHBL.js";
 import {
   PieSemiCircleChartResponsive
-} from "./chunk-LGCQRR2I.js";
+} from "./chunk-WZP7NPDG.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-NFRB2POF.js";
 import {
   BarListChartResponsive
-} from "./chunk-MNVVKT7E.js";
+} from "./chunk-XWRK2GYD.js";
 import {
   BarChartResponsive
-} from "./chunk-WFSQYOGO.js";
+} from "./chunk-MTAUEPYK.js";
 import "./chunk-TYYW4BG3.js";
 import {
   BaseTooltip
 } from "./chunk-6KOC7ZWU.js";
 import {
   conversion_funnel_chart_default
-} from "./chunk-5JUW6JQO.js";
+} from "./chunk-N2XRMMQK.js";
 import {
   leaderboard_chart_default
-} from "./chunk-AMY2POSB.js";
+} from "./chunk-YE6SMKGC.js";
 import {
   Legend,
   useChartLegendItems
-} from "./chunk-JFRMYLPI.js";
+} from "./chunk-YS2WVVIY.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
-  ThemeProvider,
   defaultTheme,
   jetpackTheme,
   useGlobalChartsContext,
   useGlobalChartsTheme,
   wooTheme
-} from "./chunk-NB3M3ZHU.js";
+} from "./chunk-XKKR4VOA.js";
 import "./chunk-G3PMV62Z.js";
 export {
   BarChartResponsive as BarChart,
@@ -52,7 +51,7 @@ export {
   LineChartResponsive as LineChart,
   PieChartResponsive as PieChart,
   PieSemiCircleChartResponsive as PieSemiCircleChart,
-  ThemeProvider,
+  GlobalChartsProvider as ThemeProvider,
   defaultTheme,
   jetpackTheme,
   useChartLegendItems,
