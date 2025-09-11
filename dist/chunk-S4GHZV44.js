@@ -1,7 +1,20 @@
 import {
+  useChartChildren
+} from "./chunk-D3DZT2EK.js";
+import {
+  withResponsive
+} from "./chunk-TYYW4BG3.js";
+import {
+  Legend,
+  SingleChartContext
+} from "./chunk-YS2WVVIY.js";
+import {
   GlobalChartsContext,
   GlobalChartsProvider,
+  attachSubComponents,
   formatMetricValue,
+  useChartId,
+  useChartRegistration,
   useGlobalChartsContext,
   useGlobalChartsTheme
 } from "./chunk-XKKR4VOA.js";
@@ -4132,8 +4145,64 @@ var Grid = contextConnect(UnconnectedGrid, "Grid");
 var component_default6 = Grid;
 
 // src/components/leaderboard-chart/leaderboard-chart.tsx
+import { __ as __2 } from "@wordpress/i18n";
 import clsx from "clsx";
-import { useContext as useContext6 } from "react";
+import { useContext as useContext6, useMemo as useMemo3 } from "react";
+
+// src/components/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
+import { __ } from "@wordpress/i18n";
+import { useMemo as useMemo2 } from "react";
+function useLeaderboardLegendItems({
+  data,
+  primaryColor,
+  secondaryColor,
+  withComparison = false,
+  withOverlayLabel = false,
+  legendLabels
+}) {
+  const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
+  const { resolveGroupColor } = useGlobalChartsContext();
+  return useMemo2(() => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+    const items = [];
+    const resolvedPrimaryColor = resolveGroupColor({
+      index: 0,
+      overrideColor: primaryColor || leaderboardChartSettings.primaryColor
+    });
+    items.push({
+      label: legendLabels?.primary || __("Current period", "jetpack-charts"),
+      value: "",
+      color: resolvedPrimaryColor,
+      index: 0,
+      overrideColor: primaryColor
+    });
+    if (withComparison && !withOverlayLabel) {
+      const resolvedSecondaryColor = resolveGroupColor({
+        index: 1,
+        overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
+      });
+      items.push({
+        label: legendLabels?.comparison || __("Previous period", "jetpack-charts"),
+        value: "",
+        color: resolvedSecondaryColor,
+        index: 1,
+        overrideColor: secondaryColor
+      });
+    }
+    return items;
+  }, [
+    data,
+    primaryColor,
+    secondaryColor,
+    withComparison,
+    legendLabels,
+    leaderboardChartSettings,
+    resolveGroupColor,
+    withOverlayLabel
+  ]);
+}
 
 // src/components/leaderboard-chart/leaderboard-chart.module.scss
 var leaderboard_chart_module_default = {
@@ -4202,6 +4271,7 @@ var BarWithLabel = ({
 );
 var LeaderboardChartInternal = ({
   data,
+  chartId: providedChartId,
   withComparison = false,
   withOverlayLabel = false,
   primaryColor,
@@ -4209,10 +4279,21 @@ var LeaderboardChartInternal = ({
   valueFormatter = defaultValueFormatter,
   deltaFormatter = defaultDeltaFormatter,
   loading = false,
+  showLegend = false,
+  legendOrientation = "horizontal",
+  legendPosition = "bottom",
+  legendAlignment = "center",
+  legendShape = "circle",
+  legendShapeWidth = 8,
+  legendShapeHeight = 8,
+  legendLabels,
   className,
-  style
+  style,
+  children
 }) => {
+  const chartId = useChartId(providedChartId);
   const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
+  const { otherChildren } = useChartChildren(children, "LeaderboardChart");
   const {
     labelSpacing,
     rowGap,
@@ -4230,66 +4311,154 @@ var LeaderboardChartInternal = ({
     index: 1,
     overrideColor: secondaryColor || settingsSecondaryColor
   });
+  const legendItems = useLeaderboardLegendItems({
+    data: data || [],
+    primaryColor,
+    secondaryColor,
+    withComparison,
+    withOverlayLabel,
+    legendLabels
+  });
+  const isDataValid = Boolean(data && data.length > 0);
+  const chartMetadata = useMemo3(
+    () => ({
+      withComparison,
+      withOverlayLabel
+    }),
+    [withComparison, withOverlayLabel]
+  );
+  useChartRegistration({
+    chartId,
+    legendItems,
+    chartType: "leaderboard",
+    isDataValid,
+    metadata: chartMetadata
+  });
   if (!data || data.length === 0) {
     return /* @__PURE__ */ jsx3(
-      "div",
+      SingleChartContext.Provider,
       {
-        className: clsx(leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
-        style,
-        children: /* @__PURE__ */ jsx3("div", { className: leaderboard_chart_module_default.emptyState, children: loading ? "Loading..." : "No data available" })
+        value: {
+          chartId,
+          chartWidth: 0,
+          // LeaderboardChart doesn't need specific dimensions
+          chartHeight: 0
+        },
+        children: /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: clsx(leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
+            style,
+            children: [
+              /* @__PURE__ */ jsx3("div", { className: leaderboard_chart_module_default.emptyState, children: loading ? __2("Loading\u2026", "jetpack-charts") : __2("No data available", "jetpack-charts") }),
+              otherChildren
+            ]
+          }
+        )
       }
     );
   }
   return /* @__PURE__ */ jsx3(
-    component_default6,
+    SingleChartContext.Provider,
     {
-      className: clsx(leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
-      templateColumns: "minmax(0, 1fr) auto",
-      rowGap,
-      columnGap,
-      style,
-      children: data.map((entry) => {
-        const colorIndex = Math.sign(entry.delta) + 1;
-        const deltaColor = deltaColors[colorIndex];
-        return /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx3(component_default5, { spacing: labelSpacing, children: /* @__PURE__ */ jsx3(
-            BarWithLabel,
-            {
-              entry,
-              withComparison,
-              withOverlayLabel,
-              primaryColor: resolvedPrimaryColor,
-              secondaryColor: resolvedSecondaryColor
-            }
-          ) }),
-          /* @__PURE__ */ jsxs(
-            "div",
-            {
-              className: clsx(leaderboard_chart_module_default.valueContainer, {
-                [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
-              }),
-              children: [
-                /* @__PURE__ */ jsx3(component_default4, { children: valueFormatter(entry.currentValue) }),
-                withComparison && /* @__PURE__ */ jsx3(component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
-              ]
-            }
-          )
-        ] }, entry.id);
-      })
+      value: {
+        chartId,
+        chartWidth: 0,
+        // LeaderboardChart doesn't need specific dimensions
+        chartHeight: 0
+      },
+      children: /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: clsx(leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
+          style: {
+            ...style,
+            display: "flex",
+            flexDirection: showLegend && legendPosition === "top" ? "column-reverse" : "column",
+            gap: showLegend ? "16px" : "0"
+          },
+          children: [
+            /* @__PURE__ */ jsx3(
+              component_default6,
+              {
+                className: leaderboard_chart_module_default.leaderboardGrid,
+                templateColumns: "minmax(0, 1fr) auto",
+                rowGap,
+                columnGap,
+                style: {
+                  flex: 1
+                },
+                children: data.map((entry) => {
+                  const colorIndex = Math.sign(entry.delta) + 1;
+                  const deltaColor = deltaColors[colorIndex];
+                  return /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx3(component_default5, { spacing: labelSpacing, children: /* @__PURE__ */ jsx3(
+                      BarWithLabel,
+                      {
+                        entry,
+                        withComparison,
+                        withOverlayLabel,
+                        primaryColor: resolvedPrimaryColor,
+                        secondaryColor: resolvedSecondaryColor
+                      }
+                    ) }),
+                    /* @__PURE__ */ jsxs(
+                      "div",
+                      {
+                        className: clsx(leaderboard_chart_module_default.valueContainer, {
+                          [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
+                        }),
+                        children: [
+                          /* @__PURE__ */ jsx3(component_default4, { children: valueFormatter(entry.currentValue) }),
+                          withComparison && /* @__PURE__ */ jsx3(component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
+                        ]
+                      }
+                    )
+                  ] }, entry.id);
+                })
+              }
+            ),
+            showLegend && /* @__PURE__ */ jsx3(
+              Legend,
+              {
+                orientation: legendOrientation,
+                position: legendPosition,
+                alignment: legendAlignment,
+                shape: legendShape,
+                shapeWidth: legendShapeWidth,
+                shapeHeight: legendShapeHeight,
+                chartId
+              }
+            ),
+            otherChildren
+          ]
+        }
+      )
     }
   );
 };
-var LeaderboardChart = (props) => {
+var LeaderboardChartWithProvider = (props) => {
   const existingContext = useContext6(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ jsx3(LeaderboardChartInternal, { ...props });
   }
   return /* @__PURE__ */ jsx3(GlobalChartsProvider, { children: /* @__PURE__ */ jsx3(LeaderboardChartInternal, { ...props }) });
 };
-var leaderboard_chart_default = LeaderboardChart;
+LeaderboardChartWithProvider.displayName = "LeaderboardChart";
+var LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, {
+  Legend
+});
+var LeaderboardChartResponsive = attachSubComponents(
+  withResponsive(LeaderboardChartWithProvider),
+  {
+    Legend
+  }
+);
 
 export {
-  leaderboard_chart_default
+  useLeaderboardLegendItems,
+  LeaderboardChart,
+  LeaderboardChartResponsive
 };
 /*! Bundled license information:
 
@@ -4321,4 +4490,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-YE6SMKGC.js.map
+//# sourceMappingURL=chunk-S4GHZV44.js.map

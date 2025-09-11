@@ -1,26 +1,24 @@
 import {
   LineChart,
   LineChartResponsive
-} from "./chunk-4JWZMV3Z.js";
+} from "./chunk-MWRPUPV5.js";
 import {
   PieChart,
   PieChartResponsive
-} from "./chunk-UXWSFHBL.js";
+} from "./chunk-JSIWLUAE.js";
 import {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
-} from "./chunk-CC24W7OI.js";
-import "./chunk-D3DZT2EK.js";
+} from "./chunk-CKZHS3T4.js";
 import "./chunk-NFRB2POF.js";
 import {
   BarListChart,
   BarListChartResponsive
-} from "./chunk-JWIZ6GSM.js";
+} from "./chunk-NP66HU2X.js";
 import {
   BarChart,
   BarChartResponsive
-} from "./chunk-5DJGRRZP.js";
-import "./chunk-TYYW4BG3.js";
+} from "./chunk-JFB6W5ZW.js";
 import {
   BaseTooltip
 } from "./chunk-6KOC7ZWU.js";
@@ -28,8 +26,10 @@ import {
   conversion_funnel_chart_default
 } from "./chunk-N2XRMMQK.js";
 import {
-  leaderboard_chart_default
-} from "./chunk-YE6SMKGC.js";
+  LeaderboardChartResponsive
+} from "./chunk-S4GHZV44.js";
+import "./chunk-D3DZT2EK.js";
+import "./chunk-TYYW4BG3.js";
 import {
   Legend,
   useChartLegendItems
@@ -53,7 +53,7 @@ export {
   conversion_funnel_chart_default as ConversionFunnelChart,
   GlobalChartsContext,
   GlobalChartsProvider,
-  leaderboard_chart_default as LeaderboardChart,
+  LeaderboardChartResponsive as LeaderboardChart,
   Legend,
   LineChartResponsive as LineChart,
   LineChart as LineChartUnresponsive,
