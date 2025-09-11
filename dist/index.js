@@ -28,12 +28,12 @@ import {
   conversion_funnel_chart_default
 } from "./chunk-N2XRMMQK.js";
 import {
+  leaderboard_chart_default
+} from "./chunk-YE6SMKGC.js";
+import {
   Legend,
   useChartLegendItems
 } from "./chunk-YS2WVVIY.js";
-import {
-  leaderboard_chart_default
-} from "./chunk-YE6SMKGC.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
