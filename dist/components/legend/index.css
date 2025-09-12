@@ -53,7 +53,21 @@
   align-items: center;
   gap: 0.5rem;
 }
+.a8ccharts-faSDBI {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: auto;
+}
+.a8ccharts-FISUIO {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
 .a8ccharts-DTZlT- {
   font-weight: 500;
+  flex-shrink: 0;
 }
 /*# sourceMappingURL=index.css.map */

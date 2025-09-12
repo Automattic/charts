@@ -1,6 +1,6 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-DAcZlZSF.js';
-import { L as LeaderboardEntry } from '../../types-pVkkGIaQ.js';
-import { a as BaseLegendItem } from '../../types-4lieC41v.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-MVf0mu5E.js';
+import { L as LeaderboardEntry } from '../../types-Bz4cK2h9.js';
+import { a as BaseLegendItem } from '../../types-xTFOajzt.js';
 import 'react/jsx-runtime';
 import '../../with-responsive-Cp2qnQPo.js';
 import 'react';

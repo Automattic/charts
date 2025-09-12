@@ -1,7 +1,7 @@
-export { L as Legend } from '../../legend-iXnk1-uq.js';
-import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-pVkkGIaQ.js';
-import { a as BaseLegendItem } from '../../types-4lieC41v.js';
-export { B as BaseLegendProps, L as LegendProps } from '../../types-4lieC41v.js';
+export { L as Legend } from '../../legend-CeJ6TMSr.js';
+import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-Bz4cK2h9.js';
+import { a as BaseLegendItem } from '../../types-xTFOajzt.js';
+export { B as BaseLegendProps, L as LegendProps } from '../../types-xTFOajzt.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { GlyphProps } from '@visx/xychart';
 import { ReactNode } from 'react';

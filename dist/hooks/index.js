@@ -4,9 +4,10 @@ import {
   useChartMouseHandler,
   useDeepMemo,
   useElementHeight,
+  useTextTruncation,
   useXYChartTheme,
   useZeroValueDisplay
-} from "../chunk-XKKR4VOA.js";
+} from "../chunk-JSVPH6B5.js";
 import "../chunk-G3PMV62Z.js";
 export {
   useChartDataTransform,
@@ -14,6 +15,7 @@ export {
   useChartMouseHandler,
   useDeepMemo,
   useElementHeight,
+  useTextTruncation,
   useXYChartTheme,
   useZeroValueDisplay
 };

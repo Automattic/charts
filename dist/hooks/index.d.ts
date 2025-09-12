@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react';
-import { D as DataPoint, c as SeriesData, S as SeriesDataOptions, B as BaseChartProps, b as DataPointDate } from '../types-pVkkGIaQ.js';
+import { D as DataPoint, c as SeriesData, S as SeriesDataOptions, B as BaseChartProps, b as DataPointDate } from '../types-Bz4cK2h9.js';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -100,6 +100,28 @@ declare function useElementHeight<T extends HTMLElement = HTMLDivElement>({ init
     initialHeight?: number;
 }): [(node: T | null) => void, number];
 
+/**
+ * Hook to detect if text content is truncated within its container.
+ * Uses ResizeObserver to dynamically track changes in element size.
+ *
+ * @param enabled - Whether truncation detection should be active. Defaults to true.
+ * @return A tuple containing:
+ * - [0] refCallback: Function to attach to the text element as a ref
+ * - [1] isTruncated: Boolean indicating if the text is currently truncated
+ *
+ * @example
+ * ```tsx
+ * const [textRef, isTruncated] = useTextTruncation(true);
+ *
+ * return (
+ *   <span ref={textRef} title={isTruncated ? fullText : undefined}>
+ *     {text}
+ *   </span>
+ * );
+ * ```
+ */
+declare function useTextTruncation(enabled?: boolean): [(node: HTMLElement | null) => void, boolean];
+
 type EnhancedDataPoint = DataPointDate & {
     visualValue?: number;
 };
@@ -113,4 +135,4 @@ interface UseZeroValueDisplayOptions {
 }
 declare const useZeroValueDisplay: (data: SeriesData[], options?: UseZeroValueDisplayOptions) => SeriesData[] | EnhancedSeriesData[];
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useXYChartTheme, useZeroValueDisplay };
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
