@@ -27,7 +27,7 @@ import {
 } from "./chunk-WW7TFPBJ.js";
 import {
   LeaderboardChartResponsive
-} from "./chunk-P4SWLQIT.js";
+} from "./chunk-4774AHWM.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-TYYW4BG3.js";
 import {
