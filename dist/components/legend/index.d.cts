@@ -1,7 +1,7 @@
-export { L as Legend } from '../../legend-BBCxtUFq.cjs';
-import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-Bz4cK2h9.cjs';
-import { a as BaseLegendItem } from '../../types-xTFOajzt.cjs';
-export { B as BaseLegendProps, L as LegendProps } from '../../types-xTFOajzt.cjs';
+export { L as Legend } from '../../legend-CP4jfCL3.cjs';
+import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-oNXkzU5p.cjs';
+import { a as BaseLegendItem } from '../../types-athdF3-8.cjs';
+export { B as BaseLegendProps, L as LegendProps } from '../../types-athdF3-8.cjs';
 import { LegendShape } from '@visx/legend/lib/types';
 import { GlyphProps } from '@visx/xychart';
 import { ReactNode } from 'react';
@@ -20,6 +20,7 @@ interface ChartLegendOptions {
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     showValues?: boolean;
     legendValueDisplay?: LegendValueDisplay;
+    legendShape?: LegendShape<SeriesData[], number>;
 }
 /**
  * Hook to transform chart data into legend items
