@@ -5,15 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.38.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.38.0] - 2025-09-19
 ### Added
-- Charts: Add get element styles utility to global context
+- Charts: Add get element styles utility to global context [#45207]
 
 ### Changed
-- Update package dependencies.
+- Update package dependencies. [#45229]
 
 ## [0.37.0] - 2025-09-15
 ### Changed
@@ -470,7 +467,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.38.0-alpha]: https://github.com/Automattic/charts/compare/v0.37.0...v0.38.0-alpha
+[0.38.0]: https://github.com/Automattic/charts/compare/v0.37.0...v0.38.0
 [0.37.0]: https://github.com/Automattic/charts/compare/v0.36.0...v0.37.0
 [0.36.0]: https://github.com/Automattic/charts/compare/v0.35.0...v0.36.0
 [0.35.0]: https://github.com/Automattic/charts/compare/v0.34.1...v0.35.0
