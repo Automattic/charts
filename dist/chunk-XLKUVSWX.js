@@ -2,13 +2,13 @@ import {
   getStringWidth
 } from "./chunk-NFRB2POF.js";
 import {
+  BaseTooltip
+} from "./chunk-6KOC7ZWU.js";
+import {
   ChartHTML,
   ChartSVG,
   useChartChildren
 } from "./chunk-D3DZT2EK.js";
-import {
-  BaseTooltip
-} from "./chunk-6KOC7ZWU.js";
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
@@ -280,4 +280,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-HNN7AICK.js.map
+//# sourceMappingURL=chunk-XLKUVSWX.js.map
