@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: improve tooltip positioning in pie charts
+- Conversion Funnel chart: Use global charts context theme for consistency
 
 ## [0.38.2] - 2025-09-22
 ### Changed

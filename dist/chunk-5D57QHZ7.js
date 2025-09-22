@@ -13,7 +13,7 @@ import {
   Legend,
   SingleChartContext,
   useChartLegendItems
-} from "./chunk-GUI6U52J.js";
+} from "./chunk-TTAK3OES.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -22,7 +22,7 @@ import {
   useChartRegistration,
   useElementHeight,
   useGlobalChartsContext
-} from "./chunk-JYDUYOS2.js";
+} from "./chunk-OIBYAFC2.js";
 
 // src/components/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 import { localPoint } from "@visx/event";
@@ -289,4 +289,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-H4IHUZDI.js.map
+//# sourceMappingURL=chunk-5D57QHZ7.js.map

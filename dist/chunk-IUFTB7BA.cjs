@@ -4,7 +4,7 @@
 
 
 
-var _chunkUYZLJAYNcjs = require('./chunk-UYZLJAYN.cjs');
+var _chunkGWYUN3XScjs = require('./chunk-GWYUN3XS.cjs');
 
 // src/components/legend/legend.tsx
 var _react = require('react');
@@ -83,7 +83,7 @@ var LegendText = ({
   maxWidth
 }) => {
   const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
-  const [textRef, isTruncated] = _chunkUYZLJAYNcjs.useTextTruncation.call(void 0, Boolean(isEllipsis));
+  const [textRef, isTruncated] = _chunkGWYUN3XScjs.useTextTruncation.call(void 0, Boolean(isEllipsis));
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
     "span",
     {
@@ -129,7 +129,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
     legendLabelProps,
     ...legendItemProps
   }, ref) => {
-    const theme = _chunkUYZLJAYNcjs.useGlobalChartsTheme.call(void 0, );
+    const theme = _chunkGWYUN3XScjs.useGlobalChartsTheme.call(void 0, );
     const legendScale = _scale.scaleOrdinal.call(void 0, {
       domain: items.map((item) => item.label),
       range: items.map((item) => item.color)
@@ -244,7 +244,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
 
 var Legend = _react.forwardRef.call(void 0, 
   ({ chartId, items, ...props }, ref) => {
-    const context = _react.useContext.call(void 0, _chunkUYZLJAYNcjs.GlobalChartsContext);
+    const context = _react.useContext.call(void 0, _chunkGWYUN3XScjs.GlobalChartsContext);
     const singleChartContext = _react.useContext.call(void 0, SingleChartContext);
     const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _25 => _25.chartId])));
     const contextItems = _react.useMemo.call(void 0, () => {
@@ -268,7 +268,7 @@ function formatPointValue(point, showValues, legendValueDisplay = "percentage") 
     const percentagePoint = point;
     switch (legendValueDisplay) {
       case "percentage":
-        return _chunkUYZLJAYNcjs.formatPercentage.call(void 0, percentagePoint.percentage);
+        return _chunkGWYUN3XScjs.formatPercentage.call(void 0, percentagePoint.percentage);
       case "value":
         return percentagePoint.value.toString();
       case "valueDisplay":
@@ -337,7 +337,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
     glyphSize = 8,
     renderGlyph
   } = options;
-  const { getElementStyles } = _chunkUYZLJAYNcjs.useGlobalChartsContext.call(void 0, );
+  const { getElementStyles } = _chunkGWYUN3XScjs.useGlobalChartsContext.call(void 0, );
   return _react.useMemo.call(void 0, () => {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return [];
@@ -381,4 +381,4 @@ function useChartLegendItems(data, options = {}, legendShape) {
 
 
 exports.SingleChartContext = SingleChartContext; exports.useSingleChartContext = useSingleChartContext; exports.Legend = Legend; exports.useChartLegendItems = useChartLegendItems;
-//# sourceMappingURL=chunk-W6UBJ7HZ.cjs.map
+//# sourceMappingURL=chunk-IUFTB7BA.cjs.map

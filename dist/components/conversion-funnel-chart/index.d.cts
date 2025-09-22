@@ -1,4 +1,13 @@
 import { FC } from 'react';
+import { B as BaseChartProps } from '../../types-oNXkzU5p.cjs';
+import '@visx/annotation/lib/components/CircleSubject';
+import '@visx/annotation/lib/components/Connector';
+import '@visx/annotation/lib/components/Label';
+import '@visx/annotation/lib/components/LineSubject';
+import '@visx/axis';
+import '@visx/legend/lib/types';
+import '@visx/scale';
+import '@visx/xychart';
 
 /**
  * Represents a single step in the conversion funnel
@@ -51,7 +60,7 @@ interface TooltipRenderProps {
 /**
  * Props for the ConversionFunnelChart component
  */
-interface ConversionFunnelChartProps {
+interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 'chartId'> {
     /** Main conversion rate to highlight */
     mainRate: number;
     /** Change indicator (e.g., +2%, -1.5%) */
@@ -60,8 +69,6 @@ interface ConversionFunnelChartProps {
     steps: FunnelStep[];
     /** Whether the chart is in loading state */
     loading?: boolean;
-    /** Additional CSS class name */
-    className?: string;
     /** Custom styling */
     style?: React.CSSProperties;
     /** Custom render function for step labels */
@@ -73,22 +80,13 @@ interface ConversionFunnelChartProps {
     /** Custom render function for tooltip content */
     renderTooltip?: (props: TooltipRenderProps) => React.ReactNode;
 }
+
 /**
- * ConversionFunnelChart component displays a conversion funnel with main metric and visualization
+ * ConversionFunnelChart component with provider wrapper
  *
- * @param props                  - Component props
- * @param props.mainRate         - Main conversion rate to highlight
- * @param props.changeIndicator  - Change indicator (e.g., +2%, -1.5%)
- * @param props.steps            - Array of funnel steps
- * @param props.loading          - Whether the chart is in loading state
- * @param props.className        - Additional CSS class name
- * @param props.style            - Custom styling
- * @param props.renderStepLabel  - Custom render function for step labels
- * @param props.renderStepRate   - Custom render function for step rates
- * @param props.renderMainMetric - Custom render function for the entire main metric section
- * @param props.renderTooltip    - Custom render function for tooltip content
+ * @param props - Component props
  * @return JSX element representing the conversion funnel chart
  */
-declare const ConversionFunnelChart: FC<ConversionFunnelChartProps>;
+declare const ConversionFunnelChartWithProvider: FC<ConversionFunnelChartProps>;
 
-export { ConversionFunnelChart, type ConversionFunnelChartProps, type FunnelStep, type MainMetricRenderProps, type StepLabelRenderProps, type StepRateRenderProps, type TooltipRenderProps };
+export { ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type FunnelStep, type MainMetricRenderProps, type StepLabelRenderProps, type StepRateRenderProps, type TooltipRenderProps };

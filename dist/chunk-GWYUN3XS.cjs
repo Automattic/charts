@@ -234,10 +234,10 @@ var defaultTheme = {
     // [negative, neutral, positive]
   },
   conversionFunnelChart: {
-    primaryColor: "#3858E9",
+    primaryColor: "#006DAB",
     backgroundColor: "#F3F4F6",
-    positiveChangeColor: "#008A20",
-    negativeChangeColor: "#D63638"
+    positiveChangeColor: "#1F9828",
+    negativeChangeColor: "#FF8C8F"
   },
   lineChart: {
     lineStyles: {
@@ -785,4 +785,4 @@ var useGlobalChartsTheme = () => {
 
 
 exports.useDeepMemo = useDeepMemo; exports.useChartMouseHandler = useChartMouseHandler; exports.attachSubComponents = attachSubComponents; exports.formatMetricValue = formatMetricValue; exports.formatPercentage = formatPercentage; exports.isSafari = isSafari; exports.hexToRgba = hexToRgba; exports.defaultTheme = defaultTheme; exports.jetpackTheme = jetpackTheme; exports.wooTheme = wooTheme; exports.GlobalChartsContext = GlobalChartsContext; exports.GlobalChartsProvider = GlobalChartsProvider; exports.useGlobalChartsContext = useGlobalChartsContext; exports.useChartId = useChartId; exports.useChartRegistration = useChartRegistration; exports.useGlobalChartsTheme = useGlobalChartsTheme; exports.useXYChartTheme = useXYChartTheme; exports.useChartDataTransform = useChartDataTransform; exports.useChartMargin = useChartMargin; exports.useElementHeight = useElementHeight; exports.useTextTruncation = useTextTruncation; exports.useZeroValueDisplay = useZeroValueDisplay;
-//# sourceMappingURL=chunk-UYZLJAYN.cjs.map
+//# sourceMappingURL=chunk-GWYUN3XS.cjs.map

@@ -282,7 +282,6 @@
 }
 .a8ccharts-QWypVS {
   overflow: hidden;
-  color: var(--change-indicator-color, #008a20);
   text-overflow: ellipsis;
   font-family: var(--funnel-font-family, "SF Pro Text");
   font-size: 13px;
@@ -338,14 +337,10 @@
   flex: 1;
   display: flex;
   align-items: flex-end;
-  background-color: var(--light-background-color, rgba(79, 70, 229, 0.08));
   border-radius: 4px;
   position: relative;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-.a8ccharts-5Dl5-j.a8ccharts-W40FYh {
-  background-color: var(--light-background-color, rgba(79, 70, 229, 0.15));
 }
 .a8ccharts-5Dl5-j.a8ccharts-Reovk6 {
   cursor: pointer;
@@ -355,7 +350,6 @@
   min-height: 4px;
   border-radius: 4px 4px 0 0;
   transition: all 0.3s ease;
-  background-color: var(--primary-color, #4f46e5);
 }
 .a8ccharts-tG5m3L.a8ccharts-W40FYh {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);

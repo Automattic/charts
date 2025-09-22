@@ -1,9 +1,9 @@
 import {
-  conversion_funnel_chart_default
-} from "../../chunk-TGREB62Q.js";
-import "../../chunk-JYDUYOS2.js";
+  ConversionFunnelChartWithProvider
+} from "../../chunk-W55YA225.js";
+import "../../chunk-OIBYAFC2.js";
 import "../../chunk-G3PMV62Z.js";
 export {
-  conversion_funnel_chart_default as ConversionFunnelChart
+  ConversionFunnelChartWithProvider as ConversionFunnelChart
 };
 //# sourceMappingURL=index.js.map

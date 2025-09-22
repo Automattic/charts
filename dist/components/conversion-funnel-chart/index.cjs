@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkKX6TY4MJcjs = require('../../chunk-KX6TY4MJ.cjs');
-require('../../chunk-UYZLJAYN.cjs');
+var _chunkZC2GBIQ2cjs = require('../../chunk-ZC2GBIQ2.cjs');
+require('../../chunk-GWYUN3XS.cjs');
 require('../../chunk-EMMSS5I5.cjs');
 
 
-exports.ConversionFunnelChart = _chunkKX6TY4MJcjs.conversion_funnel_chart_default;
+exports.ConversionFunnelChart = _chunkZC2GBIQ2cjs.ConversionFunnelChartWithProvider;
 //# sourceMappingURL=index.cjs.map

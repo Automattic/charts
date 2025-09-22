@@ -4,7 +4,7 @@ import {
   useGlobalChartsContext,
   useGlobalChartsTheme,
   useTextTruncation
-} from "./chunk-JYDUYOS2.js";
+} from "./chunk-OIBYAFC2.js";
 
 // src/components/legend/legend.tsx
 import { useContext as useContext2, useMemo, forwardRef as forwardRef2 } from "react";
@@ -381,4 +381,4 @@ export {
   Legend,
   useChartLegendItems
 };
-//# sourceMappingURL=chunk-GUI6U52J.js.map
+//# sourceMappingURL=chunk-TTAK3OES.js.map

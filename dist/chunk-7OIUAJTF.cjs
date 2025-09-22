@@ -13,7 +13,7 @@ var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkW6UBJ7HZcjs = require('./chunk-W6UBJ7HZ.cjs');
+var _chunkIUFTB7BAcjs = require('./chunk-IUFTB7BA.cjs');
 
 
 
@@ -22,7 +22,7 @@ var _chunkW6UBJ7HZcjs = require('./chunk-W6UBJ7HZ.cjs');
 
 
 
-var _chunkUYZLJAYNcjs = require('./chunk-UYZLJAYN.cjs');
+var _chunkGWYUN3XScjs = require('./chunk-GWYUN3XS.cjs');
 
 // src/components/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 var _event = require('@visx/event');
@@ -79,8 +79,8 @@ var PieSemiCircleChartInternal = ({
   tooltipOffsetX = 0,
   tooltipOffsetY = -15
 }) => {
-  const chartId = _chunkUYZLJAYNcjs.useChartId.call(void 0, providedChartId);
-  const [legendRef, legendHeight] = _chunkUYZLJAYNcjs.useElementHeight.call(void 0, );
+  const chartId = _chunkGWYUN3XScjs.useChartId.call(void 0, providedChartId);
+  const [legendRef, legendHeight] = _chunkGWYUN3XScjs.useElementHeight.call(void 0, );
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = _tooltip.useTooltip.call(void 0, );
   const { containerRef, TooltipInPortal } = _tooltip.useTooltipInPortal.call(void 0, {
     detectBounds: true,
@@ -111,7 +111,7 @@ var PieSemiCircleChartInternal = ({
     [handleMouseMove]
   );
   const { isValid, message } = validateData(data);
-  const { getElementStyles } = _chunkUYZLJAYNcjs.useGlobalChartsContext.call(void 0, );
+  const { getElementStyles } = _chunkGWYUN3XScjs.useGlobalChartsContext.call(void 0, );
   const accessors = _react.useMemo.call(void 0, 
     () => ({
       value: (d) => d.value,
@@ -124,7 +124,7 @@ var PieSemiCircleChartInternal = ({
     () => ({ showValues: true, legendValueDisplay }),
     [legendValueDisplay]
   );
-  const legendItems = _chunkW6UBJ7HZcjs.useChartLegendItems.call(void 0, data, legendOptions);
+  const legendItems = _chunkIUFTB7BAcjs.useChartLegendItems.call(void 0, data, legendOptions);
   const { svgChildren, htmlChildren, otherChildren } = _chunk3Z526IL2cjs.useChartChildren.call(void 0, 
     children,
     "PieSemiCircleChart"
@@ -136,7 +136,7 @@ var PieSemiCircleChartInternal = ({
     }),
     [thickness, clockwise]
   );
-  _chunkUYZLJAYNcjs.useChartRegistration.call(void 0, {
+  _chunkGWYUN3XScjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "pie-semi-circle",
@@ -157,7 +157,7 @@ var PieSemiCircleChartInternal = ({
   const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
   const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkW6UBJ7HZcjs.SingleChartContext.Provider,
+    _chunkIUFTB7BAcjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -243,7 +243,7 @@ var PieSemiCircleChartInternal = ({
             ),
             withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk6GO5PFYLcjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkW6UBJ7HZcjs.Legend,
+              _chunkIUFTB7BAcjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -264,22 +264,22 @@ var PieSemiCircleChartInternal = ({
   );
 };
 var PieSemiCircleChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkUYZLJAYNcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkGWYUN3XScjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieSemiCircleChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkUYZLJAYNcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieSemiCircleChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGWYUN3XScjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieSemiCircleChartInternal, { ...props }) });
 };
 PieSemiCircleChartWithProvider.displayName = "PieSemiCircleChart";
-var PieSemiCircleChart = _chunkUYZLJAYNcjs.attachSubComponents.call(void 0, PieSemiCircleChartWithProvider, {
-  Legend: _chunkW6UBJ7HZcjs.Legend,
+var PieSemiCircleChart = _chunkGWYUN3XScjs.attachSubComponents.call(void 0, PieSemiCircleChartWithProvider, {
+  Legend: _chunkIUFTB7BAcjs.Legend,
   SVG: _chunk3Z526IL2cjs.ChartSVG,
   HTML: _chunk3Z526IL2cjs.ChartHTML
 });
-var PieSemiCircleChartResponsive = _chunkUYZLJAYNcjs.attachSubComponents.call(void 0, 
+var PieSemiCircleChartResponsive = _chunkGWYUN3XScjs.attachSubComponents.call(void 0, 
   _chunkFX2PTUFCcjs.withResponsive.call(void 0, PieSemiCircleChartWithProvider),
   {
-    Legend: _chunkW6UBJ7HZcjs.Legend,
+    Legend: _chunkIUFTB7BAcjs.Legend,
     SVG: _chunk3Z526IL2cjs.ChartSVG,
     HTML: _chunk3Z526IL2cjs.ChartHTML
   }
@@ -289,4 +289,4 @@ var PieSemiCircleChartResponsive = _chunkUYZLJAYNcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-WJAJDA6Q.cjs.map
+//# sourceMappingURL=chunk-7OIUAJTF.cjs.map

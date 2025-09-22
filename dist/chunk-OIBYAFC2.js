@@ -234,10 +234,10 @@ var defaultTheme = {
     // [negative, neutral, positive]
   },
   conversionFunnelChart: {
-    primaryColor: "#3858E9",
+    primaryColor: "#006DAB",
     backgroundColor: "#F3F4F6",
-    positiveChangeColor: "#008A20",
-    negativeChangeColor: "#D63638"
+    positiveChangeColor: "#1F9828",
+    negativeChangeColor: "#FF8C8F"
   },
   lineChart: {
     lineStyles: {
@@ -785,4 +785,4 @@ export {
   useTextTruncation,
   useZeroValueDisplay
 };
-//# sourceMappingURL=chunk-JYDUYOS2.js.map
+//# sourceMappingURL=chunk-OIBYAFC2.js.map
