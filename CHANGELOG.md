@@ -12,6 +12,10 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Charts: improve tooltip positioning in pie charts
 
+## [0.38.2] - 2025-09-22
+### Changed
+- Update dependencies. [#43811]
+
 ## [0.38.1] - 2025-09-19
 ### Changed
 - Update package dependencies. [#45241]
@@ -478,7 +482,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.39.0-alpha]: https://github.com/Automattic/charts/compare/v0.38.1...v0.39.0-alpha
+[0.39.0-alpha]: https://github.com/Automattic/charts/compare/v0.38.2...v0.39.0-alpha
+[0.38.2]: https://github.com/Automattic/charts/compare/v0.38.1...v0.38.2
 [0.38.1]: https://github.com/Automattic/charts/compare/v0.38.0...v0.38.1
 [0.38.0]: https://github.com/Automattic/charts/compare/v0.37.0...v0.38.0
 [0.37.0]: https://github.com/Automattic/charts/compare/v0.36.0...v0.37.0
