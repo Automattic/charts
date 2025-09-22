@@ -10,7 +10,7 @@ export { L as LeaderboardChart } from './leaderboard-chart-C9liwX4T.js';
 export { L as Legend } from './legend-D_hcatNS.js';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.js';
 export { ConversionFunnelChart } from './components/conversion-funnel-chart/index.js';
-export { B as BaseTooltip } from './base-tooltip-Dlq8KmQA.js';
+export { B as BaseTooltip } from './base-tooltip-DOq93wjU.js';
 export { b as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from './themes-Cs55crdB.js';
 import 'react';
 import './with-responsive-Cp2qnQPo.js';

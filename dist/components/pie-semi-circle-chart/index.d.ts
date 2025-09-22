@@ -50,6 +50,14 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * - 'none': Shows no values, only labels
      */
     legendValueDisplay?: LegendValueDisplay;
+    /**
+     * Horizontal offset for tooltip positioning in pixels (default: 0)
+     */
+    tooltipOffsetX?: number;
+    /**
+     * Vertical offset for tooltip positioning in pixels (default: -15)
+     */
+    tooltipOffsetY?: number;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;

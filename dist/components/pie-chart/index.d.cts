@@ -56,6 +56,14 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      * Use the children prop to render additional elements on the chart.
      */
     children?: ReactNode;
+    /**
+     * Horizontal offset for tooltip positioning in pixels (default: 0)
+     */
+    tooltipOffsetX?: number;
+    /**
+     * Vertical offset for tooltip positioning in pixels (default: -15)
+     */
+    tooltipOffsetY?: number;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
 type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;

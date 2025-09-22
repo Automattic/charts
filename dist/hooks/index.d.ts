@@ -24,6 +24,14 @@ type UseChartMouseHandlerProps = {
      * Whether tooltips are enabled
      */
     withTooltips: boolean;
+    /**
+     * Horizontal offset for tooltip positioning in pixels (default: 0)
+     */
+    offsetX?: number;
+    /**
+     * Vertical offset for tooltip positioning in pixels (default: -10)
+     */
+    offsetY?: number;
 };
 type UseChartMouseHandlerReturn = {
     /**
@@ -57,7 +65,7 @@ type UseChartMouseHandlerReturn = {
  * @param {UseChartMouseHandlerProps} props - Hook configuration
  * @return {UseChartMouseHandlerReturn} Object containing handlers and tooltip state
  */
-declare const useChartMouseHandler: ({ withTooltips, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
+declare const useChartMouseHandler: ({ withTooltips, offsetX, offsetY, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
 
 declare const useXYChartTheme: (data: SeriesData[]) => _visx_xychart.XYChartTheme;
 
