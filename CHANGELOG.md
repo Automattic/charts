@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Guess a better x-axis ticks value in line charts.
+
 ### Changed
 - Charts: improve tooltip positioning in pie charts
 - Conversion Funnel chart: Use global charts context theme for consistency

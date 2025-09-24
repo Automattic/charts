@@ -30,6 +30,7 @@ import {
 import { formatNumberCompact } from "@automattic/number-formatters";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { LinearGradient } from "@visx/gradient";
+import { scaleTime } from "@visx/scale";
 import { XYChart, AreaSeries, Grid, Axis, DataContext as DataContext4 } from "@visx/xychart";
 import { __ as __2 } from "@wordpress/i18n";
 import clsx2 from "clsx";
@@ -472,7 +473,7 @@ var line_chart_annotation_default = LineChartAnnotation;
 // src/components/line-chart/line-chart.tsx
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 import { createElement } from "react";
-var X_TICK_WIDTH = 100;
+var X_TICK_WIDTH = 60;
 var defaultRenderGlyph = (props) => {
   return /* @__PURE__ */ createElement(DefaultGlyph, { ...props, key: props.key });
 };
@@ -540,6 +541,30 @@ var formatDateTick = (timestamp) => {
     month: "short",
     day: "numeric"
   });
+};
+var guessOptimalNumTicks = (data, chartWidth) => {
+  const minX = Math.min(...data.map((datom) => datom.data.at(0)?.date));
+  const maxX = Math.max(...data.map((datom) => datom.data.at(-1)?.date));
+  const xScale = scaleTime({ domain: [minX, maxX] });
+  const upperBound = Math.min(data[0]?.data.length, Math.ceil(chartWidth / X_TICK_WIDTH));
+  let secondBestGuess = 1;
+  for (let numTicks = upperBound; numTicks > 1; --numTicks) {
+    const ticks = xScale.ticks(numTicks).map((d) => formatDateTick(d.getTime()));
+    if (ticks.length > upperBound) {
+      continue;
+    }
+    secondBestGuess = Math.max(secondBestGuess, ticks.length);
+    const uniqueTicks = Array.from(new Set(ticks));
+    if (uniqueTicks.length === 1) {
+      return 1;
+    }
+    const hasDuplicate = uniqueTicks.length < ticks.length;
+    if (hasDuplicate) {
+      continue;
+    }
+    return ticks.length;
+  }
+  return secondBestGuess;
 };
 var validateData = (data) => {
   if (!data?.length) return "No data available";
@@ -634,12 +659,11 @@ var LineChartInternal = forwardRef(
       totalPoints: dataSorted[0]?.data.length || 0
     });
     const chartOptions = useMemo2(() => {
-      const xNumTicks = Math.min(dataSorted[0]?.data.length, Math.ceil(width / X_TICK_WIDTH));
       return {
         axis: {
           x: {
             orientation: "bottom",
-            numTicks: xNumTicks,
+            numTicks: guessOptimalNumTicks(dataSorted, width),
             tickFormat: formatDateTick,
             ...options?.axis?.x
           },
@@ -894,4 +918,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-52YK5PEU.js.map
+//# sourceMappingURL=chunk-J6BENVUC.js.map
