@@ -1,5 +1,5 @@
-// src/providers/chart-context/global-charts-provider.tsx
-import { createContext, useCallback, useMemo, useState, useEffect } from "react";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// src/providers/chart-context/global-charts-provider.tsx
+var _react = require('react');
 
 // src/utils/create-composition.ts
 function attachSubComponents(Chart, subComponents) {
@@ -7,15 +7,15 @@ function attachSubComponents(Chart, subComponents) {
 }
 
 // src/utils/date-parsing.ts
-import { parse, parseISO, isValid } from "date-fns";
+var _datefns = require('date-fns');
 var hasTimezone = (dateString) => {
   return /T.*[Z]$|T.*[+-]\d{2}:?\d{2}$/.test(dateString);
 };
 var parseAsLocalDate = (dateString) => {
   const trimmedString = dateString.trim();
   if (hasTimezone(trimmedString)) {
-    const isoDate = parseISO(trimmedString);
-    if (!isValid(isoDate)) {
+    const isoDate = _datefns.parseISO.call(void 0, trimmedString);
+    if (!_datefns.isValid.call(void 0, isoDate)) {
       return /* @__PURE__ */ new Date(NaN);
     }
     return isoDate;
@@ -35,8 +35,8 @@ var parseAsLocalDate = (dateString) => {
     // 2025-01-01T14:30
   ];
   for (const format of formats) {
-    const result = parse(trimmedString, format, /* @__PURE__ */ new Date());
-    if (isValid(result)) {
+    const result = _datefns.parse.call(void 0, trimmedString, format, /* @__PURE__ */ new Date());
+    if (_datefns.isValid.call(void 0, result)) {
       return result;
     }
   }
@@ -44,7 +44,7 @@ var parseAsLocalDate = (dateString) => {
 };
 
 // src/utils/format-metric-value.ts
-import { formatNumberCompact, formatNumber } from "@automattic/number-formatters";
+var _numberformatters = require('@automattic/number-formatters');
 var formatMetricValue = (value, type = "number", { decimals, useMultipliers = false, signDisplay } = {}) => {
   if (value === null || value === void 0) {
     return "";
@@ -55,14 +55,14 @@ var formatMetricValue = (value, type = "number", { decimals, useMultipliers = fa
   }
   switch (type) {
     case "currency": {
-      const formatted = useMultipliers ? formatNumberCompact(numericValue, {
-        decimals: decimals ?? 2,
+      const formatted = useMultipliers ? _numberformatters.formatNumberCompact.call(void 0, numericValue, {
+        decimals: _nullishCoalesce(decimals, () => ( 2)),
         numberFormatOptions: {
-          maximumFractionDigits: decimals ?? 2,
+          maximumFractionDigits: _nullishCoalesce(decimals, () => ( 2)),
           signDisplay
         }
-      }) : formatNumber(numericValue, {
-        decimals: decimals ?? 2,
+      }) : _numberformatters.formatNumber.call(void 0, numericValue, {
+        decimals: _nullishCoalesce(decimals, () => ( 2)),
         numberFormatOptions: {
           signDisplay
         }
@@ -73,24 +73,24 @@ var formatMetricValue = (value, type = "number", { decimals, useMultipliers = fa
       if (!Number.isFinite(numericValue)) {
         return "\u2014";
       }
-      return formatNumber(numericValue, {
-        decimals: decimals ?? 0,
+      return _numberformatters.formatNumber.call(void 0, numericValue, {
+        decimals: _nullishCoalesce(decimals, () => ( 0)),
         numberFormatOptions: {
           style: "percent",
-          signDisplay: signDisplay ?? "exceptZero"
+          signDisplay: _nullishCoalesce(signDisplay, () => ( "exceptZero"))
         }
       });
     }
     case "number":
     default: {
-      return useMultipliers ? formatNumberCompact(numericValue, {
-        decimals: decimals ?? 0,
+      return useMultipliers ? _numberformatters.formatNumberCompact.call(void 0, numericValue, {
+        decimals: _nullishCoalesce(decimals, () => ( 0)),
         numberFormatOptions: {
-          maximumFractionDigits: decimals ?? 0,
+          maximumFractionDigits: _nullishCoalesce(decimals, () => ( 0)),
           signDisplay
         }
-      }) : formatNumber(numericValue, {
-        decimals: decimals ?? 0,
+      }) : _numberformatters.formatNumber.call(void 0, numericValue, {
+        decimals: _nullishCoalesce(decimals, () => ( 0)),
         numberFormatOptions: {
           signDisplay
         }
@@ -100,9 +100,9 @@ var formatMetricValue = (value, type = "number", { decimals, useMultipliers = fa
 };
 
 // src/utils/format-percentage.ts
-import { formatNumber as formatNumber2 } from "@automattic/number-formatters";
+
 var formatPercentage = (value) => {
-  return formatNumber2(value / 100, {
+  return _numberformatters.formatNumber.call(void 0, value / 100, {
     numberFormatOptions: {
       style: "percent",
       minimumFractionDigits: 0,
@@ -112,26 +112,26 @@ var formatPercentage = (value) => {
 };
 
 // src/utils/get-longest-tick-width.ts
-import { getStringWidth } from "@visx/text";
+var _text = require('@visx/text');
 var getLongestTickWidth = (ticks, formatTick, labelStyle) => {
   const formattedTicks = ticks.map((tick) => formatTick(tick, 0, []));
   const longestTick = formattedTicks.reduce(
     (longest, current) => longest.length >= current.length ? longest : current,
     formattedTicks[0]
   );
-  return getStringWidth(longestTick, labelStyle);
+  return _text.getStringWidth.call(void 0, longestTick, labelStyle);
 };
 
 // src/utils/get-styles.ts
 function getSeriesLineStyles(seriesData, index, providerTheme) {
-  const themeSemanticLineStyle = providerTheme?.lineChart?.lineStyles?.[seriesData.options?.type];
-  const themeSeriesLineStyle = providerTheme?.seriesLineStyles?.[index % providerTheme.seriesLineStyles.length];
-  return seriesData.options?.seriesLineStyle ?? themeSemanticLineStyle ?? themeSeriesLineStyle ?? {};
+  const themeSemanticLineStyle = _optionalChain([providerTheme, 'optionalAccess', _ => _.lineChart, 'optionalAccess', _2 => _2.lineStyles, 'optionalAccess', _3 => _3[_optionalChain([seriesData, 'access', _4 => _4.options, 'optionalAccess', _5 => _5.type])]]);
+  const themeSeriesLineStyle = _optionalChain([providerTheme, 'optionalAccess', _6 => _6.seriesLineStyles, 'optionalAccess', _7 => _7[index % providerTheme.seriesLineStyles.length]]);
+  return _nullishCoalesce(_nullishCoalesce(_nullishCoalesce(_optionalChain([seriesData, 'access', _8 => _8.options, 'optionalAccess', _9 => _9.seriesLineStyle]), () => ( themeSemanticLineStyle)), () => ( themeSeriesLineStyle)), () => ( {}));
 }
 function getItemShapeStyles(series, index, theme, legendShape) {
-  const seriesShapeStyles = series.options?.legendShapeStyle ?? {};
+  const seriesShapeStyles = _nullishCoalesce(_optionalChain([series, 'access', _10 => _10.options, 'optionalAccess', _11 => _11.legendShapeStyle]), () => ( {}));
   const lineStyles = legendShape === "line" ? getSeriesLineStyles(series, index, theme) : {};
-  const themeShapeStyles = theme.legendShapeStyles?.[index];
+  const themeShapeStyles = _optionalChain([theme, 'access', _12 => _12.legendShapeStyles, 'optionalAccess', _13 => _13[index]]);
   const itemShapeStyles = {
     ...seriesShapeStyles,
     ...lineStyles
@@ -141,7 +141,7 @@ function getItemShapeStyles(series, index, theme, legendShape) {
   )) {
     return itemShapeStyles;
   }
-  return themeShapeStyles ?? {};
+  return _nullishCoalesce(themeShapeStyles, () => ( {}));
 }
 
 // src/utils/is-safari.ts
@@ -153,16 +153,16 @@ var isSafari = () => {
 };
 
 // src/utils/merge-themes.ts
-import deepmerge from "deepmerge";
+var _deepmerge = require('deepmerge'); var _deepmerge2 = _interopRequireDefault(_deepmerge);
 function mergeThemes(baseTheme, overrideTheme) {
-  return deepmerge(baseTheme, overrideTheme, {
+  return _deepmerge2.default.call(void 0, baseTheme, overrideTheme, {
     // Ensure arrays are replaced rather than concatenated
     arrayMerge: (_destinationArray, sourceArray) => sourceArray
   });
 }
 
 // src/utils/color-utils.ts
-var hexToRgba = (hex, alpha) => {
+var validateHexColor = (hex) => {
   if (typeof hex !== "string") {
     throw new Error("Hex color must be a string");
   }
@@ -176,6 +176,9 @@ var hexToRgba = (hex, alpha) => {
   if (!/^[0-9a-fA-F]{6}$/.test(hexDigits)) {
     throw new Error("Hex color contains invalid characters. Only 0-9, a-f, A-F are allowed");
   }
+};
+var hexToRgba = (hex, alpha) => {
+  validateHexColor(hex);
   if (typeof alpha !== "number" || isNaN(alpha)) {
     throw new Error("Alpha must be a number");
   }
@@ -183,6 +186,117 @@ var hexToRgba = (hex, alpha) => {
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+var hexToHsl = (hex) => {
+  validateHexColor(hex);
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+  return [h * 360, s * 100, l * 100];
+};
+var getColorDistance = (hsl1, hsl2) => {
+  const [h1, s1, l1] = hsl1;
+  const [h2, s2, l2] = hsl2;
+  let hueDiff = Math.abs(h1 - h2);
+  hueDiff = Math.min(hueDiff, 360 - hueDiff);
+  const hueWeight = 2;
+  const lightnessWeight = 1;
+  const saturationWeight = 0.5;
+  return Math.sqrt(
+    Math.pow(hueDiff * hueWeight, 2) + Math.pow((l1 - l2) * lightnessWeight, 2) + Math.pow((s1 - s2) * saturationWeight, 2)
+  );
+};
+
+// src/providers/chart-context/private/get-chart-color.ts
+var GOLDEN_RATIO = 0.618033988749;
+var MIN_COLOR_DISTANCE = 25;
+var MAX_COLOR_GENERATION_ATTEMPTS = 50;
+var VARIATION_ATTEMPT_OFFSET = 0.1;
+var BASE_SATURATION = 60;
+var SATURATION_VARIATION_STEPS = 3;
+var SATURATION_INCREMENT = 15;
+var BASE_LIGHTNESS = 35;
+var LIGHTNESS_VARIATION_STEPS = 4;
+var LIGHTNESS_INCREMENT = 8;
+var MIN_HUE_RANGE_DEGREES = 60;
+var HUE_RANGE_EXPANSION_FACTOR = 1.3;
+var HUE_WRAP_THRESHOLD_DEGREES = 180;
+var FULL_HUE_ROTATION_DEGREES = 360;
+var getChartColor = (index, colorCache) => {
+  const {
+    colors,
+    hues,
+    existingHslColors,
+    minHue: cachedMinHue,
+    maxHue: cachedMaxHue
+  } = colorCache;
+  if (index < colors.length) {
+    return colors[index];
+  }
+  let minHue = cachedMinHue;
+  let maxHue = cachedMaxHue;
+  for (let attempt = 0; attempt < MAX_COLOR_GENERATION_ATTEMPTS; attempt++) {
+    let hue = (index - colors.length + attempt * VARIATION_ATTEMPT_OFFSET) * GOLDEN_RATIO * FULL_HUE_ROTATION_DEGREES % FULL_HUE_ROTATION_DEGREES;
+    if (hues.length > 0) {
+      let hueRange = maxHue - minHue;
+      if (hueRange > HUE_WRAP_THRESHOLD_DEGREES) {
+        const altMinHue = Math.min(...hues.filter((h) => h > HUE_WRAP_THRESHOLD_DEGREES));
+        const altMaxHue = Math.max(...hues.filter((h) => h < HUE_WRAP_THRESHOLD_DEGREES)) + FULL_HUE_ROTATION_DEGREES;
+        const altRange = altMaxHue - altMinHue;
+        if (altRange < hueRange) {
+          minHue = altMinHue;
+          maxHue = altMaxHue;
+          hueRange = altRange;
+        }
+      }
+      const expandedRange = Math.max(
+        hueRange * HUE_RANGE_EXPANSION_FACTOR,
+        MIN_HUE_RANGE_DEGREES
+      );
+      const rangeCenter = (minHue + maxHue) / 2;
+      const expandedMin = rangeCenter - expandedRange / 2;
+      hue = expandedMin + hue / FULL_HUE_ROTATION_DEGREES * expandedRange;
+      hue = (hue % FULL_HUE_ROTATION_DEGREES + FULL_HUE_ROTATION_DEGREES) % FULL_HUE_ROTATION_DEGREES;
+    }
+    const saturation = BASE_SATURATION + (index + attempt) % SATURATION_VARIATION_STEPS * SATURATION_INCREMENT;
+    const lightness = BASE_LIGHTNESS + (index + attempt) % LIGHTNESS_VARIATION_STEPS * LIGHTNESS_INCREMENT;
+    const candidateHsl = [hue, saturation, lightness];
+    let isSufficientlyDifferent = true;
+    for (const existingHsl of existingHslColors) {
+      if (getColorDistance(candidateHsl, existingHsl) < MIN_COLOR_DISTANCE) {
+        isSufficientlyDifferent = false;
+        break;
+      }
+    }
+    if (isSufficientlyDifferent) {
+      return `hsl(${Math.round(hue)}, ${saturation}%, ${lightness}%)`;
+    }
+  }
+  const fallbackHue = (index - colors.length) * GOLDEN_RATIO * FULL_HUE_ROTATION_DEGREES % FULL_HUE_ROTATION_DEGREES;
+  const fallbackSaturation = BASE_SATURATION + index % SATURATION_VARIATION_STEPS * SATURATION_INCREMENT;
+  const fallbackLightness = BASE_LIGHTNESS + index % LIGHTNESS_VARIATION_STEPS * LIGHTNESS_INCREMENT;
+  return `hsl(${Math.round(fallbackHue)}, ${fallbackSaturation}%, ${fallbackLightness}%)`;
 };
 
 // src/providers/chart-context/themes.ts
@@ -383,36 +497,61 @@ var wooTheme = {
 };
 
 // src/providers/chart-context/global-charts-provider.tsx
-import { jsx } from "react/jsx-runtime";
-var GlobalChartsContext = createContext(null);
+var _jsxruntime = require('react/jsx-runtime');
+var GlobalChartsContext = _react.createContext.call(void 0, null);
 var GlobalChartsProvider = ({ children, theme }) => {
-  const [charts, setCharts] = useState(() => /* @__PURE__ */ new Map());
-  const providerTheme = useMemo(() => {
+  const [charts, setCharts] = _react.useState.call(void 0, () => /* @__PURE__ */ new Map());
+  const providerTheme = _react.useMemo.call(void 0, () => {
     return theme ? mergeThemes(defaultTheme, theme) : defaultTheme;
   }, [theme]);
-  const [groupToColorMap, setGroupToColorMap] = useState(
+  const colorCache = _react.useMemo.call(void 0, () => {
+    const { colors } = providerTheme;
+    const hues = [];
+    const existingHslColors = [];
+    let minHue = 360;
+    let maxHue = 0;
+    if (Array.isArray(colors)) {
+      for (const color of colors) {
+        if (color && typeof color === "string" && color.startsWith("#")) {
+          const hslColor = hexToHsl(color);
+          hues.push(hslColor[0]);
+          existingHslColors.push(hslColor);
+          minHue = Math.min(minHue, hslColor[0]);
+          maxHue = Math.max(maxHue, hslColor[0]);
+        }
+      }
+    }
+    return {
+      colors: colors || [],
+      hues,
+      existingHslColors,
+      minHue,
+      maxHue
+    };
+  }, [providerTheme]);
+  const [groupToColorMap, setGroupToColorMap] = _react.useState.call(void 0, 
     () => /* @__PURE__ */ new Map()
   );
-  useEffect(() => {
+  _react.useEffect.call(void 0, () => {
     setGroupToColorMap(/* @__PURE__ */ new Map());
   }, [providerTheme.colors]);
-  const registerChart = useCallback((id, data) => {
+  const registerChart = _react.useCallback.call(void 0, (id, data) => {
     setCharts((prev) => new Map(prev).set(id, data));
   }, []);
-  const unregisterChart = useCallback((id) => {
+  const unregisterChart = _react.useCallback.call(void 0, (id) => {
     setCharts((prev) => {
       const newMap = new Map(prev);
       newMap.delete(id);
       return newMap;
     });
   }, []);
-  const getChartData = useCallback(
+  const getChartData = _react.useCallback.call(void 0, 
     (id) => {
       return charts.get(id);
     },
     [charts]
   );
-  const resolveColor = useCallback(
+  const resolveColor = _react.useCallback.call(void 0, 
     ({
       group,
       index,
@@ -421,39 +560,38 @@ var GlobalChartsProvider = ({ children, theme }) => {
       if (overrideColor) {
         return overrideColor;
       }
-      const { colors } = providerTheme;
       if (group) {
         const existing = groupToColorMap.get(group);
         if (existing) {
           return existing;
         }
         const assignedCount = groupToColorMap.size;
-        const color = colors.length > 0 ? colors[assignedCount % colors.length] : "#000000";
+        const color = colorCache.colors.length > 0 ? getChartColor(assignedCount, colorCache) : "#000000";
         groupToColorMap.set(group, color);
         return color;
       }
-      return colors.length > 0 ? colors[(index || 0) % colors.length] : "#000000";
+      return colorCache.colors.length > 0 ? getChartColor(index, colorCache) : "#000000";
     },
-    [providerTheme, groupToColorMap]
+    [colorCache, groupToColorMap]
   );
-  const getElementStyles = useCallback(
+  const getElementStyles = _react.useCallback.call(void 0, 
     ({ data, index, overrideColor, legendShape }) => {
       const isSeriesData = data && typeof data === "object" && "data" in data && "options" in data;
       const isPointPercentageData = data && typeof data === "object" && "percentage" in data;
       return {
         color: resolveColor({
-          group: data?.group,
+          group: _optionalChain([data, 'optionalAccess', _14 => _14.group]),
           index,
-          overrideColor: overrideColor || isSeriesData && data?.options?.stroke || isPointPercentageData && data?.color
+          overrideColor: overrideColor || isSeriesData && _optionalChain([data, 'optionalAccess', _15 => _15.options, 'optionalAccess', _16 => _16.stroke]) || isPointPercentageData && _optionalChain([data, 'optionalAccess', _17 => _17.color])
         }),
         lineStyles: isSeriesData ? getSeriesLineStyles(data, index, providerTheme) : {},
-        glyph: providerTheme.glyphs?.[index],
+        glyph: _optionalChain([providerTheme, 'access', _18 => _18.glyphs, 'optionalAccess', _19 => _19[index]]),
         shapeStyles: isSeriesData ? getItemShapeStyles(data, index, providerTheme, legendShape) : {}
       };
     },
     [providerTheme, resolveColor]
   );
-  const value = useMemo(
+  const value = _react.useMemo.call(void 0, 
     () => ({
       charts,
       registerChart,
@@ -464,13 +602,13 @@ var GlobalChartsProvider = ({ children, theme }) => {
     }),
     [charts, registerChart, unregisterChart, getChartData, providerTheme, getElementStyles]
   );
-  return /* @__PURE__ */ jsx(GlobalChartsContext.Provider, { value, children });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GlobalChartsContext.Provider, { value, children });
 };
 
 // src/providers/chart-context/hooks/use-global-charts-context.ts
-import { useContext } from "react";
+
 var useGlobalChartsContext = () => {
-  const context = useContext(GlobalChartsContext);
+  const context = _react.useContext.call(void 0, GlobalChartsContext);
   if (!context) {
     throw new Error("useGlobalChartsContext must be used within a GlobalChartsProvider");
   }
@@ -478,42 +616,42 @@ var useGlobalChartsContext = () => {
 };
 
 // src/providers/chart-context/hooks/use-chart-id.ts
-import { useId } from "react";
+
 var useChartId = (providedId) => {
-  const generatedId = useId();
+  const generatedId = _react.useId.call(void 0, );
   return providedId || generatedId;
 };
 
 // src/providers/chart-context/hooks/use-chart-registration.ts
-import { useEffect as useEffect2, useMemo as useMemo6 } from "react";
+
 
 // src/hooks/use-deep-memo.ts
-import isEqual from "fast-deep-equal";
-import { useRef } from "react";
+var _fastdeepequal = require('fast-deep-equal'); var _fastdeepequal2 = _interopRequireDefault(_fastdeepequal);
+
 var useDeepMemo = (value) => {
-  const ref = useRef(value);
-  if (!isEqual(ref.current, value)) {
+  const ref = _react.useRef.call(void 0, value);
+  if (!_fastdeepequal2.default.call(void 0, ref.current, value)) {
     ref.current = value;
   }
   return ref.current;
 };
 
 // src/hooks/use-chart-mouse-handler.ts
-import { localPoint } from "@visx/event";
-import { useTooltip } from "@visx/tooltip";
-import { useCallback as useCallback2 } from "react";
+var _event = require('@visx/event');
+var _tooltip = require('@visx/tooltip');
+
 var useChartMouseHandler = ({
   withTooltips,
   offsetX = 0,
   offsetY = -10
 }) => {
-  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
-  const onMouseMove = useCallback2(
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = _tooltip.useTooltip.call(void 0, );
+  const onMouseMove = _react.useCallback.call(void 0, 
     (event, data) => {
       if (!withTooltips) {
         return;
       }
-      const coords = localPoint(event);
+      const coords = _event.localPoint.call(void 0, event);
       if (!coords) {
         return;
       }
@@ -525,7 +663,7 @@ var useChartMouseHandler = ({
     },
     [withTooltips, showTooltip, offsetX, offsetY]
   );
-  const onMouseLeave = useCallback2(() => {
+  const onMouseLeave = _react.useCallback.call(void 0, () => {
     if (!withTooltips) {
       return;
     }
@@ -542,24 +680,24 @@ var useChartMouseHandler = ({
 };
 
 // src/hooks/use-xychart-theme.ts
-import { buildChartTheme } from "@visx/xychart";
-import { useMemo as useMemo2 } from "react";
+var _xychart = require('@visx/xychart');
+
 var useXYChartTheme = (data) => {
   const theme = useGlobalChartsTheme();
-  return useMemo2(() => {
-    const seriesColors = (data ?? []).map((series) => series.options?.stroke).filter((color) => Boolean(color));
-    return buildChartTheme({
+  return _react.useMemo.call(void 0, () => {
+    const seriesColors = (_nullishCoalesce(data, () => ( []))).map((series) => _optionalChain([series, 'access', _20 => _20.options, 'optionalAccess', _21 => _21.stroke])).filter((color) => Boolean(color));
+    return _xychart.buildChartTheme.call(void 0, {
       ...theme,
-      colors: [...seriesColors, ...theme.colors ?? []]
+      colors: [...seriesColors, ..._nullishCoalesce(theme.colors, () => ( []))]
     });
   }, [theme, data]);
 };
 
 // src/hooks/use-chart-data-transform.ts
-import { useMemo as useMemo3 } from "react";
+
 var useChartDataTransform = (data) => {
-  return useMemo3(() => {
-    const firstPoint = data?.[0]?.data?.[0];
+  return _react.useMemo.call(void 0, () => {
+    const firstPoint = _optionalChain([data, 'optionalAccess', _22 => _22[0], 'optionalAccess', _23 => _23.data, 'optionalAccess', _24 => _24[0]]);
     const hasDateProperties = firstPoint && ("date" in firstPoint || "dateString" in firstPoint);
     if (!hasDateProperties) {
       return data;
@@ -586,42 +724,42 @@ var useChartDataTransform = (data) => {
 };
 
 // src/hooks/use-chart-margin.tsx
-import { createScale, getTicks } from "@visx/scale";
-import { useMemo as useMemo4 } from "react";
+var _scale = require('@visx/scale');
+
 var useChartMargin = (height, options, data, theme, horizontal = false) => {
-  const yTicks = useMemo4(() => {
+  const yTicks = _react.useMemo.call(void 0, () => {
     const allDataPoints = data.flatMap((series) => series.data);
     if (horizontal) {
       return allDataPoints.map(
-        (d) => d.label || options.axis?.y?.tickFormat(d.date.getTime(), 0, [])
+        (d) => d.label || _optionalChain([options, 'access', _25 => _25.axis, 'optionalAccess', _26 => _26.y, 'optionalAccess', _27 => _27.tickFormat, 'call', _28 => _28(d.date.getTime(), 0, [])])
       );
     }
     const minY = Math.min(...allDataPoints.map((d) => d.value));
     const maxY = Math.max(...allDataPoints.map((d) => d.value));
-    const yScale = createScale({
+    const yScale = _scale.createScale.call(void 0, {
       ...options.yScale,
       domain: [minY, maxY],
       range: [height, 0]
     });
-    return getTicks(yScale, options.axis?.y?.numTicks);
+    return _scale.getTicks.call(void 0, yScale, _optionalChain([options, 'access', _29 => _29.axis, 'optionalAccess', _30 => _30.y, 'optionalAccess', _31 => _31.numTicks]));
   }, [options, data, height, horizontal]);
-  return useMemo4(() => {
+  return _react.useMemo.call(void 0, () => {
     const defaultMargin = { top: 10, right: 20, bottom: 20, left: 20 };
     const defaultTickWidth = 40;
-    const yAxisOrientation = options.axis?.y?.orientation;
+    const yAxisOrientation = _optionalChain([options, 'access', _32 => _32.axis, 'optionalAccess', _33 => _33.y, 'optionalAccess', _34 => _34.orientation]);
     const yAxisStyles = yAxisOrientation === "right" ? theme.axisStyles.y.right : theme.axisStyles.y.left;
     const yTickWidth = getLongestTickWidth(
       yTicks,
-      options.axis?.y?.tickFormat,
+      _optionalChain([options, 'access', _35 => _35.axis, 'optionalAccess', _36 => _36.y, 'optionalAccess', _37 => _37.tickFormat]),
       yAxisStyles.axisLabel
     );
-    const yMarginValue = (yTickWidth ?? defaultTickWidth) + (yAxisStyles?.tickLength ?? 0);
+    const yMarginValue = (_nullishCoalesce(yTickWidth, () => ( defaultTickWidth))) + (_nullishCoalesce(_optionalChain([yAxisStyles, 'optionalAccess', _38 => _38.tickLength]), () => ( 0)));
     if (yAxisOrientation === "right") {
       defaultMargin.right = yMarginValue;
     } else {
       defaultMargin.left = yMarginValue;
     }
-    if (options.axis?.x?.orientation === "top") {
+    if (_optionalChain([options, 'access', _39 => _39.axis, 'optionalAccess', _40 => _40.x, 'optionalAccess', _41 => _41.orientation]) === "top") {
       defaultMargin.top = 20;
       defaultMargin.bottom = 10;
     }
@@ -630,13 +768,13 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
 };
 
 // src/hooks/use-element-height.ts
-import { useState as useState2, useCallback as useCallback3, useRef as useRef2 } from "react";
+
 function useElementHeight({
   initialHeight = 0
 } = {}) {
-  const [height, setHeight] = useState2(initialHeight);
-  const observerRef = useRef2(null);
-  const refCallback = useCallback3((node) => {
+  const [height, setHeight] = _react.useState.call(void 0, initialHeight);
+  const observerRef = _react.useRef.call(void 0, null);
+  const refCallback = _react.useCallback.call(void 0, (node) => {
     if (observerRef.current) {
       observerRef.current.disconnect();
       observerRef.current = null;
@@ -655,11 +793,11 @@ function useElementHeight({
 }
 
 // src/hooks/use-text-truncation.ts
-import { useCallback as useCallback4, useRef as useRef3, useState as useState3 } from "react";
+
 function useTextTruncation(enabled = true) {
-  const [isTruncated, setIsTruncated] = useState3(false);
-  const observerRef = useRef3(null);
-  const refCallback = useCallback4(
+  const [isTruncated, setIsTruncated] = _react.useState.call(void 0, false);
+  const observerRef = _react.useRef.call(void 0, null);
+  const refCallback = _react.useCallback.call(void 0, 
     (node) => {
       if (observerRef.current) {
         observerRef.current.disconnect();
@@ -684,10 +822,10 @@ function useTextTruncation(enabled = true) {
 }
 
 // src/hooks/use-zero-value-display.ts
-import { useMemo as useMemo5 } from "react";
+
 var useZeroValueDisplay = (data, options = { enabled: false }) => {
   const { enabled, minValueRatio = 0.6, maxValueRatio = 8e-3 } = options;
-  return useMemo5(() => {
+  return _react.useMemo.call(void 0, () => {
     if (!enabled) return data;
     const nonZeroValues = [];
     for (const series of data) {
@@ -730,8 +868,8 @@ var useChartRegistration = ({
 }) => {
   const { registerChart, unregisterChart } = useGlobalChartsContext();
   const stableLegendItems = useDeepMemo(legendItems);
-  const memoizedMetadata = useMemo6(() => metadata, [metadata]);
-  useEffect2(() => {
+  const memoizedMetadata = _react.useMemo.call(void 0, () => metadata, [metadata]);
+  _react.useEffect.call(void 0, () => {
     if (isDataValid) {
       registerChart(chartId, {
         legendItems: stableLegendItems,
@@ -754,35 +892,35 @@ var useChartRegistration = ({
 };
 
 // src/providers/chart-context/hooks/use-global-charts-theme.ts
-import { useContext as useContext2 } from "react";
+
 var useGlobalChartsTheme = () => {
-  const context = useContext2(GlobalChartsContext);
-  const globalTheme = context?.theme;
-  return globalTheme ?? defaultTheme;
+  const context = _react.useContext.call(void 0, GlobalChartsContext);
+  const globalTheme = _optionalChain([context, 'optionalAccess', _42 => _42.theme]);
+  return _nullishCoalesce(globalTheme, () => ( defaultTheme));
 };
 
-export {
-  useDeepMemo,
-  useChartMouseHandler,
-  attachSubComponents,
-  formatMetricValue,
-  formatPercentage,
-  isSafari,
-  hexToRgba,
-  defaultTheme,
-  jetpackTheme,
-  wooTheme,
-  GlobalChartsContext,
-  GlobalChartsProvider,
-  useGlobalChartsContext,
-  useChartId,
-  useChartRegistration,
-  useGlobalChartsTheme,
-  useXYChartTheme,
-  useChartDataTransform,
-  useChartMargin,
-  useElementHeight,
-  useTextTruncation,
-  useZeroValueDisplay
-};
-//# sourceMappingURL=chunk-OIBYAFC2.js.map
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.useDeepMemo = useDeepMemo; exports.useChartMouseHandler = useChartMouseHandler; exports.attachSubComponents = attachSubComponents; exports.formatMetricValue = formatMetricValue; exports.formatPercentage = formatPercentage; exports.isSafari = isSafari; exports.hexToRgba = hexToRgba; exports.defaultTheme = defaultTheme; exports.jetpackTheme = jetpackTheme; exports.wooTheme = wooTheme; exports.GlobalChartsContext = GlobalChartsContext; exports.GlobalChartsProvider = GlobalChartsProvider; exports.useGlobalChartsContext = useGlobalChartsContext; exports.useChartId = useChartId; exports.useChartRegistration = useChartRegistration; exports.useGlobalChartsTheme = useGlobalChartsTheme; exports.useXYChartTheme = useXYChartTheme; exports.useChartDataTransform = useChartDataTransform; exports.useChartMargin = useChartMargin; exports.useElementHeight = useElementHeight; exports.useTextTruncation = useTextTruncation; exports.useZeroValueDisplay = useZeroValueDisplay;
+//# sourceMappingURL=chunk-RTUQVBUJ.cjs.map

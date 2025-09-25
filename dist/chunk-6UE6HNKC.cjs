@@ -1,18 +1,18 @@
-import {
-  GlobalChartsContext,
-  GlobalChartsProvider,
-  formatPercentage,
-  hexToRgba,
-  useChartId,
-  useChartRegistration,
-  useGlobalChartsTheme
-} from "./chunk-OIBYAFC2.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+
+
+
+var _chunkRTUQVBUJcjs = require('./chunk-RTUQVBUJ.cjs');
 
 // src/components/conversion-funnel-chart/conversion-funnel-chart.tsx
-import { localPoint } from "@visx/event";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
-import clsx from "clsx";
-import { useRef, useMemo, useEffect, useCallback as useCallback2, useContext } from "react";
+var _event = require('@visx/event');
+var _tooltip = require('@visx/tooltip');
+var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
+var _react = require('react');
 
 // src/components/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
@@ -38,43 +38,43 @@ var conversion_funnel_chart_module_default = {
 };
 
 // src/components/conversion-funnel-chart/private/use-funnel-selection.ts
-import { useCallback, useState } from "react";
+
 var useFunnelSelection = (hideTooltip) => {
-  const [clickedStep, setClickedStep] = useState(null);
-  const handleBarClick = useCallback(
+  const [clickedStep, setClickedStep] = _react.useState.call(void 0, null);
+  const handleBarClick = _react.useCallback.call(void 0, 
     (stepId) => {
       if (clickedStep === stepId) {
         setClickedStep(null);
-        hideTooltip?.();
+        _optionalChain([hideTooltip, 'optionalCall', _ => _()]);
       } else {
         setClickedStep(stepId);
       }
     },
     [clickedStep, hideTooltip]
   );
-  const handleBarKeyDown = useCallback(
+  const handleBarKeyDown = _react.useCallback.call(void 0, 
     (stepId, event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         if (clickedStep === stepId) {
           setClickedStep(null);
-          hideTooltip?.();
+          _optionalChain([hideTooltip, 'optionalCall', _2 => _2()]);
         } else {
           setClickedStep(stepId);
         }
       } else if (event.key === "Escape") {
         event.preventDefault();
         setClickedStep(null);
-        hideTooltip?.();
+        _optionalChain([hideTooltip, 'optionalCall', _3 => _3()]);
       }
     },
     [clickedStep, hideTooltip]
   );
-  const clearSelection = useCallback(() => {
+  const clearSelection = _react.useCallback.call(void 0, () => {
     setClickedStep(null);
-    hideTooltip?.();
+    _optionalChain([hideTooltip, 'optionalCall', _4 => _4()]);
   }, [hideTooltip]);
-  const getStepState = useCallback(
+  const getStepState = _react.useCallback.call(void 0, 
     (stepId) => ({
       isClicked: clickedStep === stepId,
       isBlurred: clickedStep !== null && clickedStep !== stepId
@@ -91,7 +91,7 @@ var useFunnelSelection = (hideTooltip) => {
 };
 
 // src/components/conversion-funnel-chart/conversion-funnel-chart.tsx
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var _jsxruntime = require('react/jsx-runtime');
 var ConversionFunnelChartInternal = ({
   mainRate,
   changeIndicator,
@@ -105,24 +105,24 @@ var ConversionFunnelChartInternal = ({
   renderMainMetric,
   renderTooltip
 }) => {
-  const chartId = useChartId(providedChartId);
-  const { conversionFunnelChart: conversionFunnelChartSettings } = useGlobalChartsTheme();
-  const chartRef = useRef(null);
-  const selectedBarRef = useRef(null);
-  const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
+  const chartId = _chunkRTUQVBUJcjs.useChartId.call(void 0, providedChartId);
+  const { conversionFunnelChart: conversionFunnelChartSettings } = _chunkRTUQVBUJcjs.useGlobalChartsTheme.call(void 0, );
+  const chartRef = _react.useRef.call(void 0, null);
+  const selectedBarRef = _react.useRef.call(void 0, null);
+  const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = _tooltip.useTooltip.call(void 0, );
   const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
-  const { containerRef: portalContainerRef, TooltipInPortal } = useTooltipInPortal({
+  const { containerRef: portalContainerRef, TooltipInPortal } = _tooltip.useTooltipInPortal.call(void 0, {
     // use TooltipWithBounds for boundary detection
     detectBounds: true,
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
     scroll: true
   });
-  const clearSelectionAndRef = useCallback2(() => {
+  const clearSelectionAndRef = _react.useCallback.call(void 0, () => {
     clearSelection();
     selectedBarRef.current = null;
     hideTooltip();
   }, [clearSelection, hideTooltip]);
-  const showTooltipAt = useCallback2(
+  const showTooltipAt = _react.useCallback.call(void 0, 
     (step, x, y) => {
       showTooltip({
         tooltipData: step,
@@ -132,17 +132,17 @@ var ConversionFunnelChartInternal = ({
     },
     [showTooltip]
   );
-  const getMouseTooltipCoords = useCallback2((event) => {
+  const getMouseTooltipCoords = _react.useCallback.call(void 0, (event) => {
     const containerElement = chartRef.current;
     if (containerElement) {
-      const coords = localPoint(containerElement, event.nativeEvent);
+      const coords = _event.localPoint.call(void 0, containerElement, event.nativeEvent);
       if (coords) {
         return { x: coords.x, y: coords.y };
       }
     }
     return null;
   }, []);
-  const getKeyboardTooltipCoords = useCallback2((event) => {
+  const getKeyboardTooltipCoords = _react.useCallback.call(void 0, (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const containerElement = chartRef.current;
     if (containerElement) {
@@ -153,7 +153,7 @@ var ConversionFunnelChartInternal = ({
     }
     return null;
   }, []);
-  const handleStepInteraction = useCallback2(
+  const handleStepInteraction = _react.useCallback.call(void 0, 
     (step, event, interactionType) => {
       selectedBarRef.current = event.currentTarget;
       const { isClicked } = getStepState(step.id);
@@ -188,7 +188,7 @@ var ConversionFunnelChartInternal = ({
       getKeyboardTooltipCoords
     ]
   );
-  const stepHandlers = useMemo(() => {
+  const stepHandlers = _react.useMemo.call(void 0, () => {
     const handlers = /* @__PURE__ */ new Map();
     steps.forEach((step) => {
       const onClick = (event) => {
@@ -207,7 +207,7 @@ var ConversionFunnelChartInternal = ({
     });
     return handlers;
   }, [steps, handleStepInteraction, handleBarKeyDown]);
-  useEffect(() => {
+  _react.useEffect.call(void 0, () => {
     const handleDocumentClick = (event) => {
       if (selectedBarRef.current && !selectedBarRef.current.contains(event.target)) {
         clearSelectionAndRef();
@@ -224,30 +224,30 @@ var ConversionFunnelChartInternal = ({
     positiveChangeColor,
     negativeChangeColor
   } = conversionFunnelChartSettings;
-  const isPositiveChange = changeIndicator?.startsWith("+");
+  const isPositiveChange = _optionalChain([changeIndicator, 'optionalAccess', _5 => _5.startsWith, 'call', _6 => _6("+")]);
   const changeColor = isPositiveChange ? positiveChangeColor : negativeChangeColor;
-  const barBackgroundColor = backgroundColor || hexToRgba(barColor, 0.08);
-  const renderDefaultMainMetric = () => /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("span", { className: conversion_funnel_chart_module_default["main-rate"], children: formatPercentage(mainRate) }),
-    changeIndicator && /* @__PURE__ */ jsx("span", { className: conversion_funnel_chart_module_default["change-indicator"], style: { color: changeColor }, children: changeIndicator })
+  const barBackgroundColor = backgroundColor || _chunkRTUQVBUJcjs.hexToRgba.call(void 0, barColor, 0.08);
+  const renderDefaultMainMetric = () => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: conversion_funnel_chart_module_default["main-rate"], children: _chunkRTUQVBUJcjs.formatPercentage.call(void 0, mainRate) }),
+    changeIndicator && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: conversion_funnel_chart_module_default["change-indicator"], style: { color: changeColor }, children: changeIndicator })
   ] });
-  const renderDefaultTooltip = (step) => /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: conversion_funnel_chart_module_default["tooltip-title"], children: step.label }),
-    /* @__PURE__ */ jsxs("div", { className: conversion_funnel_chart_module_default["tooltip-content"], children: [
-      formatPercentage(step.rate),
+  const renderDefaultTooltip = (step) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: conversion_funnel_chart_module_default["tooltip-title"], children: step.label }),
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", { className: conversion_funnel_chart_module_default["tooltip-content"], children: [
+      _chunkRTUQVBUJcjs.formatPercentage.call(void 0, step.rate),
       step.count && ` \u2022 ${step.count.toLocaleString()} items`
     ] })
   ] });
   const isDataValid = Boolean(steps && steps.length > 0);
-  const chartMetadata = useMemo(
+  const chartMetadata = _react.useMemo.call(void 0, 
     () => ({
       mainRate,
       changeIndicator,
-      stepsCount: steps?.length || 0
+      stepsCount: _optionalChain([steps, 'optionalAccess', _7 => _7.length]) || 0
     }),
-    [mainRate, changeIndicator, steps?.length]
+    [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _8 => _8.length])]
   );
-  useChartRegistration({
+  _chunkRTUQVBUJcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems: [],
     chartType: "conversion-funnel",
@@ -255,25 +255,25 @@ var ConversionFunnelChartInternal = ({
     metadata: chartMetadata
   });
   if (!isDataValid) {
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
       "div",
       {
-        className: clsx(conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
+        className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
         style,
-        children: /* @__PURE__ */ jsx("div", { className: conversion_funnel_chart_module_default["empty-state"], children: loading ? "Loading..." : "No data available" })
+        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: conversion_funnel_chart_module_default["empty-state"], children: loading ? "Loading..." : "No data available" })
       }
     );
   }
   const maxRate = Math.max(...steps.map((step) => step.rate));
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
       "div",
       {
         ref: (node) => {
           portalContainerRef(node);
           chartRef.current = node;
         },
-        className: clsx(conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
+        className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
         style,
         children: [
           renderMainMetric ? renderMainMetric({
@@ -281,38 +281,38 @@ var ConversionFunnelChartInternal = ({
             changeIndicator,
             className: conversion_funnel_chart_module_default["main-metric"],
             changeColor
-          }) : /* @__PURE__ */ jsx("div", { className: conversion_funnel_chart_module_default["main-metric"], children: renderDefaultMainMetric() }),
-          /* @__PURE__ */ jsx("div", { className: conversion_funnel_chart_module_default["funnel-container"], children: steps.map((step, index) => {
+          }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: conversion_funnel_chart_module_default["main-metric"], children: renderDefaultMainMetric() }),
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: conversion_funnel_chart_module_default["funnel-container"], children: steps.map((step, index) => {
             const barHeight = step.rate / maxRate * 100;
             const { isBlurred } = getStepState(step.id);
-            return /* @__PURE__ */ jsxs(
+            return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
               "div",
               {
-                className: clsx(conversion_funnel_chart_module_default["funnel-step"], isBlurred && conversion_funnel_chart_module_default.blurred),
+                className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isBlurred && conversion_funnel_chart_module_default.blurred),
                 children: [
-                  /* @__PURE__ */ jsxs("div", { className: conversion_funnel_chart_module_default["step-header"], children: [
+                  /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", { className: conversion_funnel_chart_module_default["step-header"], children: [
                     renderStepLabel ? renderStepLabel({
                       step,
                       index,
                       className: conversion_funnel_chart_module_default["step-label"]
-                    }) : /* @__PURE__ */ jsx("span", { className: conversion_funnel_chart_module_default["step-label"], children: step.label }),
+                    }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: conversion_funnel_chart_module_default["step-label"], children: step.label }),
                     renderStepRate ? renderStepRate({
                       step,
                       index,
                       className: conversion_funnel_chart_module_default["step-rate"]
-                    }) : /* @__PURE__ */ jsx("span", { className: conversion_funnel_chart_module_default["step-rate"], children: formatPercentage(step.rate) })
+                    }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: conversion_funnel_chart_module_default["step-rate"], children: _chunkRTUQVBUJcjs.formatPercentage.call(void 0, step.rate) })
                   ] }),
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                     "div",
                     {
-                      className: clsx(conversion_funnel_chart_module_default["bar-container"], isBlurred && conversion_funnel_chart_module_default.disabled),
-                      onClick: stepHandlers.get(step.id)?.onClick,
-                      onKeyDown: stepHandlers.get(step.id)?.onKeyDown,
+                      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["bar-container"], isBlurred && conversion_funnel_chart_module_default.disabled),
+                      onClick: _optionalChain([stepHandlers, 'access', _9 => _9.get, 'call', _10 => _10(step.id), 'optionalAccess', _11 => _11.onClick]),
+                      onKeyDown: _optionalChain([stepHandlers, 'access', _12 => _12.get, 'call', _13 => _13(step.id), 'optionalAccess', _14 => _14.onKeyDown]),
                       role: "button",
                       tabIndex: isBlurred ? -1 : 0,
                       "aria-label": step.label,
                       style: { backgroundColor: barBackgroundColor },
-                      children: /* @__PURE__ */ jsx(
+                      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                         "div",
                         {
                           className: conversion_funnel_chart_module_default["funnel-bar"],
@@ -341,7 +341,7 @@ var ConversionFunnelChartInternal = ({
         className: conversion_funnel_chart_module_default["tooltip-wrapper"]
       }) : renderDefaultTooltip(tooltipData);
       if (!tooltipContent) return null;
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
         TooltipInPortal,
         {
           top: tooltipTop,
@@ -355,15 +355,15 @@ var ConversionFunnelChartInternal = ({
   ] });
 };
 var ConversionFunnelChartWithProvider = (props) => {
-  const existingContext = useContext(GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ jsx(ConversionFunnelChartInternal, { ...props });
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, { ...props });
   }
-  return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(ConversionFunnelChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, { ...props }) });
 };
 ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
-export {
-  ConversionFunnelChartWithProvider
-};
-//# sourceMappingURL=chunk-W55YA225.js.map
+
+
+exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
+//# sourceMappingURL=chunk-6UE6HNKC.cjs.map

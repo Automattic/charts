@@ -7,7 +7,7 @@ import {
 import {
   Legend,
   SingleChartContext
-} from "./chunk-TTAK3OES.js";
+} from "./chunk-HLYQZPY4.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -17,7 +17,7 @@ import {
   useChartRegistration,
   useGlobalChartsContext,
   useGlobalChartsTheme
-} from "./chunk-OIBYAFC2.js";
+} from "./chunk-KACVKFMH.js";
 import {
   __commonJS,
   __export,
@@ -4486,4 +4486,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-YEYNQL2C.js.map
+//# sourceMappingURL=chunk-7REO5EMI.js.map

@@ -7,7 +7,7 @@ var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkIUFTB7BAcjs = require('./chunk-IUFTB7BA.cjs');
+var _chunkMFXFJQWUcjs = require('./chunk-MFXFJQWU.cjs');
 
 
 
@@ -17,7 +17,7 @@ var _chunkIUFTB7BAcjs = require('./chunk-IUFTB7BA.cjs');
 
 
 
-var _chunkGWYUN3XScjs = require('./chunk-GWYUN3XS.cjs');
+var _chunkRTUQVBUJcjs = require('./chunk-RTUQVBUJ.cjs');
 
 
 
@@ -4160,8 +4160,8 @@ function useLeaderboardLegendItems({
   withOverlayLabel = false,
   legendLabels
 }) {
-  const { leaderboardChart: leaderboardChartSettings } = _chunkGWYUN3XScjs.useGlobalChartsTheme.call(void 0, );
-  const { getElementStyles } = _chunkGWYUN3XScjs.useGlobalChartsContext.call(void 0, );
+  const { leaderboardChart: leaderboardChartSettings } = _chunkRTUQVBUJcjs.useGlobalChartsTheme.call(void 0, );
+  const { getElementStyles } = _chunkRTUQVBUJcjs.useGlobalChartsContext.call(void 0, );
   return _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
       return [];
@@ -4216,13 +4216,13 @@ var leaderboard_chart_module_default = {
 // src/components/leaderboard-chart/leaderboard-chart.tsx
 
 var defaultValueFormatter = (value) => {
-  return _chunkGWYUN3XScjs.formatMetricValue.call(void 0, value, "number", {
+  return _chunkRTUQVBUJcjs.formatMetricValue.call(void 0, value, "number", {
     useMultipliers: true,
     decimals: 1
   });
 };
 var defaultDeltaFormatter = (value) => {
-  return _chunkGWYUN3XScjs.formatMetricValue.call(void 0, value / 100, "average", {
+  return _chunkRTUQVBUJcjs.formatMetricValue.call(void 0, value / 100, "average", {
     decimals: 0,
     signDisplay: "exceptZero"
   });
@@ -4287,8 +4287,8 @@ var LeaderboardChartInternal = ({
   style,
   children
 }) => {
-  const chartId = _chunkGWYUN3XScjs.useChartId.call(void 0, providedChartId);
-  const { leaderboardChart: leaderboardChartSettings } = _chunkGWYUN3XScjs.useGlobalChartsTheme.call(void 0, );
+  const chartId = _chunkRTUQVBUJcjs.useChartId.call(void 0, providedChartId);
+  const { leaderboardChart: leaderboardChartSettings } = _chunkRTUQVBUJcjs.useGlobalChartsTheme.call(void 0, );
   const { otherChildren } = _chunk3Z526IL2cjs.useChartChildren.call(void 0, children, "LeaderboardChart");
   const {
     labelSpacing,
@@ -4298,7 +4298,7 @@ var LeaderboardChartInternal = ({
     secondaryColor: settingsSecondaryColor,
     deltaColors
   } = leaderboardChartSettings;
-  const { getElementStyles } = _chunkGWYUN3XScjs.useGlobalChartsContext.call(void 0, );
+  const { getElementStyles } = _chunkRTUQVBUJcjs.useGlobalChartsContext.call(void 0, );
   const { color: resolvedPrimaryColor } = getElementStyles({
     index: 0,
     overrideColor: primaryColor || settingsPrimaryColor
@@ -4323,7 +4323,7 @@ var LeaderboardChartInternal = ({
     }),
     [withComparison, withOverlayLabel]
   );
-  _chunkGWYUN3XScjs.useChartRegistration.call(void 0, {
+  _chunkRTUQVBUJcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "leaderboard",
@@ -4332,7 +4332,7 @@ var LeaderboardChartInternal = ({
   });
   if (!data || data.length === 0) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-      _chunkIUFTB7BAcjs.SingleChartContext.Provider,
+      _chunkMFXFJQWUcjs.SingleChartContext.Provider,
       {
         value: {
           chartId,
@@ -4355,7 +4355,7 @@ var LeaderboardChartInternal = ({
     );
   }
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkIUFTB7BAcjs.SingleChartContext.Provider,
+    _chunkMFXFJQWUcjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -4415,7 +4415,7 @@ var LeaderboardChartInternal = ({
               }
             ),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkIUFTB7BAcjs.Legend,
+              _chunkMFXFJQWUcjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -4434,20 +4434,20 @@ var LeaderboardChartInternal = ({
   );
 };
 var LeaderboardChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkGWYUN3XScjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGWYUN3XScjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props }) });
 };
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
-var LeaderboardChart = _chunkGWYUN3XScjs.attachSubComponents.call(void 0, LeaderboardChartWithProvider, {
-  Legend: _chunkIUFTB7BAcjs.Legend
+var LeaderboardChart = _chunkRTUQVBUJcjs.attachSubComponents.call(void 0, LeaderboardChartWithProvider, {
+  Legend: _chunkMFXFJQWUcjs.Legend
 });
-var LeaderboardChartResponsive = _chunkGWYUN3XScjs.attachSubComponents.call(void 0, 
+var LeaderboardChartResponsive = _chunkRTUQVBUJcjs.attachSubComponents.call(void 0, 
   _chunkFX2PTUFCcjs.withResponsive.call(void 0, LeaderboardChartWithProvider),
   {
-    Legend: _chunkIUFTB7BAcjs.Legend
+    Legend: _chunkMFXFJQWUcjs.Legend
   }
 );
 
@@ -4486,4 +4486,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-LORD5WAG.cjs.map
+//# sourceMappingURL=chunk-54OSWFPQ.cjs.map

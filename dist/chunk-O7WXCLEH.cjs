@@ -1,13 +1,13 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkFUH3SXUZcjs = require('./chunk-FUH3SXUZ.cjs');
+var _chunkCQTGYCJYcjs = require('./chunk-CQTGYCJY.cjs');
 
 
 var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkGWYUN3XScjs = require('./chunk-GWYUN3XS.cjs');
+var _chunkRTUQVBUJcjs = require('./chunk-RTUQVBUJ.cjs');
 
 // src/components/bar-list-chart/bar-list-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -142,7 +142,7 @@ var BarListChartInternal = ({
     };
   }, [options, width, data, height]);
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkFUH3SXUZcjs.BarChartResponsive,
+    _chunkCQTGYCJYcjs.BarChartResponsive,
     {
       orientation: "horizontal",
       gridVisibility: "none",
@@ -180,11 +180,11 @@ var BarListChartInternal = ({
   );
 };
 var BarListChart = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkGWYUN3XScjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGWYUN3XScjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRTUQVBUJcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, { ...props }) });
 };
 BarListChart.displayName = "BarListChart";
 var BarListChartResponsive = _chunkFX2PTUFCcjs.withResponsive.call(void 0, BarListChart);
@@ -193,4 +193,4 @@ var BarListChartResponsive = _chunkFX2PTUFCcjs.withResponsive.call(void 0, BarLi
 
 
 exports.BarListChart = BarListChart; exports.BarListChartResponsive = BarListChartResponsive;
-//# sourceMappingURL=chunk-L777UJ63.cjs.map
+//# sourceMappingURL=chunk-O7WXCLEH.cjs.map
