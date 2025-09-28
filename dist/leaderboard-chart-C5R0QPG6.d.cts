@@ -3,7 +3,7 @@ import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.cjs';
 import * as react from 'react';
 import { ReactNode, FC } from 'react';
 import { B as BaseLegendProps, a as BaseLegendItem } from './types-athdF3-8.cjs';
-import { B as BaseChartProps, L as LeaderboardEntry } from './types-oNXkzU5p.cjs';
+import { B as BaseChartProps, L as LeaderboardEntry } from './types-D89-qczc.cjs';
 
 interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legendOrientation' | 'legendPosition' | 'legendAlignment' | 'legendShape' | 'chartId' | 'width' | 'height' | 'size'> {
     /**

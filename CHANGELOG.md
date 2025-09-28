@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Generate extra colors from theme colors if needed
 - Global Charts context: Add documentation
 - Guess a better x-axis ticks value in line charts.
+- Line Chart: Add support for annotated line sections
 
 ### Changed
 - Charts: improve tooltip positioning in pie charts

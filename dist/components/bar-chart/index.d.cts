@@ -1,5 +1,5 @@
 import { L as Legend } from '../../legend-CP4jfCL3.cjs';
-import { O as Optional, B as BaseChartProps, c as SeriesData, b as DataPointDate } from '../../types-oNXkzU5p.cjs';
+import { O as Optional, B as BaseChartProps, c as SeriesData, b as DataPointDate } from '../../types-D89-qczc.cjs';
 import { FC, ReactNode, ComponentType } from 'react';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';

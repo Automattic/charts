@@ -1,5 +1,5 @@
 import { L as Legend } from '../../legend-CP4jfCL3.cjs';
-import { B as BaseChartProps, c as SeriesData, b as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-oNXkzU5p.cjs';
+import { B as BaseChartProps, c as SeriesData, b as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-D89-qczc.cjs';
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -54,8 +54,9 @@ type LineChartAnnotationProps = {
     }>;
 };
 type CurveType = 'smooth' | 'linear' | 'monotone';
-type RenderLineStartGlyphProps<Datum extends object> = GlyphProps<Datum> & {
+type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
     glyphStyle?: SVGProps<SVGCircleElement>;
+    position?: 'start' | 'end';
 };
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
     withGradientFill: boolean;
@@ -63,6 +64,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     curveType?: CurveType;
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     withStartGlyphs?: boolean;
+    withEndGlyphs?: boolean;
     renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
     glyphStyle?: SVGProps<SVGCircleElement>;
     withLegendGlyph?: boolean;
@@ -90,4 +92,4 @@ type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBas
 declare const LineChart: LineChartComponent;
 declare const LineChartResponsive: LineChartResponsiveComponent;
 
-export { AnnotationStyles, type CurveType, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type RenderLineStartGlyphProps, type TooltipDatum };
+export { AnnotationStyles, type CurveType, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type RenderLineGlyphProps, type TooltipDatum };

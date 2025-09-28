@@ -1,5 +1,5 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-C9liwX4T.js';
-import { L as LeaderboardEntry } from '../../types-oNXkzU5p.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-bsMDOAgS.js';
+import { L as LeaderboardEntry } from '../../types-D89-qczc.js';
 import { a as BaseLegendItem } from '../../types-athdF3-8.js';
 import 'react/jsx-runtime';
 import '../../with-responsive-Cp2qnQPo.js';

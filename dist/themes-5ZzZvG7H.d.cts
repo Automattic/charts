@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ReactNode, CSSProperties, FC } from 'react';
-import { e as CompleteChartTheme, c as SeriesData, d as DataPointPercentage, C as ChartTheme } from './types-oNXkzU5p.js';
-import { a as BaseLegendItem } from './types-athdF3-8.js';
+import { e as CompleteChartTheme, c as SeriesData, d as DataPointPercentage, C as ChartTheme } from './types-D89-qczc.cjs';
+import { a as BaseLegendItem } from './types-athdF3-8.cjs';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles, GlyphProps } from '@visx/xychart';
 

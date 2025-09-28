@@ -1,4 +1,4 @@
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-oNXkzU5p.cjs';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-D89-qczc.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.cjs';
 import { C as ChartComponentWithComposition } from '../../types-tkjBLYdd.cjs';

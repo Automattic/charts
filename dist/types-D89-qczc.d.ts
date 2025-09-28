@@ -77,12 +77,18 @@ type LeaderboardEntry = {
      */
     imageColor?: string;
 };
+type GradientStop = {
+    offset: string;
+    color?: string;
+    opacity?: number;
+};
 type SeriesDataOptions = {
     gradient?: {
         from: string;
         to: string;
         fromOpacity?: number;
         toOpacity?: number;
+        stops?: GradientStop[];
     };
     stroke?: string;
     seriesLineStyle?: LineStyles;
@@ -395,4 +401,4 @@ interface ToggleEvent extends Event {
     oldState: 'open' | 'closed';
 }
 
-export type { AnnotationStyles as A, BaseChartProps as B, ChartTheme as C, DataPoint as D, GridProps as G, LeaderboardEntry as L, MultipleDataPointsDate as M, Optional as O, PopoverButtonAttributes as P, SeriesDataOptions as S, ToggleEvent as T, OrientationType as a, DataPointDate as b, SeriesData as c, DataPointPercentage as d, CompleteChartTheme as e, ScaleOptions as f, PopoverElementAttributes as g, ButtonWithPopover as h, PopoverElement as i };
+export type { AnnotationStyles as A, BaseChartProps as B, ChartTheme as C, DataPoint as D, GradientStop as G, LeaderboardEntry as L, MultipleDataPointsDate as M, Optional as O, PopoverButtonAttributes as P, SeriesDataOptions as S, ToggleEvent as T, OrientationType as a, DataPointDate as b, SeriesData as c, DataPointPercentage as d, CompleteChartTheme as e, ScaleOptions as f, GridProps as g, PopoverElementAttributes as h, ButtonWithPopover as i, PopoverElement as j };
