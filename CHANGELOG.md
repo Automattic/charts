@@ -5,19 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.39.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.39.0] - 2025-09-29
 ### Added
-- Charts: Generate extra colors from theme colors if needed
-- Global Charts context: Add documentation
-- Guess a better x-axis ticks value in line charts.
-- Line Chart: Add support for annotated line sections
+- Generate extra colors from theme colors if needed. [#45276]
+- Global Charts context: Add documentation. [#45313]
+- Guess a better x-axis ticks value in line charts. [#45259]
+- Line Chart: Add support for annotated line section. [#45284]
 
 ### Changed
-- Charts: improve tooltip positioning in pie charts
-- Conversion Funnel chart: Use global charts context theme for consistency
+- Improve tooltip positioning in pie charts. [#45237]
+- Conversion Funnel chart: Use global charts context theme for consistency. [#45264]
 
 ## [0.38.2] - 2025-09-22
 ### Changed
@@ -489,7 +486,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.39.0-alpha]: https://github.com/Automattic/charts/compare/v0.38.2...v0.39.0-alpha
+[0.39.0]: https://github.com/Automattic/charts/compare/v0.38.2...v0.39.0
 [0.38.2]: https://github.com/Automattic/charts/compare/v0.38.1...v0.38.2
 [0.38.1]: https://github.com/Automattic/charts/compare/v0.38.0...v0.38.1
 [0.38.0]: https://github.com/Automattic/charts/compare/v0.37.0...v0.38.0
