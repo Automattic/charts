@@ -12,6 +12,9 @@ import {
 } from "./chunk-QCZ2UEDG.js";
 import "./chunk-NFRB2POF.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-HE2EODAW.js";
+import {
   BarListChart,
   BarListChartResponsive
 } from "./chunk-XNQFJOCX.js";
@@ -22,9 +25,6 @@ import {
 import {
   BaseTooltip
 } from "./chunk-W5KOH3TV.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-HE2EODAW.js";
 import {
   LeaderboardChartResponsive
 } from "./chunk-Z7YENR5L.js";
