@@ -12,12 +12,12 @@ import {
 } from "./chunk-QCZ2UEDG.js";
 import "./chunk-NFRB2POF.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-HE2EODAW.js";
+import {
   BarListChart,
   BarListChartResponsive
 } from "./chunk-XNQFJOCX.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-HE2EODAW.js";
 import {
   BarChart,
   BarChartResponsive

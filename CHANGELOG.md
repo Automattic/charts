@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: add legendItemClassName prop for custom legend item styling
 
 ### Changed
+- Charts: Separate API reference documentation from usage documentation
 - Update package dependencies.
 
 ## [0.39.0] - 2025-09-29
