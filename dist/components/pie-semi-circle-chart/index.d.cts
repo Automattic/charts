@@ -1,7 +1,7 @@
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-cMouhu7d.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.cjs';
-import { C as ChartComponentWithComposition } from '../../types-B1gVmMiG.cjs';
+import { C as ChartComponentWithComposition } from '../../types-wJz7SVob.cjs';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -12,8 +12,8 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/xychart';
-import '../../legend-C5kRXo9G.cjs';
-import '../../types-BW-sJNCQ.cjs';
+import '../../legend-CpXHpy43.cjs';
+import '../../types-DK1CMp9i.cjs';
 import '@visx/legend';
 
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {

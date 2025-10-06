@@ -1,11 +1,11 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkNRVZS2ICcjs = require('../../chunk-NRVZS2IC.cjs');
-require('../../chunk-RTUQVBUJ.cjs');
+var _chunkSGYJXUSHcjs = require('../../chunk-SGYJXUSH.cjs');
+require('../../chunk-YNBUU2YK.cjs');
 require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.Legend = _chunkNRVZS2ICcjs.Legend; exports.useChartLegendItems = _chunkNRVZS2ICcjs.useChartLegendItems;
+exports.Legend = _chunkSGYJXUSHcjs.Legend; exports.useChartLegendItems = _chunkSGYJXUSHcjs.useChartLegendItems;
 //# sourceMappingURL=index.cjs.map
