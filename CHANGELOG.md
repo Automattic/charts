@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: Add custom legend support
 - Charts: add legendItemClassName prop for custom legend item styling
+- Show ticks in hours when the interval is less than 24 hours.
 
 ### Changed
 - Charts: Separate API reference documentation from usage documentation
