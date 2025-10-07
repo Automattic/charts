@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: Add custom legend support
+- Charts Legend: Update docs
 - Show ticks in hours when the interval is less than 24 hours.
 
 ### Changed
