@@ -1,5 +1,5 @@
 export { B as BaseTooltip, a as BaseTooltipProps, T as TooltipData } from '../../base-tooltip-DOq93wjU.js';
-import { b as DataPointDate, c as SeriesData } from '../../types-cMouhu7d.js';
+import { b as DataPointDate, c as SeriesData } from '../../types-DekewUVa.js';
 import { TooltipProps as TooltipProps$1, RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { ReactNode } from 'react';
 import 'react/jsx-runtime';
@@ -10,6 +10,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 import '@visx/xychart';
 
 type FlattenedTooltipData = {

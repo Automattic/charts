@@ -1,5 +1,5 @@
 import { L as Legend } from '../../legend-CiRaC2E5.js';
-import { B as BaseChartProps, c as SeriesData, b as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-cMouhu7d.js';
+import { B as BaseChartProps, c as SeriesData, b as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-DekewUVa.js';
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -13,6 +13,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 
 interface ChartInstanceRef {
     getScales: () => {

@@ -1,7 +1,7 @@
-export { C as ChartRegistration, E as ElementStyles, e as GetElementStylesParams, b as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from '../themes-NSe-ODxw.js';
+export { C as ChartRegistration, E as ElementStyles, e as GetElementStylesParams, b as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, d as defaultTheme, j as jetpackTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme, w as wooTheme } from '../themes-NKtjcCQP.js';
 import { B as BaseLegendItem } from '../types-DK1CMp9i.js';
 import 'react';
-import '../types-cMouhu7d.js';
+import '../types-DekewUVa.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -9,6 +9,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '@visx/legend';
 

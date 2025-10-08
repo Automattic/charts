@@ -1,5 +1,5 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-CG_xDBKj.js';
-import { L as LeaderboardEntry } from '../../types-cMouhu7d.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-CPwbMH2m.js';
+import { L as LeaderboardEntry } from '../../types-DekewUVa.js';
 import { B as BaseLegendItem } from '../../types-DK1CMp9i.js';
 import 'react/jsx-runtime';
 import '../../with-responsive-Cp2qnQPo.js';
@@ -11,6 +11,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '@visx/legend';
 

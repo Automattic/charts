@@ -1,5 +1,5 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-cMouhu7d.cjs';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DekewUVa.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.cjs';
 import { C as ChartComponentWithComposition } from '../../types-wJz7SVob.cjs';
@@ -10,6 +10,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '../../legend-CpXHpy43.cjs';
 import '../../types-DK1CMp9i.cjs';

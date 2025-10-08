@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react';
-import { D as DataPoint, c as SeriesData, S as SeriesDataOptions, B as BaseChartProps, b as DataPointDate } from '../types-cMouhu7d.js';
+import { D as DataPoint, c as SeriesData, S as SeriesDataOptions, B as BaseChartProps, b as DataPointDate } from '../types-DekewUVa.js';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -9,6 +9,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 
 /**
  * Custom hook to memoize a value using deep equality comparison.

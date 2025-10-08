@@ -3,7 +3,7 @@ import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.js';
 import { ComponentType, FC } from 'react';
-import { f as ScaleOptions, c as SeriesData } from '../../types-cMouhu7d.js';
+import { f as ScaleOptions, c as SeriesData } from '../../types-DekewUVa.js';
 import '../../legend-CiRaC2E5.js';
 import '../../types-DK1CMp9i.js';
 import '@visx/legend';
@@ -16,6 +16,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
     options?: {

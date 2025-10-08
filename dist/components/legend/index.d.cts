@@ -1,5 +1,5 @@
 export { L as Legend } from '../../legend-CpXHpy43.cjs';
-import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-cMouhu7d.cjs';
+import { c as SeriesData, b as DataPointDate, d as DataPointPercentage } from '../../types-DekewUVa.cjs';
 import { B as BaseLegendItem } from '../../types-DK1CMp9i.cjs';
 export { a as BaseLegendProps, L as LegendProps } from '../../types-DK1CMp9i.cjs';
 import { LegendShape } from '@visx/legend/lib/types';
@@ -11,6 +11,7 @@ import '@visx/annotation/lib/components/Label';
 import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/scale';
+import '@visx/text/lib/Text';
 import '@visx/legend';
 
 type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';
