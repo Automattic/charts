@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.41.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Fixed
+- Fix conversion funnel height inconsistency when toggling comparison mode
+
 ## [0.41.0] - 2025-10-08
 ### Added
 - Charts: Add custom legend support [#45347]
@@ -503,6 +510,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.41.1-alpha]: https://github.com/Automattic/charts/compare/v0.41.0...v0.41.1-alpha
 [0.41.0]: https://github.com/Automattic/charts/compare/v0.40.0...v0.41.0
 [0.40.0]: https://github.com/Automattic/charts/compare/v0.39.0...v0.40.0
 [0.39.0]: https://github.com/Automattic/charts/compare/v0.38.2...v0.39.0
