@@ -16,6 +16,9 @@ import {
   BarListChartResponsive
 } from "./chunk-CSSH4P7L.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-CES34TN5.js";
+import {
   BarChart,
   BarChartResponsive
 } from "./chunk-OYPAAX3P.js";
@@ -28,9 +31,6 @@ import {
 } from "./chunk-HUCQHIU5.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-TYYW4BG3.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-CES34TN5.js";
 import {
   Legend,
   useChartLegendItems
