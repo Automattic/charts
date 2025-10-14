@@ -26,8 +26,9 @@ import {
   ConversionFunnelChartWithProvider
 } from "./chunk-CES34TN5.js";
 import {
+  LeaderboardChart,
   LeaderboardChartResponsive
-} from "./chunk-IHUHB3JB.js";
+} from "./chunk-HUCQHIU5.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-TYYW4BG3.js";
 import {
@@ -54,6 +55,7 @@ export {
   GlobalChartsContext,
   GlobalChartsProvider,
   LeaderboardChartResponsive as LeaderboardChart,
+  LeaderboardChart as LeaderboardChartUnresponsive,
   Legend,
   LineChartResponsive as LineChart,
   LineChart as LineChartUnresponsive,
