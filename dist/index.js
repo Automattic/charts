@@ -16,15 +16,15 @@ import {
   BarListChartResponsive
 } from "./chunk-CSSH4P7L.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-CES34TN5.js";
+import {
   BarChart,
   BarChartResponsive
 } from "./chunk-OYPAAX3P.js";
 import {
   BaseTooltip
 } from "./chunk-W5KOH3TV.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-CES34TN5.js";
 import {
   LeaderboardChart,
   LeaderboardChartResponsive
