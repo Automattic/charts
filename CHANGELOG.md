@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.43.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Charts: group storybook controls
+
 ## [0.42.0] - 2025-10-14
 ### Changed
 - Leaderboard chart: Update exports and layout flex behaviour [#45480]
@@ -511,6 +518,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.43.0-alpha]: https://github.com/Automattic/charts/compare/v0.42.0...v0.43.0-alpha
 [0.42.0]: https://github.com/Automattic/charts/compare/v0.41.1...v0.42.0
 [0.41.1]: https://github.com/Automattic/charts/compare/v0.41.0...v0.41.1
 [0.41.0]: https://github.com/Automattic/charts/compare/v0.40.0...v0.41.0
