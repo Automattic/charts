@@ -1,11 +1,11 @@
 import {
+  BaseTooltip
+} from "./chunk-W5KOH3TV.js";
+import {
   ChartHTML,
   ChartSVG,
   useChartChildren
 } from "./chunk-D3DZT2EK.js";
-import {
-  BaseTooltip
-} from "./chunk-W5KOH3TV.js";
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
@@ -291,4 +291,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-OA57H6MV.js.map
+//# sourceMappingURL=chunk-LD4SAJTJ.js.map
