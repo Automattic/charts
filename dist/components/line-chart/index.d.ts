@@ -1,10 +1,10 @@
-import { L as Legend } from '../../legend-CiRaC2E5.js';
+import { L as Legend } from '../../legend-jjMmhSg3.js';
 import { B as BaseChartProps, c as SeriesData, b as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-DekewUVa.js';
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
-import '../../types-DK1CMp9i.js';
+import '../../types-C05PdDJa.js';
 import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
@@ -73,6 +73,7 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
         showVertical?: boolean;
         showHorizontal?: boolean;
     };
+    interactive?: boolean;
     children?: ReactNode;
 }
 type TooltipDatum = {

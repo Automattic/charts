@@ -48,6 +48,28 @@
   align-items: center;
   font-size: 0.875rem;
 }
+.a8ccharts-qGsavM {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+.a8ccharts-qGsavM:hover {
+  opacity: 0.8;
+}
+.a8ccharts-qGsavM:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.a8ccharts-qGsavM:focus:not(:focus-visible) {
+  outline: none;
+}
+.a8ccharts-ZtDY-Q {
+  opacity: 0.4;
+}
+.a8ccharts-ZtDY-Q .a8ccharts-2H65Kr {
+  text-decoration: line-through;
+}
 .a8ccharts-2H65Kr {
   display: flex;
   align-items: center;

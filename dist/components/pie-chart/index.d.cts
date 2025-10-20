@@ -2,7 +2,7 @@ import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DekewUVa.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.cjs';
-import { C as ChartComponentWithComposition } from '../../types-wJz7SVob.cjs';
+import { C as ChartComponentWithComposition } from '../../types-BBwg4Evw.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -12,8 +12,8 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
-import '../../legend-CpXHpy43.cjs';
-import '../../types-DK1CMp9i.cjs';
+import '../../legend-C9ahiwOt.cjs';
+import '../../types-C05PdDJa.cjs';
 import '@visx/legend';
 
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
