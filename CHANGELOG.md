@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Show ticks in year format when the interval is more than a year.
+
 ### Changed
 - Charts: group storybook controls
 

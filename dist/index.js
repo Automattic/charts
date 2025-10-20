@@ -1,7 +1,7 @@
 import {
   LineChart,
   LineChartResponsive
-} from "./chunk-LIYP7LQW.js";
+} from "./chunk-FN2QLSKH.js";
 import {
   PieChart,
   PieChartResponsive

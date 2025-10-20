@@ -34,7 +34,7 @@ import { scaleTime } from "@visx/scale";
 import { XYChart, AreaSeries, Grid, Axis, DataContext as DataContext5 } from "@visx/xychart";
 import { __ as __2 } from "@wordpress/i18n";
 import clsx2 from "clsx";
-import { differenceInHours } from "date-fns";
+import { differenceInHours, differenceInYears } from "date-fns";
 import { useMemo as useMemo2, useContext as useContext4, forwardRef, useImperativeHandle, useState as useState4, useRef as useRef3 } from "react";
 
 // src/components/private/default-glyph/default-glyph.tsx
@@ -555,6 +555,12 @@ var renderDefaultTooltip = (params) => {
     ] }, point.key))
   ] });
 };
+var formatYearTick = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString(void 0, {
+    year: "numeric"
+  });
+};
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString(void 0, {
@@ -568,6 +574,19 @@ var formatHourTick = (timestamp) => {
     hour: "numeric",
     hour12: true
   });
+};
+var getFormatter = (sortedData) => {
+  const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
+  const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
+  const diffInHours = Math.abs(differenceInHours(maxX, minX));
+  if (diffInHours <= 24) {
+    return formatHourTick;
+  }
+  const diffInYears = Math.abs(differenceInYears(maxX, minX));
+  if (diffInYears <= 1) {
+    return formatDateTick;
+  }
+  return formatYearTick;
 };
 var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   const minX = Math.min(...data.map((datom) => datom.data.at(0)?.date));
@@ -585,8 +604,10 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
     if (uniqueTicks.length === 1) {
       return 1;
     }
-    const hasDuplicate = uniqueTicks.length < ticks.length;
-    if (hasDuplicate) {
+    const hasConsecutiveDuplicate = ticks.some(
+      (tick, idx) => idx > 0 && tick === ticks[idx - 1]
+    );
+    if (hasConsecutiveDuplicate) {
       continue;
     }
     return ticks.length;
@@ -688,10 +709,7 @@ var LineChartInternal = forwardRef(
       totalPoints: dataSorted[0]?.data.length || 0
     });
     const chartOptions = useMemo2(() => {
-      const minX = Math.min(...dataSorted.map((datom) => datom.data.at(0)?.date));
-      const maxX = Math.max(...dataSorted.map((datom) => datom.data.at(-1)?.date));
-      const diffInHours = Math.abs(differenceInHours(maxX, minX));
-      const formatter = diffInHours <= 24 ? formatHourTick : formatDateTick;
+      const formatter = getFormatter(dataSorted);
       return {
         axis: {
           x: {
@@ -976,4 +994,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-LIYP7LQW.js.map
+//# sourceMappingURL=chunk-FN2QLSKH.js.map

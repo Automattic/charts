@@ -555,6 +555,12 @@ var renderDefaultTooltip = (params) => {
     ] }, point.key))
   ] });
 };
+var formatYearTick = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString(void 0, {
+    year: "numeric"
+  });
+};
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString(void 0, {
@@ -569,11 +575,24 @@ var formatHourTick = (timestamp) => {
     hour12: true
   });
 };
+var getFormatter = (sortedData) => {
+  const minX = Math.min(...sortedData.map((datom) => _optionalChain([datom, 'access', _26 => _26.data, 'access', _27 => _27.at, 'call', _28 => _28(0), 'optionalAccess', _29 => _29.date])));
+  const maxX = Math.max(...sortedData.map((datom) => _optionalChain([datom, 'access', _30 => _30.data, 'access', _31 => _31.at, 'call', _32 => _32(-1), 'optionalAccess', _33 => _33.date])));
+  const diffInHours = Math.abs(_datefns.differenceInHours.call(void 0, maxX, minX));
+  if (diffInHours <= 24) {
+    return formatHourTick;
+  }
+  const diffInYears = Math.abs(_datefns.differenceInYears.call(void 0, maxX, minX));
+  if (diffInYears <= 1) {
+    return formatDateTick;
+  }
+  return formatYearTick;
+};
 var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
-  const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _26 => _26.data, 'access', _27 => _27.at, 'call', _28 => _28(0), 'optionalAccess', _29 => _29.date])));
-  const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _30 => _30.data, 'access', _31 => _31.at, 'call', _32 => _32(-1), 'optionalAccess', _33 => _33.date])));
+  const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _34 => _34.data, 'access', _35 => _35.at, 'call', _36 => _36(0), 'optionalAccess', _37 => _37.date])));
+  const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _38 => _38.data, 'access', _39 => _39.at, 'call', _40 => _40(-1), 'optionalAccess', _41 => _41.date])));
   const xScale = _scale.scaleTime.call(void 0, { domain: [minX, maxX] });
-  const upperBound = Math.min(_optionalChain([data, 'access', _34 => _34[0], 'optionalAccess', _35 => _35.data, 'access', _36 => _36.length]), Math.ceil(chartWidth / X_TICK_WIDTH));
+  const upperBound = Math.min(_optionalChain([data, 'access', _42 => _42[0], 'optionalAccess', _43 => _43.data, 'access', _44 => _44.length]), Math.ceil(chartWidth / X_TICK_WIDTH));
   let secondBestGuess = 1;
   for (let numTicks = upperBound; numTicks > 1; --numTicks) {
     const ticks = xScale.ticks(numTicks).map((d) => tickFormatter(d.getTime()));
@@ -585,8 +604,10 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
     if (uniqueTicks.length === 1) {
       return 1;
     }
-    const hasDuplicate = uniqueTicks.length < ticks.length;
-    if (hasDuplicate) {
+    const hasConsecutiveDuplicate = ticks.some(
+      (tick, idx) => idx > 0 && tick === ticks[idx - 1]
+    );
+    if (hasConsecutiveDuplicate) {
       continue;
     }
     return ticks.length;
@@ -594,7 +615,7 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   return secondBestGuess;
 };
 var validateData = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _37 => _37.length])) return "No data available";
+  if (!_optionalChain([data, 'optionalAccess', _45 => _45.length])) return "No data available";
   const hasInvalidData = data.some(
     (series) => series.data.some(
       (point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())
@@ -609,7 +630,7 @@ var LineChartScalesRef = ({ chartRef, width, height, margin }) => {
     chartRef,
     () => ({
       getScales: () => {
-        if (!_optionalChain([context, 'optionalAccess', _38 => _38.xScale]) || !_optionalChain([context, 'optionalAccess', _39 => _39.yScale])) {
+        if (!_optionalChain([context, 'optionalAccess', _46 => _46.xScale]) || !_optionalChain([context, 'optionalAccess', _47 => _47.yScale])) {
           return null;
         }
         return {
@@ -672,8 +693,8 @@ var LineChartInternal = _react.forwardRef.call(void 0,
     _react.useImperativeHandle.call(void 0, 
       ref,
       () => ({
-        getScales: () => _optionalChain([internalChartRef, 'access', _40 => _40.current, 'optionalAccess', _41 => _41.getScales, 'call', _42 => _42()]) || null,
-        getChartDimensions: () => _optionalChain([internalChartRef, 'access', _43 => _43.current, 'optionalAccess', _44 => _44.getChartDimensions, 'call', _45 => _45()]) || { width: 0, height: 0, margin: {} }
+        getScales: () => _optionalChain([internalChartRef, 'access', _48 => _48.current, 'optionalAccess', _49 => _49.getScales, 'call', _50 => _50()]) || null,
+        getChartDimensions: () => _optionalChain([internalChartRef, 'access', _51 => _51.current, 'optionalAccess', _52 => _52.getChartDimensions, 'call', _53 => _53()]) || { width: 0, height: 0, margin: {} }
       }),
       [internalChartRef]
     );
@@ -685,13 +706,10 @@ var LineChartInternal = _react.forwardRef.call(void 0,
       isNavigating,
       setIsNavigating,
       chartRef,
-      totalPoints: _optionalChain([dataSorted, 'access', _46 => _46[0], 'optionalAccess', _47 => _47.data, 'access', _48 => _48.length]) || 0
+      totalPoints: _optionalChain([dataSorted, 'access', _54 => _54[0], 'optionalAccess', _55 => _55.data, 'access', _56 => _56.length]) || 0
     });
     const chartOptions = _react.useMemo.call(void 0, () => {
-      const minX = Math.min(...dataSorted.map((datom) => _optionalChain([datom, 'access', _49 => _49.data, 'access', _50 => _50.at, 'call', _51 => _51(0), 'optionalAccess', _52 => _52.date])));
-      const maxX = Math.max(...dataSorted.map((datom) => _optionalChain([datom, 'access', _53 => _53.data, 'access', _54 => _54.at, 'call', _55 => _55(-1), 'optionalAccess', _56 => _56.date])));
-      const diffInHours = Math.abs(_datefns.differenceInHours.call(void 0, maxX, minX));
-      const formatter = diffInHours <= 24 ? formatHourTick : formatDateTick;
+      const formatter = getFormatter(dataSorted);
       return {
         axis: {
           x: {
@@ -976,4 +994,4 @@ var LineChartResponsive = _chunkTEEQFJFLcjs.attachSubComponents.call(void 0,
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-HZTHPE5F.cjs.map
+//# sourceMappingURL=chunk-DDUXJZ5P.cjs.map
