@@ -23,14 +23,14 @@ import {
   BaseTooltip
 } from "./chunk-W5KOH3TV.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-SHADFB3T.js";
+import {
   LeaderboardChart,
   LeaderboardChartResponsive
 } from "./chunk-2HB55BRH.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-TYYW4BG3.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-SHADFB3T.js";
 import {
   Legend,
   useChartLegendItems
