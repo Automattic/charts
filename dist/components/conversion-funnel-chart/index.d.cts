@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { B as BaseChartProps } from '../../types-DekewUVa.cjs';
+import { B as BaseChartProps } from '../../types-cEbX_Q2K.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
