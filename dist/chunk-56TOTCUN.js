@@ -20,6 +20,7 @@ import {
   useChartRegistration,
   useElementHeight,
   useGlobalChartsContext,
+  useGlobalChartsTheme,
   useXYChartTheme,
   useZeroValueDisplay
 } from "./chunk-3O6FHD2T.js";
@@ -174,6 +175,7 @@ var BarChartInternal = ({
   orientation = "vertical",
   withPatterns = false,
   showZeroValues = false,
+  legendInteractive = false,
   children
 }) => {
   const horizontal = orientation === "horizontal";
@@ -199,7 +201,25 @@ var BarChartInternal = ({
     chartRef,
     totalPoints
   });
-  const { getElementStyles } = useGlobalChartsContext();
+  const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+  const providerTheme = useGlobalChartsTheme();
+  const seriesWithVisibility = useMemo2(() => {
+    if (!chartId || !legendInteractive) {
+      return dataWithVisibleZeros.map((series, index) => ({
+        series,
+        index,
+        isVisible: true
+      }));
+    }
+    return dataWithVisibleZeros.map((series, index) => ({
+      series,
+      index,
+      isVisible: isSeriesVisible(chartId, series.label)
+    }));
+  }, [dataWithVisibleZeros, chartId, isSeriesVisible, legendInteractive]);
+  const allSeriesHidden = useMemo2(() => {
+    return seriesWithVisibility.every(({ isVisible }) => !isVisible);
+  }, [seriesWithVisibility]);
   const getBarBackground = useCallback(
     (index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({ data: dataSorted[index], index }).color,
     [withPatterns, getElementStyles, dataSorted, chartId]
@@ -376,17 +396,34 @@ var BarChartInternal = ({
                     ) })
                   ] }),
                   highlightedBarStyle && /* @__PURE__ */ jsx("style", { children: highlightedBarStyle }),
-                  /* @__PURE__ */ jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => /* @__PURE__ */ jsx(
-                    BarSeries,
+                  allSeriesHidden ? /* @__PURE__ */ jsx(
+                    "text",
                     {
-                      dataKey: seriesData?.label,
-                      data: seriesData.data,
-                      yAccessor: chartOptions.accessors.yAccessor,
-                      xAccessor: chartOptions.accessors.xAccessor,
-                      colorAccessor: getBarBackground(index)
-                    },
-                    seriesData?.label
-                  )) }),
+                      x: width / 2,
+                      y: (height - (showLegend ? legendHeight : 0)) / 2,
+                      textAnchor: "middle",
+                      fill: providerTheme.gridStyles?.stroke || "#ccc",
+                      fontSize: "14",
+                      fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                      children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
+                    }
+                  ) : null,
+                  /* @__PURE__ */ jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
+                    if (!isVisible) {
+                      return null;
+                    }
+                    return /* @__PURE__ */ jsx(
+                      BarSeries,
+                      {
+                        dataKey: seriesData?.label,
+                        data: seriesData.data,
+                        yAccessor: chartOptions.accessors.yAccessor,
+                        xAccessor: chartOptions.accessors.xAccessor,
+                        colorAccessor: getBarBackground(index)
+                      },
+                      seriesData?.label
+                    );
+                  }) }),
                   /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
                   /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
                   withTooltips && /* @__PURE__ */ jsx(
@@ -418,7 +455,8 @@ var BarChartInternal = ({
                 className: bar_chart_module_default["bar-chart__legend"],
                 shape: legendShape,
                 ref: legendRef,
-                chartId
+                chartId,
+                interactive: legendInteractive
               }
             ),
             children
@@ -450,4 +488,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-KM62I6SD.js.map
+//# sourceMappingURL=chunk-56TOTCUN.js.map

@@ -22,6 +22,7 @@ var _chunkGK3XEXVIcjs = require('./chunk-GK3XEXVI.cjs');
 
 
 
+
 var _chunk2HUX2CATcjs = require('./chunk-2HUX2CAT.cjs');
 
 // src/components/bar-chart/bar-chart.tsx
@@ -174,6 +175,7 @@ var BarChartInternal = ({
   orientation = "vertical",
   withPatterns = false,
   showZeroValues = false,
+  legendInteractive = false,
   children
 }) => {
   const horizontal = orientation === "horizontal";
@@ -199,7 +201,25 @@ var BarChartInternal = ({
     chartRef,
     totalPoints
   });
-  const { getElementStyles } = _chunk2HUX2CATcjs.useGlobalChartsContext.call(void 0, );
+  const { getElementStyles, isSeriesVisible } = _chunk2HUX2CATcjs.useGlobalChartsContext.call(void 0, );
+  const providerTheme = _chunk2HUX2CATcjs.useGlobalChartsTheme.call(void 0, );
+  const seriesWithVisibility = _react.useMemo.call(void 0, () => {
+    if (!chartId || !legendInteractive) {
+      return dataWithVisibleZeros.map((series, index) => ({
+        series,
+        index,
+        isVisible: true
+      }));
+    }
+    return dataWithVisibleZeros.map((series, index) => ({
+      series,
+      index,
+      isVisible: isSeriesVisible(chartId, series.label)
+    }));
+  }, [dataWithVisibleZeros, chartId, isSeriesVisible, legendInteractive]);
+  const allSeriesHidden = _react.useMemo.call(void 0, () => {
+    return seriesWithVisibility.every(({ isVisible }) => !isVisible);
+  }, [seriesWithVisibility]);
   const getBarBackground = _react.useCallback.call(void 0, 
     (index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({ data: dataSorted[index], index }).color,
     [withPatterns, getElementStyles, dataSorted, chartId]
@@ -376,17 +396,34 @@ var BarChartInternal = ({
                     ) })
                   ] }),
                   highlightedBarStyle && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "style", { children: highlightedBarStyle }),
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: dataWithVisibleZeros.map((seriesData, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _xychart.BarSeries,
+                  allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                    "text",
                     {
-                      dataKey: _optionalChain([seriesData, 'optionalAccess', _26 => _26.label]),
-                      data: seriesData.data,
-                      yAccessor: chartOptions.accessors.yAccessor,
-                      xAccessor: chartOptions.accessors.xAccessor,
-                      colorAccessor: getBarBackground(index)
-                    },
-                    _optionalChain([seriesData, 'optionalAccess', _27 => _27.label])
-                  )) }),
+                      x: width / 2,
+                      y: (height - (showLegend ? legendHeight : 0)) / 2,
+                      textAnchor: "middle",
+                      fill: _optionalChain([providerTheme, 'access', _26 => _26.gridStyles, 'optionalAccess', _27 => _27.stroke]) || "#ccc",
+                      fontSize: "14",
+                      fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                      children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
+                    }
+                  ) : null,
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
+                    if (!isVisible) {
+                      return null;
+                    }
+                    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                      _xychart.BarSeries,
+                      {
+                        dataKey: _optionalChain([seriesData, 'optionalAccess', _28 => _28.label]),
+                        data: seriesData.data,
+                        yAccessor: chartOptions.accessors.yAccessor,
+                        xAccessor: chartOptions.accessors.xAccessor,
+                        colorAccessor: getBarBackground(index)
+                      },
+                      _optionalChain([seriesData, 'optionalAccess', _29 => _29.label])
+                    );
+                  }) }),
                   /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.x }),
                   /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.y }),
                   withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
@@ -418,7 +455,8 @@ var BarChartInternal = ({
                 className: bar_chart_module_default["bar-chart__legend"],
                 shape: legendShape,
                 ref: legendRef,
-                chartId
+                chartId,
+                interactive: legendInteractive
               }
             ),
             children
@@ -450,4 +488,4 @@ var BarChartResponsive = _chunk2HUX2CATcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-BZ6UDD37.cjs.map
+//# sourceMappingURL=chunk-KNWW2ZR4.cjs.map

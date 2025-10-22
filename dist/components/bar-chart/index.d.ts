@@ -20,6 +20,7 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
     showZeroValues?: boolean;
+    legendInteractive?: boolean;
     children?: ReactNode;
 }
 type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
