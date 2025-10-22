@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 var _chunk3Z526IL2cjs = require('./chunk-3Z526IL2.cjs');
 
@@ -630,21 +630,23 @@ function paramCase(input, options) {
   return dotCase(input, _tslib.__assign.call(void 0, { delimiter: "-" }, options));
 }
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/validateNamespace.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/validateNamespace.js
 function validateNamespace(namespace) {
   if ("string" !== typeof namespace || "" === namespace) {
     console.error("The namespace must be a non-empty string.");
     return false;
   }
   if (!/^[a-zA-Z][a-zA-Z0-9_.\-\/]*$/.test(namespace)) {
-    console.error("The namespace can only contain numbers, letters, dashes, periods, underscores and slashes.");
+    console.error(
+      "The namespace can only contain numbers, letters, dashes, periods, underscores and slashes."
+    );
     return false;
   }
   return true;
 }
 var validateNamespace_default = validateNamespace;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/validateHookName.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/validateHookName.js
 function validateHookName(hookName) {
   if ("string" !== typeof hookName || "" === hookName) {
     console.error("The hook name must be a non-empty string.");
@@ -655,14 +657,16 @@ function validateHookName(hookName) {
     return false;
   }
   if (!/^[a-zA-Z][a-zA-Z0-9_.-]*$/.test(hookName)) {
-    console.error("The hook name can only contain numbers, letters, dashes, periods and underscores.");
+    console.error(
+      "The hook name can only contain numbers, letters, dashes, periods and underscores."
+    );
     return false;
   }
   return true;
 }
 var validateHookName_default = validateHookName;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createAddHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createAddHook.js
 function createAddHook(hooks, storeKey) {
   return function addHook(hookName, namespace, callback, priority = 10) {
     const hooksStore = hooks[storeKey];
@@ -677,14 +681,12 @@ function createAddHook(hooks, storeKey) {
       return;
     }
     if ("number" !== typeof priority) {
-      console.error("If specified, the hook priority must be a number.");
+      console.error(
+        "If specified, the hook priority must be a number."
+      );
       return;
     }
-    const handler = {
-      callback,
-      priority,
-      namespace
-    };
+    const handler = { callback, priority, namespace };
     if (hooksStore[hookName]) {
       const handlers = hooksStore[hookName].handlers;
       let i2;
@@ -710,13 +712,19 @@ function createAddHook(hooks, storeKey) {
       };
     }
     if (hookName !== "hookAdded") {
-      hooks.doAction("hookAdded", hookName, namespace, callback, priority);
+      hooks.doAction(
+        "hookAdded",
+        hookName,
+        namespace,
+        callback,
+        priority
+      );
     }
   };
 }
 var createAddHook_default = createAddHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createRemoveHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createRemoveHook.js
 function createRemoveHook(hooks, storeKey, removeAll = false) {
   return function removeHook(hookName, namespace) {
     const hooksStore = hooks[storeKey];
@@ -758,19 +766,21 @@ function createRemoveHook(hooks, storeKey, removeAll = false) {
 }
 var createRemoveHook_default = createRemoveHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createHasHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createHasHook.js
 function createHasHook(hooks, storeKey) {
   return function hasHook(hookName, namespace) {
     const hooksStore = hooks[storeKey];
     if ("undefined" !== typeof namespace) {
-      return hookName in hooksStore && hooksStore[hookName].handlers.some((hook) => hook.namespace === namespace);
+      return hookName in hooksStore && hooksStore[hookName].handlers.some(
+        (hook) => hook.namespace === namespace
+      );
     }
     return hookName in hooksStore;
   };
 }
 var createHasHook_default = createHasHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createRunHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createRunHook.js
 function createRunHook(hooks, storeKey, returnFirstArg, async) {
   return function runHook(hookName, ...args) {
     const hooksStore = hooks[storeKey];
@@ -833,30 +843,31 @@ function createRunHook(hooks, storeKey, returnFirstArg, async) {
 }
 var createRunHook_default = createRunHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createCurrentHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createCurrentHook.js
 function createCurrentHook(hooks, storeKey) {
   return function currentHook() {
-    var _currentArray$at$name;
     const hooksStore = hooks[storeKey];
     const currentArray = Array.from(hooksStore.__current);
-    return (_currentArray$at$name = _optionalChain([currentArray, 'access', _ => _.at, 'call', _2 => _2(-1), 'optionalAccess', _3 => _3.name])) !== null && _currentArray$at$name !== void 0 ? _currentArray$at$name : null;
+    return _nullishCoalesce(_optionalChain([currentArray, 'access', _ => _.at, 'call', _2 => _2(-1), 'optionalAccess', _3 => _3.name]), () => ( null));
   };
 }
 var createCurrentHook_default = createCurrentHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createDoingHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createDoingHook.js
 function createDoingHook(hooks, storeKey) {
   return function doingHook(hookName) {
     const hooksStore = hooks[storeKey];
     if ("undefined" === typeof hookName) {
       return hooksStore.__current.size > 0;
     }
-    return Array.from(hooksStore.__current).some((hook) => hook.name === hookName);
+    return Array.from(hooksStore.__current).some(
+      (hook) => hook.name === hookName
+    );
   };
 }
 var createDoingHook_default = createDoingHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createDidHook.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createDidHook.js
 function createDidHook(hooks, storeKey) {
   return function didHook(hookName) {
     const hooksStore = hooks[storeKey];
@@ -868,8 +879,28 @@ function createDidHook(hooks, storeKey) {
 }
 var createDidHook_default = createDidHook;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/createHooks.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/createHooks.js
 var _Hooks = class {
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   constructor() {
     this.actions = /* @__PURE__ */ Object.create(null);
     this.actions.__current = /* @__PURE__ */ new Set();
@@ -900,7 +931,7 @@ function createHooks() {
 }
 var createHooks_default = createHooks;
 
-// ../../../node_modules/.pnpm/@wordpress+hooks@4.32.0/node_modules/@wordpress/hooks/build-module/index.js
+// ../../../node_modules/.pnpm/@wordpress+hooks@4.33.0/node_modules/@wordpress/hooks/build-module/index.js
 var defaultHooks = createHooks_default();
 var {
   addAction,
@@ -925,17 +956,10 @@ var {
   filters
 } = defaultHooks;
 
-// ../../../node_modules/.pnpm/@wordpress+deprecated@4.32.0/node_modules/@wordpress/deprecated/build-module/index.js
+// ../../../node_modules/.pnpm/@wordpress+deprecated@4.33.0/node_modules/@wordpress/deprecated/build-module/index.js
 var logged = /* @__PURE__ */ Object.create(null);
 function deprecated(feature, options = {}) {
-  const {
-    since,
-    version,
-    alternative,
-    plugin,
-    link,
-    hint
-  } = options;
+  const { since, version, alternative, plugin, link, hint } = options;
   const pluginMessage = plugin ? ` from ${plugin}` : "";
   const sinceMessage = since ? ` since version ${since}` : "";
   const versionMessage = version ? ` and will be removed${pluginMessage} in version ${version}` : "";
@@ -955,10 +979,10 @@ function deprecated(feature, options = {}) {
 var _deepmerge = require('deepmerge'); var _deepmerge2 = _interopRequireDefault(_deepmerge);
 var _es6 = require('fast-deep-equal/es6'); var _es62 = _interopRequireDefault(_es6);
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.32.0/node_modules/@wordpress/warning/build-module/utils.js
+// ../../../node_modules/.pnpm/@wordpress+warning@3.33.0/node_modules/@wordpress/warning/build-module/utils.js
 var logged2 = /* @__PURE__ */ new Set();
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.32.0/node_modules/@wordpress/warning/build-module/index.js
+// ../../../node_modules/.pnpm/@wordpress+warning@3.33.0/node_modules/@wordpress/warning/build-module/index.js
 function isDev() {
   return globalThis.SCRIPT_DEBUG === true;
 }
@@ -4474,4 +4498,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-G4FX5I3V.cjs.map
+//# sourceMappingURL=chunk-IOC4YIKS.cjs.map
