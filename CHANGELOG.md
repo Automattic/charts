@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: Add interactive legend support to BarChart
+- Charts: adds interactive legend to pie charts
 
 ## [0.44.0] - 2025-10-21
 ### Changed

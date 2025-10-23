@@ -1,5 +1,5 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-cEbX_Q2K.cjs';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-73KOEWs9.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../legend/index.cjs';
 import { C as ChartComponentWithComposition } from '../../types-BBwg4Evw.cjs';
@@ -53,6 +53,12 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      * - 'none': Shows no values, only labels
      */
     legendValueDisplay?: LegendValueDisplay;
+    /**
+     * Enable interactive legend items that can toggle segment visibility.
+     * Requires chartId and GlobalChartsProvider.
+     * When segments are hidden, percentages are recalculated so visible segments total 100%.
+     */
+    legendInteractive?: boolean;
     /**
      * Use the children prop to render additional elements on the chart.
      */
