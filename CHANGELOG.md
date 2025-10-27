@@ -5,13 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.45.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.45.0] - 2025-10-27
 ### Added
-- Charts: Add interactive legend support to BarChart
-- Charts: adds interactive legend to pie charts
+- Add interactive legend support to BarChart. [#45561]
+- Add interactive legend to pie charts. [#45580]
 
 ## [0.44.0] - 2025-10-21
 ### Changed
@@ -531,7 +528,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.45.0-alpha]: https://github.com/Automattic/charts/compare/v0.44.0...v0.45.0-alpha
+[0.45.0]: https://github.com/Automattic/charts/compare/v0.44.0...v0.45.0
 [0.44.0]: https://github.com/Automattic/charts/compare/v0.43.0...v0.44.0
 [0.43.0]: https://github.com/Automattic/charts/compare/v0.42.0...v0.43.0
 [0.42.0]: https://github.com/Automattic/charts/compare/v0.41.1...v0.42.0
