@@ -4257,7 +4257,9 @@ var BarWithLabel = ({
   withComparison,
   withOverlayLabel,
   primaryColor,
-  secondaryColor
+  secondaryColor,
+  isPrimaryVisible = true,
+  isComparisonVisible = true
 }) => /* @__PURE__ */ jsxs(
   "div",
   {
@@ -4266,7 +4268,7 @@ var BarWithLabel = ({
     }),
     children: [
       /* @__PURE__ */ jsx3(BarLabel, { label: entry.label }),
-      /* @__PURE__ */ jsx3(
+      isPrimaryVisible && /* @__PURE__ */ jsx3(
         "div",
         {
           className: leaderboard_chart_module_default.bar,
@@ -4276,7 +4278,7 @@ var BarWithLabel = ({
           }
         }
       ),
-      withComparison && !withOverlayLabel && /* @__PURE__ */ jsx3(
+      withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ jsx3(
         "div",
         {
           className: leaderboard_chart_module_default.bar,
@@ -4307,6 +4309,7 @@ var LeaderboardChartInternal = ({
   legendShapeWidth = 8,
   legendShapeHeight = 8,
   legendLabels,
+  legendInteractive = false,
   className,
   style,
   children
@@ -4322,7 +4325,7 @@ var LeaderboardChartInternal = ({
     secondaryColor: settingsSecondaryColor,
     deltaColors
   } = leaderboardChartSettings;
-  const { getElementStyles } = useGlobalChartsContext();
+  const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
   const { color: resolvedPrimaryColor } = getElementStyles({
     index: 0,
     overrideColor: primaryColor || settingsPrimaryColor
@@ -4339,6 +4342,31 @@ var LeaderboardChartInternal = ({
     withOverlayLabel,
     legendLabels
   });
+  const isPrimaryVisible = useMemo3(() => {
+    if (!chartId || !legendInteractive || legendItems.length === 0) {
+      return true;
+    }
+    return isSeriesVisible(chartId, legendItems[0].label);
+  }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
+  const isComparisonVisible = useMemo3(() => {
+    if (!chartId || !legendInteractive || legendItems.length < 2) {
+      return true;
+    }
+    return isSeriesVisible(chartId, legendItems[1].label);
+  }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
+  const allSeriesHidden = useMemo3(() => {
+    if (!legendInteractive) return false;
+    if (withComparison && !withOverlayLabel) {
+      return !isPrimaryVisible && !isComparisonVisible;
+    }
+    return !isPrimaryVisible;
+  }, [
+    legendInteractive,
+    isPrimaryVisible,
+    isComparisonVisible,
+    withComparison,
+    withOverlayLabel
+  ]);
   const isDataValid = Boolean(data && data.length > 0);
   const chartMetadata = useMemo3(
     () => ({
@@ -4398,7 +4426,7 @@ var LeaderboardChartInternal = ({
             gap: showLegend ? "16px" : "0"
           },
           children: [
-            /* @__PURE__ */ jsx3(component_default6, { templateColumns: "minmax(0, 1fr) auto", rowGap, columnGap, children: data.map((entry) => {
+            allSeriesHidden ? /* @__PURE__ */ jsx3("div", { className: leaderboard_chart_module_default.emptyState, children: __2("All series are hidden. Click legend items to show data.", "jetpack-charts") }) : /* @__PURE__ */ jsx3(component_default6, { templateColumns: "minmax(0, 1fr) auto", rowGap, columnGap, children: data.map((entry) => {
               const colorIndex = Math.sign(entry.delta) + 1;
               const deltaColor = deltaColors[colorIndex];
               return /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -4409,7 +4437,9 @@ var LeaderboardChartInternal = ({
                     withComparison,
                     withOverlayLabel,
                     primaryColor: resolvedPrimaryColor,
-                    secondaryColor: resolvedSecondaryColor
+                    secondaryColor: resolvedSecondaryColor,
+                    isPrimaryVisible,
+                    isComparisonVisible
                   }
                 ) }),
                 /* @__PURE__ */ jsxs(
@@ -4419,8 +4449,8 @@ var LeaderboardChartInternal = ({
                       [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
                     }),
                     children: [
-                      /* @__PURE__ */ jsx3(component_default4, { children: valueFormatter(entry.currentValue) }),
-                      withComparison && /* @__PURE__ */ jsx3(component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
+                      isPrimaryVisible && /* @__PURE__ */ jsx3(component_default4, { children: valueFormatter(entry.currentValue) }),
+                      withComparison && isComparisonVisible && /* @__PURE__ */ jsx3(component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
                     ]
                   }
                 )
@@ -4435,7 +4465,8 @@ var LeaderboardChartInternal = ({
                 shape: legendShape,
                 shapeWidth: legendShapeWidth,
                 shapeHeight: legendShapeHeight,
-                chartId
+                chartId,
+                interactive: legendInteractive
               }
             ),
             otherChildren
@@ -4498,4 +4529,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-VM3CHO3G.js.map
+//# sourceMappingURL=chunk-4H3J2HCD.js.map

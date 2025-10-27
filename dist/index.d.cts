@@ -6,7 +6,7 @@ export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 export { PieChart, PieChartProps, PieChartUnresponsive } from './components/pie-chart/index.cjs';
 export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './components/pie-semi-circle-chart/index.cjs';
 export { BarListChart, BarListChartUnresponsive } from './components/bar-list-chart/index.cjs';
-export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-DOaY0V1U.cjs';
+export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-B5JRimc9.cjs';
 export { L as Legend } from './legend-C9ahiwOt.cjs';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.cjs';
 export { B as BaseLegendItem } from './types-C05PdDJa.cjs';

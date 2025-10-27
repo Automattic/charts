@@ -5,7 +5,7 @@ import { ReactNode, FC } from 'react';
 import { a as BaseLegendProps, B as BaseLegendItem } from './types-C05PdDJa.js';
 import { B as BaseChartProps, L as LeaderboardEntry } from './types-73KOEWs9.js';
 
-interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legendOrientation' | 'legendPosition' | 'legendAlignment' | 'legendShape' | 'chartId' | 'width' | 'height' | 'size'> {
+interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legendOrientation' | 'legendPosition' | 'legendAlignment' | 'legendShape' | 'chartId' | 'width' | 'height' | 'size' | 'legendInteractive'> {
     /**
      * Whether to show comparison data
      */

@@ -1,4 +1,4 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-Cpg_k_Vg.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-DQ8i8GMA.js';
 import { L as LeaderboardEntry } from '../../types-73KOEWs9.js';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
 import 'react/jsx-runtime';
