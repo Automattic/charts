@@ -1,6 +1,6 @@
 {
 	"name": "@automattic/charts",
-	"version": "0.46.0-alpha",
+	"version": "0.46.0",
 	"description": "Display charts within Automattic products.",
 	"homepage": "https://github.com/Automattic/jetpack/tree/HEAD/projects/js-packages/charts/#readme",
 	"bugs": {
@@ -150,7 +150,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.0.14-alpha",
+		"@automattic/number-formatters": "^1.0.14",
 		"@babel/runtime": "7.28.4",
 		"@react-spring/web": "9.7.5",
 		"@visx/annotation": "^3.12.0",
