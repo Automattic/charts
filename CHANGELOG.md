@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: Add interactive legend support to LeaderboardChart
 
+### Changed
+- Update package dependencies.
+
 ## [0.45.0] - 2025-10-27
 ### Added
 - Add interactive legend support to BarChart. [#45561]
