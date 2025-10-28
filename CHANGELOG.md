@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.46.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Fixed
+- Fix lints.
+
 ## [0.46.0] - 2025-10-28
 ### Added
 - Charts: Add interactive legend support to LeaderboardChart [#45581]
@@ -535,6 +542,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.46.1-alpha]: https://github.com/Automattic/charts/compare/v0.46.0...v0.46.1-alpha
 [0.46.0]: https://github.com/Automattic/charts/compare/v0.45.0...v0.46.0
 [0.45.0]: https://github.com/Automattic/charts/compare/v0.44.0...v0.45.0
 [0.44.0]: https://github.com/Automattic/charts/compare/v0.43.0...v0.44.0
