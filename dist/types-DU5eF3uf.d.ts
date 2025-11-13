@@ -354,6 +354,10 @@ type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
      */
     gridVisibility?: 'x' | 'y' | 'xy' | 'none';
     /**
+     * Whether to show chart animation on initial render or not
+     */
+    animation?: boolean;
+    /**
      * More options for the chart.
      */
     options?: {

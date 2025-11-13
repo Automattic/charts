@@ -195,4 +195,14 @@
   width: 10px;
   height: 10px;
 }
+.a8ccharts-Hj6YbD path {
+  transform-origin: 0 95%;
+  transform: scaleY(0);
+  animation: a8ccharts-gb7M8E 1s ease-out forwards;
+}
+@keyframes a8ccharts-gb7M8E {
+  to {
+    transform: scaleY(1);
+  }
+}
 /*# sourceMappingURL=index.css.map */

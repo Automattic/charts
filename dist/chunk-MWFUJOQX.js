@@ -75,7 +75,9 @@ var line_chart_module_default = {
   "line-chart__annotation-label-popover--safari": "a8ccharts-i3NHTh",
   "line-chart__annotation-label-popover-header": "a8ccharts-OwypoS",
   "line-chart__annotation-label-popover-content": "a8ccharts-vtgQtP",
-  "line-chart__annotation-label-popover-close-button": "a8ccharts-i8KUcG"
+  "line-chart__annotation-label-popover-close-button": "a8ccharts-i8KUcG",
+  "line-chart__animated": "a8ccharts-Hj6YbD",
+  "rise": "a8ccharts-gb7M8E"
 };
 
 // src/components/line-chart/private/line-chart-annotation-label-popover.tsx
@@ -676,6 +678,7 @@ var LineChartInternal = forwardRef(
     withStartGlyphs = false,
     withEndGlyphs = false,
     legendInteractive = false,
+    animation,
     options = {},
     onPointerDown = void 0,
     onPointerUp = void 0,
@@ -814,7 +817,12 @@ var LineChartInternal = forwardRef(
         children: /* @__PURE__ */ jsxs3(
           "div",
           {
-            className: clsx2("line-chart", line_chart_module_default["line-chart"], className),
+            className: clsx2(
+              "line-chart",
+              line_chart_module_default["line-chart"],
+              animation ? line_chart_module_default["line-chart__animated"] : null,
+              className
+            ),
             "data-testid": "line-chart",
             style: {
               width,
@@ -1027,4 +1035,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-JGX3ZNK5.js.map
+//# sourceMappingURL=chunk-MWFUJOQX.js.map

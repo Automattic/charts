@@ -117,6 +117,28 @@
 .a8ccharts-vgKKqG {
   margin-top: 1rem;
 }
+.a8ccharts-vHWVsO rect {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  transform: scaleY(0);
+  animation: a8ccharts-wCPctT 1s ease-out forwards;
+}
+@keyframes a8ccharts-wCPctT {
+  to {
+    transform: scaleY(1);
+  }
+}
+.a8ccharts-3kCz4q rect {
+  transform-origin: left;
+  transform-box: fill-box;
+  transform: scaleX(0);
+  animation: a8ccharts-MtfGVm 1s ease-out forwards;
+}
+@keyframes a8ccharts-MtfGVm {
+  to {
+    transform: scaleX(1);
+  }
+}
 
 /* esbuild-sass-plugin:css-chunk:src/components/line-chart/line-chart.module.scss */
 .a8ccharts-ITM3dm {
@@ -207,6 +229,16 @@
   width: 10px;
   height: 10px;
 }
+.a8ccharts-Hj6YbD path {
+  transform-origin: 0 95%;
+  transform: scaleY(0);
+  animation: a8ccharts-gb7M8E 1s ease-out forwards;
+}
+@keyframes a8ccharts-gb7M8E {
+  to {
+    transform: scaleY(1);
+  }
+}
 
 /* esbuild-sass-plugin:css-chunk:src/components/pie-chart/pie-chart.module.scss */
 .a8ccharts-R12VhH {
@@ -262,7 +294,17 @@
   min-height: 6px;
   border-radius: var(--a8c--charts--leaderboard--bar--border-radius, 9999px);
   z-index: -1;
-  transition: width 0.3s ease-in-out;
+}
+.a8ccharts-9RE0Uo .a8ccharts-qPpCM2 {
+  transform-origin: left;
+  transform-box: fill-box;
+  transform: scaleX(0);
+  animation: a8ccharts-VlC0fg 1s ease-out forwards;
+}
+@keyframes a8ccharts-VlC0fg {
+  to {
+    transform: scaleX(1);
+  }
 }
 .a8ccharts-ZlLh4R {
   display: flex;
@@ -414,5 +456,16 @@
   padding: 48px 24px;
   color: #6b7280;
   font-size: 16px;
+}
+.a8ccharts-wvCpVT {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  transform: scaleY(0);
+  animation: a8ccharts-4otxiv 1s ease-out forwards;
+}
+@keyframes a8ccharts-4otxiv {
+  to {
+    transform: scaleY(1);
+  }
 }
 /*# sourceMappingURL=index.css.map */

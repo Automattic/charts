@@ -4232,6 +4232,8 @@ var leaderboard_chart_module_default = {
   "is-overlay": "a8ccharts-Fqdi5w",
   "label": "a8ccharts-7ZUu0T",
   "bar": "a8ccharts-CnJvgl",
+  "bar__animated": "a8ccharts-qPpCM2",
+  "stretch": "a8ccharts-VlC0fg",
   "valueContainer": "a8ccharts-ZlLh4R",
   "overlayLabel": "a8ccharts-pRqShB",
   "emptyState": "a8ccharts-0dkfyF"
@@ -4258,6 +4260,7 @@ var BarWithLabel = ({
   withOverlayLabel,
   primaryColor,
   secondaryColor,
+  animation,
   isPrimaryVisible = true,
   isComparisonVisible = true
 }) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
@@ -4271,7 +4274,9 @@ var BarWithLabel = ({
       isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
         "div",
         {
-          className: leaderboard_chart_module_default.bar,
+          className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
+            [leaderboard_chart_module_default.bar__animated]: animation
+          }),
           style: {
             width: entry.currentShare + "%",
             backgroundColor: primaryColor
@@ -4281,7 +4286,9 @@ var BarWithLabel = ({
       withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
         "div",
         {
-          className: leaderboard_chart_module_default.bar,
+          className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
+            [leaderboard_chart_module_default.bar__animated]: animation
+          }),
           style: {
             width: entry.previousShare + "%",
             backgroundColor: secondaryColor
@@ -4300,6 +4307,7 @@ var LeaderboardChartInternal = ({
   secondaryColor,
   valueFormatter = defaultValueFormatter,
   deltaFormatter = defaultDeltaFormatter,
+  animation,
   loading = false,
   showLegend = false,
   legendOrientation = "horizontal",
@@ -4439,7 +4447,8 @@ var LeaderboardChartInternal = ({
                     primaryColor: resolvedPrimaryColor,
                     secondaryColor: resolvedSecondaryColor,
                     isPrimaryVisible,
-                    isComparisonVisible
+                    isComparisonVisible,
+                    animation: animation && !loading
                   }
                 ) }),
                 /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
@@ -4529,4 +4538,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-HZZTNJYP.cjs.map
+//# sourceMappingURL=chunk-ZLIRNA4M.cjs.map

@@ -35,7 +35,11 @@ var _react = require('react');
 // src/components/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
   "bar-chart": "a8ccharts-lmYNi-",
-  "bar-chart-legend": "a8ccharts-vgKKqG"
+  "bar-chart-legend": "a8ccharts-vgKKqG",
+  "bar-chart__animated": "a8ccharts-vHWVsO",
+  "rise": "a8ccharts-wCPctT",
+  "bar-chart__animated-horizontal": "a8ccharts-3kCz4q",
+  "stretch": "a8ccharts-MtfGVm"
 };
 
 // src/components/bar-chart/private/use-bar-chart-options.ts
@@ -176,6 +180,7 @@ var BarChartInternal = ({
   withPatterns = false,
   showZeroValues = false,
   legendInteractive = false,
+  animation,
   children
 }) => {
   const horizontal = orientation === "horizontal";
@@ -343,7 +348,9 @@ var BarChartInternal = ({
       children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
         "div",
         {
-          className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"], className),
+          className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"], className, {
+            [bar_chart_module_default[`bar-chart__animated${horizontal ? "-horizontal" : ""}`]]: animation
+          }),
           "data-testid": "bar-chart",
           role: "grid",
           "aria-label": _i18n.__.call(void 0, "Bar chart", "jetpack-charts"),
@@ -488,4 +495,4 @@ var BarChartResponsive = _chunkLSGYIUQXcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-CNAKHZMW.cjs.map
+//# sourceMappingURL=chunk-KC3ITX3B.cjs.map
