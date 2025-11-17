@@ -121,7 +121,17 @@
   min-height: 6px;
   border-radius: var(--a8c--charts--leaderboard--bar--border-radius, 9999px);
   z-index: -1;
-  transition: width 0.3s ease-in-out;
+}
+.a8ccharts-9RE0Uo .a8ccharts-qPpCM2 {
+  transform-origin: left;
+  transform-box: fill-box;
+  transform: scaleX(0);
+  animation: a8ccharts-VlC0fg 1s ease-out forwards;
+}
+@keyframes a8ccharts-VlC0fg {
+  to {
+    transform: scaleX(1);
+  }
 }
 .a8ccharts-ZlLh4R {
   display: flex;

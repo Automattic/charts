@@ -35,7 +35,11 @@ import { useCallback, useContext, useState, useRef, useMemo as useMemo2 } from "
 // src/components/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
   "bar-chart": "a8ccharts-lmYNi-",
-  "bar-chart-legend": "a8ccharts-vgKKqG"
+  "bar-chart-legend": "a8ccharts-vgKKqG",
+  "bar-chart__animated": "a8ccharts-vHWVsO",
+  "rise": "a8ccharts-wCPctT",
+  "bar-chart__animated-horizontal": "a8ccharts-3kCz4q",
+  "stretch": "a8ccharts-MtfGVm"
 };
 
 // src/components/bar-chart/private/use-bar-chart-options.ts
@@ -176,6 +180,7 @@ var BarChartInternal = ({
   withPatterns = false,
   showZeroValues = false,
   legendInteractive = false,
+  animation,
   children
 }) => {
   const horizontal = orientation === "horizontal";
@@ -343,7 +348,9 @@ var BarChartInternal = ({
       children: /* @__PURE__ */ jsxs(
         "div",
         {
-          className: clsx("bar-chart", bar_chart_module_default["bar-chart"], className),
+          className: clsx("bar-chart", bar_chart_module_default["bar-chart"], className, {
+            [bar_chart_module_default[`bar-chart__animated${horizontal ? "-horizontal" : ""}`]]: animation
+          }),
           "data-testid": "bar-chart",
           role: "grid",
           "aria-label": __("Bar chart", "jetpack-charts"),
@@ -488,4 +495,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-HVWETEEV.js.map
+//# sourceMappingURL=chunk-NEANE7H4.js.map

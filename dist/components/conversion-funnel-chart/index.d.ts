@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { B as BaseChartProps } from '../../types-73KOEWs9.js';
+import { B as BaseChartProps } from '../../types-DU5eF3uf.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -61,7 +61,7 @@ interface TooltipRenderProps {
 /**
  * Props for the ConversionFunnelChart component
  */
-interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 'chartId'> {
+interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'animation'> {
     /** Main conversion rate to highlight */
     mainRate: number;
     /** Change indicator (e.g., +2%, -1.5%) */

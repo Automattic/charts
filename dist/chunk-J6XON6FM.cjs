@@ -34,7 +34,9 @@ var conversion_funnel_chart_module_default = {
   "tooltip-wrapper": "a8ccharts-NohPt6",
   "tooltip-title": "a8ccharts-hjZr33",
   "tooltip-content": "a8ccharts-ocwAPj",
-  "empty-state": "a8ccharts-9c0psv"
+  "empty-state": "a8ccharts-9c0psv",
+  "funnel-bar__animated": "a8ccharts-wvCpVT",
+  "stretch": "a8ccharts-4otxiv"
 };
 
 // src/components/conversion-funnel-chart/private/use-funnel-selection.ts
@@ -97,6 +99,7 @@ var ConversionFunnelChartInternal = ({
   changeIndicator,
   steps,
   loading = false,
+  animation,
   className,
   chartId: providedChartId,
   style,
@@ -315,7 +318,9 @@ var ConversionFunnelChartInternal = ({
                       children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                         "div",
                         {
-                          className: conversion_funnel_chart_module_default["funnel-bar"],
+                          className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-bar"], {
+                            [conversion_funnel_chart_module_default["funnel-bar__animated"]]: animation && !loading
+                          }),
                           style: {
                             height: `${barHeight}%`,
                             backgroundColor: barColor
@@ -366,4 +371,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 
 exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
-//# sourceMappingURL=chunk-QPHNEQCK.cjs.map
+//# sourceMappingURL=chunk-J6XON6FM.cjs.map

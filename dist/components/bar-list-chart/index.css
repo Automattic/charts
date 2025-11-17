@@ -117,4 +117,26 @@
 .a8ccharts-vgKKqG {
   margin-top: 1rem;
 }
+.a8ccharts-vHWVsO rect {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  transform: scaleY(0);
+  animation: a8ccharts-wCPctT 1s ease-out forwards;
+}
+@keyframes a8ccharts-wCPctT {
+  to {
+    transform: scaleY(1);
+  }
+}
+.a8ccharts-3kCz4q rect {
+  transform-origin: left;
+  transform-box: fill-box;
+  transform: scaleX(0);
+  animation: a8ccharts-MtfGVm 1s ease-out forwards;
+}
+@keyframes a8ccharts-MtfGVm {
+  to {
+    transform: scaleX(1);
+  }
+}
 /*# sourceMappingURL=index.css.map */
