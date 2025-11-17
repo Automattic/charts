@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Chart: Add animation support.
 
+### Changed
+- Update package dependencies.
+
 ## [0.46.3] - 2025-11-12
 ### Changed
 - Internal updates.
