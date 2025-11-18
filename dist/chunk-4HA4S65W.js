@@ -1,4 +1,7 @@
 import {
+  radial_wipe_animation_default
+} from "./chunk-3OVXJFQY.js";
+import {
   BaseTooltip
 } from "./chunk-W5KOH3TV.js";
 import {
@@ -78,6 +81,7 @@ var PieSemiCircleChartInternal = ({
   legendValueDisplay = "percentage",
   legendInteractive = false,
   label,
+  animation,
   note,
   className,
   children,
@@ -192,83 +196,103 @@ var PieSemiCircleChartInternal = ({
           ),
           "data-testid": "pie-chart-container",
           children: [
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxs(
               "svg",
               {
                 width,
                 height: radius,
                 viewBox: `0 0 ${width} ${chartHeight}`,
                 "data-testid": "pie-chart-svg",
-                children: /* @__PURE__ */ jsx(Group, { top: chartHeight, left: width / 2, children: allSegmentsHidden ? /* @__PURE__ */ jsx(
-                  "text",
-                  {
-                    textAnchor: "middle",
-                    y: -radius / 2,
-                    fill: "#ccc",
-                    fontSize: "14",
-                    fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-                    children: __(
-                      "All segments are hidden. Click legend items to show data.",
-                      "jetpack-charts"
-                    )
-                  }
-                ) : /* @__PURE__ */ jsxs(Fragment, { children: [
-                  /* @__PURE__ */ jsx(
-                    Pie,
+                children: [
+                  /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsx(
+                    radial_wipe_animation_default,
                     {
-                      data: dataWithIndex,
-                      pieValue: accessors.value,
-                      outerRadius: radius,
+                      id: `radial-wipe-${chartId}`,
+                      radius,
                       innerRadius,
-                      cornerRadius: 3,
-                      padAngle: PAD_ANGLE,
-                      startAngle,
-                      endAngle,
-                      pieSort: accessors.sort,
-                      children: (pie) => {
-                        return pie.arcs.map((arc) => /* @__PURE__ */ jsx(
-                          "g",
-                          {
-                            onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
-                            onMouseLeave: withTooltips ? handleMouseLeave : void 0,
-                            children: /* @__PURE__ */ jsx(
-                              "path",
-                              {
-                                d: pie.path(arc) || "",
-                                fill: accessors.fill(arc.data),
-                                "data-testid": "pie-segment"
-                              }
-                            )
-                          },
-                          arc.data.label
-                        ));
-                      }
+                      startAngle: "-180deg",
+                      wipePercentage: 50
                     }
-                  ),
-                  /* @__PURE__ */ jsxs(Group, { children: [
-                    /* @__PURE__ */ jsx(
-                      Text,
-                      {
-                        textAnchor: "middle",
-                        verticalAnchor: "start",
-                        y: -40,
-                        className: pie_semi_circle_chart_module_default.label,
-                        children: label
-                      }
-                    ),
-                    /* @__PURE__ */ jsx(
-                      Text,
-                      {
-                        textAnchor: "middle",
-                        verticalAnchor: "start",
-                        y: -20,
-                        className: pie_semi_circle_chart_module_default.note,
-                        children: note
-                      }
-                    )
-                  ] }),
-                  !allSegmentsHidden && svgChildren
-                ] }) })
+                  ) }),
+                  /* @__PURE__ */ jsx(
+                    Group,
+                    {
+                      top: chartHeight,
+                      left: width / 2,
+                      mask: animation ? `url(#radial-wipe-${chartId})` : null,
+                      children: allSegmentsHidden ? /* @__PURE__ */ jsx(
+                        "text",
+                        {
+                          textAnchor: "middle",
+                          y: -radius / 2,
+                          fill: "#ccc",
+                          fontSize: "14",
+                          fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                          children: __(
+                            "All segments are hidden. Click legend items to show data.",
+                            "jetpack-charts"
+                          )
+                        }
+                      ) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsx(
+                          Pie,
+                          {
+                            data: dataWithIndex,
+                            pieValue: accessors.value,
+                            outerRadius: radius,
+                            innerRadius,
+                            cornerRadius: 3,
+                            padAngle: PAD_ANGLE,
+                            startAngle,
+                            endAngle,
+                            pieSort: accessors.sort,
+                            children: (pie) => {
+                              return pie.arcs.map((arc) => /* @__PURE__ */ jsx(
+                                "g",
+                                {
+                                  onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
+                                  onMouseLeave: withTooltips ? handleMouseLeave : void 0,
+                                  children: /* @__PURE__ */ jsx(
+                                    "path",
+                                    {
+                                      d: pie.path(arc) || "",
+                                      fill: accessors.fill(arc.data),
+                                      "data-testid": "pie-segment"
+                                    }
+                                  )
+                                },
+                                arc.data.label
+                              ));
+                            }
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs(Group, { children: [
+                          /* @__PURE__ */ jsx(
+                            Text,
+                            {
+                              textAnchor: "middle",
+                              verticalAnchor: "start",
+                              y: -40,
+                              className: pie_semi_circle_chart_module_default.label,
+                              children: label
+                            }
+                          ),
+                          /* @__PURE__ */ jsx(
+                            Text,
+                            {
+                              textAnchor: "middle",
+                              verticalAnchor: "start",
+                              y: -20,
+                              className: pie_semi_circle_chart_module_default.note,
+                              children: note
+                            }
+                          )
+                        ] }),
+                        !allSegmentsHidden && svgChildren
+                      ] })
+                    }
+                  )
+                ]
               }
             ),
             withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ jsx("div", { role: "tooltip", children: /* @__PURE__ */ jsx(BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
@@ -321,4 +345,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-JECIAHAD.js.map
+//# sourceMappingURL=chunk-4HA4S65W.js.map

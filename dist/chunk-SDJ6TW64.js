@@ -1,4 +1,7 @@
 import {
+  radial_wipe_animation_default
+} from "./chunk-3OVXJFQY.js";
+import {
   getStringWidth
 } from "./chunk-NFRB2POF.js";
 import {
@@ -74,6 +77,7 @@ var PieChartInternal = ({
   legendItemClassName,
   legendShape = "circle",
   size,
+  animation,
   thickness = 1,
   padding = 0,
   gapScale = 0,
@@ -175,106 +179,124 @@ var PieChartInternal = ({
             className
           ),
           children: [
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxs(
               "svg",
               {
                 viewBox: `0 0 ${width} ${adjustedHeight}`,
                 preserveAspectRatio: "xMidYMid meet",
                 width,
                 height: adjustedHeight,
-                children: /* @__PURE__ */ jsxs(Group, { top: centerY, left: centerX, children: [
-                  allSegmentsHidden ? /* @__PURE__ */ jsx(
-                    "text",
+                children: [
+                  /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsx(
+                    radial_wipe_animation_default,
                     {
-                      textAnchor: "middle",
-                      dy: ".33em",
-                      fill: providerTheme.gridColor || "#ccc",
-                      fontSize: "14",
-                      fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-                      children: __(
-                        "All segments are hidden. Click legend items to show data.",
-                        "jetpack-charts"
-                      )
+                      id: `radial-wipe-${chartId}`,
+                      radius: outerRadius,
+                      innerRadius
                     }
-                  ) : /* @__PURE__ */ jsx(
-                    Pie,
+                  ) }),
+                  /* @__PURE__ */ jsxs(
+                    Group,
                     {
-                      data: dataWithIndex,
-                      pieValue: accessors.value,
-                      outerRadius,
-                      innerRadius,
-                      padAngle,
-                      cornerRadius,
-                      children: (pie) => {
-                        return pie.arcs.map((arc, index) => {
-                          const [centroidX, centroidY] = pie.path.centroid(arc);
-                          const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
-                          const handleMouseMove = (event) => {
-                            if (!withTooltips) {
-                              return;
-                            }
-                            const coords = localPoint(event);
-                            if (coords) {
-                              const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
-                              showTooltip({
-                                tooltipData: arc.data,
-                                tooltipLeft: coords.x + tooltipOffsetX,
-                                tooltipTop: coords.y + legendOffset + tooltipOffsetY
+                      top: centerY,
+                      left: centerX,
+                      mask: animation ? `url(#radial-wipe-${chartId})` : null,
+                      children: [
+                        allSegmentsHidden ? /* @__PURE__ */ jsx(
+                          "text",
+                          {
+                            textAnchor: "middle",
+                            dy: ".33em",
+                            fill: providerTheme.gridColor || "#ccc",
+                            fontSize: "14",
+                            fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                            children: __(
+                              "All segments are hidden. Click legend items to show data.",
+                              "jetpack-charts"
+                            )
+                          }
+                        ) : /* @__PURE__ */ jsx(
+                          Pie,
+                          {
+                            data: dataWithIndex,
+                            pieValue: accessors.value,
+                            outerRadius,
+                            innerRadius,
+                            padAngle,
+                            cornerRadius,
+                            children: (pie) => {
+                              return pie.arcs.map((arc, index) => {
+                                const [centroidX, centroidY] = pie.path.centroid(arc);
+                                const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
+                                const handleMouseMove = (event) => {
+                                  if (!withTooltips) {
+                                    return;
+                                  }
+                                  const coords = localPoint(event);
+                                  if (coords) {
+                                    const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
+                                    showTooltip({
+                                      tooltipData: arc.data,
+                                      tooltipLeft: coords.x + tooltipOffsetX,
+                                      tooltipTop: coords.y + legendOffset + tooltipOffsetY
+                                    });
+                                  }
+                                };
+                                const pathProps = {
+                                  d: pie.path(arc) || "",
+                                  fill: accessors.fill(arc.data),
+                                  "data-testid": "pie-segment"
+                                };
+                                const groupProps = {};
+                                if (withTooltips) {
+                                  groupProps.onMouseMove = handleMouseMove;
+                                  groupProps.onMouseLeave = onMouseLeave;
+                                }
+                                const fontSize = 12;
+                                const estimatedTextWidth = getStringWidth(arc.data.label, { fontSize });
+                                const labelPadding = 6;
+                                const backgroundWidth = estimatedTextWidth + labelPadding * 2;
+                                const backgroundHeight = fontSize + labelPadding * 2;
+                                return /* @__PURE__ */ jsxs("g", { ...groupProps, children: [
+                                  /* @__PURE__ */ jsx("path", { ...pathProps }),
+                                  showLabels && hasSpaceForLabel && /* @__PURE__ */ jsxs("g", { children: [
+                                    providerTheme.labelBackgroundColor && /* @__PURE__ */ jsx(
+                                      "rect",
+                                      {
+                                        x: centroidX - backgroundWidth / 2,
+                                        y: centroidY - backgroundHeight / 2,
+                                        width: backgroundWidth,
+                                        height: backgroundHeight,
+                                        fill: providerTheme.labelBackgroundColor,
+                                        rx: 4,
+                                        ry: 4,
+                                        pointerEvents: "none"
+                                      }
+                                    ),
+                                    /* @__PURE__ */ jsx(
+                                      "text",
+                                      {
+                                        x: centroidX,
+                                        y: centroidY,
+                                        dy: ".33em",
+                                        fill: providerTheme.labelTextColor || "#333",
+                                        fontSize,
+                                        textAnchor: "middle",
+                                        pointerEvents: "none",
+                                        children: arc.data.label
+                                      }
+                                    )
+                                  ] })
+                                ] }, `arc-${index}`);
                               });
                             }
-                          };
-                          const pathProps = {
-                            d: pie.path(arc) || "",
-                            fill: accessors.fill(arc.data),
-                            "data-testid": "pie-segment"
-                          };
-                          const groupProps = {};
-                          if (withTooltips) {
-                            groupProps.onMouseMove = handleMouseMove;
-                            groupProps.onMouseLeave = onMouseLeave;
                           }
-                          const fontSize = 12;
-                          const estimatedTextWidth = getStringWidth(arc.data.label, { fontSize });
-                          const labelPadding = 6;
-                          const backgroundWidth = estimatedTextWidth + labelPadding * 2;
-                          const backgroundHeight = fontSize + labelPadding * 2;
-                          return /* @__PURE__ */ jsxs("g", { ...groupProps, children: [
-                            /* @__PURE__ */ jsx("path", { ...pathProps }),
-                            showLabels && hasSpaceForLabel && /* @__PURE__ */ jsxs("g", { children: [
-                              providerTheme.labelBackgroundColor && /* @__PURE__ */ jsx(
-                                "rect",
-                                {
-                                  x: centroidX - backgroundWidth / 2,
-                                  y: centroidY - backgroundHeight / 2,
-                                  width: backgroundWidth,
-                                  height: backgroundHeight,
-                                  fill: providerTheme.labelBackgroundColor,
-                                  rx: 4,
-                                  ry: 4,
-                                  pointerEvents: "none"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx(
-                                "text",
-                                {
-                                  x: centroidX,
-                                  y: centroidY,
-                                  dy: ".33em",
-                                  fill: providerTheme.labelTextColor || "#333",
-                                  fontSize,
-                                  textAnchor: "middle",
-                                  pointerEvents: "none",
-                                  children: arc.data.label
-                                }
-                              )
-                            ] })
-                          ] }, `arc-${index}`);
-                        });
-                      }
+                        ),
+                        !allSegmentsHidden && svgChildren
+                      ]
                     }
-                  ),
-                  !allSegmentsHidden && svgChildren
-                ] })
+                  )
+                ]
               }
             ),
             showLegend && /* @__PURE__ */ jsx(
@@ -328,4 +350,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-REQT5QUF.js.map
+//# sourceMappingURL=chunk-SDJ6TW64.js.map

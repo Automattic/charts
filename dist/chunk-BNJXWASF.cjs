@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var _chunkSDNRKKBPcjs = require('./chunk-SDNRKKBP.cjs');
+
+
 var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
 
 
@@ -74,6 +77,7 @@ var PieChartInternal = ({
   legendItemClassName,
   legendShape = "circle",
   size,
+  animation,
   thickness = 1,
   padding = 0,
   gapScale = 0,
@@ -175,106 +179,124 @@ var PieChartInternal = ({
             className
           ),
           children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
               "svg",
               {
                 viewBox: `0 0 ${width} ${adjustedHeight}`,
                 preserveAspectRatio: "xMidYMid meet",
                 width,
                 height: adjustedHeight,
-                children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, { top: centerY, left: centerX, children: [
-                  allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    "text",
+                children: [
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "defs", { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                    _chunkSDNRKKBPcjs.radial_wipe_animation_default,
                     {
-                      textAnchor: "middle",
-                      dy: ".33em",
-                      fill: providerTheme.gridColor || "#ccc",
-                      fontSize: "14",
-                      fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-                      children: _i18n.__.call(void 0, 
-                        "All segments are hidden. Click legend items to show data.",
-                        "jetpack-charts"
-                      )
+                      id: `radial-wipe-${chartId}`,
+                      radius: outerRadius,
+                      innerRadius
                     }
-                  ) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _shape.Pie,
+                  ) }),
+                  /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
+                    _group.Group,
                     {
-                      data: dataWithIndex,
-                      pieValue: accessors.value,
-                      outerRadius,
-                      innerRadius,
-                      padAngle,
-                      cornerRadius,
-                      children: (pie) => {
-                        return pie.arcs.map((arc, index) => {
-                          const [centroidX, centroidY] = pie.path.centroid(arc);
-                          const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
-                          const handleMouseMove = (event) => {
-                            if (!withTooltips) {
-                              return;
-                            }
-                            const coords = _event.localPoint.call(void 0, event);
-                            if (coords) {
-                              const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
-                              showTooltip({
-                                tooltipData: arc.data,
-                                tooltipLeft: coords.x + tooltipOffsetX,
-                                tooltipTop: coords.y + legendOffset + tooltipOffsetY
+                      top: centerY,
+                      left: centerX,
+                      mask: animation ? `url(#radial-wipe-${chartId})` : null,
+                      children: [
+                        allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                          "text",
+                          {
+                            textAnchor: "middle",
+                            dy: ".33em",
+                            fill: providerTheme.gridColor || "#ccc",
+                            fontSize: "14",
+                            fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                            children: _i18n.__.call(void 0, 
+                              "All segments are hidden. Click legend items to show data.",
+                              "jetpack-charts"
+                            )
+                          }
+                        ) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                          _shape.Pie,
+                          {
+                            data: dataWithIndex,
+                            pieValue: accessors.value,
+                            outerRadius,
+                            innerRadius,
+                            padAngle,
+                            cornerRadius,
+                            children: (pie) => {
+                              return pie.arcs.map((arc, index) => {
+                                const [centroidX, centroidY] = pie.path.centroid(arc);
+                                const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.25;
+                                const handleMouseMove = (event) => {
+                                  if (!withTooltips) {
+                                    return;
+                                  }
+                                  const coords = _event.localPoint.call(void 0, event);
+                                  if (coords) {
+                                    const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
+                                    showTooltip({
+                                      tooltipData: arc.data,
+                                      tooltipLeft: coords.x + tooltipOffsetX,
+                                      tooltipTop: coords.y + legendOffset + tooltipOffsetY
+                                    });
+                                  }
+                                };
+                                const pathProps = {
+                                  d: pie.path(arc) || "",
+                                  fill: accessors.fill(arc.data),
+                                  "data-testid": "pie-segment"
+                                };
+                                const groupProps = {};
+                                if (withTooltips) {
+                                  groupProps.onMouseMove = handleMouseMove;
+                                  groupProps.onMouseLeave = onMouseLeave;
+                                }
+                                const fontSize = 12;
+                                const estimatedTextWidth = _chunk7OZEQ5HEcjs.getStringWidth.call(void 0, arc.data.label, { fontSize });
+                                const labelPadding = 6;
+                                const backgroundWidth = estimatedTextWidth + labelPadding * 2;
+                                const backgroundHeight = fontSize + labelPadding * 2;
+                                return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", { ...groupProps, children: [
+                                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "path", { ...pathProps }),
+                                  showLabels && hasSpaceForLabel && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", { children: [
+                                    providerTheme.labelBackgroundColor && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                                      "rect",
+                                      {
+                                        x: centroidX - backgroundWidth / 2,
+                                        y: centroidY - backgroundHeight / 2,
+                                        width: backgroundWidth,
+                                        height: backgroundHeight,
+                                        fill: providerTheme.labelBackgroundColor,
+                                        rx: 4,
+                                        ry: 4,
+                                        pointerEvents: "none"
+                                      }
+                                    ),
+                                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                                      "text",
+                                      {
+                                        x: centroidX,
+                                        y: centroidY,
+                                        dy: ".33em",
+                                        fill: providerTheme.labelTextColor || "#333",
+                                        fontSize,
+                                        textAnchor: "middle",
+                                        pointerEvents: "none",
+                                        children: arc.data.label
+                                      }
+                                    )
+                                  ] })
+                                ] }, `arc-${index}`);
                               });
                             }
-                          };
-                          const pathProps = {
-                            d: pie.path(arc) || "",
-                            fill: accessors.fill(arc.data),
-                            "data-testid": "pie-segment"
-                          };
-                          const groupProps = {};
-                          if (withTooltips) {
-                            groupProps.onMouseMove = handleMouseMove;
-                            groupProps.onMouseLeave = onMouseLeave;
                           }
-                          const fontSize = 12;
-                          const estimatedTextWidth = _chunk7OZEQ5HEcjs.getStringWidth.call(void 0, arc.data.label, { fontSize });
-                          const labelPadding = 6;
-                          const backgroundWidth = estimatedTextWidth + labelPadding * 2;
-                          const backgroundHeight = fontSize + labelPadding * 2;
-                          return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", { ...groupProps, children: [
-                            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "path", { ...pathProps }),
-                            showLabels && hasSpaceForLabel && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", { children: [
-                              providerTheme.labelBackgroundColor && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                                "rect",
-                                {
-                                  x: centroidX - backgroundWidth / 2,
-                                  y: centroidY - backgroundHeight / 2,
-                                  width: backgroundWidth,
-                                  height: backgroundHeight,
-                                  fill: providerTheme.labelBackgroundColor,
-                                  rx: 4,
-                                  ry: 4,
-                                  pointerEvents: "none"
-                                }
-                              ),
-                              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                                "text",
-                                {
-                                  x: centroidX,
-                                  y: centroidY,
-                                  dy: ".33em",
-                                  fill: providerTheme.labelTextColor || "#333",
-                                  fontSize,
-                                  textAnchor: "middle",
-                                  pointerEvents: "none",
-                                  children: arc.data.label
-                                }
-                              )
-                            ] })
-                          ] }, `arc-${index}`);
-                        });
-                      }
+                        ),
+                        !allSegmentsHidden && svgChildren
+                      ]
                     }
-                  ),
-                  !allSegmentsHidden && svgChildren
-                ] })
+                  )
+                ]
               }
             ),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
@@ -328,4 +350,4 @@ var PieChartResponsive = _chunkLSGYIUQXcjs.attachSubComponents.call(void 0,
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-2WY63MK3.cjs.map
+//# sourceMappingURL=chunk-BNJXWASF.cjs.map

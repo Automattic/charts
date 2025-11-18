@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var _chunkSDNRKKBPcjs = require('./chunk-SDNRKKBP.cjs');
+
+
 var _chunk6GO5PFYLcjs = require('./chunk-6GO5PFYL.cjs');
 
 
@@ -78,6 +81,7 @@ var PieSemiCircleChartInternal = ({
   legendValueDisplay = "percentage",
   legendInteractive = false,
   label,
+  animation,
   note,
   className,
   children,
@@ -192,83 +196,103 @@ var PieSemiCircleChartInternal = ({
           ),
           "data-testid": "pie-chart-container",
           children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
               "svg",
               {
                 width,
                 height: radius,
                 viewBox: `0 0 ${width} ${chartHeight}`,
                 "data-testid": "pie-chart-svg",
-                children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, { top: chartHeight, left: width / 2, children: allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                  "text",
-                  {
-                    textAnchor: "middle",
-                    y: -radius / 2,
-                    fill: "#ccc",
-                    fontSize: "14",
-                    fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-                    children: _i18n.__.call(void 0, 
-                      "All segments are hidden. Click legend items to show data.",
-                      "jetpack-charts"
-                    )
-                  }
-                ) : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _shape.Pie,
+                children: [
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "defs", { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                    _chunkSDNRKKBPcjs.radial_wipe_animation_default,
                     {
-                      data: dataWithIndex,
-                      pieValue: accessors.value,
-                      outerRadius: radius,
+                      id: `radial-wipe-${chartId}`,
+                      radius,
                       innerRadius,
-                      cornerRadius: 3,
-                      padAngle: PAD_ANGLE,
-                      startAngle,
-                      endAngle,
-                      pieSort: accessors.sort,
-                      children: (pie) => {
-                        return pie.arcs.map((arc) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                          "g",
-                          {
-                            onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
-                            onMouseLeave: withTooltips ? handleMouseLeave : void 0,
-                            children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                              "path",
-                              {
-                                d: pie.path(arc) || "",
-                                fill: accessors.fill(arc.data),
-                                "data-testid": "pie-segment"
-                              }
-                            )
-                          },
-                          arc.data.label
-                        ));
-                      }
+                      startAngle: "-180deg",
+                      wipePercentage: 50
                     }
-                  ),
-                  /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, { children: [
-                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                      _text.Text,
-                      {
-                        textAnchor: "middle",
-                        verticalAnchor: "start",
-                        y: -40,
-                        className: pie_semi_circle_chart_module_default.label,
-                        children: label
-                      }
-                    ),
-                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                      _text.Text,
-                      {
-                        textAnchor: "middle",
-                        verticalAnchor: "start",
-                        y: -20,
-                        className: pie_semi_circle_chart_module_default.note,
-                        children: note
-                      }
-                    )
-                  ] }),
-                  !allSegmentsHidden && svgChildren
-                ] }) })
+                  ) }),
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                    _group.Group,
+                    {
+                      top: chartHeight,
+                      left: width / 2,
+                      mask: animation ? `url(#radial-wipe-${chartId})` : null,
+                      children: allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                        "text",
+                        {
+                          textAnchor: "middle",
+                          y: -radius / 2,
+                          fill: "#ccc",
+                          fontSize: "14",
+                          fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                          children: _i18n.__.call(void 0, 
+                            "All segments are hidden. Click legend items to show data.",
+                            "jetpack-charts"
+                          )
+                        }
+                      ) : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+                        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                          _shape.Pie,
+                          {
+                            data: dataWithIndex,
+                            pieValue: accessors.value,
+                            outerRadius: radius,
+                            innerRadius,
+                            cornerRadius: 3,
+                            padAngle: PAD_ANGLE,
+                            startAngle,
+                            endAngle,
+                            pieSort: accessors.sort,
+                            children: (pie) => {
+                              return pie.arcs.map((arc) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                                "g",
+                                {
+                                  onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
+                                  onMouseLeave: withTooltips ? handleMouseLeave : void 0,
+                                  children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                                    "path",
+                                    {
+                                      d: pie.path(arc) || "",
+                                      fill: accessors.fill(arc.data),
+                                      "data-testid": "pie-segment"
+                                    }
+                                  )
+                                },
+                                arc.data.label
+                              ));
+                            }
+                          }
+                        ),
+                        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, { children: [
+                          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                            _text.Text,
+                            {
+                              textAnchor: "middle",
+                              verticalAnchor: "start",
+                              y: -40,
+                              className: pie_semi_circle_chart_module_default.label,
+                              children: label
+                            }
+                          ),
+                          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                            _text.Text,
+                            {
+                              textAnchor: "middle",
+                              verticalAnchor: "start",
+                              y: -20,
+                              className: pie_semi_circle_chart_module_default.note,
+                              children: note
+                            }
+                          )
+                        ] }),
+                        !allSegmentsHidden && svgChildren
+                      ] })
+                    }
+                  )
+                ]
               }
             ),
             withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk6GO5PFYLcjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
@@ -321,4 +345,4 @@ var PieSemiCircleChartResponsive = _chunkLSGYIUQXcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-RP2RT6RU.cjs.map
+//# sourceMappingURL=chunk-6EDGM4Q6.cjs.map
