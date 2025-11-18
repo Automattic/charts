@@ -221,4 +221,10 @@ interface UseInteractiveLegendDataResult<T extends DataPointWithPercentage> {
  */
 declare const useInteractiveLegendData: <T extends DataPointWithPercentage>({ data, chartId, legendInteractive, isSeriesVisible, }: UseInteractiveLegendDataParams<T>) => UseInteractiveLegendDataResult<T>;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useInteractiveLegendData, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
+/**
+ * Custom hook to determine if the user prefers reduced motion.
+ * @return {boolean} A boolean indicating the user's preference for reduced motion.
+ */
+declare function usePrefersReducedMotion(): boolean;
+
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };

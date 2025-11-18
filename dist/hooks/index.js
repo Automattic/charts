@@ -5,10 +5,11 @@ import {
   useDeepMemo,
   useElementHeight,
   useInteractiveLegendData,
+  usePrefersReducedMotion,
   useTextTruncation,
   useXYChartTheme,
   useZeroValueDisplay
-} from "../chunk-A3PGOCJO.js";
+} from "../chunk-5OB3F7GC.js";
 import "../chunk-G3PMV62Z.js";
 export {
   useChartDataTransform,
@@ -17,6 +18,7 @@ export {
   useDeepMemo,
   useElementHeight,
   useInteractiveLegendData,
+  usePrefersReducedMotion,
   useTextTruncation,
   useXYChartTheme,
   useZeroValueDisplay

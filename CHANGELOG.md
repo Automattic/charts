@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Charts: Add animation in circular shaped charts.
+- Charts: Add usePrefersReducedMotion hook for accecibility.
 
 ### Changed
 - Remove inline styles from containers to allow consumer overrides

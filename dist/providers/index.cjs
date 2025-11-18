@@ -8,7 +8,7 @@
 
 
 
-var _chunkLSGYIUQXcjs = require('../chunk-LSGYIUQX.cjs');
+var _chunkMNZD6UDQcjs = require('../chunk-MNZD6UDQ.cjs');
 require('../chunk-EMMSS5I5.cjs');
 
 
@@ -20,5 +20,5 @@ require('../chunk-EMMSS5I5.cjs');
 
 
 
-exports.GlobalChartsContext = _chunkLSGYIUQXcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkLSGYIUQXcjs.GlobalChartsProvider; exports.defaultTheme = _chunkLSGYIUQXcjs.defaultTheme; exports.jetpackTheme = _chunkLSGYIUQXcjs.jetpackTheme; exports.useChartId = _chunkLSGYIUQXcjs.useChartId; exports.useChartRegistration = _chunkLSGYIUQXcjs.useChartRegistration; exports.useGlobalChartsContext = _chunkLSGYIUQXcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkLSGYIUQXcjs.useGlobalChartsTheme; exports.wooTheme = _chunkLSGYIUQXcjs.wooTheme;
+exports.GlobalChartsContext = _chunkMNZD6UDQcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkMNZD6UDQcjs.GlobalChartsProvider; exports.defaultTheme = _chunkMNZD6UDQcjs.defaultTheme; exports.jetpackTheme = _chunkMNZD6UDQcjs.jetpackTheme; exports.useChartId = _chunkMNZD6UDQcjs.useChartId; exports.useChartRegistration = _chunkMNZD6UDQcjs.useChartRegistration; exports.useGlobalChartsContext = _chunkMNZD6UDQcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkMNZD6UDQcjs.useGlobalChartsTheme; exports.wooTheme = _chunkMNZD6UDQcjs.wooTheme;
 //# sourceMappingURL=index.cjs.map

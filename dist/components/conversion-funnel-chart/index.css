@@ -99,6 +99,17 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   filter: brightness(1.1);
 }
+.a8ccharts-YVRBpF {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  transform: scaleY(0);
+  animation: a8ccharts-4otxiv 1s ease-out forwards;
+}
+@keyframes a8ccharts-4otxiv {
+  to {
+    transform: scaleY(1);
+  }
+}
 .a8ccharts-NohPt6 {
   display: inline-flex;
   flex-direction: column;
@@ -132,16 +143,5 @@
   padding: 48px 24px;
   color: #6b7280;
   font-size: 16px;
-}
-.a8ccharts-wvCpVT {
-  transform-origin: bottom;
-  transform-box: fill-box;
-  transform: scaleY(0);
-  animation: a8ccharts-4otxiv 1s ease-out forwards;
-}
-@keyframes a8ccharts-4otxiv {
-  to {
-    transform: scaleY(1);
-  }
 }
 /*# sourceMappingURL=index.css.map */
