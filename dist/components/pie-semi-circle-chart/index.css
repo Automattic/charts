@@ -113,6 +113,9 @@
   text-align: center;
   gap: 20px;
 }
+.a8ccharts-XEH--U {
+  flex-direction: column-reverse;
+}
 .a8ccharts-r5jk9c .a8ccharts-nPqOgD {
   margin-bottom: 0;
   font-weight: 600;

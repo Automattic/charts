@@ -95,9 +95,17 @@
 
 /* esbuild-sass-plugin:css-chunk:src/components/leaderboard-chart/leaderboard-chart.module.scss */
 .a8ccharts-zxakPT {
+  display: flex;
+  flex-direction: column;
   transition: opacity 0.3s ease-in-out;
 }
-.a8ccharts-zxakPT.a8ccharts--AGv-8 {
+.a8ccharts-NGBXgH {
+  flex-direction: column-reverse;
+}
+.a8ccharts-2FJVye {
+  gap: 16px;
+}
+.a8ccharts-30Vj-u {
   opacity: 0.5;
 }
 .a8ccharts-9RE0Uo {

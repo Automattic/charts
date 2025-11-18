@@ -1,7 +1,7 @@
 import {
   PieChart,
   PieChartResponsive
-} from "../../chunk-ZSNO2BYX.js";
+} from "../../chunk-REQT5QUF.js";
 import "../../chunk-NFRB2POF.js";
 import "../../chunk-W5KOH3TV.js";
 import "../../chunk-D3DZT2EK.js";

@@ -110,6 +110,15 @@
 .a8ccharts-ITM3dm {
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+.a8ccharts-fXvEBi path {
+  transform-origin: 0 95%;
+  transform: scaleY(0);
+  animation: a8ccharts-gb7M8E 1s ease-out forwards;
+}
+.a8ccharts-zQLTUG {
+  flex-direction: column-reverse;
 }
 .a8ccharts-ITM3dm svg {
   overflow: visible;
@@ -194,11 +203,6 @@
 .visx-tooltip-glyph svg {
   width: 10px;
   height: 10px;
-}
-.a8ccharts-Hj6YbD path {
-  transform-origin: 0 95%;
-  transform: scaleY(0);
-  animation: a8ccharts-gb7M8E 1s ease-out forwards;
 }
 @keyframes a8ccharts-gb7M8E {
   to {

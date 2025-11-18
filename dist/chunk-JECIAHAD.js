@@ -38,6 +38,7 @@ import { useCallback, useContext, useMemo } from "react";
 // src/components/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
   "pie-semi-circle-chart": "a8ccharts-r5jk9c",
+  "pie-semi-circle-chart--legend-top": "a8ccharts-XEH--U",
   "label": "a8ccharts-nPqOgD",
   "note": "a8ccharts-LpBZQh"
 };
@@ -181,12 +182,15 @@ var PieSemiCircleChartInternal = ({
         "div",
         {
           ref: containerRef,
-          className: clsx("pie-semi-circle-chart", pie_semi_circle_chart_module_default["pie-semi-circle-chart"], className),
+          className: clsx(
+            "pie-semi-circle-chart",
+            pie_semi_circle_chart_module_default["pie-semi-circle-chart"],
+            {
+              [pie_semi_circle_chart_module_default["pie-semi-circle-chart--legend-top"]]: showLegend && legendPosition === "top"
+            },
+            className
+          ),
           "data-testid": "pie-chart-container",
-          style: {
-            display: "flex",
-            flexDirection: showLegend && legendPosition === "top" ? "column-reverse" : "column"
-          },
           children: [
             /* @__PURE__ */ jsx(
               "svg",
@@ -317,4 +321,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-BWEMZ72V.js.map
+//# sourceMappingURL=chunk-JECIAHAD.js.map

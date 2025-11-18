@@ -38,6 +38,7 @@ var _react = require('react');
 // src/components/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
   "pie-semi-circle-chart": "a8ccharts-r5jk9c",
+  "pie-semi-circle-chart--legend-top": "a8ccharts-XEH--U",
   "label": "a8ccharts-nPqOgD",
   "note": "a8ccharts-LpBZQh"
 };
@@ -181,12 +182,15 @@ var PieSemiCircleChartInternal = ({
         "div",
         {
           ref: containerRef,
-          className: _clsx2.default.call(void 0, "pie-semi-circle-chart", pie_semi_circle_chart_module_default["pie-semi-circle-chart"], className),
+          className: _clsx2.default.call(void 0, 
+            "pie-semi-circle-chart",
+            pie_semi_circle_chart_module_default["pie-semi-circle-chart"],
+            {
+              [pie_semi_circle_chart_module_default["pie-semi-circle-chart--legend-top"]]: showLegend && legendPosition === "top"
+            },
+            className
+          ),
           "data-testid": "pie-chart-container",
-          style: {
-            display: "flex",
-            flexDirection: showLegend && legendPosition === "top" ? "column-reverse" : "column"
-          },
           children: [
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
               "svg",
@@ -317,4 +321,4 @@ var PieSemiCircleChartResponsive = _chunkLSGYIUQXcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-VOMSG7KV.cjs.map
+//# sourceMappingURL=chunk-RP2RT6RU.cjs.map

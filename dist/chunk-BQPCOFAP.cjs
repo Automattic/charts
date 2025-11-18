@@ -4256,7 +4256,9 @@ function useLeaderboardLegendItems({
 // src/components/leaderboard-chart/leaderboard-chart.module.scss
 var leaderboard_chart_module_default = {
   "leaderboardChart": "a8ccharts-zxakPT",
-  "loading": "a8ccharts--AGv-8",
+  "leaderboardChart--legend-top": "a8ccharts-NGBXgH",
+  "leaderboardChart--with-legend": "a8ccharts-2FJVye",
+  "leaderboardChart--loading": "a8ccharts-30Vj-u",
   "barWithLabelContainer": "a8ccharts-9RE0Uo",
   "is-overlay": "a8ccharts-Fqdi5w",
   "label": "a8ccharts-7ZUu0T",
@@ -4432,7 +4434,11 @@ var LeaderboardChartInternal = ({
         children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
           "div",
           {
-            className: _clsx2.default.call(void 0, leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
+            className: _clsx2.default.call(void 0, 
+              leaderboard_chart_module_default.leaderboardChart,
+              { [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading },
+              className
+            ),
             style,
             children: [
               /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: leaderboard_chart_module_default.emptyState, children: loading ? _i18n.__.call(void 0, "Loading\u2026", "jetpack-charts") : _i18n.__.call(void 0, "No data available", "jetpack-charts") }),
@@ -4455,13 +4461,16 @@ var LeaderboardChartInternal = ({
       children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
         "div",
         {
-          className: _clsx2.default.call(void 0, leaderboard_chart_module_default.leaderboardChart, loading && leaderboard_chart_module_default.loading, className),
-          style: {
-            ...style,
-            display: "flex",
-            flexDirection: showLegend && legendPosition === "top" ? "column-reverse" : "column",
-            gap: showLegend ? "16px" : "0"
-          },
+          className: _clsx2.default.call(void 0, 
+            leaderboard_chart_module_default.leaderboardChart,
+            {
+              [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading,
+              [leaderboard_chart_module_default["leaderboardChart--with-legend"]]: showLegend,
+              [leaderboard_chart_module_default["leaderboardChart--legend-top"]]: showLegend && legendPosition === "top"
+            },
+            className
+          ),
+          style,
           children: [
             allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: leaderboard_chart_module_default.emptyState, children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts") }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default6, { templateColumns: "minmax(0, 1fr) auto", rowGap, columnGap, children: data.map((entry) => {
               const colorIndex = Math.sign(entry.delta) + 1;
@@ -4567,4 +4576,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-22TV5IPN.cjs.map
+//# sourceMappingURL=chunk-BQPCOFAP.cjs.map

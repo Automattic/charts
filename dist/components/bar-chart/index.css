@@ -111,6 +111,9 @@
   display: flex;
   flex-direction: column;
 }
+.a8ccharts-SQjaa0 {
+  flex-direction: column-reverse;
+}
 .a8ccharts-lmYNi- svg {
   overflow: visible;
 }
