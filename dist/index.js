@@ -13,12 +13,12 @@ import {
 import "./chunk-3OVXJFQY.js";
 import "./chunk-NFRB2POF.js";
 import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-55WZQTJG.js";
-import {
   BarListChart,
   BarListChartResponsive
 } from "./chunk-DMU7YAZU.js";
+import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-55WZQTJG.js";
 import {
   BarChart,
   BarChartResponsive

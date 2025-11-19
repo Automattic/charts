@@ -5,13 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.49.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.49.0] - 2025-11-19
 ### Added
-- Charts: Add animation in circular shaped charts.
-- Charts: Add usePrefersReducedMotion hook for accecibility.
+- Add animation in circular shaped charts. [#45870]
+- Add usePrefersReducedMotion hook for accecibility. [#45955]
 
 ## [0.48.0] - 2025-11-18
 ### Changed
@@ -566,7 +563,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.49.0-alpha]: https://github.com/Automattic/charts/compare/v0.48.0...v0.49.0-alpha
+[0.49.0]: https://github.com/Automattic/charts/compare/v0.48.0...v0.49.0
 [0.48.0]: https://github.com/Automattic/charts/compare/v0.47.0...v0.48.0
 [0.47.0]: https://github.com/Automattic/charts/compare/v0.46.3...v0.47.0
 [0.46.3]: https://github.com/Automattic/charts/compare/v0.46.2...v0.46.3
