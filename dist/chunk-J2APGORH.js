@@ -1,4 +1,8 @@
 import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-W5KOH3TV.js";
+import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
 import {
@@ -6,10 +10,6 @@ import {
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-IKDM6OVX.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-W5KOH3TV.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -502,4 +502,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-VKRH3HIL.js.map
+//# sourceMappingURL=chunk-J2APGORH.js.map
