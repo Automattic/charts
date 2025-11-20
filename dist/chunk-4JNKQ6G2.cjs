@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunk6GO5PFYLcjs = require('./chunk-6GO5PFYL.cjs');
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
 var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
@@ -10,7 +10,7 @@ var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkQTQG3XNMcjs = require('./chunk-QTQG3XNM.cjs');
+var _chunk4TN6B3QGcjs = require('./chunk-4TN6B3QG.cjs');
 
 
 
@@ -178,7 +178,7 @@ var line_chart_annotation_label_popover_default = LineChartAnnotationLabelWithPo
 
 
 var LineChartAnnotationsOverlay = ({ children }) => {
-  const { chartRef, chartWidth, chartHeight } = _chunkQTQG3XNMcjs.useSingleChartContext.call(void 0, );
+  const { chartRef, chartWidth, chartHeight } = _chunk4TN6B3QGcjs.useSingleChartContext.call(void 0, );
   const [scales, setScales] = _react.useState.call(void 0, null);
   const [scalesStable, setScalesStable] = _react.useState.call(void 0, false);
   const createScaleSignature = _react.useCallback.call(void 0, (scaleData) => {
@@ -555,7 +555,7 @@ var renderDefaultTooltip = (params) => {
         point.key,
         ":"
       ] }),
-      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: line_chart_module_default["line-chart__tooltip-value"], children: point.value })
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: line_chart_module_default["line-chart__tooltip-value"], children: _numberformatters.formatNumber.call(void 0, point.value) })
     ] }, point.key))
   ] });
 };
@@ -719,7 +719,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
     const allSeriesHidden = _react.useMemo.call(void 0, () => {
       return seriesWithVisibility.every(({ isVisible }) => !isVisible);
     }, [seriesWithVisibility]);
-    const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = _chunk6GO5PFYLcjs.useKeyboardNavigation.call(void 0, {
+    const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = _chunk7HROSZRScjs.useKeyboardNavigation.call(void 0, {
       selectedIndex,
       setSelectedIndex,
       isNavigating,
@@ -781,7 +781,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
       }),
       [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _64 => _64.radius]), renderGlyph]
     );
-    const legendItems = _chunkQTQG3XNMcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
+    const legendItems = _chunk4TN6B3QGcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
     const chartMetadata = _react.useMemo.call(void 0, 
       () => ({
         withGradientFill,
@@ -809,7 +809,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
       return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: _clsx2.default.call(void 0, "line-chart", line_chart_module_default["line-chart"]), children: error });
     }
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-      _chunkQTQG3XNMcjs.SingleChartContext.Provider,
+      _chunk4TN6B3QGcjs.SingleChartContext.Provider,
       {
         value: {
           chartId,
@@ -955,7 +955,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                           ] }, _optionalChain([seriesData, 'optionalAccess', _78 => _78.label]) || index);
                         }),
                         withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                          _chunk6GO5PFYLcjs.AccessibleTooltip,
+                          _chunk7HROSZRScjs.AccessibleTooltip,
                           {
                             detectBounds: true,
                             snapTooltipToDatumX: true,
@@ -987,7 +987,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                 }
               ),
               showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                _chunkQTQG3XNMcjs.Legend,
+                _chunk4TN6B3QGcjs.Legend,
                 {
                   orientation: legendOrientation,
                   alignment: legendAlignment,
@@ -1019,14 +1019,14 @@ var LineChartWithProvider = _react.forwardRef.call(void 0, (props, ref) => {
 });
 LineChartWithProvider.displayName = "LineChart";
 var LineChart = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, LineChartWithProvider, {
-  Legend: _chunkQTQG3XNMcjs.Legend,
+  Legend: _chunk4TN6B3QGcjs.Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
 var LineChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, 
   _chunkFX2PTUFCcjs.withResponsive.call(void 0, LineChartWithProvider),
   {
-    Legend: _chunkQTQG3XNMcjs.Legend,
+    Legend: _chunk4TN6B3QGcjs.Legend,
     AnnotationsOverlay: line_chart_annotations_overlay_default,
     Annotation: line_chart_annotation_default
   }
@@ -1036,4 +1036,4 @@ var LineChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0,
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-Z5TSTVSS.cjs.map
+//# sourceMappingURL=chunk-4JNKQ6G2.cjs.map

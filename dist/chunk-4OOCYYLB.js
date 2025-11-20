@@ -1,7 +1,7 @@
 import {
   AccessibleTooltip,
   useKeyboardNavigation
-} from "./chunk-W5KOH3TV.js";
+} from "./chunk-5XI443YP.js";
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
@@ -10,7 +10,7 @@ import {
   SingleChartContext,
   useChartLegendItems,
   useSingleChartContext
-} from "./chunk-IKDM6OVX.js";
+} from "./chunk-JX6O5KKS.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -28,7 +28,7 @@ import {
 } from "./chunk-5OB3F7GC.js";
 
 // src/components/line-chart/line-chart.tsx
-import { formatNumberCompact } from "@automattic/number-formatters";
+import { formatNumberCompact, formatNumber } from "@automattic/number-formatters";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { LinearGradient } from "@visx/gradient";
 import { scaleTime } from "@visx/scale";
@@ -555,7 +555,7 @@ var renderDefaultTooltip = (params) => {
         point.key,
         ":"
       ] }),
-      /* @__PURE__ */ jsx5("span", { className: line_chart_module_default["line-chart__tooltip-value"], children: point.value })
+      /* @__PURE__ */ jsx5("span", { className: line_chart_module_default["line-chart__tooltip-value"], children: formatNumber(point.value) })
     ] }, point.key))
   ] });
 };
@@ -1036,4 +1036,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-OJCBYFXF.js.map
+//# sourceMappingURL=chunk-4OOCYYLB.js.map

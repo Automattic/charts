@@ -1,7 +1,7 @@
 import {
   Legend,
   useChartLegendItems
-} from "../../chunk-IKDM6OVX.js";
+} from "../../chunk-JX6O5KKS.js";
 import "../../chunk-5OB3F7GC.js";
 import "../../chunk-G3PMV62Z.js";
 export {

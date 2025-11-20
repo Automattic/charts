@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Localize numbers in legend labels and tooltips
+
 ## [0.49.0] - 2025-11-19
 ### Added
 - Add animation in circular shaped charts. [#45870]

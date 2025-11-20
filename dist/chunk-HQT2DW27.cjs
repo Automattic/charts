@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunk6GO5PFYLcjs = require('./chunk-6GO5PFYL.cjs');
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
 var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
@@ -9,7 +9,7 @@ var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkQTQG3XNMcjs = require('./chunk-QTQG3XNM.cjs');
+var _chunk4TN6B3QGcjs = require('./chunk-4TN6B3QG.cjs');
 
 
 
@@ -27,6 +27,7 @@ var _chunkQTQG3XNMcjs = require('./chunk-QTQG3XNM.cjs');
 var _chunkMNZD6UDQcjs = require('./chunk-MNZD6UDQ.cjs');
 
 // src/components/bar-chart/bar-chart.tsx
+var _numberformatters = require('@automattic/number-formatters');
 var _pattern = require('@visx/pattern');
 var _xychart = require('@visx/xychart');
 var _i18n = require('@wordpress/i18n');
@@ -45,7 +46,7 @@ var bar_chart_module_default = {
 };
 
 // src/components/bar-chart/private/use-bar-chart-options.ts
-var _numberformatters = require('@automattic/number-formatters');
+
 
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
@@ -192,7 +193,7 @@ var BarChartInternal = ({
   const dataWithVisibleZeros = _chunkMNZD6UDQcjs.useZeroValueDisplay.call(void 0, dataSorted, {
     enabled: showZeroValues
   });
-  const legendItems = _chunkQTQG3XNMcjs.useChartLegendItems.call(void 0, dataSorted);
+  const legendItems = _chunk4TN6B3QGcjs.useChartLegendItems.call(void 0, dataSorted);
   const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
   const defaultMargin = _chunkMNZD6UDQcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
   const [legendRef, legendHeight] = _chunkMNZD6UDQcjs.useElementHeight.call(void 0, );
@@ -200,7 +201,7 @@ var BarChartInternal = ({
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
   const totalPoints = Math.max(0, ...data.map((series) => _optionalChain([series, 'access', _20 => _20.data, 'optionalAccess', _21 => _21.length]) || 0)) * data.length;
-  const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = _chunk6GO5PFYLcjs.useKeyboardNavigation.call(void 0, {
+  const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = _chunk7HROSZRScjs.useKeyboardNavigation.call(void 0, {
     selectedIndex,
     setSelectedIndex,
     isNavigating,
@@ -246,7 +247,7 @@ var BarChartInternal = ({
             ),
             ":"
           ] }),
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: nearestDatum.value })
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: _numberformatters.formatNumber.call(void 0, nearestDatum.value) })
         ] })
       ] });
     },
@@ -341,7 +342,7 @@ var BarChartInternal = ({
   const gridVisibility = _nullishCoalesce(gridVisibilityProp, () => ( chartOptions.gridVisibility));
   const highlightedBarStyle = createKeyboardHighlightStyle();
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkQTQG3XNMcjs.SingleChartContext.Provider,
+    _chunk4TN6B3QGcjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -441,7 +442,7 @@ var BarChartInternal = ({
                   /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.x }),
                   /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.y }),
                   withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _chunk6GO5PFYLcjs.AccessibleTooltip,
+                    _chunk7HROSZRScjs.AccessibleTooltip,
                     {
                       detectBounds: true,
                       snapTooltipToDatumX: true,
@@ -458,7 +459,7 @@ var BarChartInternal = ({
               }
             ),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkQTQG3XNMcjs.Legend,
+              _chunk4TN6B3QGcjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -489,12 +490,12 @@ var BarChartWithProvider = (props) => {
 };
 BarChartWithProvider.displayName = "BarChart";
 var BarChart = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, BarChartWithProvider, {
-  Legend: _chunkQTQG3XNMcjs.Legend
+  Legend: _chunk4TN6B3QGcjs.Legend
 });
 var BarChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, 
   _chunkFX2PTUFCcjs.withResponsive.call(void 0, BarChartWithProvider),
   {
-    Legend: _chunkQTQG3XNMcjs.Legend
+    Legend: _chunk4TN6B3QGcjs.Legend
   }
 );
 
@@ -502,4 +503,4 @@ var BarChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-6ACZVRD6.cjs.map
+//# sourceMappingURL=chunk-HQT2DW27.cjs.map

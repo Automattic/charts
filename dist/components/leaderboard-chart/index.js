@@ -2,10 +2,10 @@ import {
   LeaderboardChart,
   LeaderboardChartResponsive,
   useLeaderboardLegendItems
-} from "../../chunk-YQ5JCDVX.js";
+} from "../../chunk-CVD6K4R2.js";
 import "../../chunk-D3DZT2EK.js";
 import "../../chunk-TYYW4BG3.js";
-import "../../chunk-IKDM6OVX.js";
+import "../../chunk-JX6O5KKS.js";
 import {
   formatMetricValue
 } from "../../chunk-5OB3F7GC.js";

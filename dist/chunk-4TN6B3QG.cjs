@@ -327,6 +327,7 @@ var Legend = _react.forwardRef.call(void 0,
 );
 
 // src/components/legend/hooks/use-chart-legend-items.ts
+var _numberformatters = require('@automattic/number-formatters');
 
 function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
   if (!showValues || legendValueDisplay === "none") {
@@ -338,15 +339,15 @@ function formatPointValue(point, showValues, legendValueDisplay = "percentage") 
       case "percentage":
         return _chunkMNZD6UDQcjs.formatPercentage.call(void 0, percentagePoint.percentage);
       case "value":
-        return percentagePoint.value.toString();
+        return _numberformatters.formatNumber.call(void 0, percentagePoint.value);
       case "valueDisplay":
-        return percentagePoint.valueDisplay || percentagePoint.value.toString();
+        return percentagePoint.valueDisplay || _numberformatters.formatNumber.call(void 0, percentagePoint.value);
       default:
         return "";
     }
   }
   if ("value" in point) {
-    return point.value.toString();
+    return point.value !== null ? _numberformatters.formatNumber.call(void 0, point.value) : "";
   }
   return "";
 }
@@ -449,4 +450,4 @@ function useChartLegendItems(data, options = {}, legendShape) {
 
 
 exports.SingleChartContext = SingleChartContext; exports.useSingleChartContext = useSingleChartContext; exports.Legend = Legend; exports.useChartLegendItems = useChartLegendItems;
-//# sourceMappingURL=chunk-QTQG3XNM.cjs.map
+//# sourceMappingURL=chunk-4TN6B3QG.cjs.map

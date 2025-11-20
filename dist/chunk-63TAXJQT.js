@@ -1,7 +1,7 @@
 import {
   AccessibleTooltip,
   useKeyboardNavigation
-} from "./chunk-W5KOH3TV.js";
+} from "./chunk-5XI443YP.js";
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
@@ -9,7 +9,7 @@ import {
   Legend,
   SingleChartContext,
   useChartLegendItems
-} from "./chunk-IKDM6OVX.js";
+} from "./chunk-JX6O5KKS.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -27,6 +27,7 @@ import {
 } from "./chunk-5OB3F7GC.js";
 
 // src/components/bar-chart/bar-chart.tsx
+import { formatNumber } from "@automattic/number-formatters";
 import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@visx/pattern";
 import { Axis, BarSeries, BarGroup, Grid, XYChart } from "@visx/xychart";
 import { __ } from "@wordpress/i18n";
@@ -246,7 +247,7 @@ var BarChartInternal = ({
             ),
             ":"
           ] }),
-          /* @__PURE__ */ jsx("span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: nearestDatum.value })
+          /* @__PURE__ */ jsx("span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: formatNumber(nearestDatum.value) })
         ] })
       ] });
     },
@@ -502,4 +503,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-J2APGORH.js.map
+//# sourceMappingURL=chunk-63TAXJQT.js.map

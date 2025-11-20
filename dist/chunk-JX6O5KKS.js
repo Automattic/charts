@@ -327,6 +327,7 @@ var Legend = forwardRef2(
 );
 
 // src/components/legend/hooks/use-chart-legend-items.ts
+import { formatNumber } from "@automattic/number-formatters";
 import { useMemo as useMemo2 } from "react";
 function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
   if (!showValues || legendValueDisplay === "none") {
@@ -338,15 +339,15 @@ function formatPointValue(point, showValues, legendValueDisplay = "percentage") 
       case "percentage":
         return formatPercentage(percentagePoint.percentage);
       case "value":
-        return percentagePoint.value.toString();
+        return formatNumber(percentagePoint.value);
       case "valueDisplay":
-        return percentagePoint.valueDisplay || percentagePoint.value.toString();
+        return percentagePoint.valueDisplay || formatNumber(percentagePoint.value);
       default:
         return "";
     }
   }
   if ("value" in point) {
-    return point.value.toString();
+    return point.value !== null ? formatNumber(point.value) : "";
   }
   return "";
 }
@@ -449,4 +450,4 @@ export {
   Legend,
   useChartLegendItems
 };
-//# sourceMappingURL=chunk-IKDM6OVX.js.map
+//# sourceMappingURL=chunk-JX6O5KKS.js.map

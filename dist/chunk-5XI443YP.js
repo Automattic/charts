@@ -1,3 +1,6 @@
+// src/components/tooltip/base-tooltip.tsx
+import { formatNumber } from "@automattic/number-formatters";
+
 // src/components/tooltip/base-tooltip.module.scss
 var base_tooltip_module_default = {
   "tooltip": "a8ccharts-OfX6nd"
@@ -8,7 +11,7 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var DefaultTooltipContent = ({ data }) => /* @__PURE__ */ jsxs(Fragment, { children: [
   data?.label,
   ": ",
-  data?.valueDisplay || data?.value
+  data?.valueDisplay || formatNumber(data?.value)
 ] });
 var BaseTooltip = ({
   data,
@@ -180,4 +183,4 @@ export {
   AccessibleTooltip,
   useKeyboardNavigation
 };
-//# sourceMappingURL=chunk-W5KOH3TV.js.map
+//# sourceMappingURL=chunk-5XI443YP.js.map

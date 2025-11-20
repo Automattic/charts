@@ -6,7 +6,7 @@ var _chunkSDNRKKBPcjs = require('./chunk-SDNRKKBP.cjs');
 var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
 
 
-var _chunk6GO5PFYLcjs = require('./chunk-6GO5PFYL.cjs');
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
 
@@ -19,7 +19,7 @@ var _chunkFX2PTUFCcjs = require('./chunk-FX2PTUFC.cjs');
 
 
 
-var _chunkQTQG3XNMcjs = require('./chunk-QTQG3XNM.cjs');
+var _chunk4TN6B3QGcjs = require('./chunk-4TN6B3QG.cjs');
 
 
 
@@ -116,7 +116,7 @@ var PieChartInternal = ({
     () => ({ showValues: true, legendValueDisplay }),
     [legendValueDisplay]
   );
-  const legendItems = _chunkQTQG3XNMcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
+  const legendItems = _chunk4TN6B3QGcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
   const { isValid, message } = validateData(data);
   const { svgChildren, htmlChildren, otherChildren } = _chunk3Z526IL2cjs.useChartChildren.call(void 0, children, "PieChart");
   const chartMetadata = _react.useMemo.call(void 0, 
@@ -163,7 +163,7 @@ var PieChartInternal = ({
     }
   };
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkQTQG3XNMcjs.SingleChartContext.Provider,
+    _chunk4TN6B3QGcjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -302,7 +302,7 @@ var PieChartInternal = ({
               }
             ),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkQTQG3XNMcjs.Legend,
+              _chunk4TN6B3QGcjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -317,7 +317,7 @@ var PieChartInternal = ({
                 interactive: legendInteractive
               }
             ),
-            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk6GO5PFYLcjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
+            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk7HROSZRScjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
             htmlChildren,
             otherChildren
           ]
@@ -335,14 +335,14 @@ var PieChartWithProvider = (props) => {
 };
 PieChartWithProvider.displayName = "PieChart";
 var PieChart = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, PieChartWithProvider, {
-  Legend: _chunkQTQG3XNMcjs.Legend,
+  Legend: _chunk4TN6B3QGcjs.Legend,
   SVG: _chunk3Z526IL2cjs.ChartSVG,
   HTML: _chunk3Z526IL2cjs.ChartHTML
 });
 var PieChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0, 
   _chunkFX2PTUFCcjs.withResponsive.call(void 0, PieChartWithProvider),
   {
-    Legend: _chunkQTQG3XNMcjs.Legend,
+    Legend: _chunk4TN6B3QGcjs.Legend,
     SVG: _chunk3Z526IL2cjs.ChartSVG,
     HTML: _chunk3Z526IL2cjs.ChartHTML
   }
@@ -352,4 +352,4 @@ var PieChartResponsive = _chunkMNZD6UDQcjs.attachSubComponents.call(void 0,
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-GR6WENSA.cjs.map
+//# sourceMappingURL=chunk-DVBXMTIC.cjs.map
