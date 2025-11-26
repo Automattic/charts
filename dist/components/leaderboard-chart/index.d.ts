@@ -1,5 +1,6 @@
 export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-B3dPiEl8.js';
 import { L as LeaderboardEntry } from '../../types-4wyyzjot.js';
+export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-DVBZSN0R.js';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
 import 'react/jsx-runtime';
 import '../../with-responsive-Cp2qnQPo.js';
@@ -14,29 +15,6 @@ import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '@visx/legend';
-
-/**
- * Types for formatMetricValue
- */
-type MetricValueType = 'number' | 'average' | 'currency';
-type FormatMetricValueOptions = {
-    decimals?: number;
-    useMultipliers?: boolean;
-    signDisplay?: Intl.NumberFormatOptions['signDisplay'];
-};
-/**
- * Format a numeric metric value based on type, precision and scale.
- * Supports currency, number and percentage, using @automattic/number-formatters.
- *
- * @param value                  - The value to format
- * @param type                   - The type of formatting to apply
- * @param options                - Formatting options
- * @param options.decimals       - Number of decimal places to show
- * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
- * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
- * @return Formatted string
- */
-declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
 
 /**
  * Hook to create legend items from leaderboard data
@@ -63,4 +41,4 @@ declare function useLeaderboardLegendItems({ data, primaryColor, secondaryColor,
     };
 }): BaseLegendItem[];
 
-export { LeaderboardEntry, type MetricValueType, formatMetricValue, useLeaderboardLegendItems };
+export { LeaderboardEntry, useLeaderboardLegendItems };

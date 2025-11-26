@@ -8,7 +8,8 @@ import {
   useGlobalChartsContext,
   useGlobalChartsTheme,
   wooTheme
-} from "../chunk-7X5TYD64.js";
+} from "../chunk-OZYA4QTY.js";
+import "../chunk-AVHWSXUP.js";
 import "../chunk-G3PMV62Z.js";
 export {
   GlobalChartsContext,

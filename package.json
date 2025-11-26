@@ -77,6 +77,10 @@
 			"require": "./dist/components/tooltip/index.cjs"
 		},
 		"./tooltip/style.css": "./dist/components/tooltip/index.css",
+		"./utils": {
+			"import": "./dist/utils/index.js",
+			"require": "./dist/utils/index.cjs"
+		},
 		"./visx/group": {
 			"import": "./dist/visx/group/index.js",
 			"require": "./dist/visx/group/index.cjs"
@@ -129,6 +133,9 @@
 			],
 			"providers": [
 				"./dist/providers/index.d.ts"
+			],
+			"utils": [
+				"./dist/utils/index.d.ts"
 			],
 			"visx/group": [
 				"./dist/visx/group/index.d.ts"
