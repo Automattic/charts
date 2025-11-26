@@ -2,9 +2,6 @@ import {
   radial_wipe_animation_default
 } from "./chunk-3OVXJFQY.js";
 import {
-  BaseTooltip
-} from "./chunk-5XI443YP.js";
-import {
   ChartHTML,
   ChartSVG,
   useChartChildren
@@ -12,6 +9,9 @@ import {
 import {
   withResponsive
 } from "./chunk-TYYW4BG3.js";
+import {
+  BaseTooltip
+} from "./chunk-5XI443YP.js";
 import {
   Legend,
   SingleChartContext,
@@ -349,4 +349,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-QDWN3ATP.js.map
+//# sourceMappingURL=chunk-S6UYIY67.js.map

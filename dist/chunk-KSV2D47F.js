@@ -1,10 +1,10 @@
 import {
+  withResponsive
+} from "./chunk-TYYW4BG3.js";
+import {
   AccessibleTooltip,
   useKeyboardNavigation
 } from "./chunk-5XI443YP.js";
-import {
-  withResponsive
-} from "./chunk-TYYW4BG3.js";
 import {
   Legend,
   SingleChartContext,
@@ -505,4 +505,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-BUSMF7CB.js.map
+//# sourceMappingURL=chunk-KSV2D47F.js.map
