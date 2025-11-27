@@ -1,7 +1,7 @@
 import {
   LineChart,
   LineChartResponsive
-} from "./chunk-AG7HFTYL.js";
+} from "./chunk-5C2OMRXX.js";
 import {
   PieChart,
   PieChartResponsive
@@ -24,9 +24,6 @@ import {
   BaseTooltip
 } from "./chunk-5XI443YP.js";
 import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-Q2VQM74O.js";
-import {
   LeaderboardChart,
   LeaderboardChartResponsive
 } from "./chunk-SQMTTC4F.js";
@@ -36,6 +33,9 @@ import {
   Legend,
   useChartLegendItems
 } from "./chunk-SUMZU44N.js";
+import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-Q2VQM74O.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,

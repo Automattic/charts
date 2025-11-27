@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Charts: Fix zero value tooltip in conversion funnel chart.
+- Charts: Improve guessOptimalNumTicks to use custom formatter and handle empty data.
 
 ## [0.50.0] - 2025-11-26
 ### Added

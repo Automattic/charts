@@ -598,7 +598,11 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   const minX = Math.min(...data.map((datom) => datom.data.at(0)?.date));
   const maxX = Math.max(...data.map((datom) => datom.data.at(-1)?.date));
   const xScale = scaleTime({ domain: [minX, maxX] });
-  const upperBound = Math.min(data[0]?.data.length, Math.ceil(chartWidth / X_TICK_WIDTH));
+  const upperBound = Math.min(
+    data[0]?.data.length || 3,
+    // A sane fallback to avoid NaN when no data is present
+    Math.ceil(chartWidth / X_TICK_WIDTH)
+  );
   let secondBestGuess = 1;
   for (let numTicks = upperBound; numTicks > 1; --numTicks) {
     const ticks = xScale.ticks(numTicks).map((d) => tickFormatter(d.getTime()));
@@ -730,7 +734,7 @@ var LineChartInternal = forwardRef(
       totalPoints: dataSorted[0]?.data.length || 0
     });
     const chartOptions = useMemo2(() => {
-      const formatter = getFormatter(dataSorted);
+      const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
       return {
         axis: {
           x: {
@@ -1038,4 +1042,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-AG7HFTYL.js.map
+//# sourceMappingURL=chunk-5C2OMRXX.js.map

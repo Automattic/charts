@@ -598,7 +598,11 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _34 => _34.data, 'access', _35 => _35.at, 'call', _36 => _36(0), 'optionalAccess', _37 => _37.date])));
   const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _38 => _38.data, 'access', _39 => _39.at, 'call', _40 => _40(-1), 'optionalAccess', _41 => _41.date])));
   const xScale = _scale.scaleTime.call(void 0, { domain: [minX, maxX] });
-  const upperBound = Math.min(_optionalChain([data, 'access', _42 => _42[0], 'optionalAccess', _43 => _43.data, 'access', _44 => _44.length]), Math.ceil(chartWidth / X_TICK_WIDTH));
+  const upperBound = Math.min(
+    _optionalChain([data, 'access', _42 => _42[0], 'optionalAccess', _43 => _43.data, 'access', _44 => _44.length]) || 3,
+    // A sane fallback to avoid NaN when no data is present
+    Math.ceil(chartWidth / X_TICK_WIDTH)
+  );
   let secondBestGuess = 1;
   for (let numTicks = upperBound; numTicks > 1; --numTicks) {
     const ticks = xScale.ticks(numTicks).map((d) => tickFormatter(d.getTime()));
@@ -730,31 +734,31 @@ var LineChartInternal = _react.forwardRef.call(void 0,
       totalPoints: _optionalChain([dataSorted, 'access', _54 => _54[0], 'optionalAccess', _55 => _55.data, 'access', _56 => _56.length]) || 0
     });
     const chartOptions = _react.useMemo.call(void 0, () => {
-      const formatter = getFormatter(dataSorted);
+      const formatter = _optionalChain([options, 'optionalAccess', _57 => _57.axis, 'optionalAccess', _58 => _58.x, 'optionalAccess', _59 => _59.tickFormat]) || getFormatter(dataSorted);
       return {
         axis: {
           x: {
             orientation: "bottom",
             numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
             tickFormat: formatter,
-            ..._optionalChain([options, 'optionalAccess', _57 => _57.axis, 'optionalAccess', _58 => _58.x])
+            ..._optionalChain([options, 'optionalAccess', _60 => _60.axis, 'optionalAccess', _61 => _61.x])
           },
           y: {
             orientation: "left",
             numTicks: 4,
             tickFormat: _numberformatters.formatNumberCompact,
-            ..._optionalChain([options, 'optionalAccess', _59 => _59.axis, 'optionalAccess', _60 => _60.y])
+            ..._optionalChain([options, 'optionalAccess', _62 => _62.axis, 'optionalAccess', _63 => _63.y])
           }
         },
         xScale: {
           type: "time",
-          ..._optionalChain([options, 'optionalAccess', _61 => _61.xScale])
+          ..._optionalChain([options, 'optionalAccess', _64 => _64.xScale])
         },
         yScale: {
           type: "linear",
           nice: true,
           zero: false,
-          ..._optionalChain([options, 'optionalAccess', _62 => _62.yScale])
+          ..._optionalChain([options, 'optionalAccess', _65 => _65.yScale])
         }
       };
     }, [options, dataSorted, width]);
@@ -778,10 +782,10 @@ var LineChartInternal = _react.forwardRef.call(void 0,
     const legendOptions = _react.useMemo.call(void 0, 
       () => ({
         withGlyph: withLegendGlyph,
-        glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _63 => _63.radius])), () => ( 4))),
+        glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _66 => _66.radius])), () => ( 4))),
         renderGlyph
       }),
-      [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _64 => _64.radius]), renderGlyph]
+      [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _67 => _67.radius]), renderGlyph]
     );
     const legendItems = _chunkLACY6G6Icjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
     const chartMetadata = _react.useMemo.call(void 0, 
@@ -804,8 +808,8 @@ var LineChartInternal = _react.forwardRef.call(void 0,
     });
     const prefersReducedMotion = _chunkI7MCBD76cjs.usePrefersReducedMotion.call(void 0, );
     const accessors = {
-      xAccessor: (d) => _optionalChain([d, 'optionalAccess', _65 => _65.date]),
-      yAccessor: (d) => _optionalChain([d, 'optionalAccess', _66 => _66.value])
+      xAccessor: (d) => _optionalChain([d, 'optionalAccess', _68 => _68.date]),
+      yAccessor: (d) => _optionalChain([d, 'optionalAccess', _69 => _69.value])
     };
     if (error) {
       return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: _clsx2.default.call(void 0, "line-chart", line_chart_module_default["line-chart"]), children: error });
@@ -873,7 +877,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                             x: width / 2,
                             y: (height - (showLegend ? legendHeight : 0)) / 2,
                             textAnchor: "middle",
-                            fill: _optionalChain([providerTheme, 'access', _67 => _67.gridStyles, 'optionalAccess', _68 => _68.stroke]) || "#ccc",
+                            fill: _optionalChain([providerTheme, 'access', _70 => _70.gridStyles, 'optionalAccess', _71 => _71.stroke]) || "#ccc",
                             fontSize: "14",
                             fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
                             children: _i18n.__.call(void 0, 
@@ -903,9 +907,9 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                                 fromOpacity: 0.4,
                                 toOpacity: 0.1,
                                 to: providerTheme.backgroundColor,
-                                ..._optionalChain([seriesData, 'access', _69 => _69.options, 'optionalAccess', _70 => _70.gradient]),
+                                ..._optionalChain([seriesData, 'access', _72 => _72.options, 'optionalAccess', _73 => _73.gradient]),
                                 "data-testid": "line-gradient",
-                                children: _optionalChain([seriesData, 'access', _71 => _71.options, 'optionalAccess', _72 => _72.gradient, 'optionalAccess', _73 => _73.stops, 'optionalAccess', _74 => _74.map, 'call', _75 => _75((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                                children: _optionalChain([seriesData, 'access', _74 => _74.options, 'optionalAccess', _75 => _75.gradient, 'optionalAccess', _76 => _76.stops, 'optionalAccess', _77 => _77.map, 'call', _78 => _78((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                                   "stop",
                                   {
                                     offset: stop.offset,
@@ -920,7 +924,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                               _xychart.AreaSeries,
                               {
-                                dataKey: _optionalChain([seriesData, 'optionalAccess', _76 => _76.label]),
+                                dataKey: _optionalChain([seriesData, 'optionalAccess', _79 => _79.label]),
                                 data: seriesData.data,
                                 ...accessors,
                                 fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
@@ -928,7 +932,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                                 curve: getCurveType(curveType, smoothing),
                                 lineProps
                               },
-                              _optionalChain([seriesData, 'optionalAccess', _77 => _77.label])
+                              _optionalChain([seriesData, 'optionalAccess', _80 => _80.label])
                             ),
                             withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                               line_chart_glyph_default,
@@ -954,7 +958,7 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                                 position: "end"
                               }
                             )
-                          ] }, _optionalChain([seriesData, 'optionalAccess', _78 => _78.label]) || index);
+                          ] }, _optionalChain([seriesData, 'optionalAccess', _81 => _81.label]) || index);
                         }),
                         withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                           _chunk7HROSZRScjs.AccessibleTooltip,
@@ -966,8 +970,8 @@ var LineChartInternal = _react.forwardRef.call(void 0,
                             renderTooltip,
                             renderGlyph: tooltipRenderGlyph,
                             glyphStyle,
-                            showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _79 => _79.showVertical]),
-                            showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _80 => _80.showHorizontal]),
+                            showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _82 => _82.showVertical]),
+                            showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _83 => _83.showHorizontal]),
                             selectedIndex,
                             tooltipRef,
                             keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
@@ -1038,4 +1042,4 @@ var LineChartResponsive = _chunkWPSB7BRRcjs.attachSubComponents.call(void 0,
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-EUTMYGCP.cjs.map
+//# sourceMappingURL=chunk-JVO6AK43.cjs.map
