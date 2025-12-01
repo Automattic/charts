@@ -29,7 +29,7 @@ import {
 import {
   LeaderboardChart,
   LeaderboardChartResponsive
-} from "./chunk-SQMTTC4F.js";
+} from "./chunk-P7IYRJQW.js";
 import "./chunk-D3DZT2EK.js";
 import "./chunk-TYYW4BG3.js";
 import {

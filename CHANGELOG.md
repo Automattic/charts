@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Changed
+- Update package dependencies.
+
 ### Fixed
 - Charts: Fix zero value tooltip in conversion funnel chart.
 - Charts: Improve guessOptimalNumTicks to use custom formatter and handle empty data.
