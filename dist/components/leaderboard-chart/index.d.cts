@@ -1,6 +1,6 @@
 export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-BlBexVz4.cjs';
 import { L as LeaderboardEntry } from '../../types-4wyyzjot.cjs';
-export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-DVBZSN0R.cjs';
+export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.cjs';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.cjs';
 import 'react/jsx-runtime';
 import '../../with-responsive-Cp2qnQPo.cjs';
