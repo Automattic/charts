@@ -1,25 +1,25 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-
-
-
-var _chunkN4ZDNOPYcjs = require('./chunk-N4ZDNOPY.cjs');
-
-
-var _chunkFI5B6KSHcjs = require('./chunk-FI5B6KSH.cjs');
+import {
+  GlobalChartsContext,
+  useGlobalChartsContext,
+  useGlobalChartsTheme,
+  useTextTruncation
+} from "./chunk-6AEQRAIY.js";
+import {
+  formatPercentage
+} from "./chunk-7IZD3F7B.js";
 
 // src/components/legend/legend.tsx
-var _react = require('react');
+import { useContext as useContext3, useMemo, forwardRef as forwardRef2 } from "react";
 
 // src/components/private/single-chart-context/single-chart-context.tsx
-
-var ChartInstanceContext = _react.createContext.call(void 0, null);
+import { createContext } from "react";
+var ChartInstanceContext = createContext(null);
 var SingleChartContext = ChartInstanceContext;
 
 // src/components/private/single-chart-context/use-single-chart-context.ts
-
+import { useContext } from "react";
 var useChartInstanceContext = () => {
-  const context = _react.useContext.call(void 0, ChartInstanceContext);
+  const context = useContext(ChartInstanceContext);
   if (!context) {
     throw new Error("useChartInstanceContext must be used within a Chart component");
   }
@@ -28,15 +28,15 @@ var useChartInstanceContext = () => {
 var useSingleChartContext = useChartInstanceContext;
 
 // src/components/legend/private/base-legend.tsx
-var _group = require('@visx/group');
-var _legend = require('@visx/legend');
-var _scale = require('@visx/scale');
-var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
-
-
-
-
-
+import { Group } from "@visx/group";
+import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
+import { scaleOrdinal } from "@visx/scale";
+import clsx from "clsx";
+import {
+  forwardRef,
+  useCallback,
+  useContext as useContext2
+} from "react";
 
 // src/components/legend/utils/value-or-identity.ts
 function valueOrIdentity(_) {
@@ -80,7 +80,7 @@ var base_legend_module_default = {
 };
 
 // src/components/legend/private/base-legend.tsx
-var _jsxruntime = require('react/jsx-runtime');
+import { jsx, jsxs } from "react/jsx-runtime";
 var orientationToFlexDirection = {
   horizontal: "row",
   vertical: "column"
@@ -91,12 +91,12 @@ var LegendText = ({
   maxWidth
 }) => {
   const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
-  const [textRef, isTruncated] = _chunkN4ZDNOPYcjs.useTextTruncation.call(void 0, Boolean(isEllipsis));
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+  const [textRef, isTruncated] = useTextTruncation(Boolean(isEllipsis));
+  return /* @__PURE__ */ jsx(
     "span",
     {
       ref: textRef,
-      className: _clsx2.default.call(void 0, 
+      className: clsx(
         base_legend_module_default["legend-item-text"],
         maxWidth != null && base_legend_module_default[`legend-item-text--${textOverflow}`]
       ),
@@ -111,7 +111,7 @@ var LegendText = ({
     }
   );
 };
-var BaseLegend = _react.forwardRef.call(void 0, 
+var BaseLegend = forwardRef(
   ({
     items,
     className,
@@ -141,18 +141,18 @@ var BaseLegend = _react.forwardRef.call(void 0,
     chartId,
     ...legendItemProps
   }, ref) => {
-    const theme = _chunkN4ZDNOPYcjs.useGlobalChartsTheme.call(void 0, );
-    const context = _react.useContext.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsContext);
-    const legendScale = _scale.scaleOrdinal.call(void 0, {
+    const theme = useGlobalChartsTheme();
+    const context = useContext2(GlobalChartsContext);
+    const legendScale = scaleOrdinal({
       domain: items.map((item) => item.label),
       range: items.map((item) => item.color)
     });
     const domain = legendScale.domain();
-    const getShapeStyle = _react.useCallback.call(void 0, 
-      ({ index }) => _optionalChain([items, 'access', _2 => _2[index], 'optionalAccess', _3 => _3.shapeStyle]),
+    const getShapeStyle = useCallback(
+      ({ index }) => items[index]?.shapeStyle,
       [items]
     );
-    const handleLegendClick = _react.useCallback.call(void 0, 
+    const handleLegendClick = useCallback(
       (seriesLabel) => {
         if (interactive && chartId && context) {
           context.toggleSeriesVisibility(chartId, seriesLabel);
@@ -160,7 +160,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
       },
       [interactive, chartId, context]
     );
-    const isSeriesVisible = _react.useCallback.call(void 0, 
+    const isSeriesVisible = useCallback(
       (seriesLabel) => {
         if (!interactive || !chartId || !context) {
           return true;
@@ -169,7 +169,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
       },
       [interactive, chartId, context]
     );
-    const createClickHandler = _react.useCallback.call(void 0, 
+    const createClickHandler = useCallback(
       (labelText) => {
         if (!interactive) {
           return void 0;
@@ -178,7 +178,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
       },
       [interactive, handleLegendClick]
     );
-    const createKeyDownHandler = _react.useCallback.call(void 0, 
+    const createKeyDownHandler = useCallback(
       (labelText) => {
         if (!interactive) {
           return void 0;
@@ -192,19 +192,19 @@ var BaseLegend = _react.forwardRef.call(void 0,
       },
       [interactive, handleLegendClick]
     );
-    return render ? render(items) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-      _legend.LegendOrdinal,
+    return render ? render(items) : /* @__PURE__ */ jsx(
+      LegendOrdinal,
       {
         scale: legendScale,
         labelFormat,
         labelTransform,
-        children: (labels) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+        children: (labels) => /* @__PURE__ */ jsx(
           "div",
           {
             ref,
             role: "list",
             "data-testid": `legend-${orientation}`,
-            className: _clsx2.default.call(void 0, 
+            className: clsx(
               base_legend_module_default.legend,
               base_legend_module_default[`legend--${orientation}`],
               base_legend_module_default[`legend--alignment-${alignment}`],
@@ -219,10 +219,10 @@ var BaseLegend = _react.forwardRef.call(void 0,
               const visible = isSeriesVisible(label.text);
               const handleClick = createClickHandler(label.text);
               const handleKeyDown = createKeyDownHandler(label.text);
-              return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
-                _legend.LegendItem,
+              return /* @__PURE__ */ jsxs(
+                LegendItem,
                 {
-                  className: _clsx2.default.call(void 0, 
+                  className: clsx(
                     "visx-legend-item",
                     base_legend_module_default["legend-item"],
                     interactive && base_legend_module_default["legend-item--interactive"],
@@ -240,24 +240,24 @@ var BaseLegend = _react.forwardRef.call(void 0,
                   "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
                   ...legendItemProps,
                   children: [
-                    _optionalChain([items, 'access', _4 => _4[i], 'optionalAccess', _5 => _5.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                    items[i]?.renderGlyph ? /* @__PURE__ */ jsx(
                       "svg",
                       {
-                        width: _optionalChain([items, 'access', _6 => _6[i], 'optionalAccess', _7 => _7.glyphSize]) * 2,
-                        height: _optionalChain([items, 'access', _8 => _8[i], 'optionalAccess', _9 => _9.glyphSize]) * 2,
+                        width: items[i]?.glyphSize * 2,
+                        height: items[i]?.glyphSize * 2,
                         "data-testid": "legend-glyph",
-                        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, { children: _optionalChain([items, 'access', _10 => _10[i], 'optionalAccess', _11 => _11.renderGlyph, 'call', _12 => _12({
+                        children: /* @__PURE__ */ jsx(Group, { children: items[i]?.renderGlyph({
                           key: `legend-glyph-${label.text}`,
                           datum: {},
                           index: i,
                           color: fill(label),
-                          size: _optionalChain([items, 'access', _13 => _13[i], 'optionalAccess', _14 => _14.glyphSize]),
-                          x: _optionalChain([items, 'access', _15 => _15[i], 'optionalAccess', _16 => _16.glyphSize]),
-                          y: _optionalChain([items, 'access', _17 => _17[i], 'optionalAccess', _18 => _18.glyphSize])
-                        })]) })
+                          size: items[i]?.glyphSize,
+                          x: items[i]?.glyphSize,
+                          y: items[i]?.glyphSize
+                        }) })
                       }
-                    ) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                      _legend.LegendShape,
+                    ) : /* @__PURE__ */ jsx(
+                      LegendShape,
                       {
                         shape,
                         height: shapeHeight,
@@ -271,10 +271,10 @@ var BaseLegend = _react.forwardRef.call(void 0,
                         shapeStyle: getShapeStyle
                       }
                     ),
-                    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
-                      _legend.LegendLabel,
+                    /* @__PURE__ */ jsxs(
+                      LegendLabel,
                       {
-                        className: _clsx2.default.call(void 0, "visx-legend-label", base_legend_module_default["legend-item-label"]),
+                        className: clsx("visx-legend-label", base_legend_module_default["legend-item-label"]),
                         style: {
                           justifyContent: labelAlign,
                           flex: labelFlex,
@@ -283,7 +283,7 @@ var BaseLegend = _react.forwardRef.call(void 0,
                         },
                         ...legendLabelProps,
                         children: [
-                          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                          /* @__PURE__ */ jsx(
                             LegendText,
                             {
                               text: label.text,
@@ -291,9 +291,9 @@ var BaseLegend = _react.forwardRef.call(void 0,
                               maxWidth
                             }
                           ),
-                          _optionalChain([items, 'access', _19 => _19.find, 'call', _20 => _20((item) => item.label === label.text), 'optionalAccess', _21 => _21.value]) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", { className: base_legend_module_default["legend-item-value"], children: [
+                          items.find((item) => item.label === label.text)?.value && /* @__PURE__ */ jsxs("span", { className: base_legend_module_default["legend-item-value"], children: [
                             "\xA0",
-                            _optionalChain([items, 'access', _22 => _22.find, 'call', _23 => _23((item) => item.label === label.text), 'optionalAccess', _24 => _24.value])
+                            items.find((item) => item.label === label.text)?.value
                           ] })
                         ]
                       }
@@ -311,26 +311,26 @@ var BaseLegend = _react.forwardRef.call(void 0,
 );
 
 // src/components/legend/legend.tsx
-
-var Legend = _react.forwardRef.call(void 0, 
+import { jsx as jsx2 } from "react/jsx-runtime";
+var Legend = forwardRef2(
   ({ chartId, items, ...props }, ref) => {
-    const context = _react.useContext.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsContext);
-    const singleChartContext = _react.useContext.call(void 0, SingleChartContext);
-    const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _25 => _25.chartId])));
-    const contextItems = _react.useMemo.call(void 0, () => {
-      return contextChartId && context ? _optionalChain([context, 'access', _26 => _26.getChartData, 'call', _27 => _27(contextChartId), 'optionalAccess', _28 => _28.legendItems]) : void 0;
+    const context = useContext3(GlobalChartsContext);
+    const singleChartContext = useContext3(SingleChartContext);
+    const contextChartId = chartId ?? singleChartContext?.chartId;
+    const contextItems = useMemo(() => {
+      return contextChartId && context ? context.getChartData(contextChartId)?.legendItems : void 0;
     }, [contextChartId, context]);
     const legendItems = items || contextItems;
     if (!legendItems) {
       return null;
     }
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BaseLegend, { ref, items: legendItems, ...props, chartId: contextChartId });
+    return /* @__PURE__ */ jsx2(BaseLegend, { ref, items: legendItems, ...props, chartId: contextChartId });
   }
 );
 
 // src/components/legend/hooks/use-chart-legend-items.ts
-var _numberformatters = require('@automattic/number-formatters');
-
+import { formatNumber } from "@automattic/number-formatters";
+import { useMemo as useMemo2 } from "react";
 function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
   if (!showValues || legendValueDisplay === "none") {
     return "";
@@ -339,17 +339,17 @@ function formatPointValue(point, showValues, legendValueDisplay = "percentage") 
     const percentagePoint = point;
     switch (legendValueDisplay) {
       case "percentage":
-        return _chunkFI5B6KSHcjs.formatPercentage.call(void 0, percentagePoint.percentage);
+        return formatPercentage(percentagePoint.percentage);
       case "value":
-        return _numberformatters.formatNumber.call(void 0, percentagePoint.value);
+        return formatNumber(percentagePoint.value);
       case "valueDisplay":
-        return percentagePoint.valueDisplay || _numberformatters.formatNumber.call(void 0, percentagePoint.value);
+        return percentagePoint.valueDisplay || formatNumber(percentagePoint.value);
       default:
         return "";
     }
   }
   if ("value" in point) {
-    return point.value !== null ? _numberformatters.formatNumber.call(void 0, point.value) : "";
+    return point.value !== null ? formatNumber(point.value) : "";
   }
   return "";
 }
@@ -375,7 +375,7 @@ function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, 
     });
     const baseItem = {
       label: series.label,
-      value: showValues ? _optionalChain([series, 'access', _29 => _29.data, 'optionalAccess', _30 => _30.length, 'optionalAccess', _31 => _31.toString, 'call', _32 => _32()]) || "0" : "",
+      value: showValues ? series.data?.length?.toString() || "0" : "",
       color,
       shapeStyle: shapeStyles
     };
@@ -408,8 +408,8 @@ function useChartLegendItems(data, options = {}, legendShape) {
     glyphSize = 8,
     renderGlyph
   } = options;
-  const { getElementStyles } = _chunkN4ZDNOPYcjs.useGlobalChartsContext.call(void 0, );
-  return _react.useMemo.call(void 0, () => {
+  const { getElementStyles } = useGlobalChartsContext();
+  return useMemo2(() => {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return [];
     }
@@ -446,10 +446,10 @@ function useChartLegendItems(data, options = {}, legendShape) {
   ]);
 }
 
-
-
-
-
-
-exports.SingleChartContext = SingleChartContext; exports.useSingleChartContext = useSingleChartContext; exports.Legend = Legend; exports.useChartLegendItems = useChartLegendItems;
-//# sourceMappingURL=chunk-BZQFCAX7.cjs.map
+export {
+  SingleChartContext,
+  useSingleChartContext,
+  Legend,
+  useChartLegendItems
+};
+//# sourceMappingURL=chunk-6IOGXH2M.js.map

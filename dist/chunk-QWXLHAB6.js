@@ -16,7 +16,7 @@ import {
   Legend,
   SingleChartContext,
   useChartLegendItems
-} from "./chunk-7OWIZ5S7.js";
+} from "./chunk-6IOGXH2M.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -26,7 +26,7 @@ import {
   useGlobalChartsContext,
   useInteractiveLegendData,
   usePrefersReducedMotion
-} from "./chunk-MRCTAUHL.js";
+} from "./chunk-6AEQRAIY.js";
 import {
   attachSubComponents
 } from "./chunk-7IZD3F7B.js";
@@ -349,4 +349,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-JF3TAGG7.js.map
+//# sourceMappingURL=chunk-QWXLHAB6.js.map

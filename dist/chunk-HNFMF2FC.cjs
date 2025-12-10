@@ -7,7 +7,7 @@ var _chunk5NI3TGRDcjs = require('./chunk-5NI3TGRD.cjs');
 
 
 
-var _chunkBZQFCAX7cjs = require('./chunk-BZQFCAX7.cjs');
+var _chunkPD4ADOLWcjs = require('./chunk-PD4ADOLW.cjs');
 
 
 
@@ -16,7 +16,7 @@ var _chunkBZQFCAX7cjs = require('./chunk-BZQFCAX7.cjs');
 
 
 
-var _chunkN4ZDNOPYcjs = require('./chunk-N4ZDNOPY.cjs');
+var _chunkOLHJTLY4cjs = require('./chunk-OLHJTLY4.cjs');
 
 
 
@@ -4216,8 +4216,8 @@ function useLeaderboardLegendItems({
   withOverlayLabel = false,
   legendLabels
 }) {
-  const { leaderboardChart: leaderboardChartSettings } = _chunkN4ZDNOPYcjs.useGlobalChartsTheme.call(void 0, );
-  const { getElementStyles } = _chunkN4ZDNOPYcjs.useGlobalChartsContext.call(void 0, );
+  const { leaderboardChart: leaderboardChartSettings } = _chunkOLHJTLY4cjs.useGlobalChartsTheme.call(void 0, );
+  const { getElementStyles } = _chunkOLHJTLY4cjs.useGlobalChartsContext.call(void 0, );
   return _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
       return [];
@@ -4356,8 +4356,8 @@ var LeaderboardChartInternal = ({
   style,
   children
 }) => {
-  const chartId = _chunkN4ZDNOPYcjs.useChartId.call(void 0, providedChartId);
-  const { leaderboardChart: leaderboardChartSettings } = _chunkN4ZDNOPYcjs.useGlobalChartsTheme.call(void 0, );
+  const chartId = _chunkOLHJTLY4cjs.useChartId.call(void 0, providedChartId);
+  const { leaderboardChart: leaderboardChartSettings } = _chunkOLHJTLY4cjs.useGlobalChartsTheme.call(void 0, );
   const { otherChildren } = _chunk3Z526IL2cjs.useChartChildren.call(void 0, children, "LeaderboardChart");
   const {
     labelSpacing,
@@ -4367,7 +4367,7 @@ var LeaderboardChartInternal = ({
     secondaryColor: settingsSecondaryColor,
     deltaColors
   } = leaderboardChartSettings;
-  const { getElementStyles, isSeriesVisible } = _chunkN4ZDNOPYcjs.useGlobalChartsContext.call(void 0, );
+  const { getElementStyles, isSeriesVisible } = _chunkOLHJTLY4cjs.useGlobalChartsContext.call(void 0, );
   const { color: resolvedPrimaryColor } = getElementStyles({
     index: 0,
     overrideColor: primaryColor || settingsPrimaryColor
@@ -4417,17 +4417,17 @@ var LeaderboardChartInternal = ({
     }),
     [withComparison, withOverlayLabel]
   );
-  _chunkN4ZDNOPYcjs.useChartRegistration.call(void 0, {
+  _chunkOLHJTLY4cjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "leaderboard",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkN4ZDNOPYcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkOLHJTLY4cjs.usePrefersReducedMotion.call(void 0, );
   if (!data || data.length === 0) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-      _chunkBZQFCAX7cjs.SingleChartContext.Provider,
+      _chunkPD4ADOLWcjs.SingleChartContext.Provider,
       {
         value: {
           chartId,
@@ -4454,7 +4454,7 @@ var LeaderboardChartInternal = ({
     );
   }
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkBZQFCAX7cjs.SingleChartContext.Provider,
+    _chunkPD4ADOLWcjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -4508,7 +4508,7 @@ var LeaderboardChartInternal = ({
               ] }, entry.id);
             }) }),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkBZQFCAX7cjs.Legend,
+              _chunkPD4ADOLWcjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -4528,20 +4528,20 @@ var LeaderboardChartInternal = ({
   );
 };
 var LeaderboardChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkOLHJTLY4cjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOLHJTLY4cjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props }) });
 };
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
 var LeaderboardChart = _chunkFI5B6KSHcjs.attachSubComponents.call(void 0, LeaderboardChartWithProvider, {
-  Legend: _chunkBZQFCAX7cjs.Legend
+  Legend: _chunkPD4ADOLWcjs.Legend
 });
 var LeaderboardChartResponsive = _chunkFI5B6KSHcjs.attachSubComponents.call(void 0, 
   _chunk5NI3TGRDcjs.withResponsive.call(void 0, LeaderboardChartWithProvider),
   {
-    Legend: _chunkBZQFCAX7cjs.Legend
+    Legend: _chunkPD4ADOLWcjs.Legend
   }
 );
 
@@ -4580,4 +4580,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-EKVFMS3A.cjs.map
+//# sourceMappingURL=chunk-HNFMF2FC.cjs.map

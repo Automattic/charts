@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ReactNode, CSSProperties, FC } from 'react';
-import { e as CompleteChartTheme, c as SeriesData, d as DataPointPercentage, C as ChartTheme } from './types-4wyyzjot.js';
-import { B as BaseLegendItem } from './types-C05PdDJa.js';
+import { e as CompleteChartTheme, c as SeriesData, d as DataPointPercentage, C as ChartTheme } from './types-4wyyzjot.cjs';
+import { B as BaseLegendItem } from './types-C05PdDJa.cjs';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles, GlyphProps } from '@visx/xychart';
 
@@ -54,13 +54,5 @@ declare const useGlobalChartsTheme: () => CompleteChartTheme;
  * Default theme configuration
  */
 declare const defaultTheme: CompleteChartTheme;
-/**
- * Jetpack theme configuration
- */
-declare const jetpackTheme: ChartTheme;
-/**
- * Woo theme configuration
- */
-declare const wooTheme: ChartTheme;
 
-export { type ChartRegistration as C, type ElementStyles as E, GlobalChartsProvider as G, useGlobalChartsTheme as a, GlobalChartsContext as b, type GlobalChartsContextValue as c, defaultTheme as d, type GetElementStylesParams as e, jetpackTheme as j, useGlobalChartsContext as u, wooTheme as w };
+export { type ChartRegistration as C, type ElementStyles as E, GlobalChartsProvider as G, useGlobalChartsTheme as a, GlobalChartsContext as b, type GlobalChartsContextValue as c, defaultTheme as d, type GetElementStylesParams as e, useGlobalChartsContext as u };

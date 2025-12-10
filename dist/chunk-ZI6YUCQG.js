@@ -1,13 +1,13 @@
 import {
   BarChartResponsive
-} from "./chunk-5BCULKGA.js";
+} from "./chunk-C4HNHJXW.js";
 import {
   withResponsive
 } from "./chunk-D3E235JJ.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider
-} from "./chunk-MRCTAUHL.js";
+} from "./chunk-6AEQRAIY.js";
 
 // src/components/bar-list-chart/bar-list-chart.tsx
 import { formatNumberCompact } from "@automattic/number-formatters";
@@ -193,4 +193,4 @@ export {
   BarListChart,
   BarListChartResponsive
 };
-//# sourceMappingURL=chunk-UGW7EUAF.js.map
+//# sourceMappingURL=chunk-ZI6YUCQG.js.map

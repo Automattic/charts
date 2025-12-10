@@ -155,137 +155,6 @@ var defaultTheme = {
     }
   }
 };
-var jetpackTheme = {
-  backgroundColor: "#FFFFFF",
-  // chart background color
-  labelBackgroundColor: "transparent",
-  // label background color (transparent by default)
-  labelTextColor: "#FFFFFF",
-  // label text color (white to match original behavior)
-  colors: ["#98C8DF", "#006DAB", "#A6DC80", "#1F9828", "#FF8C8F"],
-  gridStyles: {
-    stroke: "#DCDCDE",
-    strokeWidth: 1
-  },
-  tickLength: 4,
-  gridColor: "",
-  gridColorDark: "",
-  xTickLineStyles: { stroke: "black" },
-  xAxisLineStyles: { stroke: "#DCDCDE", strokeWidth: 1 },
-  legendLabelStyles: {
-    color: "var(--jp-gray-80, #2c3338)"
-  },
-  svgLabelSmall: { fill: "var(--jp-gray-80, #2c3338)" },
-  annotationStyles: {
-    label: {
-      anchorLineStroke: "var(--jp-gray-80, #2c3338)",
-      backgroundFill: "#fff"
-    },
-    connector: {
-      stroke: "var(--jp-gray-80, #2c3338)"
-    },
-    circleSubject: {
-      stroke: "transparent",
-      fill: "var(--jp-gray-80, #2c3338)",
-      radius: 5
-    }
-  },
-  leaderboardChart: {
-    rowGap: 12,
-    columnGap: 4,
-    labelSpacing: 1.5,
-    primaryColor: "#006DAB",
-    secondaryColor: "#98C8DF",
-    deltaColors: ["#FF8C8F", "#757575", "#1F9828"]
-    // [negative, neutral, positive]
-  },
-  conversionFunnelChart: {
-    backgroundColor: "#F3F4F6",
-    positiveChangeColor: "#1F9828",
-    negativeChangeColor: "#FF8C8F"
-  },
-  lineChart: {
-    lineStyles: {
-      comparison: {
-        strokeDasharray: "4 4",
-        strokeLinecap: "square"
-      }
-    }
-  }
-};
-var wooTheme = {
-  backgroundColor: "#FFFFFF",
-  // chart background color
-  labelBackgroundColor: "transparent",
-  // label background color (transparent by default)
-  labelTextColor: "#FFFFFF",
-  // label text color (white to match original behavior)
-  colors: [
-    "#3858E9",
-    // WooCommerce brand blue
-    "#66BDFF",
-    // Light blue
-    "#873EFF",
-    // Purple
-    "#7B90FF",
-    // Periwinkle blue
-    "#EB6594"
-    // Pink/rose
-  ],
-  gridStyles: {
-    stroke: "#787C82",
-    strokeWidth: 1
-  },
-  tickLength: 4,
-  gridColor: "",
-  gridColorDark: "",
-  svgLabelSmall: { fill: "#757575" },
-  xTickLineStyles: { stroke: "black" },
-  xAxisLineStyles: { stroke: "#DCDCDE", strokeWidth: 1 },
-  legendLabelStyles: {
-    fontSize: "12px",
-    fontWeight: 400,
-    color: "#757575"
-  },
-  legendContainerStyles: {
-    gap: "8px"
-  },
-  annotationStyles: {
-    label: {
-      anchorLineStroke: "black",
-      backgroundFill: "#fff"
-    },
-    connector: {
-      stroke: "black"
-    },
-    circleSubject: {
-      stroke: "transparent",
-      fill: "black",
-      radius: 5
-    }
-  },
-  leaderboardChart: {
-    rowGap: 12,
-    columnGap: 4,
-    labelSpacing: 1.5,
-    deltaColors: ["#D63638", "#757575", "#008A20"]
-    // [negative, neutral, positive]
-  },
-  conversionFunnelChart: {
-    backgroundColor: "#F3F4F6",
-    positiveChangeColor: "#008A20",
-    negativeChangeColor: "#D63638"
-  },
-  lineChart: {
-    lineStyles: {
-      comparison: {
-        strokeDasharray: "4 4",
-        strokeWidth: 1.5,
-        strokeLinecap: "square"
-      }
-    }
-  }
-};
 
 // src/providers/chart-context/global-charts-provider.tsx
 import { jsx } from "react/jsx-runtime";
@@ -826,8 +695,6 @@ export {
   useDeepMemo,
   useChartMouseHandler,
   defaultTheme,
-  jetpackTheme,
-  wooTheme,
   GlobalChartsContext,
   GlobalChartsProvider,
   useGlobalChartsContext,
@@ -843,4 +710,4 @@ export {
   useInteractiveLegendData,
   usePrefersReducedMotion
 };
-//# sourceMappingURL=chunk-MRCTAUHL.js.map
+//# sourceMappingURL=chunk-6AEQRAIY.js.map

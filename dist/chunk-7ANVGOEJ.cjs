@@ -6,7 +6,7 @@
 
 
 
-var _chunkN4ZDNOPYcjs = require('./chunk-N4ZDNOPY.cjs');
+var _chunkOLHJTLY4cjs = require('./chunk-OLHJTLY4.cjs');
 
 
 
@@ -112,9 +112,9 @@ var ConversionFunnelChartInternal = ({
   renderMainMetric,
   renderTooltip
 }) => {
-  const chartId = _chunkN4ZDNOPYcjs.useChartId.call(void 0, providedChartId);
-  const { conversionFunnelChart: conversionFunnelChartSettings } = _chunkN4ZDNOPYcjs.useGlobalChartsTheme.call(void 0, );
-  const { getElementStyles } = _chunkN4ZDNOPYcjs.useGlobalChartsContext.call(void 0, );
+  const chartId = _chunkOLHJTLY4cjs.useChartId.call(void 0, providedChartId);
+  const { conversionFunnelChart: conversionFunnelChartSettings } = _chunkOLHJTLY4cjs.useGlobalChartsTheme.call(void 0, );
+  const { getElementStyles } = _chunkOLHJTLY4cjs.useGlobalChartsContext.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
   const selectedBarRef = _react.useRef.call(void 0, null);
   const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = _tooltip.useTooltip.call(void 0, );
@@ -254,14 +254,14 @@ var ConversionFunnelChartInternal = ({
     }),
     [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _8 => _8.length])]
   );
-  _chunkN4ZDNOPYcjs.useChartRegistration.call(void 0, {
+  _chunkOLHJTLY4cjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems: [],
     chartType: "conversion-funnel",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkN4ZDNOPYcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkOLHJTLY4cjs.usePrefersReducedMotion.call(void 0, );
   if (!isDataValid) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
       "div",
@@ -365,15 +365,15 @@ var ConversionFunnelChartInternal = ({
   ] });
 };
 var ConversionFunnelChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkOLHJTLY4cjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkN4ZDNOPYcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOLHJTLY4cjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, { ...props }) });
 };
 ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 
 
 exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
-//# sourceMappingURL=chunk-KE4EDAQI.cjs.map
+//# sourceMappingURL=chunk-7ANVGOEJ.cjs.map

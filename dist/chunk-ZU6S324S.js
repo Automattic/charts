@@ -19,7 +19,7 @@ import {
   Legend,
   SingleChartContext,
   useChartLegendItems
-} from "./chunk-7OWIZ5S7.js";
+} from "./chunk-6IOGXH2M.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -30,7 +30,7 @@ import {
   useGlobalChartsTheme,
   useInteractiveLegendData,
   usePrefersReducedMotion
-} from "./chunk-MRCTAUHL.js";
+} from "./chunk-6AEQRAIY.js";
 import {
   attachSubComponents
 } from "./chunk-7IZD3F7B.js";
@@ -354,4 +354,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-42PJP36Q.js.map
+//# sourceMappingURL=chunk-ZU6S324S.js.map

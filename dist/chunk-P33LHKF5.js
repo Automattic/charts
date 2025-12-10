@@ -7,7 +7,7 @@ import {
 import {
   Legend,
   SingleChartContext
-} from "./chunk-7OWIZ5S7.js";
+} from "./chunk-6IOGXH2M.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -16,7 +16,7 @@ import {
   useGlobalChartsContext,
   useGlobalChartsTheme,
   usePrefersReducedMotion
-} from "./chunk-MRCTAUHL.js";
+} from "./chunk-6AEQRAIY.js";
 import {
   attachSubComponents,
   formatMetricValue
@@ -4580,4 +4580,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-RUG2O62B.js.map
+//# sourceMappingURL=chunk-P33LHKF5.js.map
