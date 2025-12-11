@@ -1,6 +1,6 @@
 {
 	"name": "@automattic/charts",
-	"version": "0.51.0",
+	"version": "0.52.0-alpha",
 	"description": "Display charts within Automattic products.",
 	"homepage": "https://github.com/Automattic/jetpack/tree/HEAD/projects/js-packages/charts/#readme",
 	"bugs": {
@@ -24,49 +24,49 @@
 			"require": "./dist/index.cjs"
 		},
 		"./bar-chart": {
-			"import": "./dist/components/bar-chart/index.js",
-			"require": "./dist/components/bar-chart/index.cjs"
+			"import": "./dist/charts/bar-chart/index.js",
+			"require": "./dist/charts/bar-chart/index.cjs"
 		},
-		"./bar-chart/style.css": "./dist/components/bar-chart/index.css",
+		"./bar-chart/style.css": "./dist/charts/bar-chart/index.css",
 		"./bar-list-chart": {
-			"import": "./dist/components/bar-list-chart/index.js",
-			"require": "./dist/components/bar-list-chart/index.cjs"
+			"import": "./dist/charts/bar-list-chart/index.js",
+			"require": "./dist/charts/bar-list-chart/index.cjs"
 		},
-		"./bar-list-chart/style.css": "./dist/components/bar-list-chart/index.css",
+		"./bar-list-chart/style.css": "./dist/charts/bar-list-chart/index.css",
 		"./conversion-funnel-chart": {
-			"import": "./dist/components/conversion-funnel-chart/index.js",
-			"require": "./dist/components/conversion-funnel-chart/index.cjs"
+			"import": "./dist/charts/conversion-funnel-chart/index.js",
+			"require": "./dist/charts/conversion-funnel-chart/index.cjs"
 		},
-		"./conversion-funnel-chart/style.css": "./dist/components/conversion-funnel-chart/index.css",
+		"./conversion-funnel-chart/style.css": "./dist/charts/conversion-funnel-chart/index.css",
 		"./hooks": {
 			"import": "./dist/hooks/index.js",
 			"require": "./dist/hooks/index.cjs"
 		},
 		"./leaderboard-chart": {
-			"import": "./dist/components/leaderboard-chart/index.js",
-			"require": "./dist/components/leaderboard-chart/index.cjs"
+			"import": "./dist/charts/leaderboard-chart/index.js",
+			"require": "./dist/charts/leaderboard-chart/index.cjs"
 		},
-		"./leaderboard-chart/style.css": "./dist/components/leaderboard-chart/index.css",
+		"./leaderboard-chart/style.css": "./dist/charts/leaderboard-chart/index.css",
 		"./legend": {
 			"import": "./dist/components/legend/index.js",
 			"require": "./dist/components/legend/index.cjs"
 		},
 		"./legend/style.css": "./dist/components/legend/index.css",
 		"./line-chart": {
-			"import": "./dist/components/line-chart/index.js",
-			"require": "./dist/components/line-chart/index.cjs"
+			"import": "./dist/charts/line-chart/index.js",
+			"require": "./dist/charts/line-chart/index.cjs"
 		},
-		"./line-chart/style.css": "./dist/components/line-chart/index.css",
+		"./line-chart/style.css": "./dist/charts/line-chart/index.css",
 		"./pie-chart": {
-			"import": "./dist/components/pie-chart/index.js",
-			"require": "./dist/components/pie-chart/index.cjs"
+			"import": "./dist/charts/pie-chart/index.js",
+			"require": "./dist/charts/pie-chart/index.cjs"
 		},
-		"./pie-chart/style.css": "./dist/components/pie-chart/index.css",
+		"./pie-chart/style.css": "./dist/charts/pie-chart/index.css",
 		"./pie-semi-circle-chart": {
-			"import": "./dist/components/pie-semi-circle-chart/index.js",
-			"require": "./dist/components/pie-semi-circle-chart/index.cjs"
+			"import": "./dist/charts/pie-semi-circle-chart/index.js",
+			"require": "./dist/charts/pie-semi-circle-chart/index.cjs"
 		},
-		"./pie-semi-circle-chart/style.css": "./dist/components/pie-semi-circle-chart/index.css",
+		"./pie-semi-circle-chart/style.css": "./dist/charts/pie-semi-circle-chart/index.css",
 		"./providers": {
 			"import": "./dist/providers/index.js",
 			"require": "./dist/providers/index.cjs"
@@ -102,25 +102,25 @@
 				"./dist/index.d.ts"
 			],
 			"line-chart": [
-				"./dist/components/line-chart/index.d.ts"
+				"./dist/charts/line-chart/index.d.ts"
 			],
 			"bar-chart": [
-				"./dist/components/bar-chart/index.d.ts"
+				"./dist/charts/bar-chart/index.d.ts"
 			],
 			"pie-chart": [
-				"./dist/components/pie-chart/index.d.ts"
+				"./dist/charts/pie-chart/index.d.ts"
 			],
 			"pie-semi-circle-chart": [
-				"./dist/components/pie-semi-circle-chart/index.d.ts"
+				"./dist/charts/pie-semi-circle-chart/index.d.ts"
 			],
 			"bar-list-chart": [
-				"./dist/components/bar-list-chart/index.d.ts"
+				"./dist/charts/bar-list-chart/index.d.ts"
 			],
 			"leaderboard-chart": [
-				"./dist/components/leaderboard-chart/index.d.ts"
+				"./dist/charts/leaderboard-chart/index.d.ts"
 			],
 			"conversion-funnel-chart": [
-				"./dist/components/conversion-funnel-chart/index.d.ts"
+				"./dist/charts/conversion-funnel-chart/index.d.ts"
 			],
 			"tooltip": [
 				"./dist/components/tooltip/index.d.ts"
