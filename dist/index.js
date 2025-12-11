@@ -24,9 +24,6 @@ import {
   BaseTooltip
 } from "./chunk-5XI443YP.js";
 import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-Y54MIXJS.js";
-import {
   LeaderboardChart,
   LeaderboardChartResponsive
 } from "./chunk-P33LHKF5.js";
@@ -36,6 +33,9 @@ import {
   Legend,
   useChartLegendItems
 } from "./chunk-6IOGXH2M.js";
+import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-Y54MIXJS.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
