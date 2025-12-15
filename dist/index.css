@@ -489,4 +489,21 @@
   color: #6b7280;
   font-size: 16px;
 }
+
+/* esbuild-sass-plugin:css-chunk:src/charts/sparkline/sparkline.module.scss */
+.a8ccharts-o-3Z8B {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+.a8ccharts-o-3Z8B svg {
+  display: block;
+  overflow: visible;
+}
+.a8ccharts-o-3Z8B path {
+  vector-effect: non-scaling-stroke;
+}
+.a8ccharts-CbLbcd {
+  display: inline-block;
+}
 /*# sourceMappingURL=index.css.map */

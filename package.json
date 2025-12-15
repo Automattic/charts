@@ -71,6 +71,11 @@
 			"import": "./dist/providers/index.js",
 			"require": "./dist/providers/index.cjs"
 		},
+		"./sparkline": {
+			"import": "./dist/components/sparkline/index.js",
+			"require": "./dist/components/sparkline/index.cjs"
+		},
+		"./sparkline/style.css": "./dist/components/sparkline/index.css",
 		"./style.css": "./dist/index.css",
 		"./tooltip": {
 			"import": "./dist/components/tooltip/index.js",
@@ -127,6 +132,9 @@
 			],
 			"legend": [
 				"./dist/components/legend/index.d.ts"
+			],
+			"sparkline": [
+				"./dist/components/sparkline/index.d.ts"
 			],
 			"hooks": [
 				"./dist/hooks/index.d.ts"
