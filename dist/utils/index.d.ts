@@ -1,7 +1,7 @@
 export { M as MetricValueType, f as formatMetricValue } from '../format-metric-value-MXm5DtQ_.js';
 import { TickFormatter } from '@visx/axis';
 import { AnyD3Scale, ScaleInput } from '@visx/scale';
-import { c as SeriesData, C as ChartTheme, e as CompleteChartTheme } from '../types-BtYG-Fdk.js';
+import { S as SeriesData, C as ChartTheme, f as CompleteChartTheme } from '../types-CIwcM-wl.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -145,21 +145,17 @@ declare function mergeThemes(baseTheme: CompleteChartTheme, overrideTheme: Parti
 declare function mergeThemes(baseTheme: ChartTheme, overrideTheme: Partial<ChartTheme>): ChartTheme;
 
 /**
- * Convert hex color to rgba with specified opacity
- * This is genuinely reusable across chart components
- * @param  hex   - The hex color string (e.g., '#ff0000')
- * @param  alpha - The opacity value between 0 and 1
- * @return The rgba color string (e.g., 'rgba(255, 0, 0, 0.5)')
- * @throws {Error} if hex string is malformed
+ * Check if a value is a valid 6-digit hex color
+ * @param hex - The value to check
+ * @return true if valid hex color format (e.g., '#ff0000')
  */
-declare const hexToRgba: (hex: string, alpha: number) => string;
+declare const isValidHexColor: (hex: unknown) => hex is string;
 /**
- * Convert hex color to HSL
- * @param  hex - hex color string
- * @return HSL values as [h, s, l]
+ * Validate hex color format, throwing descriptive errors if invalid
+ * @param  hex - The hex color string to validate
  * @throws {Error} if hex string is malformed
  */
-declare const hexToHsl: (hex: string) => [number, number, number];
+declare const validateHexColor: (hex: unknown) => void;
 /**
  * Calculate the perceptual distance between two HSL colors
  * @param hsl1 - first color in HSL format [h, s, l]
@@ -167,14 +163,53 @@ declare const hexToHsl: (hex: string) => [number, number, number];
  * @return distance value (0-100+, lower means more similar)
  */
 declare const getColorDistance: (hsl1: [number, number, number], hsl2: [number, number, number]) => number;
+/**
+ * Parse an HSL string like 'hsl(120, 50%, 50%)' into an HSL tuple.
+ *
+ * @param hslString - HSL color string
+ * @return HSL tuple [h, s, l] or null if invalid
+ */
+declare const parseHslString: (hslString: string) => [number, number, number] | null;
+/**
+ * Parse an RGB string like 'rgb(255, 0, 0)' into a hex color.
+ *
+ * @param rgbString - RGB color string
+ * @return hex color string or null if invalid
+ */
+declare const parseRgbString: (rgbString: string) => string | null;
+/**
+ * Normalize any CSS color value to a hex color string.
+ * Handles hex colors, HSL strings, RGB strings, and CSS variables.
+ *
+ * @param color      - Any CSS color value
+ * @param element    - Optional DOM element for resolving CSS variables
+ * @param resolveCss - Function to resolve CSS variables (injected for testability)
+ * @return hex color string, or the original value if conversion fails
+ */
+declare const normalizeColorToHex: (color: string, element?: HTMLElement | null, resolveCss?: (value: string, el?: HTMLElement | null) => string | null) => string;
+/**
+ * Lighten a hex color by blending it with white.
+ * Useful for creating color gradients or lighter variants.
+ *
+ * @param  hex   - Hex color string (e.g., '#98C8DF')
+ * @param  blend - Blend amount with white (0 = original color, 1 = white)
+ * @return Lightened hex color string (e.g., '#cce4ef')
+ * @throws {Error} if hex string is malformed
+ */
+declare const lightenHexColor: (hex: string, blend: number) => string;
 
 /**
- * Resolves a CSS custom property (variable) to its computed value
+ * Resolves a CSS custom property (variable) to its computed value.
+ * Handles multiple formats:
+ * - Plain variable names: '--my-color'
+ * - CSS var() syntax: 'var(--my-color)'
+ * - CSS var() with fallback: 'var(--my-color, #ffffff)'
+ * - Regular values (returned as-is): '#ffffff', 'red'
  *
- * @param varName - A CSS variable name like '--my-color'
+ * @param value   - A CSS variable name, var() expression, or regular value
  * @param element - Optional DOM element to resolve the variable from (defaults to document.documentElement)
- * @return The computed value or null if invalid/not found
+ * @return The resolved value, fallback value, or null if unresolvable
  */
-declare const resolveCssVariable: (varName: string, element?: HTMLElement | null) => string | null;
+declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
 
-export { attachSubComponents, formatPercentage, getColorDistance, getItemShapeStyles, getLongestTickWidth, getSeriesLineStyles, getSeriesStroke, hexToHsl, hexToRgba, isSafari, mergeThemes, parseAsLocalDate, resolveCssVariable };
+export { attachSubComponents, formatPercentage, getColorDistance, getItemShapeStyles, getLongestTickWidth, getSeriesLineStyles, getSeriesStroke, isSafari, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, resolveCssVariable, validateHexColor };

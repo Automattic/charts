@@ -7,13 +7,17 @@ import {
   getLongestTickWidth,
   getSeriesLineStyles,
   getSeriesStroke,
-  hexToHsl,
-  hexToRgba,
   isSafari,
+  isValidHexColor,
+  lightenHexColor,
   mergeThemes,
+  normalizeColorToHex,
   parseAsLocalDate,
-  resolveCssVariable
-} from "../chunk-7IZD3F7B.js";
+  parseHslString,
+  parseRgbString,
+  resolveCssVariable,
+  validateHexColor
+} from "../chunk-P3QEXFTA.js";
 import "../chunk-G3PMV62Z.js";
 export {
   attachSubComponents,
@@ -24,11 +28,15 @@ export {
   getLongestTickWidth,
   getSeriesLineStyles,
   getSeriesStroke,
-  hexToHsl,
-  hexToRgba,
   isSafari,
+  isValidHexColor,
+  lightenHexColor,
   mergeThemes,
+  normalizeColorToHex,
   parseAsLocalDate,
-  resolveCssVariable
+  parseHslString,
+  parseRgbString,
+  resolveCssVariable,
+  validateHexColor
 };
 //# sourceMappingURL=index.js.map

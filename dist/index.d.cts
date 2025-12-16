@@ -1,22 +1,25 @@
 export { BarChart, BarChartUnresponsive } from './charts/bar-chart/index.cjs';
-export { LineChart, LineChartUnresponsive } from './charts/line-chart/index.cjs';
-export { A as AnnotationStyles, B as BaseChartProps, i as ButtonWithPopover, C as ChartTheme, e as CompleteChartTheme, D as DataPoint, b as DataPointDate, d as DataPointPercentage, G as GradientStop, g as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, j as PopoverElement, h as PopoverElementAttributes, f as ScaleOptions, c as SeriesData, S as SeriesDataOptions, T as ToggleEvent } from './types-BtYG-Fdk.cjs';
-export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
-export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-export { PieChart, PieChartProps, PieChartUnresponsive } from './charts/pie-chart/index.cjs';
-export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.cjs';
 export { BarListChart, BarListChartUnresponsive } from './charts/bar-list-chart/index.cjs';
-export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-Bf7z7SoM.cjs';
-export { L as Legend } from './legend-C9ahiwOt.cjs';
-export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.cjs';
-export { B as BaseLegendItem } from './types-C05PdDJa.cjs';
 export { ConversionFunnelChart } from './charts/conversion-funnel-chart/index.cjs';
+import { B as BaseChartProps, G as GeoData } from './types-CIwcM-wl.cjs';
+export { A as AnnotationStyles, j as ButtonWithPopover, C as ChartTheme, f as CompleteChartTheme, b as DataPoint, D as DataPointDate, e as DataPointPercentage, c as GradientStop, h as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, k as PopoverElement, i as PopoverElementAttributes, g as ScaleOptions, S as SeriesData, d as SeriesDataOptions, T as ToggleEvent } from './types-CIwcM-wl.cjs';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.cjs';
 import * as react from 'react';
+import { FC } from 'react';
+export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-qp7v2Reb.cjs';
+export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
+export { L as Legend } from './legend-C9ahiwOt.cjs';
+export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.cjs';
+export { B as BaseLegendItem } from './types-C05PdDJa.cjs';
+export { LineChart, LineChartUnresponsive } from './charts/line-chart/index.cjs';
+export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
+export { PieChart, PieChartProps, PieChartUnresponsive } from './charts/pie-chart/index.cjs';
+export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.cjs';
 export { B as BaseTooltip } from './base-tooltip-DOq93wjU.cjs';
 export { TrendDirection, TrendIndicator, TrendIndicatorProps } from './components/trend-indicator/index.cjs';
-export { b as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, d as defaultTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme } from './themes-DYhtyXtJ.cjs';
+export { a as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from './themes-DJLxg_pq.cjs';
+import '@visx/text';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -25,10 +28,24 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@visx/legend';
 import './types-BBwg4Evw.cjs';
 import '@visx/shape/lib/shapes/Pie';
-import '@visx/text';
-import '@visx/legend';
+
+interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'width' | 'height'> {
+    /**
+     * Record mapping country codes (ISO 3166-1 alpha-2, e.g., 'US', 'GB') to numeric values
+     */
+    data: GeoData;
+    /**
+     * Optional render function for the loading placeholder.
+     * Called while Google Charts is loading.
+     */
+    renderPlaceholder?: () => React.ReactNode;
+}
+
+declare const GeoChartWithProvider: FC<GeoChartProps>;
+declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<GeoChartProps>, "width" | "height" | "size"> & Omit<GeoChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 type SparklineDataPoint = number;
 type GradientConfig = {
@@ -127,4 +144,4 @@ declare const SparklineUnresponsive: react.ForwardRefExoticComponent<SparklinePr
  */
 declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<SparklineProps>, "width" | "height" | "size"> & Omit<SparklineProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { Sparkline, SparklineUnresponsive };
+export { BaseChartProps, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, GeoData, Sparkline, SparklineUnresponsive };
