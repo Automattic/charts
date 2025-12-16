@@ -82,6 +82,11 @@
 			"require": "./dist/components/tooltip/index.cjs"
 		},
 		"./tooltip/style.css": "./dist/components/tooltip/index.css",
+		"./trend-indicator": {
+			"import": "./dist/components/trend-indicator/index.js",
+			"require": "./dist/components/trend-indicator/index.cjs"
+		},
+		"./trend-indicator/style.css": "./dist/components/trend-indicator/index.css",
 		"./utils": {
 			"import": "./dist/utils/index.js",
 			"require": "./dist/utils/index.cjs"
@@ -135,6 +140,9 @@
 			],
 			"sparkline": [
 				"./dist/components/sparkline/index.d.ts"
+			],
+			"trend-indicator": [
+				"./dist/components/trend-indicator/index.d.ts"
 			],
 			"hooks": [
 				"./dist/hooks/index.d.ts"
