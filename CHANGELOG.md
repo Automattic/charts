@@ -17,6 +17,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Restructure directories to allow expansion of library
 
+### Fixed
+- Charts: Add documentation and API references of animation feature.
+
 ## [0.51.0] - 2025-12-11
 ### Changed
 - Update package dependencies. [#46245]
