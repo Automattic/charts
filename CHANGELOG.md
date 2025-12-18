@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Add Geo chart
 - Add TrendIndicator component for displaying directional trends with values
 
+### Changed
+- Update package dependencies.
+
 ### Fixed
 - Charts: Add documentation and API references of animation feature.
 
