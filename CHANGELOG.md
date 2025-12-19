@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Add Geo chart
 - Add TrendIndicator component for displaying directional trends with values
+- GeoChart: Add region and resolution props for state/province-level map views
 
 ### Changed
 - Change Geo Chart data format to handle all Google Charts data

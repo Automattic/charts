@@ -33,6 +33,19 @@ import '@visx/legend';
 import './types-DQNnq5Fr.js';
 import '@visx/shape/lib/shapes/Pie';
 
+/**
+ * Region to display on the map.
+ * Use 'world' for global view or any ISO 3166-1 alpha-2 country code
+ * (e.g., 'US' for United States, 'CA' for Canada).
+ */
+type GeoRegion = 'world' | (string & {});
+/**
+ * Resolution level for the map.
+ * - 'countries': Country-level (default for 'world')
+ * - 'provinces': State/province level (use with specific region like 'US')
+ * - 'metros': Metropolitan areas (US only)
+ */
+type GeoResolution = 'countries' | 'provinces' | 'metros';
 interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'width' | 'height'> {
     /**
      * Data in Google Charts native format for maximum flexibility.
@@ -42,6 +55,20 @@ interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | '
      * (e.g., 'United States' or 'US').
      */
     data: GeoData;
+    /**
+     * Region to display. Use 'world' for global view, 'US' for United States,
+     * or any ISO 3166-1 alpha-2 country code.
+     * @default 'world'
+     */
+    region?: GeoRegion;
+    /**
+     * Resolution level for the map.
+     * - 'countries': Country-level (default for 'world')
+     * - 'provinces': State/province level (use with specific region like 'US')
+     * - 'metros': Metropolitan areas (US only)
+     * @default 'countries'
+     */
+    resolution?: GeoResolution;
     /**
      * Optional render function for the loading placeholder.
      * Called while Google Charts is loading.
@@ -149,4 +176,4 @@ declare const SparklineUnresponsive: react.ForwardRefExoticComponent<SparklinePr
  */
 declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<SparklineProps>, "width" | "height" | "size"> & Omit<SparklineProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { BaseChartProps, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, GeoData, Sparkline, SparklineUnresponsive };
+export { BaseChartProps, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, GeoData, type GeoRegion, type GeoResolution, Sparkline, SparklineUnresponsive };

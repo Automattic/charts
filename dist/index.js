@@ -75,6 +75,8 @@ var GeoChartInternal = ({
   data,
   width,
   height,
+  region = "world",
+  resolution = "countries",
   renderPlaceholder
 }) => {
   const {
@@ -105,6 +107,8 @@ var GeoChartInternal = ({
   );
   const options = useMemo(
     () => ({
+      ...region !== "world" && { region },
+      ...resolution !== "countries" && { resolution },
       colorAxis: { colors: [lightColorHex, fullColorHex] },
       backgroundColor: backgroundColorHex,
       datalessRegionColor: defaultFillColorHex,
@@ -113,7 +117,15 @@ var GeoChartInternal = ({
       legend: "none",
       keepAspectRatio: true
     }),
-    [lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, hasHtmlTooltips]
+    [
+      region,
+      resolution,
+      lightColorHex,
+      fullColorHex,
+      backgroundColorHex,
+      defaultFillColorHex,
+      hasHtmlTooltips
+    ]
   );
   return /* @__PURE__ */ jsx(
     "div",
