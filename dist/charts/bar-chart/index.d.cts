@@ -1,5 +1,5 @@
 import { L as Legend } from '../../legend-C9ahiwOt.cjs';
-import { O as Optional, B as BaseChartProps, S as SeriesData, D as DataPointDate } from '../../types-CIwcM-wl.cjs';
+import { O as Optional, B as BaseChartProps, S as SeriesData, D as DataPointDate } from '../../types-sQ20gAeB.cjs';
 import { FC, ReactNode, ComponentType } from 'react';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -14,6 +14,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import 'react-google-charts';
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;

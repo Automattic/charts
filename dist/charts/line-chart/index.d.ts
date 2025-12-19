@@ -1,5 +1,5 @@
 import { L as Legend } from '../../legend-jjMmhSg3.js';
-import { B as BaseChartProps, S as SeriesData, D as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-CIwcM-wl.js';
+import { B as BaseChartProps, S as SeriesData, D as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-sQ20gAeB.js';
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
@@ -14,6 +14,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import 'react-google-charts';
 
 interface ChartInstanceRef {
     getScales: () => {

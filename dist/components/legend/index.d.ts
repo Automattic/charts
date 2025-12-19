@@ -1,5 +1,5 @@
 export { L as Legend } from '../../legend-jjMmhSg3.js';
-import { S as SeriesData, D as DataPointDate, e as DataPointPercentage } from '../../types-CIwcM-wl.js';
+import { S as SeriesData, D as DataPointDate, e as DataPointPercentage } from '../../types-sQ20gAeB.js';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
 export { a as BaseLegendProps, L as LegendProps } from '../../types-C05PdDJa.js';
 import { LegendShape } from '@visx/legend/lib/types';
@@ -12,6 +12,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import 'react-google-charts';
 import '@visx/legend';
 
 type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';

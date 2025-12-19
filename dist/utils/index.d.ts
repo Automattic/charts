@@ -1,7 +1,7 @@
 export { M as MetricValueType, f as formatMetricValue } from '../format-metric-value-MXm5DtQ_.js';
 import { TickFormatter } from '@visx/axis';
 import { AnyD3Scale, ScaleInput } from '@visx/scale';
-import { S as SeriesData, C as ChartTheme, f as CompleteChartTheme } from '../types-CIwcM-wl.js';
+import { S as SeriesData, C as ChartTheme, f as CompleteChartTheme } from '../types-sQ20gAeB.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -10,6 +10,7 @@ import '@visx/annotation/lib/components/Label';
 import '@visx/annotation/lib/components/LineSubject';
 import '@visx/text/lib/Text';
 import 'react';
+import 'react-google-charts';
 
 /**
  * Utility function to create chart components with composition API.

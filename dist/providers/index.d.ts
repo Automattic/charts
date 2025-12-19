@@ -1,7 +1,7 @@
-export { C as ChartRegistration, E as ElementStyles, d as GetElementStylesParams, a as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from '../themes-DZScFI0e.js';
+export { C as ChartRegistration, E as ElementStyles, d as GetElementStylesParams, a as GlobalChartsContext, c as GlobalChartsContextValue, G as GlobalChartsProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from '../themes-ChB_VjWt.js';
 import { B as BaseLegendItem } from '../types-C05PdDJa.js';
 import 'react';
-import '../types-CIwcM-wl.js';
+import '../types-sQ20gAeB.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -11,6 +11,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import 'react-google-charts';
 import '@visx/legend';
 
 declare const useChartId: (providedId?: string) => string;

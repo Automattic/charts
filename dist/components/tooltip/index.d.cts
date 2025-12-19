@@ -1,5 +1,5 @@
 export { B as BaseTooltip, a as BaseTooltipProps, T as TooltipData } from '../../base-tooltip-DOq93wjU.cjs';
-import { D as DataPointDate, S as SeriesData } from '../../types-CIwcM-wl.cjs';
+import { D as DataPointDate, S as SeriesData } from '../../types-sQ20gAeB.cjs';
 import { TooltipProps as TooltipProps$1, RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { ReactNode } from 'react';
 import 'react/jsx-runtime';
@@ -12,6 +12,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import 'react-google-charts';
 
 type FlattenedTooltipData = {
     datum: DataPointDate;

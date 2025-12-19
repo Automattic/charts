@@ -1,13 +1,13 @@
 export { BarChart, BarChartUnresponsive } from './charts/bar-chart/index.js';
 export { BarListChart, BarListChartUnresponsive } from './charts/bar-list-chart/index.js';
 export { ConversionFunnelChart } from './charts/conversion-funnel-chart/index.js';
-import { B as BaseChartProps, G as GeoData } from './types-CIwcM-wl.js';
-export { A as AnnotationStyles, j as ButtonWithPopover, C as ChartTheme, f as CompleteChartTheme, b as DataPoint, D as DataPointDate, e as DataPointPercentage, c as GradientStop, h as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, k as PopoverElement, i as PopoverElementAttributes, g as ScaleOptions, S as SeriesData, d as SeriesDataOptions, T as ToggleEvent } from './types-CIwcM-wl.js';
+import { B as BaseChartProps, G as GeoData } from './types-sQ20gAeB.js';
+export { A as AnnotationStyles, j as ButtonWithPopover, C as ChartTheme, f as CompleteChartTheme, b as DataPoint, D as DataPointDate, e as DataPointPercentage, c as GradientStop, h as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, k as PopoverElement, i as PopoverElementAttributes, g as ScaleOptions, S as SeriesData, d as SeriesDataOptions, T as ToggleEvent } from './types-sQ20gAeB.js';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.js';
 import * as react from 'react';
 import { FC } from 'react';
-export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-BfwudBQ3.js';
+export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-BqH8BLiG.js';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
 export { L as Legend } from './legend-jjMmhSg3.js';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.js';
@@ -18,7 +18,8 @@ export { PieChart, PieChartProps, PieChartUnresponsive } from './charts/pie-char
 export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.js';
 export { B as BaseTooltip } from './base-tooltip-DOq93wjU.js';
 export { TrendDirection, TrendIndicator, TrendIndicatorProps } from './components/trend-indicator/index.js';
-export { a as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from './themes-DZScFI0e.js';
+export { a as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from './themes-ChB_VjWt.js';
+export { GoogleDataTableColumn, GoogleDataTableColumnRoleType, GoogleDataTableRow } from 'react-google-charts';
 import '@visx/text';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
@@ -34,7 +35,11 @@ import '@visx/shape/lib/shapes/Pie';
 
 interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'width' | 'height'> {
     /**
-     * Record mapping country codes (ISO 3166-1 alpha-2, e.g., 'US', 'GB') to numeric values
+     * Data in Google Charts native format for maximum flexibility.
+     * First row contains column headers, subsequent rows contain data.
+     *
+     * Country identifiers can be either full country names or ISO 3166-1 alpha-2 codes
+     * (e.g., 'United States' or 'US').
      */
     data: GeoData;
     /**

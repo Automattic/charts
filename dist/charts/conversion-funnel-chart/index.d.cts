@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { B as BaseChartProps } from '../../types-CIwcM-wl.cjs';
+import { B as BaseChartProps } from '../../types-sQ20gAeB.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -9,6 +9,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import 'react-google-charts';
 
 /**
  * Represents a single step in the conversion funnel

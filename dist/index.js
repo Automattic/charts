@@ -58,7 +58,7 @@ import "./chunk-G3PMV62Z.js";
 // src/charts/geo-chart/geo-chart.tsx
 import { __ } from "@wordpress/i18n";
 import clsx from "clsx";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Chart } from "react-google-charts";
 
 // src/charts/geo-chart/geo-chart.module.scss
@@ -97,16 +97,24 @@ var GeoChartInternal = ({
   const lightColorHex = lightenHexColor(fullColorHex, 0.8);
   const backgroundColorHex = normalizeColorToHex(backgroundColor, null, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
   const defaultFillColorHex = normalizeColorToHex(featureFillColor, null, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const chartData = [["Country", "Value"], ...Object.entries(data)];
-  const options = {
-    colorAxis: { colors: [lightColorHex, fullColorHex] },
-    backgroundColor: backgroundColorHex,
-    datalessRegionColor: defaultFillColorHex,
-    defaultColor: defaultFillColorHex,
-    tooltip: { trigger: "focus" },
-    legend: "none",
-    keepAspectRatio: true
-  };
+  const hasHtmlTooltips = useMemo(
+    () => data.length > 0 && data[0].some(
+      (col) => typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true
+    ),
+    [data]
+  );
+  const options = useMemo(
+    () => ({
+      colorAxis: { colors: [lightColorHex, fullColorHex] },
+      backgroundColor: backgroundColorHex,
+      datalessRegionColor: defaultFillColorHex,
+      defaultColor: defaultFillColorHex,
+      tooltip: { trigger: "focus", isHtml: hasHtmlTooltips },
+      legend: "none",
+      keepAspectRatio: true
+    }),
+    [lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, hasHtmlTooltips]
+  );
   return /* @__PURE__ */ jsx(
     "div",
     {
@@ -119,7 +127,7 @@ var GeoChartInternal = ({
           chartType: "GeoChart",
           width,
           height,
-          data: chartData,
+          data,
           options,
           loader: loadingPlaceholder
         }
@@ -139,7 +147,7 @@ var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 
 // src/charts/sparkline/sparkline.tsx
 import clsx2 from "clsx";
-import { useMemo, forwardRef } from "react";
+import { useMemo as useMemo2, forwardRef } from "react";
 
 // src/charts/sparkline/sparkline.module.scss
 var sparkline_module_default = {
@@ -184,13 +192,13 @@ var SparklineComponent = forwardRef(
     const theme = useGlobalChartsTheme();
     const themeStrokeWidth = theme.sparkline?.strokeWidth ?? 1.5;
     const strokeWidth = strokeWidthProp ?? themeStrokeWidth;
-    const seriesData = useMemo(() => {
+    const seriesData = useMemo2(() => {
       if (!data || data.length === 0) {
         return [];
       }
       return transformToSeriesData(data, color, strokeWidth);
     }, [data, color, strokeWidth]);
-    const finalMargin = useMemo(() => {
+    const finalMargin = useMemo2(() => {
       const themeMargin = theme.sparkline?.margin ?? { top: 2, right: 2, bottom: 2, left: 2 };
       const margin = marginProp ?? themeMargin;
       return {
@@ -198,7 +206,7 @@ var SparklineComponent = forwardRef(
         ...margin
       };
     }, [marginProp, theme.sparkline?.margin]);
-    const seriesWithGradient = useMemo(() => {
+    const seriesWithGradient = useMemo2(() => {
       if (!gradient || seriesData.length === 0) {
         return seriesData;
       }

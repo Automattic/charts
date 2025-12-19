@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Add TrendIndicator component for displaying directional trends with values
 
 ### Changed
+- Change Geo Chart data format to handle all Google Charts data
 - Update package dependencies.
 
 ### Fixed

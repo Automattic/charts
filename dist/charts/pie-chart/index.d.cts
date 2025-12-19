@@ -1,7 +1,7 @@
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-CIwcM-wl.cjs';
+import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-sQ20gAeB.cjs';
 import { C as ChartComponentWithComposition } from '../../types-BBwg4Evw.cjs';
 import '../../legend-C9ahiwOt.cjs';
 import '../../types-C05PdDJa.cjs';
@@ -15,6 +15,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import 'react-google-charts';
 
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**

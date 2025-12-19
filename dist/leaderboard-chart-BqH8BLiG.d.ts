@@ -1,9 +1,9 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.cjs';
+import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.js';
 import * as react from 'react';
 import { ReactNode, FC } from 'react';
-import { a as BaseLegendProps, B as BaseLegendItem } from './types-C05PdDJa.cjs';
-import { B as BaseChartProps, L as LeaderboardEntry } from './types-CIwcM-wl.cjs';
+import { a as BaseLegendProps, B as BaseLegendItem } from './types-C05PdDJa.js';
+import { B as BaseChartProps, L as LeaderboardEntry } from './types-sQ20gAeB.js';
 
 interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legendOrientation' | 'legendPosition' | 'legendAlignment' | 'legendShape' | 'chartId' | 'width' | 'height' | 'size' | 'legendInteractive' | 'animation'> {
     /**

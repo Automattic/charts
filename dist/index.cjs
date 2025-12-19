@@ -97,16 +97,24 @@ var GeoChartInternal = ({
   const lightColorHex = _chunkDAKYGZG6cjs.lightenHexColor.call(void 0, fullColorHex, 0.8);
   const backgroundColorHex = _chunkDAKYGZG6cjs.normalizeColorToHex.call(void 0, backgroundColor, null, _chunkDAKYGZG6cjs.resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
   const defaultFillColorHex = _chunkDAKYGZG6cjs.normalizeColorToHex.call(void 0, featureFillColor, null, _chunkDAKYGZG6cjs.resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const chartData = [["Country", "Value"], ...Object.entries(data)];
-  const options = {
-    colorAxis: { colors: [lightColorHex, fullColorHex] },
-    backgroundColor: backgroundColorHex,
-    datalessRegionColor: defaultFillColorHex,
-    defaultColor: defaultFillColorHex,
-    tooltip: { trigger: "focus" },
-    legend: "none",
-    keepAspectRatio: true
-  };
+  const hasHtmlTooltips = _react.useMemo.call(void 0, 
+    () => data.length > 0 && data[0].some(
+      (col) => typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true
+    ),
+    [data]
+  );
+  const options = _react.useMemo.call(void 0, 
+    () => ({
+      colorAxis: { colors: [lightColorHex, fullColorHex] },
+      backgroundColor: backgroundColorHex,
+      datalessRegionColor: defaultFillColorHex,
+      defaultColor: defaultFillColorHex,
+      tooltip: { trigger: "focus", isHtml: hasHtmlTooltips },
+      legend: "none",
+      keepAspectRatio: true
+    }),
+    [lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, hasHtmlTooltips]
+  );
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
     "div",
     {
@@ -119,7 +127,7 @@ var GeoChartInternal = ({
           chartType: "GeoChart",
           width,
           height,
-          data: chartData,
+          data,
           options,
           loader: loadingPlaceholder
         }

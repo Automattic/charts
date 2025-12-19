@@ -2,7 +2,7 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.js';
-import { g as ScaleOptions, S as SeriesData } from '../../types-CIwcM-wl.js';
+import { g as ScaleOptions, S as SeriesData } from '../../types-sQ20gAeB.js';
 import { ComponentType, FC } from 'react';
 import '../../legend-jjMmhSg3.js';
 import '../../types-C05PdDJa.js';
@@ -17,6 +17,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import 'react-google-charts';
 
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
     options?: {

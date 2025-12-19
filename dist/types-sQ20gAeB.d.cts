@@ -8,6 +8,7 @@ import { ScaleType, ScaleInput } from '@visx/scale';
 import { TextProps } from '@visx/text/lib/Text';
 import { EventHandlerParams, LineStyles, GridStyles, GlyphProps } from '@visx/xychart';
 import { PointerEvent, ReactNode, CSSProperties } from 'react';
+import { GoogleDataTableColumn, GoogleDataTableRow } from 'react-google-charts';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -28,9 +29,37 @@ type DataPoint = {
     value: number;
 };
 /**
- * Data format for GeoChart - maps country codes (ISO 3166-1 alpha-2, e.g., 'US', 'GB') to numeric values
+ * Data format for GeoChart - uses Google Charts native data format for maximum flexibility.
+ * First element is the header row, subsequent elements are data rows.
+ *
+ * Country identifiers can be either full country names or ISO 3166-1 alpha-2 codes (e.g., 'United States' or 'US').
+ * Full names are recommended for better readability in tooltips.
+ *
+ * @example Basic usage with country names:
+ * [['Country', 'Value'], ['United States', 100], ['Canada', 50], ['United Kingdom', 75]]
+ *
+ * @example With custom HTML tooltips:
+ * [
+ *   ['Country', 'Value', { type: 'string', role: 'tooltip', p: { html: true } }],
+ *   ['United States', 100, '<b>United States</b><br/>100 visitors'],
+ *   ['Canada', 50, '<b>Canada</b><br/>50 visitors']
+ * ]
+ *
+ * @example With formatted values (v = value, f = formatted):
+ * [
+ *   ['Country', 'Value'],
+ *   ['United States', { v: 100, f: '100 visitors' }],
+ *   ['Canada', { v: 50, f: '50 visitors' }]
+ * ]
+ *
+ * @example With multiple columns:
+ * [
+ *   ['Country', 'Population', 'Area'],
+ *   ['United States', 331000000, 9834000],
+ *   ['Canada', 38000000, 9985000]
+ * ]
  */
-type GeoData = Record<string, number>;
+type GeoData = [GoogleDataTableColumn[], ...GoogleDataTableRow[]];
 type DataPointDate = {
     date?: Date;
     /**
