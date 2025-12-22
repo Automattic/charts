@@ -5,21 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.53.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [0.53.0] - 2025-12-22
 ### Added
-- Add Geo chart
-- Add TrendIndicator component for displaying directional trends with values
-- GeoChart: Add region and resolution props for state/province-level map views
+- Add Geo chart [#45883]
+- Add TrendIndicator component for displaying directional trends with values [#46213]
+- GeoChart: Add region and resolution props for state/province-level map views [#46332]
 
 ### Changed
-- Change Geo Chart data format to handle all Google Charts data
-- Update package dependencies.
+- Change Geo Chart data format to handle all Google Charts data [#46330]
+- Update package dependencies. [#46362]
+- Update package dependencies. [#46363]
 
 ### Fixed
-- Charts: Add documentation and API references of animation feature.
+- Charts: Add documentation and API references of animation feature. [#46326]
 
 ## [0.52.0] - 2025-12-15
 ### Added
@@ -617,7 +615,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.53.0-alpha]: https://github.com/Automattic/charts/compare/v0.52.0...v0.53.0-alpha
+[0.53.0]: https://github.com/Automattic/charts/compare/v0.52.0...v0.53.0
 [0.52.0]: https://github.com/Automattic/charts/compare/v0.51.0...v0.52.0
 [0.51.0]: https://github.com/Automattic/charts/compare/v0.50.2...v0.51.0
 [0.50.2]: https://github.com/Automattic/charts/compare/v0.50.1...v0.50.2
