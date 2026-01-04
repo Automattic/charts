@@ -199,7 +199,8 @@ var SparklineComponent = _react.forwardRef.call(void 0,
     gradient,
     className,
     chartId,
-    margin: marginProp
+    margin: marginProp,
+    animation
   }, ref) => {
     const theme = _chunkW3H42XRVcjs.useGlobalChartsTheme.call(void 0, );
     const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _ => _.sparkline, 'optionalAccess', _2 => _2.strokeWidth]), () => ( 1.5));
@@ -295,7 +296,8 @@ var SparklineComponent = _react.forwardRef.call(void 0,
                 y: { display: false }
               }
             },
-            curveType: "monotone"
+            curveType: "monotone",
+            animation
           }
         )
       }

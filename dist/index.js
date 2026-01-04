@@ -199,7 +199,8 @@ var SparklineComponent = forwardRef(
     gradient,
     className,
     chartId,
-    margin: marginProp
+    margin: marginProp,
+    animation
   }, ref) => {
     const theme = useGlobalChartsTheme();
     const themeStrokeWidth = theme.sparkline?.strokeWidth ?? 1.5;
@@ -295,7 +296,8 @@ var SparklineComponent = forwardRef(
                 y: { display: false }
               }
             },
-            curveType: "monotone"
+            curveType: "monotone",
+            animation
           }
         )
       }
