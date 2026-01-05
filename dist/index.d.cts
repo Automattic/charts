@@ -1,13 +1,9 @@
 export { BarChart, BarChartUnresponsive } from './charts/bar-chart/index.cjs';
 export { BarListChart, BarListChartUnresponsive } from './charts/bar-list-chart/index.cjs';
 export { ConversionFunnelChart } from './charts/conversion-funnel-chart/index.cjs';
-import { B as BaseChartProps, G as GeoData } from './types-sQ20gAeB.cjs';
-export { A as AnnotationStyles, j as ButtonWithPopover, C as ChartTheme, f as CompleteChartTheme, b as DataPoint, D as DataPointDate, e as DataPointPercentage, c as GradientStop, h as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, k as PopoverElement, i as PopoverElementAttributes, g as ScaleOptions, S as SeriesData, d as SeriesDataOptions, T as ToggleEvent } from './types-sQ20gAeB.cjs';
-import * as react_jsx_runtime from 'react/jsx-runtime';
-import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.cjs';
-import * as react from 'react';
-import { FC } from 'react';
-export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-3dKYMfoP.cjs';
+export { A as AnnotationStyles, B as BaseChartProps, j as ButtonWithPopover, C as ChartTheme, f as CompleteChartTheme, D as DataPoint, b as DataPointDate, e as DataPointPercentage, G as GeoData, c as GradientStop, h as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, a as OrientationType, P as PopoverButtonAttributes, k as PopoverElement, i as PopoverElementAttributes, g as ScaleOptions, d as SeriesData, S as SeriesDataOptions, T as ToggleEvent } from './types-D1lTxRyg.cjs';
+export { GeoChart, GeoChartProps, GeoChartUnresponsive, GeoRegion, GeoResolution } from './charts/geo-chart/index.cjs';
+export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-CN80sJmQ.cjs';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
 export { L as Legend } from './legend-C9ahiwOt.cjs';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.cjs';
@@ -16,9 +12,12 @@ export { LineChart, LineChartUnresponsive } from './charts/line-chart/index.cjs'
 export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 export { PieChart, PieChartProps, PieChartUnresponsive } from './charts/pie-chart/index.cjs';
 export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.cjs';
+import * as react_jsx_runtime from 'react/jsx-runtime';
+import { R as ResponsiveConfig } from './with-responsive-Cp2qnQPo.cjs';
+import * as react from 'react';
 export { B as BaseTooltip } from './base-tooltip-DOq93wjU.cjs';
 export { TrendDirection, TrendIndicator, TrendIndicatorProps } from './components/trend-indicator/index.cjs';
-export { a as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, e as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from './themes-DijSDhqQ.cjs';
+export { b as GlobalChartsContext, G as GlobalChartsProvider, G as ThemeProvider, d as defaultTheme, u as useGlobalChartsContext, a as useGlobalChartsTheme } from './themes-Dzg0wE3B.cjs';
 export { GoogleDataTableColumn, GoogleDataTableColumnRoleType, GoogleDataTableRow } from 'react-google-charts';
 import '@visx/text';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -32,52 +31,6 @@ import '@visx/text/lib/Text';
 import '@visx/legend';
 import './types-BBwg4Evw.cjs';
 import '@visx/shape/lib/shapes/Pie';
-
-/**
- * Region to display on the map.
- * Use 'world' for global view or any ISO 3166-1 alpha-2 country code
- * (e.g., 'US' for United States, 'CA' for Canada).
- */
-type GeoRegion = 'world' | (string & {});
-/**
- * Resolution level for the map.
- * - 'countries': Country-level (default for 'world')
- * - 'provinces': State/province level (use with specific region like 'US')
- * - 'metros': Metropolitan areas (US only)
- */
-type GeoResolution = 'countries' | 'provinces' | 'metros';
-interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'width' | 'height'> {
-    /**
-     * Data in Google Charts native format for maximum flexibility.
-     * First row contains column headers, subsequent rows contain data.
-     *
-     * Country identifiers can be either full country names or ISO 3166-1 alpha-2 codes
-     * (e.g., 'United States' or 'US').
-     */
-    data: GeoData;
-    /**
-     * Region to display. Use 'world' for global view, 'US' for United States,
-     * or any ISO 3166-1 alpha-2 country code.
-     * @default 'world'
-     */
-    region?: GeoRegion;
-    /**
-     * Resolution level for the map.
-     * - 'countries': Country-level (default for 'world')
-     * - 'provinces': State/province level (use with specific region like 'US')
-     * - 'metros': Metropolitan areas (US only)
-     * @default 'countries'
-     */
-    resolution?: GeoResolution;
-    /**
-     * Optional render function for the loading placeholder.
-     * Called while Google Charts is loading.
-     */
-    renderPlaceholder?: () => React.ReactNode;
-}
-
-declare const GeoChartWithProvider: FC<GeoChartProps>;
-declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<GeoChartProps>, "width" | "height" | "size"> & Omit<GeoChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 type SparklineDataPoint = number;
 type GradientConfig = {
@@ -183,4 +136,4 @@ declare const SparklineUnresponsive: react.ForwardRefExoticComponent<SparklinePr
  */
 declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<SparklineProps>, "width" | "height" | "size"> & Omit<SparklineProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
-export { BaseChartProps, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, GeoData, type GeoRegion, type GeoResolution, Sparkline, SparklineUnresponsive };
+export { Sparkline, SparklineUnresponsive };

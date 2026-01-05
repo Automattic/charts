@@ -7,6 +7,7 @@ import {
   getLongestTickWidth,
   getSeriesLineStyles,
   getSeriesStroke,
+  hexToRgba,
   isSafari,
   isValidHexColor,
   lightenHexColor,
@@ -17,7 +18,7 @@ import {
   parseRgbString,
   resolveCssVariable,
   validateHexColor
-} from "../chunk-P3QEXFTA.js";
+} from "../chunk-TE63Y5PX.js";
 import "../chunk-G3PMV62Z.js";
 export {
   attachSubComponents,
@@ -28,6 +29,7 @@ export {
   getLongestTickWidth,
   getSeriesLineStyles,
   getSeriesStroke,
+  hexToRgba,
   isSafari,
   isValidHexColor,
   lightenHexColor,

@@ -1,165 +1,63 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunkAHUSYMYScjs = require('./chunk-AHUSYMYS.cjs');
+var _chunkO4KQMTIIcjs = require('./chunk-O4KQMTII.cjs');
 
 
 
-var _chunk6QCSXXDYcjs = require('./chunk-6QCSXXDY.cjs');
+var _chunkLNLHCZ6Fcjs = require('./chunk-LNLHCZ6F.cjs');
+
+
+
+var _chunkJWMWOBAXcjs = require('./chunk-JWMWOBAX.cjs');
 require('./chunk-7OZEQ5HE.cjs');
 
 
 
-var _chunkO23EGQ3Hcjs = require('./chunk-O23EGQ3H.cjs');
+var _chunkUWAZGLHGcjs = require('./chunk-UWAZGLHG.cjs');
 require('./chunk-OTZT3MC2.cjs');
+require('./chunk-HIWNB5PK.cjs');
 
 
 var _chunkSRXJLAKGcjs = require('./chunk-SRXJLAKG.cjs');
 
 
 
-var _chunkA7X3CNEOcjs = require('./chunk-A7X3CNEO.cjs');
+var _chunkFVWTBK44cjs = require('./chunk-FVWTBK44.cjs');
 
 
 
-var _chunkGWNXOI4Mcjs = require('./chunk-GWNXOI4M.cjs');
+var _chunkDDV5726Qcjs = require('./chunk-DDV5726Q.cjs');
+
+
+
+var _chunkZPJHWKEKcjs = require('./chunk-ZPJHWKEK.cjs');
 
 
 var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
-var _chunkERGEUE7Rcjs = require('./chunk-ERGEUE7R.cjs');
+var _chunk4KEE36W3cjs = require('./chunk-4KEE36W3.cjs');
 
 
 
-var _chunkZN7KVU4Rcjs = require('./chunk-ZN7KVU4R.cjs');
-require('./chunk-HIWNB5PK.cjs');
+var _chunkCLSMJQCOcjs = require('./chunk-CLSMJQCO.cjs');
 
 
 var _chunkMUUSZ7J5cjs = require('./chunk-MUUSZ7J5.cjs');
 
 
 
-var _chunkNYZFVI2Pcjs = require('./chunk-NYZFVI2P.cjs');
 
 
 
-
-
-
-var _chunkW3H42XRVcjs = require('./chunk-W3H42XRV.cjs');
-
-
-
-
-var _chunkDAKYGZG6cjs = require('./chunk-DAKYGZG6.cjs');
+var _chunkWKN6C4ZEcjs = require('./chunk-WKN6C4ZE.cjs');
+require('./chunk-ZVGEDXDP.cjs');
 require('./chunk-EMMSS5I5.cjs');
 
-// src/charts/geo-chart/geo-chart.tsx
-var _i18n = require('@wordpress/i18n');
+// src/charts/sparkline/sparkline.tsx
 var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
 var _react = require('react');
-var _reactgooglecharts = require('react-google-charts');
-
-// src/charts/geo-chart/geo-chart.module.scss
-var geo_chart_module_default = {
-  "container": "a8ccharts-JvcqOz"
-};
-
-// src/charts/geo-chart/geo-chart.tsx
-var _jsxruntime = require('react/jsx-runtime');
-var DEFAULT_FEATURE_FILL_COLOR = "#ffffff";
-var DEFAULT_BACKGROUND_COLOR = "#ffffff";
-var GeoChartInternal = ({
-  className,
-  data,
-  width,
-  height,
-  region = "world",
-  resolution = "countries",
-  renderPlaceholder
-}) => {
-  const {
-    getElementStyles,
-    theme: {
-      geoChart: { featureFillColor },
-      backgroundColor
-    }
-  } = _chunkW3H42XRVcjs.useGlobalChartsContext.call(void 0, );
-  const loadingPlaceholder = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    "div",
-    {
-      className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
-      "data-testid": "geo-chart-loading",
-      style: { width, height },
-      children: renderPlaceholder ? renderPlaceholder() : _i18n.__.call(void 0, "Loading map", "jetpack-charts")
-    }
-  );
-  const fullColorHex = getElementStyles({ index: 0 }).color;
-  const lightColorHex = _chunkDAKYGZG6cjs.lightenHexColor.call(void 0, fullColorHex, 0.8);
-  const backgroundColorHex = _chunkDAKYGZG6cjs.normalizeColorToHex.call(void 0, backgroundColor, null, _chunkDAKYGZG6cjs.resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
-  const defaultFillColorHex = _chunkDAKYGZG6cjs.normalizeColorToHex.call(void 0, featureFillColor, null, _chunkDAKYGZG6cjs.resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const hasHtmlTooltips = _react.useMemo.call(void 0, 
-    () => data.length > 0 && data[0].some(
-      (col) => typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true
-    ),
-    [data]
-  );
-  const options = _react.useMemo.call(void 0, 
-    () => ({
-      ...region !== "world" && { region },
-      ...resolution !== "countries" && { resolution },
-      colorAxis: { colors: [lightColorHex, fullColorHex] },
-      backgroundColor: backgroundColorHex,
-      datalessRegionColor: defaultFillColorHex,
-      defaultColor: defaultFillColorHex,
-      tooltip: { trigger: "focus", isHtml: hasHtmlTooltips },
-      legend: "none",
-      keepAspectRatio: true
-    }),
-    [
-      region,
-      resolution,
-      lightColorHex,
-      fullColorHex,
-      backgroundColorHex,
-      defaultFillColorHex,
-      hasHtmlTooltips
-    ]
-  );
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    "div",
-    {
-      className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
-      "data-testid": "geo-chart",
-      style: { width, height, backgroundColor },
-      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-        _reactgooglecharts.Chart,
-        {
-          chartType: "GeoChart",
-          width,
-          height,
-          data,
-          options,
-          loader: loadingPlaceholder
-        }
-      )
-    }
-  );
-};
-var GeoChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkW3H42XRVcjs.GlobalChartsContext);
-  if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GeoChartInternal, { ...props });
-  }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkW3H42XRVcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GeoChartInternal, { ...props }) });
-};
-GeoChartWithProvider.displayName = "GeoChart";
-var GeoChartResponsive = _chunkMUUSZ7J5cjs.withResponsive.call(void 0, GeoChartWithProvider);
-
-// src/charts/sparkline/sparkline.tsx
-
-
 
 // src/charts/sparkline/sparkline.module.scss
 var sparkline_module_default = {
@@ -168,7 +66,7 @@ var sparkline_module_default = {
 };
 
 // src/charts/sparkline/sparkline.tsx
-
+var _jsxruntime = require('react/jsx-runtime');
 var DEFAULT_WIDTH = 100;
 var DEFAULT_HEIGHT = 40;
 var transformToSeriesData = (data, color, strokeWidth) => {
@@ -202,7 +100,7 @@ var SparklineComponent = _react.forwardRef.call(void 0,
     margin: marginProp,
     animation
   }, ref) => {
-    const theme = _chunkW3H42XRVcjs.useGlobalChartsTheme.call(void 0, );
+    const theme = _chunkWKN6C4ZEcjs.useGlobalChartsTheme.call(void 0, );
     const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _ => _.sparkline, 'optionalAccess', _2 => _2.strokeWidth]), () => ( 1.5));
     const strokeWidth = _nullishCoalesce(strokeWidthProp, () => ( themeStrokeWidth));
     const seriesData = _react.useMemo.call(void 0, () => {
@@ -279,7 +177,7 @@ var SparklineComponent = _react.forwardRef.call(void 0,
         className: _clsx2.default.call(void 0, "sparkline", sparkline_module_default.sparkline, className),
         "data-testid": "sparkline",
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-          _chunkAHUSYMYScjs.LineChart,
+          _chunkLNLHCZ6Fcjs.LineChart,
           {
             data: seriesWithGradient,
             width,
@@ -336,5 +234,5 @@ var Sparkline = _chunkMUUSZ7J5cjs.withResponsive.call(void 0, SparklineUnrespons
 
 
 
-exports.BarChart = _chunkGWNXOI4Mcjs.BarChartResponsive; exports.BarChartUnresponsive = _chunkGWNXOI4Mcjs.BarChart; exports.BarListChart = _chunkA7X3CNEOcjs.BarListChartResponsive; exports.BarListChartUnresponsive = _chunkA7X3CNEOcjs.BarListChart; exports.BaseTooltip = _chunk7HROSZRScjs.BaseTooltip; exports.ConversionFunnelChart = _chunkERGEUE7Rcjs.ConversionFunnelChartWithProvider; exports.GeoChart = GeoChartResponsive; exports.GeoChartUnresponsive = GeoChartWithProvider; exports.GlobalChartsContext = _chunkW3H42XRVcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkW3H42XRVcjs.GlobalChartsProvider; exports.LeaderboardChart = _chunkZN7KVU4Rcjs.LeaderboardChartResponsive; exports.LeaderboardChartUnresponsive = _chunkZN7KVU4Rcjs.LeaderboardChart; exports.Legend = _chunkNYZFVI2Pcjs.Legend; exports.LineChart = _chunkAHUSYMYScjs.LineChartResponsive; exports.LineChartUnresponsive = _chunkAHUSYMYScjs.LineChart; exports.PieChart = _chunk6QCSXXDYcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunk6QCSXXDYcjs.PieChart; exports.PieSemiCircleChart = _chunkO23EGQ3Hcjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkO23EGQ3Hcjs.PieSemiCircleChart; exports.Sparkline = Sparkline; exports.SparklineUnresponsive = SparklineUnresponsive; exports.ThemeProvider = _chunkW3H42XRVcjs.GlobalChartsProvider; exports.TrendIndicator = _chunkSRXJLAKGcjs.TrendIndicator; exports.defaultTheme = _chunkW3H42XRVcjs.defaultTheme; exports.useChartLegendItems = _chunkNYZFVI2Pcjs.useChartLegendItems; exports.useGlobalChartsContext = _chunkW3H42XRVcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkW3H42XRVcjs.useGlobalChartsTheme;
+exports.BarChart = _chunkDDV5726Qcjs.BarChartResponsive; exports.BarChartUnresponsive = _chunkDDV5726Qcjs.BarChart; exports.BarListChart = _chunkFVWTBK44cjs.BarListChartResponsive; exports.BarListChartUnresponsive = _chunkFVWTBK44cjs.BarListChart; exports.BaseTooltip = _chunk7HROSZRScjs.BaseTooltip; exports.ConversionFunnelChart = _chunk4KEE36W3cjs.ConversionFunnelChartWithProvider; exports.GeoChart = _chunkCLSMJQCOcjs.GeoChartResponsive; exports.GeoChartUnresponsive = _chunkCLSMJQCOcjs.GeoChartWithProvider; exports.GlobalChartsContext = _chunkWKN6C4ZEcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkWKN6C4ZEcjs.GlobalChartsProvider; exports.LeaderboardChart = _chunkO4KQMTIIcjs.LeaderboardChartResponsive; exports.LeaderboardChartUnresponsive = _chunkO4KQMTIIcjs.LeaderboardChart; exports.Legend = _chunkZPJHWKEKcjs.Legend; exports.LineChart = _chunkLNLHCZ6Fcjs.LineChartResponsive; exports.LineChartUnresponsive = _chunkLNLHCZ6Fcjs.LineChart; exports.PieChart = _chunkJWMWOBAXcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunkJWMWOBAXcjs.PieChart; exports.PieSemiCircleChart = _chunkUWAZGLHGcjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkUWAZGLHGcjs.PieSemiCircleChart; exports.Sparkline = Sparkline; exports.SparklineUnresponsive = SparklineUnresponsive; exports.ThemeProvider = _chunkWKN6C4ZEcjs.GlobalChartsProvider; exports.TrendIndicator = _chunkSRXJLAKGcjs.TrendIndicator; exports.defaultTheme = _chunkWKN6C4ZEcjs.defaultTheme; exports.useChartLegendItems = _chunkZPJHWKEKcjs.useChartLegendItems; exports.useGlobalChartsContext = _chunkWKN6C4ZEcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkWKN6C4ZEcjs.useGlobalChartsTheme;
 //# sourceMappingURL=index.cjs.map

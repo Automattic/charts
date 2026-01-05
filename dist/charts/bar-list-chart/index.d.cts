@@ -2,7 +2,7 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.cjs';
-import { g as ScaleOptions, S as SeriesData } from '../../types-sQ20gAeB.cjs';
+import { g as ScaleOptions, d as SeriesData } from '../../types-D1lTxRyg.cjs';
 import { ComponentType, FC } from 'react';
 import '../../legend-C9ahiwOt.cjs';
 import '../../types-C05PdDJa.cjs';

@@ -6,8 +6,8 @@ import {
   useChartRegistration,
   useGlobalChartsContext,
   useGlobalChartsTheme
-} from "../chunk-O2BJMTIS.js";
-import "../chunk-P3QEXFTA.js";
+} from "../chunk-DYMJWNYM.js";
+import "../chunk-TE63Y5PX.js";
 import "../chunk-G3PMV62Z.js";
 export {
   GlobalChartsContext,

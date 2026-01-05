@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Add animation support to Sparkline chart component
+- Add Geo Chart exports to package
 
 ## [0.53.0] - 2025-12-22
 ### Added

@@ -1,165 +1,63 @@
 import {
+  LeaderboardChart,
+  LeaderboardChartResponsive
+} from "./chunk-CRS45WD5.js";
+import {
   LineChart,
   LineChartResponsive
-} from "./chunk-RHQIACQT.js";
+} from "./chunk-Z34VYZGR.js";
 import {
   PieChart,
   PieChartResponsive
-} from "./chunk-VTMJWCCW.js";
+} from "./chunk-H6XRINJE.js";
 import "./chunk-NFRB2POF.js";
 import {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
-} from "./chunk-4RYV2TII.js";
+} from "./chunk-6RKPV3UP.js";
 import "./chunk-A3AEEGKR.js";
+import "./chunk-CEZGL6YP.js";
 import {
   TrendIndicator
 } from "./chunk-MMDLXS6O.js";
 import {
   BarListChart,
   BarListChartResponsive
-} from "./chunk-W4ZYJ74Q.js";
+} from "./chunk-KORG7ITC.js";
 import {
   BarChart,
   BarChartResponsive
-} from "./chunk-DY7IVYWP.js";
+} from "./chunk-KBORJZKC.js";
+import {
+  Legend,
+  useChartLegendItems
+} from "./chunk-ALDWCNLH.js";
 import {
   BaseTooltip
 } from "./chunk-5XI443YP.js";
 import {
   ConversionFunnelChartWithProvider
-} from "./chunk-2FRTJVQ3.js";
+} from "./chunk-DCZ47KPZ.js";
 import {
-  LeaderboardChart,
-  LeaderboardChartResponsive
-} from "./chunk-CQPKK55N.js";
-import "./chunk-CEZGL6YP.js";
+  GeoChartResponsive,
+  GeoChartWithProvider
+} from "./chunk-RDJ5PKC5.js";
 import {
   withResponsive
 } from "./chunk-NONODB3K.js";
-import {
-  Legend,
-  useChartLegendItems
-} from "./chunk-VER6S543.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
   defaultTheme,
   useGlobalChartsContext,
   useGlobalChartsTheme
-} from "./chunk-O2BJMTIS.js";
-import {
-  lightenHexColor,
-  normalizeColorToHex,
-  resolveCssVariable
-} from "./chunk-P3QEXFTA.js";
+} from "./chunk-DYMJWNYM.js";
+import "./chunk-TE63Y5PX.js";
 import "./chunk-G3PMV62Z.js";
 
-// src/charts/geo-chart/geo-chart.tsx
-import { __ } from "@wordpress/i18n";
-import clsx from "clsx";
-import { useContext, useMemo } from "react";
-import { Chart } from "react-google-charts";
-
-// src/charts/geo-chart/geo-chart.module.scss
-var geo_chart_module_default = {
-  "container": "a8ccharts-JvcqOz"
-};
-
-// src/charts/geo-chart/geo-chart.tsx
-import { jsx } from "react/jsx-runtime";
-var DEFAULT_FEATURE_FILL_COLOR = "#ffffff";
-var DEFAULT_BACKGROUND_COLOR = "#ffffff";
-var GeoChartInternal = ({
-  className,
-  data,
-  width,
-  height,
-  region = "world",
-  resolution = "countries",
-  renderPlaceholder
-}) => {
-  const {
-    getElementStyles,
-    theme: {
-      geoChart: { featureFillColor },
-      backgroundColor
-    }
-  } = useGlobalChartsContext();
-  const loadingPlaceholder = /* @__PURE__ */ jsx(
-    "div",
-    {
-      className: clsx("geo-chart", geo_chart_module_default.container, className),
-      "data-testid": "geo-chart-loading",
-      style: { width, height },
-      children: renderPlaceholder ? renderPlaceholder() : __("Loading map", "jetpack-charts")
-    }
-  );
-  const fullColorHex = getElementStyles({ index: 0 }).color;
-  const lightColorHex = lightenHexColor(fullColorHex, 0.8);
-  const backgroundColorHex = normalizeColorToHex(backgroundColor, null, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
-  const defaultFillColorHex = normalizeColorToHex(featureFillColor, null, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const hasHtmlTooltips = useMemo(
-    () => data.length > 0 && data[0].some(
-      (col) => typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true
-    ),
-    [data]
-  );
-  const options = useMemo(
-    () => ({
-      ...region !== "world" && { region },
-      ...resolution !== "countries" && { resolution },
-      colorAxis: { colors: [lightColorHex, fullColorHex] },
-      backgroundColor: backgroundColorHex,
-      datalessRegionColor: defaultFillColorHex,
-      defaultColor: defaultFillColorHex,
-      tooltip: { trigger: "focus", isHtml: hasHtmlTooltips },
-      legend: "none",
-      keepAspectRatio: true
-    }),
-    [
-      region,
-      resolution,
-      lightColorHex,
-      fullColorHex,
-      backgroundColorHex,
-      defaultFillColorHex,
-      hasHtmlTooltips
-    ]
-  );
-  return /* @__PURE__ */ jsx(
-    "div",
-    {
-      className: clsx("geo-chart", geo_chart_module_default.container, className),
-      "data-testid": "geo-chart",
-      style: { width, height, backgroundColor },
-      children: /* @__PURE__ */ jsx(
-        Chart,
-        {
-          chartType: "GeoChart",
-          width,
-          height,
-          data,
-          options,
-          loader: loadingPlaceholder
-        }
-      )
-    }
-  );
-};
-var GeoChartWithProvider = (props) => {
-  const existingContext = useContext(GlobalChartsContext);
-  if (existingContext) {
-    return /* @__PURE__ */ jsx(GeoChartInternal, { ...props });
-  }
-  return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(GeoChartInternal, { ...props }) });
-};
-GeoChartWithProvider.displayName = "GeoChart";
-var GeoChartResponsive = withResponsive(GeoChartWithProvider);
-
 // src/charts/sparkline/sparkline.tsx
-import clsx2 from "clsx";
-import { useMemo as useMemo2, forwardRef } from "react";
+import clsx from "clsx";
+import { useMemo, forwardRef } from "react";
 
 // src/charts/sparkline/sparkline.module.scss
 var sparkline_module_default = {
@@ -168,7 +66,7 @@ var sparkline_module_default = {
 };
 
 // src/charts/sparkline/sparkline.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
+import { jsx } from "react/jsx-runtime";
 var DEFAULT_WIDTH = 100;
 var DEFAULT_HEIGHT = 40;
 var transformToSeriesData = (data, color, strokeWidth) => {
@@ -205,13 +103,13 @@ var SparklineComponent = forwardRef(
     const theme = useGlobalChartsTheme();
     const themeStrokeWidth = theme.sparkline?.strokeWidth ?? 1.5;
     const strokeWidth = strokeWidthProp ?? themeStrokeWidth;
-    const seriesData = useMemo2(() => {
+    const seriesData = useMemo(() => {
       if (!data || data.length === 0) {
         return [];
       }
       return transformToSeriesData(data, color, strokeWidth);
     }, [data, color, strokeWidth]);
-    const finalMargin = useMemo2(() => {
+    const finalMargin = useMemo(() => {
       const themeMargin = theme.sparkline?.margin ?? { top: 2, right: 2, bottom: 2, left: 2 };
       const margin = marginProp ?? themeMargin;
       return {
@@ -219,7 +117,7 @@ var SparklineComponent = forwardRef(
         ...margin
       };
     }, [marginProp, theme.sparkline?.margin]);
-    const seriesWithGradient = useMemo2(() => {
+    const seriesWithGradient = useMemo(() => {
       if (!gradient || seriesData.length === 0) {
         return seriesData;
       }
@@ -237,11 +135,11 @@ var SparklineComponent = forwardRef(
       }));
     }, [seriesData, gradient, color]);
     if (!data || data.length === 0) {
-      return /* @__PURE__ */ jsx2(
+      return /* @__PURE__ */ jsx(
         "div",
         {
           ref,
-          className: clsx2(
+          className: clsx(
             "sparkline",
             sparkline_module_default.sparkline,
             sparkline_module_default["sparkline--empty"],
@@ -256,11 +154,11 @@ var SparklineComponent = forwardRef(
       const cx = width / 2;
       const cy = height / 2;
       const resolvedColor = color || "#000000";
-      return /* @__PURE__ */ jsx2(
+      return /* @__PURE__ */ jsx(
         "div",
         {
           ref,
-          className: clsx2(
+          className: clsx(
             "sparkline",
             sparkline_module_default.sparkline,
             sparkline_module_default["sparkline--single-point"],
@@ -268,17 +166,17 @@ var SparklineComponent = forwardRef(
           ),
           style: { width, height },
           "data-testid": "sparkline-single-point",
-          children: /* @__PURE__ */ jsx2("svg", { width, height, "aria-hidden": "true", children: /* @__PURE__ */ jsx2("circle", { cx, cy, r: strokeWidth * 1.5, fill: resolvedColor }) })
+          children: /* @__PURE__ */ jsx("svg", { width, height, "aria-hidden": "true", children: /* @__PURE__ */ jsx("circle", { cx, cy, r: strokeWidth * 1.5, fill: resolvedColor }) })
         }
       );
     }
-    return /* @__PURE__ */ jsx2(
+    return /* @__PURE__ */ jsx(
       "div",
       {
         ref,
-        className: clsx2("sparkline", sparkline_module_default.sparkline, className),
+        className: clsx("sparkline", sparkline_module_default.sparkline, className),
         "data-testid": "sparkline",
-        children: /* @__PURE__ */ jsx2(
+        children: /* @__PURE__ */ jsx(
           LineChart,
           {
             data: seriesWithGradient,

@@ -1,7 +1,7 @@
 export { M as MetricValueType, f as formatMetricValue } from '../format-metric-value-MXm5DtQ_.js';
 import { TickFormatter } from '@visx/axis';
 import { AnyD3Scale, ScaleInput } from '@visx/scale';
-import { S as SeriesData, C as ChartTheme, f as CompleteChartTheme } from '../types-sQ20gAeB.js';
+import { d as SeriesData, C as ChartTheme, f as CompleteChartTheme } from '../types-D1lTxRyg.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -158,6 +158,15 @@ declare const isValidHexColor: (hex: unknown) => hex is string;
  */
 declare const validateHexColor: (hex: unknown) => void;
 /**
+ * Convert hex color to rgba with specified opacity.
+ * This is genuinely reusable across chart components.
+ * @param  hex   - The hex color string (e.g., '#ff0000')
+ * @param  alpha - The opacity value. Values outside the [0, 1] range will be clamped by the underlying d3 color library.
+ * @return The rgba color string (e.g., 'rgba(255, 0, 0, 0.5)')
+ * @throws {Error} if hex string is malformed or alpha is not a valid number
+ */
+declare const hexToRgba: (hex: string, alpha: number) => string;
+/**
  * Calculate the perceptual distance between two HSL colors
  * @param hsl1 - first color in HSL format [h, s, l]
  * @param hsl2 - second color in HSL format [h, s, l]
@@ -213,4 +222,4 @@ declare const lightenHexColor: (hex: string, blend: number) => string;
  */
 declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
 
-export { attachSubComponents, formatPercentage, getColorDistance, getItemShapeStyles, getLongestTickWidth, getSeriesLineStyles, getSeriesStroke, isSafari, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, resolveCssVariable, validateHexColor };
+export { attachSubComponents, formatPercentage, getColorDistance, getItemShapeStyles, getLongestTickWidth, getSeriesLineStyles, getSeriesStroke, hexToRgba, isSafari, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, resolveCssVariable, validateHexColor };
