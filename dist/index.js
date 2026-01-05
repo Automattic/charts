@@ -16,6 +16,9 @@ import {
   TrendIndicator
 } from "./chunk-MMDLXS6O.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-2FRTJVQ3.js";
+import {
   BarListChart,
   BarListChartResponsive
 } from "./chunk-W4ZYJ74Q.js";
@@ -26,9 +29,6 @@ import {
 import {
   BaseTooltip
 } from "./chunk-5XI443YP.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-2FRTJVQ3.js";
 import {
   LeaderboardChart,
   LeaderboardChartResponsive
