@@ -5,9 +5,6 @@ import {
   radial_wipe_animation_default
 } from "./chunk-A3AEEGKR.js";
 import {
-  BaseTooltip
-} from "./chunk-5XI443YP.js";
-import {
   ChartHTML,
   ChartSVG,
   useChartChildren
@@ -34,6 +31,9 @@ import {
 import {
   attachSubComponents
 } from "./chunk-P3QEXFTA.js";
+import {
+  BaseTooltip
+} from "./chunk-5XI443YP.js";
 
 // src/charts/pie-chart/pie-chart.tsx
 import { localPoint } from "@visx/event";
@@ -354,4 +354,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-VTMJWCCW.js.map
+//# sourceMappingURL=chunk-LMZ5PVNR.js.map
