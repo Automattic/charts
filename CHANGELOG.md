@@ -5,16 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.53.1-alpha] - unreleased
+## [0.53.2-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
-### Added
-- Add animation support to Sparkline chart component
-- Add Geo Chart exports to package
-
 ### Changed
 - Update package dependencies.
+
+## [0.53.1] - 2026-01-06
+### Added
+- Add animation support to Sparkline chart component. [#46333]
+- Add Geo Chart exports to package. [#46438]
 
 ## [0.53.0] - 2025-12-22
 ### Added
@@ -626,7 +627,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.53.1-alpha]: https://github.com/Automattic/charts/compare/v0.53.0...v0.53.1-alpha
+[0.53.2-alpha]: https://github.com/Automattic/charts/compare/v0.53.1...v0.53.2-alpha
+[0.53.1]: https://github.com/Automattic/charts/compare/v0.53.0...v0.53.1
 [0.53.0]: https://github.com/Automattic/charts/compare/v0.52.0...v0.53.0
 [0.52.0]: https://github.com/Automattic/charts/compare/v0.51.0...v0.52.0
 [0.51.0]: https://github.com/Automattic/charts/compare/v0.50.2...v0.51.0
