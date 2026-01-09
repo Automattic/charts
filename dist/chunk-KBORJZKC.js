@@ -1,40 +1,40 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-
-var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
-
-
-
-
-var _chunkZPJHWKEKcjs = require('./chunk-ZPJHWKEK.cjs');
-
-
-var _chunkMUUSZ7J5cjs = require('./chunk-MUUSZ7J5.cjs');
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _chunkWKN6C4ZEcjs = require('./chunk-WKN6C4ZE.cjs');
-
-
-var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
+import {
+  Legend,
+  SingleChartContext,
+  useChartLegendItems
+} from "./chunk-ALDWCNLH.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-5XI443YP.js";
+import {
+  withResponsive
+} from "./chunk-NONODB3K.js";
+import {
+  GlobalChartsContext,
+  GlobalChartsProvider,
+  useChartDataTransform,
+  useChartId,
+  useChartMargin,
+  useChartRegistration,
+  useElementHeight,
+  useGlobalChartsContext,
+  useGlobalChartsTheme,
+  usePrefersReducedMotion,
+  useXYChartTheme,
+  useZeroValueDisplay
+} from "./chunk-DYMJWNYM.js";
+import {
+  attachSubComponents
+} from "./chunk-TE63Y5PX.js";
 
 // src/charts/bar-chart/bar-chart.tsx
-var _numberformatters = require('@automattic/number-formatters');
-var _pattern = require('@visx/pattern');
-var _xychart = require('@visx/xychart');
-var _i18n = require('@wordpress/i18n');
-var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
-var _react = require('react');
+import { formatNumber } from "@automattic/number-formatters";
+import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@visx/pattern";
+import { Axis, BarSeries, BarGroup, Grid, XYChart } from "@visx/xychart";
+import { __ } from "@wordpress/i18n";
+import clsx from "clsx";
+import { useCallback, useContext, useState, useRef, useMemo as useMemo2 } from "react";
 
 // src/charts/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
@@ -48,8 +48,8 @@ var bar_chart_module_default = {
 };
 
 // src/charts/bar-chart/private/use-bar-chart-options.ts
-
-
+import { formatNumberCompact } from "@automattic/number-formatters";
+import { useMemo } from "react";
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString(void 0, {
@@ -61,7 +61,7 @@ var getGroupPadding = (scale) => {
   return typeof scale.paddingInner === "number" ? scale.paddingInner : 0;
 };
 function useBarChartOptions(data, horizontal, options = {}) {
-  const defaultOptions = _react.useMemo.call(void 0, () => {
+  const defaultOptions = useMemo(() => {
     const bandScale = {
       type: "band",
       padding: 0.2,
@@ -72,12 +72,12 @@ function useBarChartOptions(data, horizontal, options = {}) {
       nice: true,
       zero: false
     };
-    const labelFormatter = _optionalChain([data, 'optionalAccess', _ => _[0], 'optionalAccess', _2 => _2.data, 'optionalAccess', _3 => _3[0], 'optionalAccess', _4 => _4.label]) ? (label) => label : formatDateTick;
-    const valueFormatter = _numberformatters.formatNumberCompact;
-    const labelAccessor = (d) => _optionalChain([d, 'optionalAccess', _5 => _5.label]) || _optionalChain([d, 'optionalAccess', _6 => _6.date]);
+    const labelFormatter = data?.[0]?.data?.[0]?.label ? (label) => label : formatDateTick;
+    const valueFormatter = formatNumberCompact;
+    const labelAccessor = (d) => d?.label || d?.date;
     const valueAccessor = (d) => {
       const enhancedPoint = d;
-      return _optionalChain([enhancedPoint, 'optionalAccess', _7 => _7.visualValue]) !== void 0 ? enhancedPoint.visualValue : _optionalChain([d, 'optionalAccess', _8 => _8.value]);
+      return enhancedPoint?.visualValue !== void 0 ? enhancedPoint.visualValue : d?.value;
     };
     return {
       vertical: {
@@ -102,7 +102,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
       }
     };
   }, [data]);
-  return _react.useMemo.call(void 0, () => {
+  return useMemo(() => {
     const orientationKey = horizontal ? "horizontal" : "vertical";
     const {
       xTickFormat,
@@ -116,7 +116,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
     } = defaultOptions[orientationKey];
     const xScale = { ...baseXScale, ...options.xScale || {} };
     const yScale = { ...baseYScale, ...options.yScale || {} };
-    const providedToolTipLabelFormatter = horizontal ? _optionalChain([options, 'access', _9 => _9.axis, 'optionalAccess', _10 => _10.y, 'optionalAccess', _11 => _11.tickFormat]) : _optionalChain([options, 'access', _12 => _12.axis, 'optionalAccess', _13 => _13.x, 'optionalAccess', _14 => _14.tickFormat]);
+    const providedToolTipLabelFormatter = horizontal ? options.axis?.y?.tickFormat : options.axis?.x?.tickFormat;
     return {
       gridVisibility,
       xScale,
@@ -130,13 +130,13 @@ function useBarChartOptions(data, horizontal, options = {}) {
           orientation: "bottom",
           numTicks: 4,
           tickFormat: xTickFormat,
-          ..._optionalChain([options, 'access', _15 => _15.axis, 'optionalAccess', _16 => _16.x]) || {}
+          ...options.axis?.x || {}
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: yTickFormat,
-          ..._optionalChain([options, 'access', _17 => _17.axis, 'optionalAccess', _18 => _18.y]) || {}
+          ...options.axis?.y || {}
         }
       },
       barGroup: {
@@ -150,9 +150,9 @@ function useBarChartOptions(data, horizontal, options = {}) {
 }
 
 // src/charts/bar-chart/bar-chart.tsx
-var _jsxruntime = require('react/jsx-runtime');
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var validateData = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _19 => _19.length])) return "No data available";
+  if (!data?.length) return "No data available";
   const hasInvalidData = data.some(
     (series) => series.data.some(
       (point) => isNaN(point.value) || point.value === null || point.value === void 0 || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))
@@ -189,21 +189,21 @@ var BarChartInternal = ({
   children
 }) => {
   const horizontal = orientation === "horizontal";
-  const chartId = _chunkWKN6C4ZEcjs.useChartId.call(void 0, providedChartId);
-  const theme = _chunkWKN6C4ZEcjs.useXYChartTheme.call(void 0, data);
-  const dataSorted = _chunkWKN6C4ZEcjs.useChartDataTransform.call(void 0, data);
-  const dataWithVisibleZeros = _chunkWKN6C4ZEcjs.useZeroValueDisplay.call(void 0, dataSorted, {
+  const chartId = useChartId(providedChartId);
+  const theme = useXYChartTheme(data);
+  const dataSorted = useChartDataTransform(data);
+  const dataWithVisibleZeros = useZeroValueDisplay(dataSorted, {
     enabled: showZeroValues
   });
-  const legendItems = _chunkZPJHWKEKcjs.useChartLegendItems.call(void 0, dataSorted);
+  const legendItems = useChartLegendItems(dataSorted);
   const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
-  const defaultMargin = _chunkWKN6C4ZEcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
-  const [legendRef, legendHeight] = _chunkWKN6C4ZEcjs.useElementHeight.call(void 0, );
-  const chartRef = _react.useRef.call(void 0, null);
-  const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
-  const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
-  const totalPoints = Math.max(0, ...data.map((series) => _optionalChain([series, 'access', _20 => _20.data, 'optionalAccess', _21 => _21.length]) || 0)) * data.length;
-  const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = _chunk7HROSZRScjs.useKeyboardNavigation.call(void 0, {
+  const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
+  const [legendRef, legendHeight] = useElementHeight();
+  const chartRef = useRef(null);
+  const [selectedIndex, setSelectedIndex] = useState(void 0);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const totalPoints = Math.max(0, ...data.map((series) => series.data?.length || 0)) * data.length;
+  const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
     selectedIndex,
     setSelectedIndex,
     isNavigating,
@@ -211,9 +211,9 @@ var BarChartInternal = ({
     chartRef,
     totalPoints
   });
-  const { getElementStyles, isSeriesVisible } = _chunkWKN6C4ZEcjs.useGlobalChartsContext.call(void 0, );
-  const providerTheme = _chunkWKN6C4ZEcjs.useGlobalChartsTheme.call(void 0, );
-  const seriesWithVisibility = _react.useMemo.call(void 0, () => {
+  const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+  const providerTheme = useGlobalChartsTheme();
+  const seriesWithVisibility = useMemo2(() => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
         series,
@@ -227,21 +227,21 @@ var BarChartInternal = ({
       isVisible: isSeriesVisible(chartId, series.label)
     }));
   }, [dataWithVisibleZeros, chartId, isSeriesVisible, legendInteractive]);
-  const allSeriesHidden = _react.useMemo.call(void 0, () => {
+  const allSeriesHidden = useMemo2(() => {
     return seriesWithVisibility.every(({ isVisible }) => !isVisible);
   }, [seriesWithVisibility]);
-  const getBarBackground = _react.useCallback.call(void 0, 
+  const getBarBackground = useCallback(
     (index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({ data: dataSorted[index], index }).color,
     [withPatterns, getElementStyles, dataSorted, chartId]
   );
-  const renderDefaultTooltip = _react.useCallback.call(void 0, 
+  const renderDefaultTooltip = useCallback(
     ({ tooltipData }) => {
-      const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _22 => _22.nearestDatum, 'optionalAccess', _23 => _23.datum]);
+      const nearestDatum = tooltipData?.nearestDatum?.datum;
       if (!nearestDatum) return null;
-      return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", { className: bar_chart_module_default["bar-chart__tooltip"], children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: bar_chart_module_default["bar-chart__tooltip-header"], children: _optionalChain([tooltipData, 'optionalAccess', _24 => _24.nearestDatum, 'optionalAccess', _25 => _25.key]) }),
-        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", { className: bar_chart_module_default["bar-chart__tooltip-row"], children: [
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", { className: bar_chart_module_default["bar-chart__tooltip-label"], children: [
+      return /* @__PURE__ */ jsxs("div", { className: bar_chart_module_default["bar-chart__tooltip"], children: [
+        /* @__PURE__ */ jsx("div", { className: bar_chart_module_default["bar-chart__tooltip-header"], children: tooltipData?.nearestDatum?.key }),
+        /* @__PURE__ */ jsxs("div", { className: bar_chart_module_default["bar-chart__tooltip-row"], children: [
+          /* @__PURE__ */ jsxs("span", { className: bar_chart_module_default["bar-chart__tooltip-label"], children: [
             chartOptions.tooltip.labelFormatter(
               nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0),
               0,
@@ -249,13 +249,13 @@ var BarChartInternal = ({
             ),
             ":"
           ] }),
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: _numberformatters.formatNumber.call(void 0, nearestDatum.value) })
+          /* @__PURE__ */ jsx("span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: formatNumber(nearestDatum.value) })
         ] })
       ] });
     },
     [chartOptions.tooltip]
   );
-  const renderPattern = _react.useCallback.call(void 0, 
+  const renderPattern = useCallback(
     (index, color) => {
       const patternType = index % 4;
       const id = getPatternId(chartId, index);
@@ -268,8 +268,8 @@ var BarChartInternal = ({
       switch (patternType) {
         case 0:
         default:
-          return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-            _pattern.PatternLines,
+          return /* @__PURE__ */ jsx(
+            PatternLines,
             {
               ...commonProps,
               width: 5,
@@ -279,16 +279,16 @@ var BarChartInternal = ({
             id
           );
         case 1:
-          return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _pattern.PatternCircles, { ...commonProps, width: 6, height: 6, fill: "white" }, id);
+          return /* @__PURE__ */ jsx(PatternCircles, { ...commonProps, width: 6, height: 6, fill: "white" }, id);
         case 2:
-          return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _pattern.PatternWaves, { ...commonProps, width: 4, height: 4 }, id);
+          return /* @__PURE__ */ jsx(PatternWaves, { ...commonProps, width: 4, height: 4 }, id);
         case 3:
-          return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _pattern.PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
+          return /* @__PURE__ */ jsx(PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
       }
     },
     [chartId]
   );
-  const createPatternBorderStyle = _react.useCallback.call(void 0, 
+  const createPatternBorderStyle = useCallback(
     (index, color) => {
       const patternId = getPatternId(chartId, index);
       return `
@@ -300,7 +300,7 @@ var BarChartInternal = ({
     },
     [chartId]
   );
-  const createKeyboardHighlightStyle = _react.useCallback.call(void 0, () => {
+  const createKeyboardHighlightStyle = useCallback(() => {
     if (selectedIndex === void 0) return "";
     const maxDataPoints = Math.max(...data.map((s) => s.data.length));
     const dataPointIndex = Math.floor(selectedIndex / data.length);
@@ -323,38 +323,38 @@ var BarChartInternal = ({
   }, [selectedIndex, data, chartId]);
   const error = validateData(dataSorted);
   const isDataValid = !error;
-  const chartMetadata = _react.useMemo.call(void 0, 
+  const chartMetadata = useMemo2(
     () => ({
       orientation,
       withPatterns
     }),
     [orientation, withPatterns]
   );
-  _chunkWKN6C4ZEcjs.useChartRegistration.call(void 0, {
+  useChartRegistration({
     chartId,
     legendItems,
     chartType: "bar",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkWKN6C4ZEcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = usePrefersReducedMotion();
   if (error) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"]), children: error });
+    return /* @__PURE__ */ jsx("div", { className: clsx("bar-chart", bar_chart_module_default["bar-chart"]), children: error });
   }
-  const gridVisibility = _nullishCoalesce(gridVisibilityProp, () => ( chartOptions.gridVisibility));
+  const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
   const highlightedBarStyle = createKeyboardHighlightStyle();
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-    _chunkZPJHWKEKcjs.SingleChartContext.Provider,
+  return /* @__PURE__ */ jsx(
+    SingleChartContext.Provider,
     {
       value: {
         chartId,
         chartWidth: width,
         chartHeight: height - (showLegend ? legendHeight : 0)
       },
-      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
+      children: /* @__PURE__ */ jsxs(
         "div",
         {
-          className: _clsx2.default.call(void 0, 
+          className: clsx(
             "bar-chart",
             bar_chart_module_default["bar-chart"],
             {
@@ -365,7 +365,7 @@ var BarChartInternal = ({
           ),
           "data-testid": "bar-chart",
           role: "grid",
-          "aria-label": _i18n.__.call(void 0, "Bar chart", "jetpack-charts"),
+          "aria-label": __("Bar chart", "jetpack-charts"),
           style: {
             width,
             height
@@ -377,8 +377,8 @@ var BarChartInternal = ({
           ref: chartRef,
           "data-chart-id": `bar-chart-${chartId}`,
           children: [
-            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
-              _xychart.XYChart,
+            /* @__PURE__ */ jsxs(
+              XYChart,
               {
                 theme,
                 width,
@@ -393,58 +393,58 @@ var BarChartInternal = ({
                 horizontal,
                 pointerEventsDataKey: "nearest",
                 children: [
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _xychart.Grid,
+                  /* @__PURE__ */ jsx(
+                    Grid,
                     {
                       columns: gridVisibility.includes("y"),
                       rows: gridVisibility.includes("x"),
                       numTicks: 4
                     }
                   ),
-                  withPatterns && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
-                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map(
+                  withPatterns && /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map(
                       (seriesData, index) => renderPattern(index, getElementStyles({ data: seriesData, index }).color)
                     ) }),
-                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "style", { children: dataSorted.map(
+                    /* @__PURE__ */ jsx("style", { children: dataSorted.map(
                       (seriesData, index) => createPatternBorderStyle(
                         index,
                         getElementStyles({ data: seriesData, index }).color
                       )
                     ) })
                   ] }),
-                  highlightedBarStyle && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "style", { children: highlightedBarStyle }),
-                  allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+                  highlightedBarStyle && /* @__PURE__ */ jsx("style", { children: highlightedBarStyle }),
+                  allSeriesHidden ? /* @__PURE__ */ jsx(
                     "text",
                     {
                       x: width / 2,
                       y: (height - (showLegend ? legendHeight : 0)) / 2,
                       textAnchor: "middle",
-                      fill: _optionalChain([providerTheme, 'access', _26 => _26.gridStyles, 'optionalAccess', _27 => _27.stroke]) || "#ccc",
+                      fill: providerTheme.gridStyles?.stroke || "#ccc",
                       fontSize: "14",
                       fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-                      children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
+                      children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
                     }
                   ) : null,
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
+                  /* @__PURE__ */ jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
                     if (!isVisible) {
                       return null;
                     }
-                    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                      _xychart.BarSeries,
+                    return /* @__PURE__ */ jsx(
+                      BarSeries,
                       {
-                        dataKey: _optionalChain([seriesData, 'optionalAccess', _28 => _28.label]),
+                        dataKey: seriesData?.label,
                         data: seriesData.data,
                         yAccessor: chartOptions.accessors.yAccessor,
                         xAccessor: chartOptions.accessors.xAccessor,
                         colorAccessor: getBarBackground(index)
                       },
-                      _optionalChain([seriesData, 'optionalAccess', _29 => _29.label])
+                      seriesData?.label
                     );
                   }) }),
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.x }),
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, { ...chartOptions.axis.y }),
-                  withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-                    _chunk7HROSZRScjs.AccessibleTooltip,
+                  /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
+                  /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
+                  withTooltips && /* @__PURE__ */ jsx(
+                    AccessibleTooltip,
                     {
                       detectBounds: true,
                       snapTooltipToDatumX: true,
@@ -460,8 +460,8 @@ var BarChartInternal = ({
                 ]
               }
             ),
-            showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
-              _chunkZPJHWKEKcjs.Legend,
+            showLegend && /* @__PURE__ */ jsx(
+              Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -484,25 +484,25 @@ var BarChartInternal = ({
   );
 };
 var BarChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkWKN6C4ZEcjs.GlobalChartsContext);
+  const existingContext = useContext(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, { ...props });
+    return /* @__PURE__ */ jsx(BarChartInternal, { ...props });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkWKN6C4ZEcjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, { ...props }) });
+  return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(BarChartInternal, { ...props }) });
 };
 BarChartWithProvider.displayName = "BarChart";
-var BarChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, BarChartWithProvider, {
-  Legend: _chunkZPJHWKEKcjs.Legend
+var BarChart = attachSubComponents(BarChartWithProvider, {
+  Legend
 });
-var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, 
-  _chunkMUUSZ7J5cjs.withResponsive.call(void 0, BarChartWithProvider),
+var BarChartResponsive = attachSubComponents(
+  withResponsive(BarChartWithProvider),
   {
-    Legend: _chunkZPJHWKEKcjs.Legend
+    Legend
   }
 );
 
-
-
-
-exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-6S2AM7WH.cjs.map
+export {
+  BarChart,
+  BarChartResponsive
+};
+//# sourceMappingURL=chunk-KBORJZKC.js.map
