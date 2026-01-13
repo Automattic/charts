@@ -1,15 +1,11 @@
 import {
+  withResponsive
+} from "./chunk-NONODB3K.js";
+import {
   Legend,
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-ALDWCNLH.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-5XI443YP.js";
-import {
-  withResponsive
-} from "./chunk-NONODB3K.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -27,6 +23,10 @@ import {
 import {
   attachSubComponents
 } from "./chunk-TE63Y5PX.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-5XI443YP.js";
 
 // src/charts/bar-chart/bar-chart.tsx
 import { formatNumber } from "@automattic/number-formatters";
@@ -505,4 +505,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-KBORJZKC.js.map
+//# sourceMappingURL=chunk-Y7DDJVJY.js.map
