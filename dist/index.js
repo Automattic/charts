@@ -1,11 +1,11 @@
 import {
-  LeaderboardChart,
-  LeaderboardChartResponsive
-} from "./chunk-HPJ5XSZM.js";
-import {
   LineChart,
   LineChartResponsive
 } from "./chunk-Z34VYZGR.js";
+import {
+  LeaderboardChart,
+  LeaderboardChartResponsive
+} from "./chunk-HPJ5XSZM.js";
 import {
   PieChart,
   PieChartResponsive
