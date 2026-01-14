@@ -1,9 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
-
-
 var _chunkOTZT3MC2cjs = require('./chunk-OTZT3MC2.cjs');
+
+
+var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
 
 
 
@@ -354,4 +354,4 @@ var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-KY2KJ7JP.cjs.map
+//# sourceMappingURL=chunk-VZ4PARKP.cjs.map
