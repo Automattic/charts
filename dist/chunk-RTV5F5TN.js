@@ -2,12 +2,12 @@ import {
   useChartChildren
 } from "./chunk-CEZGL6YP.js";
 import {
+  withResponsive
+} from "./chunk-NONODB3K.js";
+import {
   Legend,
   SingleChartContext
 } from "./chunk-ALDWCNLH.js";
-import {
-  withResponsive
-} from "./chunk-NONODB3K.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -4580,4 +4580,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-HPJ5XSZM.js.map
+//# sourceMappingURL=chunk-RTV5F5TN.js.map
