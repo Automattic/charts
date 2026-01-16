@@ -2,7 +2,7 @@
 
 
 
-var _chunkGX4XTD6Vcjs = require('../../chunk-GX4XTD6V.cjs');
+var _chunkPNDL3WWMcjs = require('../../chunk-PNDL3WWM.cjs');
 require('../../chunk-HIWNB5PK.cjs');
 require('../../chunk-ZPJHWKEK.cjs');
 require('../../chunk-MUUSZ7J5.cjs');
@@ -16,5 +16,5 @@ require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.LeaderboardChart = _chunkGX4XTD6Vcjs.LeaderboardChartResponsive; exports.LeaderboardChartUnresponsive = _chunkGX4XTD6Vcjs.LeaderboardChart; exports.formatMetricValue = _chunkZVGEDXDPcjs.formatMetricValue; exports.useLeaderboardLegendItems = _chunkGX4XTD6Vcjs.useLeaderboardLegendItems;
+exports.LeaderboardChart = _chunkPNDL3WWMcjs.LeaderboardChartResponsive; exports.LeaderboardChartUnresponsive = _chunkPNDL3WWMcjs.LeaderboardChart; exports.formatMetricValue = _chunkZVGEDXDPcjs.formatMetricValue; exports.useLeaderboardLegendItems = _chunkPNDL3WWMcjs.useLeaderboardLegendItems;
 //# sourceMappingURL=index.cjs.map

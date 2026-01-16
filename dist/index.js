@@ -1,7 +1,7 @@
 import {
   LeaderboardChart,
   LeaderboardChartResponsive
-} from "./chunk-HPJ5XSZM.js";
+} from "./chunk-LK5JTV76.js";
 import {
   LineChart,
   LineChartResponsive
