@@ -25,7 +25,8 @@ import {
   useZeroValueDisplay
 } from "./chunk-DYMJWNYM.js";
 import {
-  attachSubComponents
+  attachSubComponents,
+  isSafari
 } from "./chunk-TE63Y5PX.js";
 
 // src/charts/bar-chart/bar-chart.tsx
@@ -34,7 +35,7 @@ import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@vi
 import { Axis, BarSeries, BarGroup, Grid, XYChart } from "@visx/xychart";
 import { __ } from "@wordpress/i18n";
 import clsx from "clsx";
-import { useCallback, useContext, useState, useRef, useMemo as useMemo2 } from "react";
+import { useCallback, useContext as useContext2, useState, useRef, useMemo as useMemo2 } from "react";
 
 // src/charts/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
@@ -50,6 +51,81 @@ var bar_chart_module_default = {
 // src/charts/bar-chart/private/use-bar-chart-options.ts
 import { formatNumberCompact } from "@automattic/number-formatters";
 import { useMemo } from "react";
+
+// src/charts/bar-chart/private/truncated-tick-component.tsx
+import { DataContext } from "@visx/xychart";
+import { useContext } from "react";
+import { jsx } from "react/jsx-runtime";
+var getScaleBandwidth = (scale) => {
+  return scale && "bandwidth" in scale ? scale.bandwidth() ?? 0 : 0;
+};
+var MIN_TICK_LABEL_WIDTH = 20;
+var TruncatedTickComponent = ({
+  x,
+  y,
+  formattedValue,
+  axis,
+  textAnchor,
+  fill,
+  dy,
+  ...textProps
+}) => {
+  const { xScale, yScale } = useContext(DataContext) || {};
+  const scale = axis === "x" ? xScale : yScale;
+  const bandwidth = getScaleBandwidth(scale);
+  const maxWidth = Math.max(bandwidth, MIN_TICK_LABEL_WIDTH);
+  let textAlign = "center";
+  if (textAnchor === "start") {
+    textAlign = "left";
+  } else if (textAnchor === "end") {
+    textAlign = "right";
+  } else if (textAnchor === "middle") {
+    textAlign = "center";
+  }
+  let xOffset = 0;
+  if (textAlign === "center") {
+    xOffset = -maxWidth / 2;
+  } else if (textAlign === "right") {
+    xOffset = -maxWidth;
+  }
+  const { fontSize, fontFamily, fontWeight, fontStyle, letterSpacing, opacity } = textProps;
+  const textStyles = {
+    /**
+     * SVG <text> elements are vertically aligned to the baseline by default, but HTML <div> elements inside <foreignObject>
+     * are positioned relative to the top-left corner. To visually align the tick label like SVG text,
+     * we shift the div up by 100% of its height and adjust by twice the SVG dy value (from visx) to approximate original placement.
+     */
+    transform: `translateY(calc(-100% + ${dy ?? "0"} * 2))`,
+    // Safari doesn't work well with foreignObject positioning. Use position: fixed as a workaround.
+    ...isSafari() ? { position: "fixed" } : {},
+    // Apply compatible SVG text styles
+    fontSize,
+    fontFamily,
+    fontWeight,
+    fontStyle,
+    letterSpacing,
+    opacity,
+    // Convert svg text styles to CSS styles for the div
+    color: fill ?? "inherit",
+    textAlign,
+    // Ensure text is truncated with ellipsis, remains on one line, and shows the full value in a tooltip on hover.
+    // The surrounding div uses CSS to handle overflow, and the 'title' attribute is set for accessibility.
+    width: maxWidth,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    cursor: "default",
+    pointerEvents: "auto"
+  };
+  return /* @__PURE__ */ jsx("foreignObject", { x: x + xOffset, y, width: maxWidth, height: 0, overflow: "visible", children: /* @__PURE__ */ jsx("div", { style: textStyles, title: formattedValue, children: formattedValue }) });
+};
+var createTruncatedTickComponent = (axis) => (props) => {
+  return /* @__PURE__ */ jsx(TruncatedTickComponent, { ...props, axis });
+};
+var TruncatedXTickComponent = createTruncatedTickComponent("x");
+var TruncatedYTickComponent = createTruncatedTickComponent("y");
+
+// src/charts/bar-chart/private/use-bar-chart-options.ts
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString(void 0, {
@@ -117,6 +193,8 @@ function useBarChartOptions(data, horizontal, options = {}) {
     const xScale = { ...baseXScale, ...options.xScale || {} };
     const yScale = { ...baseYScale, ...options.yScale || {} };
     const providedToolTipLabelFormatter = horizontal ? options.axis?.y?.tickFormat : options.axis?.x?.tickFormat;
+    const { labelOverflow: xLabelOverflow, ...xAxisOptions } = options.axis?.x || {};
+    const { labelOverflow: yLabelOverflow, ...yAxisOptions } = options.axis?.y || {};
     return {
       gridVisibility,
       xScale,
@@ -130,13 +208,15 @@ function useBarChartOptions(data, horizontal, options = {}) {
           orientation: "bottom",
           numTicks: 4,
           tickFormat: xTickFormat,
-          ...options.axis?.x || {}
+          ...xLabelOverflow === "ellipsis" ? { tickComponent: TruncatedXTickComponent } : {},
+          ...xAxisOptions
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: yTickFormat,
-          ...options.axis?.y || {}
+          ...yLabelOverflow === "ellipsis" ? { tickComponent: TruncatedYTickComponent } : {},
+          ...yAxisOptions
         }
       },
       barGroup: {
@@ -150,7 +230,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 }
 
 // src/charts/bar-chart/bar-chart.tsx
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { Fragment, jsx as jsx2, jsxs } from "react/jsx-runtime";
 var validateData = (data) => {
   if (!data?.length) return "No data available";
   const hasInvalidData = data.some(
@@ -239,7 +319,7 @@ var BarChartInternal = ({
       const nearestDatum = tooltipData?.nearestDatum?.datum;
       if (!nearestDatum) return null;
       return /* @__PURE__ */ jsxs("div", { className: bar_chart_module_default["bar-chart__tooltip"], children: [
-        /* @__PURE__ */ jsx("div", { className: bar_chart_module_default["bar-chart__tooltip-header"], children: tooltipData?.nearestDatum?.key }),
+        /* @__PURE__ */ jsx2("div", { className: bar_chart_module_default["bar-chart__tooltip-header"], children: tooltipData?.nearestDatum?.key }),
         /* @__PURE__ */ jsxs("div", { className: bar_chart_module_default["bar-chart__tooltip-row"], children: [
           /* @__PURE__ */ jsxs("span", { className: bar_chart_module_default["bar-chart__tooltip-label"], children: [
             chartOptions.tooltip.labelFormatter(
@@ -249,7 +329,7 @@ var BarChartInternal = ({
             ),
             ":"
           ] }),
-          /* @__PURE__ */ jsx("span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: formatNumber(nearestDatum.value) })
+          /* @__PURE__ */ jsx2("span", { className: bar_chart_module_default["bar-chart__tooltip-value"], children: formatNumber(nearestDatum.value) })
         ] })
       ] });
     },
@@ -268,7 +348,7 @@ var BarChartInternal = ({
       switch (patternType) {
         case 0:
         default:
-          return /* @__PURE__ */ jsx(
+          return /* @__PURE__ */ jsx2(
             PatternLines,
             {
               ...commonProps,
@@ -279,11 +359,11 @@ var BarChartInternal = ({
             id
           );
         case 1:
-          return /* @__PURE__ */ jsx(PatternCircles, { ...commonProps, width: 6, height: 6, fill: "white" }, id);
+          return /* @__PURE__ */ jsx2(PatternCircles, { ...commonProps, width: 6, height: 6, fill: "white" }, id);
         case 2:
-          return /* @__PURE__ */ jsx(PatternWaves, { ...commonProps, width: 4, height: 4 }, id);
+          return /* @__PURE__ */ jsx2(PatternWaves, { ...commonProps, width: 4, height: 4 }, id);
         case 3:
-          return /* @__PURE__ */ jsx(PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
+          return /* @__PURE__ */ jsx2(PatternHexagons, { ...commonProps, size: 8, height: 3 }, id);
       }
     },
     [chartId]
@@ -339,11 +419,11 @@ var BarChartInternal = ({
   });
   const prefersReducedMotion = usePrefersReducedMotion();
   if (error) {
-    return /* @__PURE__ */ jsx("div", { className: clsx("bar-chart", bar_chart_module_default["bar-chart"]), children: error });
+    return /* @__PURE__ */ jsx2("div", { className: clsx("bar-chart", bar_chart_module_default["bar-chart"]), children: error });
   }
   const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
   const highlightedBarStyle = createKeyboardHighlightStyle();
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx2(
     SingleChartContext.Provider,
     {
       value: {
@@ -393,7 +473,7 @@ var BarChartInternal = ({
                 horizontal,
                 pointerEventsDataKey: "nearest",
                 children: [
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsx2(
                     Grid,
                     {
                       columns: gridVisibility.includes("y"),
@@ -402,18 +482,18 @@ var BarChartInternal = ({
                     }
                   ),
                   withPatterns && /* @__PURE__ */ jsxs(Fragment, { children: [
-                    /* @__PURE__ */ jsx("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map(
+                    /* @__PURE__ */ jsx2("defs", { "data-testid": "bar-chart-patterns", children: dataSorted.map(
                       (seriesData, index) => renderPattern(index, getElementStyles({ data: seriesData, index }).color)
                     ) }),
-                    /* @__PURE__ */ jsx("style", { children: dataSorted.map(
+                    /* @__PURE__ */ jsx2("style", { children: dataSorted.map(
                       (seriesData, index) => createPatternBorderStyle(
                         index,
                         getElementStyles({ data: seriesData, index }).color
                       )
                     ) })
                   ] }),
-                  highlightedBarStyle && /* @__PURE__ */ jsx("style", { children: highlightedBarStyle }),
-                  allSeriesHidden ? /* @__PURE__ */ jsx(
+                  highlightedBarStyle && /* @__PURE__ */ jsx2("style", { children: highlightedBarStyle }),
+                  allSeriesHidden ? /* @__PURE__ */ jsx2(
                     "text",
                     {
                       x: width / 2,
@@ -425,11 +505,11 @@ var BarChartInternal = ({
                       children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
                     }
                   ) : null,
-                  /* @__PURE__ */ jsx(BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
+                  /* @__PURE__ */ jsx2(BarGroup, { padding: chartOptions.barGroup.padding, children: seriesWithVisibility.map(({ series: seriesData, index, isVisible }) => {
                     if (!isVisible) {
                       return null;
                     }
-                    return /* @__PURE__ */ jsx(
+                    return /* @__PURE__ */ jsx2(
                       BarSeries,
                       {
                         dataKey: seriesData?.label,
@@ -441,9 +521,9 @@ var BarChartInternal = ({
                       seriesData?.label
                     );
                   }) }),
-                  /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
-                  /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
-                  withTooltips && /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsx2(Axis, { ...chartOptions.axis.x }),
+                  /* @__PURE__ */ jsx2(Axis, { ...chartOptions.axis.y }),
+                  withTooltips && /* @__PURE__ */ jsx2(
                     AccessibleTooltip,
                     {
                       detectBounds: true,
@@ -460,7 +540,7 @@ var BarChartInternal = ({
                 ]
               }
             ),
-            showLegend && /* @__PURE__ */ jsx(
+            showLegend && /* @__PURE__ */ jsx2(
               Legend,
               {
                 orientation: legendOrientation,
@@ -484,11 +564,11 @@ var BarChartInternal = ({
   );
 };
 var BarChartWithProvider = (props) => {
-  const existingContext = useContext(GlobalChartsContext);
+  const existingContext = useContext2(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ jsx(BarChartInternal, { ...props });
+    return /* @__PURE__ */ jsx2(BarChartInternal, { ...props });
   }
-  return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(BarChartInternal, { ...props }) });
+  return /* @__PURE__ */ jsx2(GlobalChartsProvider, { children: /* @__PURE__ */ jsx2(BarChartInternal, { ...props }) });
 };
 BarChartWithProvider.displayName = "BarChart";
 var BarChart = attachSubComponents(BarChartWithProvider, {
@@ -505,4 +585,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-KBORJZKC.js.map
+//# sourceMappingURL=chunk-PU2UO4EG.js.map

@@ -26,6 +26,7 @@ var _chunkMUUSZ7J5cjs = require('./chunk-MUUSZ7J5.cjs');
 var _chunkWKN6C4ZEcjs = require('./chunk-WKN6C4ZE.cjs');
 
 
+
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
 
 // src/charts/bar-chart/bar-chart.tsx
@@ -50,6 +51,81 @@ var bar_chart_module_default = {
 // src/charts/bar-chart/private/use-bar-chart-options.ts
 
 
+
+// src/charts/bar-chart/private/truncated-tick-component.tsx
+
+
+var _jsxruntime = require('react/jsx-runtime');
+var getScaleBandwidth = (scale) => {
+  return scale && "bandwidth" in scale ? _nullishCoalesce(scale.bandwidth(), () => ( 0)) : 0;
+};
+var MIN_TICK_LABEL_WIDTH = 20;
+var TruncatedTickComponent = ({
+  x,
+  y,
+  formattedValue,
+  axis,
+  textAnchor,
+  fill,
+  dy,
+  ...textProps
+}) => {
+  const { xScale, yScale } = _react.useContext.call(void 0, _xychart.DataContext) || {};
+  const scale = axis === "x" ? xScale : yScale;
+  const bandwidth = getScaleBandwidth(scale);
+  const maxWidth = Math.max(bandwidth, MIN_TICK_LABEL_WIDTH);
+  let textAlign = "center";
+  if (textAnchor === "start") {
+    textAlign = "left";
+  } else if (textAnchor === "end") {
+    textAlign = "right";
+  } else if (textAnchor === "middle") {
+    textAlign = "center";
+  }
+  let xOffset = 0;
+  if (textAlign === "center") {
+    xOffset = -maxWidth / 2;
+  } else if (textAlign === "right") {
+    xOffset = -maxWidth;
+  }
+  const { fontSize, fontFamily, fontWeight, fontStyle, letterSpacing, opacity } = textProps;
+  const textStyles = {
+    /**
+     * SVG <text> elements are vertically aligned to the baseline by default, but HTML <div> elements inside <foreignObject>
+     * are positioned relative to the top-left corner. To visually align the tick label like SVG text,
+     * we shift the div up by 100% of its height and adjust by twice the SVG dy value (from visx) to approximate original placement.
+     */
+    transform: `translateY(calc(-100% + ${_nullishCoalesce(dy, () => ( "0"))} * 2))`,
+    // Safari doesn't work well with foreignObject positioning. Use position: fixed as a workaround.
+    ..._chunkZVGEDXDPcjs.isSafari.call(void 0, ) ? { position: "fixed" } : {},
+    // Apply compatible SVG text styles
+    fontSize,
+    fontFamily,
+    fontWeight,
+    fontStyle,
+    letterSpacing,
+    opacity,
+    // Convert svg text styles to CSS styles for the div
+    color: _nullishCoalesce(fill, () => ( "inherit")),
+    textAlign,
+    // Ensure text is truncated with ellipsis, remains on one line, and shows the full value in a tooltip on hover.
+    // The surrounding div uses CSS to handle overflow, and the 'title' attribute is set for accessibility.
+    width: maxWidth,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    cursor: "default",
+    pointerEvents: "auto"
+  };
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "foreignObject", { x: x + xOffset, y, width: maxWidth, height: 0, overflow: "visible", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { style: textStyles, title: formattedValue, children: formattedValue }) });
+};
+var createTruncatedTickComponent = (axis) => (props) => {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TruncatedTickComponent, { ...props, axis });
+};
+var TruncatedXTickComponent = createTruncatedTickComponent("x");
+var TruncatedYTickComponent = createTruncatedTickComponent("y");
+
+// src/charts/bar-chart/private/use-bar-chart-options.ts
 var formatDateTick = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString(void 0, {
@@ -117,6 +193,8 @@ function useBarChartOptions(data, horizontal, options = {}) {
     const xScale = { ...baseXScale, ...options.xScale || {} };
     const yScale = { ...baseYScale, ...options.yScale || {} };
     const providedToolTipLabelFormatter = horizontal ? _optionalChain([options, 'access', _9 => _9.axis, 'optionalAccess', _10 => _10.y, 'optionalAccess', _11 => _11.tickFormat]) : _optionalChain([options, 'access', _12 => _12.axis, 'optionalAccess', _13 => _13.x, 'optionalAccess', _14 => _14.tickFormat]);
+    const { labelOverflow: xLabelOverflow, ...xAxisOptions } = _optionalChain([options, 'access', _15 => _15.axis, 'optionalAccess', _16 => _16.x]) || {};
+    const { labelOverflow: yLabelOverflow, ...yAxisOptions } = _optionalChain([options, 'access', _17 => _17.axis, 'optionalAccess', _18 => _18.y]) || {};
     return {
       gridVisibility,
       xScale,
@@ -130,13 +208,15 @@ function useBarChartOptions(data, horizontal, options = {}) {
           orientation: "bottom",
           numTicks: 4,
           tickFormat: xTickFormat,
-          ..._optionalChain([options, 'access', _15 => _15.axis, 'optionalAccess', _16 => _16.x]) || {}
+          ...xLabelOverflow === "ellipsis" ? { tickComponent: TruncatedXTickComponent } : {},
+          ...xAxisOptions
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: yTickFormat,
-          ..._optionalChain([options, 'access', _17 => _17.axis, 'optionalAccess', _18 => _18.y]) || {}
+          ...yLabelOverflow === "ellipsis" ? { tickComponent: TruncatedYTickComponent } : {},
+          ...yAxisOptions
         }
       },
       barGroup: {
@@ -150,7 +230,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 }
 
 // src/charts/bar-chart/bar-chart.tsx
-var _jsxruntime = require('react/jsx-runtime');
+
 var validateData = (data) => {
   if (!_optionalChain([data, 'optionalAccess', _19 => _19.length])) return "No data available";
   const hasInvalidData = data.some(
@@ -505,4 +585,4 @@ var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-DDV5726Q.cjs.map
+//# sourceMappingURL=chunk-3OONWZ4Z.cjs.map
