@@ -1,4 +1,8 @@
 import {
+  LeaderboardChart,
+  LeaderboardChartResponsive
+} from "./chunk-LK5JTV76.js";
+import {
   LineChart,
   LineChartResponsive
 } from "./chunk-Z34VYZGR.js";
@@ -12,10 +16,6 @@ import {
   PieSemiCircleChartResponsive
 } from "./chunk-6RKPV3UP.js";
 import "./chunk-A3AEEGKR.js";
-import {
-  LeaderboardChart,
-  LeaderboardChartResponsive
-} from "./chunk-LK5JTV76.js";
 import "./chunk-CEZGL6YP.js";
 import {
   TrendIndicator
