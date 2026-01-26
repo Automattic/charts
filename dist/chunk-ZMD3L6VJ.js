@@ -2,9 +2,6 @@ import {
   radial_wipe_animation_default
 } from "./chunk-A3AEEGKR.js";
 import {
-  BaseTooltip
-} from "./chunk-5XI443YP.js";
-import {
   ChartHTML,
   ChartSVG,
   useChartChildren
@@ -30,6 +27,9 @@ import {
 import {
   attachSubComponents
 } from "./chunk-TE63Y5PX.js";
+import {
+  BaseTooltip
+} from "./chunk-5XI443YP.js";
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 import { localPoint } from "@visx/event";
@@ -349,4 +349,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-4HLLUXVC.js.map
+//# sourceMappingURL=chunk-ZMD3L6VJ.js.map

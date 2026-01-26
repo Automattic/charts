@@ -3,9 +3,6 @@
 var _chunkOTZT3MC2cjs = require('./chunk-OTZT3MC2.cjs');
 
 
-var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
-
-
 
 
 var _chunkHIWNB5PKcjs = require('./chunk-HIWNB5PK.cjs');
@@ -30,6 +27,9 @@ var _chunkWKN6C4ZEcjs = require('./chunk-WKN6C4ZE.cjs');
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
+
+
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 var _event = require('@visx/event');
@@ -349,4 +349,4 @@ var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-JIP5TAAO.cjs.map
+//# sourceMappingURL=chunk-RS6OFMON.cjs.map
