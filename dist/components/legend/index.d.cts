@@ -1,5 +1,5 @@
 export { L as Legend } from '../../legend-C9ahiwOt.cjs';
-import { d as SeriesData, b as DataPointDate, e as DataPointPercentage } from '../../types-B1_Q_Lhh.cjs';
+import { j as SeriesData, c as DataPointDate, d as DataPointPercentage } from '../../types-BCFQlzTM.cjs';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.cjs';
 export { a as BaseLegendProps, L as LegendProps } from '../../types-C05PdDJa.cjs';
 import { LegendShape } from '@visx/legend/lib/types';

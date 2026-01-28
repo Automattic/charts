@@ -489,4 +489,4 @@ interface ToggleEvent extends Event {
     oldState: 'open' | 'closed';
 }
 
-export type { AnnotationStyles as A, BaseChartProps as B, ChartTheme as C, DataPoint as D, GeoData as G, LeaderboardEntry as L, MultipleDataPointsDate as M, Optional as O, PopoverButtonAttributes as P, SeriesDataOptions as S, ToggleEvent as T, OrientationType as a, DataPointDate as b, GradientStop as c, SeriesData as d, DataPointPercentage as e, CompleteChartTheme as f, ScaleOptions as g, GridProps as h, PopoverElementAttributes as i, ButtonWithPopover as j, PopoverElement as k };
+export type { AnnotationStyles as A, BaseChartProps as B, ChartTheme as C, DataPoint as D, GeoData as G, LeaderboardEntry as L, MultipleDataPointsDate as M, Optional as O, PopoverButtonAttributes as P, ScaleOptions as S, ToggleEvent as T, ButtonWithPopover as a, CompleteChartTheme as b, DataPointDate as c, DataPointPercentage as d, GradientStop as e, GridProps as f, OrientationType as g, PopoverElement as h, PopoverElementAttributes as i, SeriesData as j, SeriesDataOptions as k };
