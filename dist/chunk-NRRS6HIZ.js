@@ -1,15 +1,15 @@
 import {
-  Legend,
-  SingleChartContext,
-  useChartLegendItems
-} from "./chunk-ALDWCNLH.js";
+  withResponsive
+} from "./chunk-NONODB3K.js";
 import {
   AccessibleTooltip,
   useKeyboardNavigation
 } from "./chunk-5XI443YP.js";
 import {
-  withResponsive
-} from "./chunk-NONODB3K.js";
+  Legend,
+  SingleChartContext,
+  useChartLegendItems
+} from "./chunk-ALDWCNLH.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -585,4 +585,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-PU2UO4EG.js.map
+//# sourceMappingURL=chunk-NRRS6HIZ.js.map
