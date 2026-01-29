@@ -7,16 +7,16 @@ import {
   useChartChildren
 } from "./chunk-CEZGL6YP.js";
 import {
-  withResponsive
-} from "./chunk-NONODB3K.js";
-import {
-  BaseTooltip
-} from "./chunk-5XI443YP.js";
-import {
   Legend,
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-ALDWCNLH.js";
+import {
+  BaseTooltip
+} from "./chunk-5XI443YP.js";
+import {
+  withResponsive
+} from "./chunk-NONODB3K.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -349,4 +349,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-RZBPFTXQ.js.map
+//# sourceMappingURL=chunk-6RKPV3UP.js.map
