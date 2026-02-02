@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Add missing stories referenced by Storybook MDX docs.
+
 ## [0.54.1] - 2026-01-26
 ### Changed
 - Update dependencies. [#43811]
