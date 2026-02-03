@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Fixed
+- Fix Sparkline component export paths in package.json and update documentation to include GeoChart, Sparkline, and TrendIndicator components.
+
+## [0.54.3] - 2026-02-03
 ### Changed
-- Update package dependencies.
+- Update package dependencies. [#46905]
 
 ### Fixed
-- Add missing stories referenced by Storybook MDX docs.
-- Fix Sparkline component export paths in package.json and update documentation to include GeoChart, Sparkline, and TrendIndicator components.
+- Add missing stories referenced by Storybook MDX docs. [#46883]
 
 ## [0.54.2] - 2026-02-02
 ### Changed
@@ -655,7 +658,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.55.0-alpha]: https://github.com/Automattic/charts/compare/v0.54.2...v0.55.0-alpha
+[0.55.0-alpha]: https://github.com/Automattic/charts/compare/v0.54.3...v0.55.0-alpha
+[0.54.3]: https://github.com/Automattic/charts/compare/v0.54.2...v0.54.3
 [0.54.2]: https://github.com/Automattic/charts/compare/v0.54.1...v0.54.2
 [0.54.1]: https://github.com/Automattic/charts/compare/v0.54.0...v0.54.1
 [0.54.0]: https://github.com/Automattic/charts/compare/v0.53.4...v0.54.0
