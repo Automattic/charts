@@ -1,6 +1,6 @@
 {
 	"name": "@automattic/charts",
-	"version": "0.54.3-alpha",
+	"version": "0.55.0-alpha",
 	"description": "Display charts within Automattic products.",
 	"homepage": "https://github.com/Automattic/jetpack/tree/HEAD/projects/js-packages/charts/#readme",
 	"bugs": {
@@ -77,10 +77,10 @@
 			"require": "./dist/providers/index.cjs"
 		},
 		"./sparkline": {
-			"import": "./dist/components/sparkline/index.js",
-			"require": "./dist/components/sparkline/index.cjs"
+			"import": "./dist/charts/sparkline/index.js",
+			"require": "./dist/charts/sparkline/index.cjs"
 		},
-		"./sparkline/style.css": "./dist/components/sparkline/index.css",
+		"./sparkline/style.css": "./dist/charts/sparkline/index.css",
 		"./style.css": "./dist/index.css",
 		"./tooltip": {
 			"import": "./dist/components/tooltip/index.js",
@@ -146,11 +146,11 @@
 			"pie-semi-circle-chart": [
 				"./dist/charts/pie-semi-circle-chart/index.d.ts"
 			],
+			"sparkline": [
+				"./dist/charts/sparkline/index.d.ts"
+			],
 			"providers": [
 				"./dist/providers/index.d.ts"
-			],
-			"sparkline": [
-				"./dist/components/sparkline/index.d.ts"
 			],
 			"tooltip": [
 				"./dist/components/tooltip/index.d.ts"

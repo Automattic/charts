@@ -80,4 +80,4 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
     } & react.RefAttributes<HTMLDivElement>>;
 };
 
-export { LeaderboardChartResponsive as L, type LeaderboardChartProps as a, LeaderboardChart as b };
+export { LeaderboardChartResponsive as L, LeaderboardChart as a, type LeaderboardChartProps as b };
