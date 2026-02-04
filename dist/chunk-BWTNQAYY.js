@@ -10,13 +10,13 @@ import {
   useChartChildren
 } from "./chunk-CEZGL6YP.js";
 import {
+  BaseTooltip
+} from "./chunk-5XI443YP.js";
+import {
   Legend,
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-ALDWCNLH.js";
-import {
-  BaseTooltip
-} from "./chunk-5XI443YP.js";
 import {
   withResponsive
 } from "./chunk-NONODB3K.js";
@@ -354,4 +354,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-H6XRINJE.js.map
+//# sourceMappingURL=chunk-BWTNQAYY.js.map
