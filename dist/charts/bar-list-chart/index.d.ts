@@ -1,5 +1,5 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
+import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { TextProps } from '@visx/text';
 import { BarChartProps } from '../bar-chart/index.js';
 import { S as ScaleOptions, j as SeriesData } from '../../types-BCFQlzTM.js';
@@ -9,6 +9,7 @@ import '../../types-C05PdDJa.js';
 import '@visx/legend';
 import '@visx/xychart';
 import '@visx/xychart/lib/components/Tooltip';
+import '@wordpress/theme';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -82,6 +83,10 @@ interface RenderValueProps {
     formatter: (value: number) => string;
 }
 declare const BarListChart: FC<BarListChartProps>;
-declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<BarListChartProps>, "width" | "height" | "size"> & Omit<BarListChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<BarListChartProps, "width" | "height" | "size"> & {
+    width?: number;
+    height?: number;
+    size?: number;
+} & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 export { BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type RenderLabelProps, type RenderValueProps };

@@ -1,5 +1,5 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
+import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { FC } from 'react';
 import { B as BaseChartProps, G as GeoData } from '../../types-BCFQlzTM.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -57,6 +57,10 @@ interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | '
 }
 
 declare const GeoChartWithProvider: FC<GeoChartProps>;
-declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<GeoChartProps>, "width" | "height" | "size"> & Omit<GeoChartProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<GeoChartProps, "width" | "height" | "size"> & {
+    width?: number;
+    height?: number;
+    size?: number;
+} & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 export { GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoRegion, type GeoResolution };

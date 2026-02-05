@@ -1,5 +1,5 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.js';
+import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import * as react from 'react';
 
 type SparklineDataPoint = number;
@@ -104,6 +104,10 @@ declare const SparklineUnresponsive: react.ForwardRefExoticComponent<SparklinePr
 /**
  * Responsive Sparkline chart component
  */
-declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, ...chartProps }: Pick<Partial<SparklineProps>, "width" | "height" | "size"> & Omit<SparklineProps, "width" | "height" | "size"> & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
+declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<SparklineProps, "width" | "height" | "size"> & {
+    width?: number;
+    height?: number;
+    size?: number;
+} & ResponsiveConfig) => react_jsx_runtime.JSX.Element;
 
 export { type GradientConfig, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive };

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.56.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Responsive charts now fill parent container by default instead of using a fixed aspect ratio. Pass `aspectRatio` prop to restore the previous behavior. Added @wordpress/ui and @wordpress/theme dependencies (requires Node.js >= 20.10.0).
+
 ## [0.55.0] - 2026-02-04
 ### Changed
 - Update package dependencies. [#46933]
@@ -658,6 +665,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.56.0-alpha]: https://github.com/Automattic/charts/compare/v0.55.0...v0.56.0-alpha
 [0.55.0]: https://github.com/Automattic/charts/compare/v0.54.3...v0.55.0
 [0.54.3]: https://github.com/Automattic/charts/compare/v0.54.2...v0.54.3
 [0.54.2]: https://github.com/Automattic/charts/compare/v0.54.1...v0.54.2

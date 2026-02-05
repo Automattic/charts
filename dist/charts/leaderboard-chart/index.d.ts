@@ -1,9 +1,9 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-B5wFjRli.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-B5gWcqe7.js';
 import { L as LeaderboardEntry } from '../../types-BCFQlzTM.js';
 export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.js';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
 import 'react/jsx-runtime';
-import '../../with-responsive-Cp2qnQPo.js';
+import '../../with-responsive-CNfhzAUu.js';
 import 'react';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';

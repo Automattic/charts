@@ -3,7 +3,8 @@ import { B as BaseChartProps, j as SeriesData, c as DataPointDate, A as Annotati
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
+import { GapSize } from '@wordpress/theme';
+import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import '../../types-C05PdDJa.cjs';
 import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -76,6 +77,12 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     };
     legendInteractive?: boolean;
     children?: ReactNode;
+    /**
+     * Gap between chart elements (SVG, legend, children).
+     * Uses WordPress design system tokens.
+     * @default 'md'
+     */
+    gap?: GapSize;
 }
 type TooltipDatum = {
     key: string;

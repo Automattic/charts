@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-BCFQlzTM.js';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
@@ -109,6 +109,14 @@ declare const useChartMargin: (height: number, options: BaseChartProps["options"
 declare function useElementHeight<T extends HTMLElement = HTMLDivElement>({ initialHeight, }?: {
     initialHeight?: number;
 }): [(node: T | null) => void, number];
+
+/**
+ * Hook to detect if children contain a Legend component (composition pattern).
+ *
+ * @param {ReactNode} children - React children to search through
+ * @return {boolean}           Whether a Legend component is present in children
+ */
+declare function useHasLegendChild(children: ReactNode): boolean;
 
 /**
  * Hook to detect if text content is truncated within its container.
@@ -228,4 +236,4 @@ declare const useInteractiveLegendData: <T extends DataPointWithPercentage>({ da
  */
 declare function usePrefersReducedMotion(): boolean;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };

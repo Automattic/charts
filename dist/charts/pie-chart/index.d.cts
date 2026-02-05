@@ -1,4 +1,4 @@
-import { R as ResponsiveConfig } from '../../with-responsive-Cp2qnQPo.cjs';
+import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-BCFQlzTM.cjs';

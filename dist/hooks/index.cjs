@@ -9,7 +9,8 @@
 
 
 
-var _chunkWKN6C4ZEcjs = require('../chunk-WKN6C4ZE.cjs');
+
+var _chunkTVV7ZI7Ccjs = require('../chunk-TVV7ZI7C.cjs');
 require('../chunk-ZVGEDXDP.cjs');
 require('../chunk-EMMSS5I5.cjs');
 
@@ -23,5 +24,6 @@ require('../chunk-EMMSS5I5.cjs');
 
 
 
-exports.useChartDataTransform = _chunkWKN6C4ZEcjs.useChartDataTransform; exports.useChartMargin = _chunkWKN6C4ZEcjs.useChartMargin; exports.useChartMouseHandler = _chunkWKN6C4ZEcjs.useChartMouseHandler; exports.useDeepMemo = _chunkWKN6C4ZEcjs.useDeepMemo; exports.useElementHeight = _chunkWKN6C4ZEcjs.useElementHeight; exports.useInteractiveLegendData = _chunkWKN6C4ZEcjs.useInteractiveLegendData; exports.usePrefersReducedMotion = _chunkWKN6C4ZEcjs.usePrefersReducedMotion; exports.useTextTruncation = _chunkWKN6C4ZEcjs.useTextTruncation; exports.useXYChartTheme = _chunkWKN6C4ZEcjs.useXYChartTheme; exports.useZeroValueDisplay = _chunkWKN6C4ZEcjs.useZeroValueDisplay;
+
+exports.useChartDataTransform = _chunkTVV7ZI7Ccjs.useChartDataTransform; exports.useChartMargin = _chunkTVV7ZI7Ccjs.useChartMargin; exports.useChartMouseHandler = _chunkTVV7ZI7Ccjs.useChartMouseHandler; exports.useDeepMemo = _chunkTVV7ZI7Ccjs.useDeepMemo; exports.useElementHeight = _chunkTVV7ZI7Ccjs.useElementHeight; exports.useHasLegendChild = _chunkTVV7ZI7Ccjs.useHasLegendChild; exports.useInteractiveLegendData = _chunkTVV7ZI7Ccjs.useInteractiveLegendData; exports.usePrefersReducedMotion = _chunkTVV7ZI7Ccjs.usePrefersReducedMotion; exports.useTextTruncation = _chunkTVV7ZI7Ccjs.useTextTruncation; exports.useXYChartTheme = _chunkTVV7ZI7Ccjs.useXYChartTheme; exports.useZeroValueDisplay = _chunkTVV7ZI7Ccjs.useZeroValueDisplay;
 //# sourceMappingURL=index.cjs.map

@@ -107,18 +107,12 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/bar-chart/bar-chart.module.scss */
-.a8ccharts-3gflnB {
-  display: flex;
-  flex-direction: column;
-}
-.a8ccharts-8Vnz-c {
-  flex-direction: column-reverse;
+.a8ccharts-9CsqC0 {
+  flex: 1;
+  min-height: 0;
 }
 .a8ccharts-3gflnB svg {
   overflow: visible;
-}
-.a8ccharts-XhI9HR {
-  margin-top: 1rem;
 }
 .a8ccharts-98W-yu rect {
   transform-origin: bottom;
