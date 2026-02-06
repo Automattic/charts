@@ -30,7 +30,6 @@ import {
 } from "./chunk-TE63Y5PX.js";
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
-import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Pie } from "@visx/shape";
 import { Text } from "@visx/text";
@@ -92,24 +91,31 @@ var PieSemiCircleChartInternal = ({
   const chartId = useChartId(providedChartId);
   const [legendRef, legendHeight] = useElementHeight();
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
-  const { containerRef, TooltipInPortal } = useTooltipInPortal({
+  const { containerRef, TooltipInPortal, containerBounds } = useTooltipInPortal({
     detectBounds: true,
     scroll: true,
     debounce: 0
   });
   const handleMouseMove = useCallback(
     (event, arc) => {
-      const coords = localPoint(event);
-      if (coords) {
-        const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
-        showTooltip({
-          tooltipData: arc.data,
-          tooltipLeft: coords.x + tooltipOffsetX,
-          tooltipTop: coords.y + legendOffset + tooltipOffsetY
-        });
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return;
       }
+      showTooltip({
+        tooltipData: arc.data,
+        tooltipLeft: event.clientX - containerBounds.left + tooltipOffsetX,
+        tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
+      });
     },
-    [showTooltip, tooltipOffsetX, tooltipOffsetY, showLegend, legendPosition, legendHeight]
+    [
+      containerBounds.width,
+      containerBounds.height,
+      containerBounds.left,
+      containerBounds.top,
+      showTooltip,
+      tooltipOffsetX,
+      tooltipOffsetY
+    ]
   );
   const handleMouseLeave = useCallback(() => {
     hideTooltip();
@@ -347,4 +353,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-PC6HVPRX.js.map
+//# sourceMappingURL=chunk-XVK6GDG6.js.map

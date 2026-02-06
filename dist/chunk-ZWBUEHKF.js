@@ -13,7 +13,6 @@ import {
 } from "./chunk-TE63Y5PX.js";
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
-import { localPoint } from "@visx/event";
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import clsx from "clsx";
 import { useRef, useMemo, useEffect, useCallback as useCallback2, useContext } from "react";
@@ -119,7 +118,11 @@ var ConversionFunnelChartInternal = ({
   const selectedBarRef = useRef(null);
   const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
   const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
-  const { containerRef: portalContainerRef, TooltipInPortal } = useTooltipInPortal({
+  const {
+    containerRef: portalContainerRef,
+    TooltipInPortal,
+    containerBounds
+  } = useTooltipInPortal({
     // use TooltipWithBounds for boundary detection
     detectBounds: true,
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
@@ -140,27 +143,30 @@ var ConversionFunnelChartInternal = ({
     },
     [showTooltip]
   );
-  const getMouseTooltipCoords = useCallback2((event) => {
-    const containerElement = chartRef.current;
-    if (containerElement) {
-      const coords = localPoint(containerElement, event.nativeEvent);
-      if (coords) {
-        return { x: coords.x, y: coords.y };
+  const getMouseTooltipCoords = useCallback2(
+    (event) => {
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return null;
       }
-    }
-    return null;
-  }, []);
-  const getKeyboardTooltipCoords = useCallback2((event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const containerElement = chartRef.current;
-    if (containerElement) {
-      const containerRect = containerElement.getBoundingClientRect();
-      const x = rect.left + rect.width / 2 - containerRect.left;
-      const y = rect.top - containerRect.top;
+      return {
+        x: event.clientX - containerBounds.left,
+        y: event.clientY - containerBounds.top
+      };
+    },
+    [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]
+  );
+  const getKeyboardTooltipCoords = useCallback2(
+    (event) => {
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return null;
+      }
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2 - containerBounds.left;
+      const y = rect.top - containerBounds.top;
       return { x, y };
-    }
-    return null;
-  }, []);
+    },
+    [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]
+  );
   const handleStepInteraction = useCallback2(
     (step, event, interactionType) => {
       selectedBarRef.current = event.currentTarget;
@@ -376,4 +382,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 export {
   ConversionFunnelChartWithProvider
 };
-//# sourceMappingURL=chunk-Y3IPS2IX.js.map
+//# sourceMappingURL=chunk-ZWBUEHKF.js.map

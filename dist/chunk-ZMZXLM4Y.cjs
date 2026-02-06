@@ -30,7 +30,6 @@ var _chunkTVV7ZI7Ccjs = require('./chunk-TVV7ZI7C.cjs');
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
-var _event = require('@visx/event');
 var _group = require('@visx/group');
 var _shape = require('@visx/shape');
 var _text = require('@visx/text');
@@ -92,24 +91,31 @@ var PieSemiCircleChartInternal = ({
   const chartId = _chunkTVV7ZI7Ccjs.useChartId.call(void 0, providedChartId);
   const [legendRef, legendHeight] = _chunkTVV7ZI7Ccjs.useElementHeight.call(void 0, );
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = _tooltip.useTooltip.call(void 0, );
-  const { containerRef, TooltipInPortal } = _tooltip.useTooltipInPortal.call(void 0, {
+  const { containerRef, TooltipInPortal, containerBounds } = _tooltip.useTooltipInPortal.call(void 0, {
     detectBounds: true,
     scroll: true,
     debounce: 0
   });
   const handleMouseMove = _react.useCallback.call(void 0, 
     (event, arc) => {
-      const coords = _event.localPoint.call(void 0, event);
-      if (coords) {
-        const legendOffset = showLegend && legendPosition === "top" ? legendHeight : 0;
-        showTooltip({
-          tooltipData: arc.data,
-          tooltipLeft: coords.x + tooltipOffsetX,
-          tooltipTop: coords.y + legendOffset + tooltipOffsetY
-        });
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return;
       }
+      showTooltip({
+        tooltipData: arc.data,
+        tooltipLeft: event.clientX - containerBounds.left + tooltipOffsetX,
+        tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
+      });
     },
-    [showTooltip, tooltipOffsetX, tooltipOffsetY, showLegend, legendPosition, legendHeight]
+    [
+      containerBounds.width,
+      containerBounds.height,
+      containerBounds.left,
+      containerBounds.top,
+      showTooltip,
+      tooltipOffsetX,
+      tooltipOffsetY
+    ]
   );
   const handleMouseLeave = _react.useCallback.call(void 0, () => {
     hideTooltip();
@@ -347,4 +353,4 @@ var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-GQHCA5KO.cjs.map
+//# sourceMappingURL=chunk-ZMZXLM4Y.cjs.map

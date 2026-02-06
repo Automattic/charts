@@ -1,7 +1,7 @@
 import {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
-} from "../../chunk-PC6HVPRX.js";
+} from "../../chunk-XVK6GDG6.js";
 import "../../chunk-A3AEEGKR.js";
 import "../../chunk-CEZGL6YP.js";
 import "../../chunk-5XI443YP.js";

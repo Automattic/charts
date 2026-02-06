@@ -13,7 +13,6 @@ var _chunkTVV7ZI7Ccjs = require('./chunk-TVV7ZI7C.cjs');
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
-var _event = require('@visx/event');
 var _tooltip = require('@visx/tooltip');
 var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
 var _react = require('react');
@@ -119,7 +118,11 @@ var ConversionFunnelChartInternal = ({
   const selectedBarRef = _react.useRef.call(void 0, null);
   const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = _tooltip.useTooltip.call(void 0, );
   const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
-  const { containerRef: portalContainerRef, TooltipInPortal } = _tooltip.useTooltipInPortal.call(void 0, {
+  const {
+    containerRef: portalContainerRef,
+    TooltipInPortal,
+    containerBounds
+  } = _tooltip.useTooltipInPortal.call(void 0, {
     // use TooltipWithBounds for boundary detection
     detectBounds: true,
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
@@ -140,27 +143,30 @@ var ConversionFunnelChartInternal = ({
     },
     [showTooltip]
   );
-  const getMouseTooltipCoords = _react.useCallback.call(void 0, (event) => {
-    const containerElement = chartRef.current;
-    if (containerElement) {
-      const coords = _event.localPoint.call(void 0, containerElement, event.nativeEvent);
-      if (coords) {
-        return { x: coords.x, y: coords.y };
+  const getMouseTooltipCoords = _react.useCallback.call(void 0, 
+    (event) => {
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return null;
       }
-    }
-    return null;
-  }, []);
-  const getKeyboardTooltipCoords = _react.useCallback.call(void 0, (event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const containerElement = chartRef.current;
-    if (containerElement) {
-      const containerRect = containerElement.getBoundingClientRect();
-      const x = rect.left + rect.width / 2 - containerRect.left;
-      const y = rect.top - containerRect.top;
+      return {
+        x: event.clientX - containerBounds.left,
+        y: event.clientY - containerBounds.top
+      };
+    },
+    [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]
+  );
+  const getKeyboardTooltipCoords = _react.useCallback.call(void 0, 
+    (event) => {
+      if (containerBounds.width === 0 || containerBounds.height === 0) {
+        return null;
+      }
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2 - containerBounds.left;
+      const y = rect.top - containerBounds.top;
       return { x, y };
-    }
-    return null;
-  }, []);
+    },
+    [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]
+  );
   const handleStepInteraction = _react.useCallback.call(void 0, 
     (step, event, interactionType) => {
       selectedBarRef.current = event.currentTarget;
@@ -376,4 +382,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 
 exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
-//# sourceMappingURL=chunk-KVA4XF6Z.cjs.map
+//# sourceMappingURL=chunk-GRYNIPWH.cjs.map
