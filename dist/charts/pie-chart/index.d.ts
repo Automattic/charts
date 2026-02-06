@@ -17,6 +17,15 @@ import '@visx/scale';
 import '@visx/text/lib/Text';
 import 'react-google-charts';
 
+/**
+ * Parameters passed to the renderTooltip function for pie charts.
+ */
+type PieChartRenderTooltipParams = {
+    /**
+     * The data point being hovered, including label, value, and percentage.
+     */
+    tooltipData: DataPointPercentage;
+};
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
      * Inner radius in pixels. If > 0, creates a donut chart. Defaults to 0.
@@ -72,6 +81,11 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      * Vertical offset for tooltip positioning in pixels (default: -15)
      */
     tooltipOffsetY?: number;
+    /**
+     * Custom render function for tooltip content.
+     * When provided, replaces the default BaseTooltip with custom content.
+     */
+    renderTooltip?: (params: PieChartRenderTooltipParams) => ReactNode;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
 type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;
@@ -79,4 +93,4 @@ type PieChartResponsiveComponent = ChartComponentWithComposition<PieChartBasePro
 declare const PieChart: PieChartComponent;
 declare const PieChartResponsive: PieChartResponsiveComponent;
 
-export { PieChartResponsive as PieChart, type PieChartProps, PieChart as PieChartUnresponsive };
+export { PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive };

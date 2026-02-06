@@ -48,6 +48,11 @@ var pie_semi_circle_chart_module_default = {
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 var _jsxruntime = require('react/jsx-runtime');
+var renderDefaultPieSemiCircleTooltip = ({
+  tooltipData
+}) => {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk7HROSZRScjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false });
+};
 var PAD_ANGLE = 0.03;
 var validateData = (data) => {
   if (!data.length) {
@@ -86,7 +91,8 @@ var PieSemiCircleChartInternal = ({
   className,
   children,
   tooltipOffsetX = 0,
-  tooltipOffsetY = -15
+  tooltipOffsetY = -15,
+  renderTooltip = renderDefaultPieSemiCircleTooltip
 }) => {
   const chartId = _chunkTVV7ZI7Ccjs.useChartId.call(void 0, providedChartId);
   const [legendRef, legendHeight] = _chunkTVV7ZI7Ccjs.useElementHeight.call(void 0, );
@@ -303,7 +309,7 @@ var PieSemiCircleChartInternal = ({
                 ]
               }
             ),
-            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk7HROSZRScjs.BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
+            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { role: "tooltip", children: renderTooltip({ tooltipData }) }) }),
             showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
               _chunkTVV7ZI7Ccjs.Legend,
               {
@@ -353,4 +359,4 @@ var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-ZMZXLM4Y.cjs.map
+//# sourceMappingURL=chunk-KCTWZVS7.cjs.map

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Add renderTooltip prop for custom tooltip rendering in pie charts.
+
 ### Changed
 - Responsive charts now fill parent container by default instead of using a fixed aspect ratio. Pass `aspectRatio` prop to restore the previous behavior. Added @wordpress/ui and @wordpress/theme dependencies (requires Node.js >= 20.10.0).
 

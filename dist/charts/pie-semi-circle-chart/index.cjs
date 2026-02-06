@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkZMZXLM4Ycjs = require('../../chunk-ZMZXLM4Y.cjs');
+var _chunkKCTWZVS7cjs = require('../../chunk-KCTWZVS7.cjs');
 require('../../chunk-OTZT3MC2.cjs');
 require('../../chunk-HIWNB5PK.cjs');
 require('../../chunk-7HROSZRS.cjs');
@@ -12,5 +12,5 @@ require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.PieSemiCircleChart = _chunkZMZXLM4Ycjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkZMZXLM4Ycjs.PieSemiCircleChart;
+exports.PieSemiCircleChart = _chunkKCTWZVS7cjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkKCTWZVS7cjs.PieSemiCircleChart;
 //# sourceMappingURL=index.cjs.map

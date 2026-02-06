@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkSPILEVTRcjs = require('../../chunk-SPILEVTR.cjs');
+var _chunkCG33WKLCcjs = require('../../chunk-CG33WKLC.cjs');
 require('../../chunk-7OZEQ5HE.cjs');
 require('../../chunk-OTZT3MC2.cjs');
 require('../../chunk-HIWNB5PK.cjs');
@@ -13,5 +13,5 @@ require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.PieChart = _chunkSPILEVTRcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunkSPILEVTRcjs.PieChart;
+exports.PieChart = _chunkCG33WKLCcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunkCG33WKLCcjs.PieChart;
 //# sourceMappingURL=index.cjs.map

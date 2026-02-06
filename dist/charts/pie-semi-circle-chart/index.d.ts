@@ -18,6 +18,15 @@ import '@visx/scale';
 import '@visx/text/lib/Text';
 import 'react-google-charts';
 
+/**
+ * Parameters passed to the renderTooltip function for semi-circle charts.
+ */
+type PieSemiCircleChartRenderTooltipParams = {
+    /**
+     * The data point being hovered, including label, value, and percentage.
+     */
+    tooltipData: DataPointPercentage;
+};
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
      * Width of the chart in pixels; height would be half of this value calculated automatically.
@@ -66,6 +75,11 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * Vertical offset for tooltip positioning in pixels (default: -15)
      */
     tooltipOffsetY?: number;
+    /**
+     * Custom render function for tooltip content.
+     * When provided, replaces the default BaseTooltip with custom content.
+     */
+    renderTooltip?: (params: PieSemiCircleChartRenderTooltipParams) => ReactNode;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;
@@ -74,4 +88,4 @@ type ArcData = PieArcDatum<DataPointPercentage>;
 declare const PieSemiCircleChart: PieSemiCircleChartComponent;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
-export { type ArcData, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, PieSemiCircleChart as PieSemiCircleChartUnresponsive };
+export { type ArcData, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive };

@@ -10,8 +10,8 @@ export { LegendValueDisplay, useChartLegendItems } from './components/legend/ind
 export { B as BaseLegendItem } from './types-C05PdDJa.js';
 export { LineChart, LineChartUnresponsive } from './charts/line-chart/index.js';
 export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-export { PieChart, PieChartProps, PieChartUnresponsive } from './charts/pie-chart/index.js';
-export { PieSemiCircleChart, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.js';
+export { PieChart, PieChartProps, PieChartRenderTooltipParams, PieChartUnresponsive } from './charts/pie-chart/index.js';
+export { PieSemiCircleChart, PieSemiCircleChartProps, PieSemiCircleChartRenderTooltipParams, PieSemiCircleChartUnresponsive } from './charts/pie-semi-circle-chart/index.js';
 export { Sparkline, SparklineUnresponsive } from './charts/sparkline/index.js';
 export { B as BaseTooltip } from './base-tooltip-DOq93wjU.js';
 export { TrendDirection, TrendIndicator, TrendIndicatorProps } from './components/trend-indicator/index.js';

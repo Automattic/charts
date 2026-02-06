@@ -48,6 +48,11 @@ var pie_semi_circle_chart_module_default = {
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var renderDefaultPieSemiCircleTooltip = ({
+  tooltipData
+}) => {
+  return /* @__PURE__ */ jsx(BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false });
+};
 var PAD_ANGLE = 0.03;
 var validateData = (data) => {
   if (!data.length) {
@@ -86,7 +91,8 @@ var PieSemiCircleChartInternal = ({
   className,
   children,
   tooltipOffsetX = 0,
-  tooltipOffsetY = -15
+  tooltipOffsetY = -15,
+  renderTooltip = renderDefaultPieSemiCircleTooltip
 }) => {
   const chartId = useChartId(providedChartId);
   const [legendRef, legendHeight] = useElementHeight();
@@ -303,7 +309,7 @@ var PieSemiCircleChartInternal = ({
                 ]
               }
             ),
-            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ jsx("div", { role: "tooltip", children: /* @__PURE__ */ jsx(BaseTooltip, { data: tooltipData, top: 0, left: 0, renderContainer: false }) }) }),
+            withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, { top: tooltipTop || 0, left: tooltipLeft || 0, children: /* @__PURE__ */ jsx("div", { role: "tooltip", children: renderTooltip({ tooltipData }) }) }),
             showLegend && /* @__PURE__ */ jsx(
               Legend,
               {
@@ -353,4 +359,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-XVK6GDG6.js.map
+//# sourceMappingURL=chunk-PG2PMWB4.js.map
