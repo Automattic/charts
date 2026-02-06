@@ -36,13 +36,13 @@ import {
   BaseTooltip
 } from "./chunk-5XI443YP.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-Y3IPS2IX.js";
+import {
   GeoChartResponsive,
   GeoChartWithProvider
 } from "./chunk-4GZN73UT.js";
 import "./chunk-VKXEGONO.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-Y3IPS2IX.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
