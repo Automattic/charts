@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
+
+
 
 var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
@@ -33,7 +36,6 @@ var _numberformatters = require('@automattic/number-formatters');
 var _pattern = require('@visx/pattern');
 var _xychart = require('@visx/xychart');
 var _i18n = require('@wordpress/i18n');
-var _ui = require('@wordpress/ui');
 var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
 var _react = require('react');
 
@@ -451,7 +453,7 @@ var BarChartInternal = ({
         chartHeight
       },
       children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
-        _ui.Stack,
+        _chunkSH32YSZOcjs.Stack,
         {
           direction: "column",
           gap,
@@ -603,4 +605,4 @@ var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-2RNMSJ2I.cjs.map
+//# sourceMappingURL=chunk-B3DFLK2K.cjs.map

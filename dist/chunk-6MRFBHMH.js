@@ -1,4 +1,7 @@
 import {
+  Stack
+} from "./chunk-MEIVKY4K.js";
+import {
   AccessibleTooltip,
   useKeyboardNavigation
 } from "./chunk-5XI443YP.js";
@@ -35,7 +38,6 @@ import { LinearGradient } from "@visx/gradient";
 import { scaleTime } from "@visx/scale";
 import { XYChart, AreaSeries, Grid, Axis, DataContext as DataContext5 } from "@visx/xychart";
 import { __ as __2 } from "@wordpress/i18n";
-import { Stack } from "@wordpress/ui";
 import clsx2 from "clsx";
 import { differenceInHours, differenceInYears } from "date-fns";
 import { useMemo as useMemo2, useContext as useContext4, forwardRef, useImperativeHandle, useState as useState4, useRef as useRef3 } from "react";
@@ -1053,4 +1055,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-5B6ZITWX.js.map
+//# sourceMappingURL=chunk-6MRFBHMH.js.map

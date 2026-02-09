@@ -1,4 +1,7 @@
 import {
+  Stack
+} from "./chunk-MEIVKY4K.js";
+import {
   AccessibleTooltip,
   useKeyboardNavigation
 } from "./chunk-5XI443YP.js";
@@ -33,7 +36,6 @@ import { formatNumber } from "@automattic/number-formatters";
 import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@visx/pattern";
 import { Axis, BarSeries, BarGroup, Grid, XYChart } from "@visx/xychart";
 import { __ } from "@wordpress/i18n";
-import { Stack } from "@wordpress/ui";
 import clsx from "clsx";
 import { useCallback, useContext as useContext2, useState, useRef, useMemo as useMemo2 } from "react";
 
@@ -603,4 +605,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-TEWJI3HU.js.map
+//# sourceMappingURL=chunk-R2CNVHX4.js.map

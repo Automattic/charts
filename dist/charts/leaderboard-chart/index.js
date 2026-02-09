@@ -2,8 +2,9 @@ import {
   LeaderboardChart,
   LeaderboardChartResponsive,
   useLeaderboardLegendItems
-} from "../../chunk-XRHHMYWE.js";
+} from "../../chunk-QPSI3WAI.js";
 import "../../chunk-CEZGL6YP.js";
+import "../../chunk-SEKPIG5K.js";
 import "../../chunk-VKXEGONO.js";
 import "../../chunk-H34CJSR6.js";
 import {

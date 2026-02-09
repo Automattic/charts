@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 - Responsive charts now fill parent container by default instead of using a fixed aspect ratio. Pass `aspectRatio` prop to restore the previous behavior. Added @wordpress/ui and @wordpress/theme dependencies (requires Node.js >= 20.10.0).
 
 ### Fixed
+- Bundle @wordpress/ui into dist output to prevent runtime errors in consumers using wp-build.
 - Fix tooltip positioning when container moves without triggering containerBounds refresh.
 
 ## [0.55.0] - 2026-02-04

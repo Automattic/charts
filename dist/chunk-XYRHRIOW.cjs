@@ -1,32 +1,48 @@
-import {
-  useChartChildren
-} from "./chunk-CEZGL6YP.js";
-import {
-  withResponsive
-} from "./chunk-VKXEGONO.js";
-import {
-  GlobalChartsContext,
-  GlobalChartsProvider,
-  Legend,
-  SingleChartContext,
-  useChartId,
-  useChartRegistration,
-  useGlobalChartsContext,
-  useGlobalChartsTheme,
-  usePrefersReducedMotion
-} from "./chunk-H34CJSR6.js";
-import {
-  attachSubComponents,
-  formatMetricValue
-} from "./chunk-TE63Y5PX.js";
-import {
-  __commonJS,
-  __export,
-  __toESM
-} from "./chunk-G3PMV62Z.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+var _chunkHIWNB5PKcjs = require('./chunk-HIWNB5PK.cjs');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _chunkI5467ZJ5cjs = require('./chunk-I5467ZJ5.cjs');
+
+
+var _chunkHOTYXYXVcjs = require('./chunk-HOTYXYXV.cjs');
+
+
+
+
+
+
+
+
+
+
+var _chunkTVV7ZI7Ccjs = require('./chunk-TVV7ZI7C.cjs');
+
+
+
+var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
+
+
+
+
+var _chunkEMMSS5I5cjs = require('./chunk-EMMSS5I5.cjs');
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js
-var require_react_is_production_min = __commonJS({
+var require_react_is_production_min = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js"(exports) {
     "use strict";
     var b2 = "function" === typeof Symbol && Symbol.for;
@@ -139,7 +155,7 @@ var require_react_is_production_min = __commonJS({
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js
-var require_react_is_development = __commonJS({
+var require_react_is_development = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js"(exports) {
     "use strict";
     if (process.env.NODE_ENV !== "production") {
@@ -212,8 +228,8 @@ var require_react_is_development = __commonJS({
         var Memo = REACT_MEMO_TYPE;
         var Portal = REACT_PORTAL_TYPE;
         var Profiler = REACT_PROFILER_TYPE;
-        var StrictMode2 = REACT_STRICT_MODE_TYPE;
-        var Suspense2 = REACT_SUSPENSE_TYPE;
+        var StrictMode = REACT_STRICT_MODE_TYPE;
+        var Suspense = REACT_SUSPENSE_TYPE;
         var hasWarnedAboutDeprecatedIsAsyncMode = false;
         function isAsyncMode(object) {
           {
@@ -271,8 +287,8 @@ var require_react_is_development = __commonJS({
         exports.Memo = Memo;
         exports.Portal = Portal;
         exports.Profiler = Profiler;
-        exports.StrictMode = StrictMode2;
-        exports.Suspense = Suspense2;
+        exports.StrictMode = StrictMode;
+        exports.Suspense = Suspense;
         exports.isAsyncMode = isAsyncMode;
         exports.isConcurrentMode = isConcurrentMode;
         exports.isContextConsumer = isContextConsumer;
@@ -294,7 +310,7 @@ var require_react_is_development = __commonJS({
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js
-var require_react_is = __commonJS({
+var require_react_is = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV === "production") {
@@ -306,7 +322,7 @@ var require_react_is = __commonJS({
 });
 
 // ../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-var require_hoist_non_react_statics_cjs = __commonJS({
+var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js"(exports, module) {
     "use strict";
     var reactIs = require_react_is();
@@ -394,7 +410,7 @@ var require_hoist_non_react_statics_cjs = __commonJS({
 });
 
 // ../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js
-var require_dist = __commonJS({
+var require_dist = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js"(exports, module) {
     module.exports = /******/
     (function(modules) {
@@ -563,40 +579,6 @@ var require_dist = __commonJS({
   }
 });
 
-// ../../../node_modules/.pnpm/@wordpress+element@6.39.0/node_modules/@wordpress/element/build-module/react.mjs
-import {
-  Children,
-  cloneElement,
-  Component,
-  createContext,
-  createElement,
-  createRef,
-  forwardRef,
-  Fragment,
-  isValidElement,
-  memo,
-  PureComponent,
-  StrictMode,
-  useCallback,
-  useContext,
-  useDebugValue,
-  useDeferredValue,
-  useEffect,
-  useId,
-  useMemo,
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  useTransition,
-  startTransition,
-  lazy,
-  Suspense
-} from "react";
-
 // ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
 function isObject(o2) {
   return Object.prototype.toString.call(o2) === "[object Object]";
@@ -645,21 +627,21 @@ function replace(input, re, value) {
 }
 
 // ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
-import { __assign } from "tslib";
+var _tslib = require('tslib');
 function dotCase(input, options) {
   if (options === void 0) {
     options = {};
   }
-  return noCase(input, __assign({ delimiter: "." }, options));
+  return noCase(input, _tslib.__assign.call(void 0, { delimiter: "." }, options));
 }
 
 // ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
-import { __assign as __assign2 } from "tslib";
+
 function paramCase(input, options) {
   if (options === void 0) {
     options = {};
   }
-  return dotCase(input, __assign2({ delimiter: "-" }, options));
+  return dotCase(input, _tslib.__assign.call(void 0, { delimiter: "-" }, options));
 }
 
 // ../../../node_modules/.pnpm/@wordpress+hooks@4.39.0/node_modules/@wordpress/hooks/build-module/validateNamespace.mjs
@@ -880,7 +862,7 @@ function createCurrentHook(hooks, storeKey) {
   return function currentHook() {
     const hooksStore = hooks[storeKey];
     const currentArray = Array.from(hooksStore.__current);
-    return currentArray.at(-1)?.name ?? null;
+    return _nullishCoalesce(_optionalChain([currentArray, 'access', _ => _.at, 'call', _2 => _2(-1), 'optionalAccess', _3 => _3.name]), () => ( null));
   };
 }
 var createCurrentHook_default = createCurrentHook;
@@ -913,26 +895,26 @@ var createDidHook_default = createDidHook;
 
 // ../../../node_modules/.pnpm/@wordpress+hooks@4.39.0/node_modules/@wordpress/hooks/build-module/createHooks.mjs
 var _Hooks = class {
-  actions;
-  filters;
-  addAction;
-  addFilter;
-  removeAction;
-  removeFilter;
-  hasAction;
-  hasFilter;
-  removeAllActions;
-  removeAllFilters;
-  doAction;
-  doActionAsync;
-  applyFilters;
-  applyFiltersAsync;
-  currentAction;
-  currentFilter;
-  doingAction;
-  doingFilter;
-  didAction;
-  didFilter;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   constructor() {
     this.actions = /* @__PURE__ */ Object.create(null);
     this.actions.__current = /* @__PURE__ */ new Set();
@@ -1014,23 +996,23 @@ function isValueDefined(value) {
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
-  const mountedRef = useRef(false);
-  useEffect(() => {
+  const mountedRef = _chunkI5467ZJ5cjs.useRef.call(void 0, false);
+  _chunkI5467ZJ5cjs.useEffect.call(void 0, () => {
     if (mountedRef.current) {
       return effect();
     }
     mountedRef.current = true;
     return void 0;
   }, deps);
-  useEffect(() => () => {
+  _chunkI5467ZJ5cjs.useEffect.call(void 0, () => () => {
     mountedRef.current = false;
   }, []);
 }
 var use_update_effect_default = useUpdateEffect;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.27_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
-import * as React2 from "react";
-import { useContext as useContext3, forwardRef as forwardRef3 } from "react";
+var _react = require('react'); var React2 = _interopRequireWildcard(_react); var React = _interopRequireWildcard(_react); var React3 = _interopRequireWildcard(_react); var React4 = _interopRequireWildcard(_react);
+
 
 // ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
 var isDevelopment = false;
@@ -1889,7 +1871,7 @@ var createCache = function createCache2(options) {
 };
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.27_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
-import _extends from "@babel/runtime/helpers/esm/extends";
+var _extends3 = require('@babel/runtime/helpers/esm/extends'); var _extends4 = _interopRequireDefault(_extends3);
 
 // ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.esm.js
 var isBrowser2 = typeof document !== "undefined";
@@ -2197,13 +2179,13 @@ function serializeStyles(args, registered, mergedProps) {
 }
 
 // ../../../node_modules/.pnpm/@emotion+use-insertion-effect-with-fallbacks@1.2.0_react@18.3.1/node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.esm.js
-import * as React from "react";
+
 var isBrowser3 = typeof document !== "undefined";
 var syncFallback = function syncFallback2(create) {
   return create();
 };
-var useInsertionEffect3 = React["useInsertionEffect"] ? React["useInsertionEffect"] : false;
-var useInsertionEffectAlwaysWithSyncFallback = !isBrowser3 ? syncFallback : useInsertionEffect3 || syncFallback;
+var useInsertionEffect2 = React["useInsertionEffect"] ? React["useInsertionEffect"] : false;
+var useInsertionEffectAlwaysWithSyncFallback = !isBrowser3 ? syncFallback : useInsertionEffect2 || syncFallback;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.27_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
 var isDevelopment3 = false;
@@ -2221,18 +2203,18 @@ var EmotionCacheContext = /* @__PURE__ */ React2.createContext(
 );
 var CacheProvider = EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
-  return useContext3(EmotionCacheContext);
+  return _react.useContext.call(void 0, EmotionCacheContext);
 };
 var withEmotionCache = function withEmotionCache2(func) {
-  return /* @__PURE__ */ forwardRef3(function(props, ref) {
-    var cache2 = useContext3(EmotionCacheContext);
+  return /* @__PURE__ */ _react.forwardRef.call(void 0, function(props, ref) {
+    var cache2 = _react.useContext.call(void 0, EmotionCacheContext);
     return func(props, cache2, ref);
   });
 };
 if (!isBrowser4) {
   withEmotionCache = function withEmotionCache3(func) {
     return function(props) {
-      var cache2 = useContext3(EmotionCacheContext);
+      var cache2 = _react.useContext.call(void 0, EmotionCacheContext);
       if (cache2 === null) {
         cache2 = createCache({
           key: "css"
@@ -2313,9 +2295,9 @@ var Emotion = /* @__PURE__ */ withEmotionCache(function(props, cache2, ref) {
 var Emotion$1 = Emotion;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.27_react@18.3.1/node_modules/@emotion/react/dist/emotion-react.esm.js
-import * as React3 from "react";
-import "@babel/runtime/helpers/extends";
-var import_hoist_non_react_statics = __toESM(require_hoist_non_react_statics_cjs());
+
+require('@babel/runtime/helpers/extends');
+var import_hoist_non_react_statics = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_hoist_non_react_statics_cjs());
 var jsx = function jsx2(type, props) {
   var args = arguments;
   if (props == null || !hasOwn.call(props, "css")) {
@@ -2470,7 +2452,7 @@ var cache = _createEmotion.cache;
 var isSerializedStyles = (o2) => typeof o2 !== "undefined" && o2 !== null && ["name", "styles"].every((p2) => typeof o2[p2] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
-  const cx2 = useCallback((...classNames) => {
+  const cx2 = _chunkI5467ZJ5cjs.useCallback.call(void 0, (...classNames) => {
     if (cache2 === null) {
       throw new Error("The `useCx` hook should be only used within a valid Emotion Cache Context");
     }
@@ -2782,7 +2764,7 @@ function _getComputedBackgroundColor(backgroundColor) {
     return "";
   }
   el.style.background = backgroundColor;
-  const computedColor = window?.getComputedStyle(el).background;
+  const computedColor = _optionalChain([window, 'optionalAccess', _4 => _4.getComputedStyle, 'call', _5 => _5(el), 'access', _6 => _6.background]);
   el.style.background = "";
   return computedColor || "";
 }
@@ -2946,8 +2928,8 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 });
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-import deepmerge from "deepmerge";
-import fastDeepEqual from "fast-deep-equal/es6/index.js";
+var _deepmerge = require('deepmerge'); var _deepmerge2 = _interopRequireDefault(_deepmerge);
+var _indexjs = require('fast-deep-equal/es6/index.js'); var _indexjs2 = _interopRequireDefault(_indexjs);
 
 // ../../../node_modules/.pnpm/@wordpress+warning@3.39.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged2 = /* @__PURE__ */ new Set();
@@ -2972,29 +2954,29 @@ function warning(message) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-import { jsx as _jsx } from "react/jsx-runtime";
-var ComponentsContext = createContext(
+var _jsxruntime = require('react/jsx-runtime');
+var ComponentsContext = _chunkI5467ZJ5cjs.createContext.call(void 0, 
   /** @type {Record<string, any>} */
   {}
 );
 ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => useContext(ComponentsContext);
+var useComponentsContext = () => _chunkI5467ZJ5cjs.useContext.call(void 0, ComponentsContext);
 function useContextSystemBridge({
   value
 }) {
   const parentContext = useComponentsContext();
-  const valueRef = useRef(value);
+  const valueRef = _chunkI5467ZJ5cjs.useRef.call(void 0, value);
   use_update_effect_default(() => {
     if (
       // Objects are equivalent.
-      fastDeepEqual(valueRef.current, value) && // But not the same reference.
+      _indexjs2.default.call(void 0, valueRef.current, value) && // But not the same reference.
       valueRef.current !== value
     ) {
       globalThis.SCRIPT_DEBUG === true ? warning(`Please memoize your context: ${JSON.stringify(value)}`) : void 0;
     }
   }, [value]);
-  const config = useMemo(() => {
-    return deepmerge(parentContext ?? {}, value ?? {}, {
+  const config = _chunkI5467ZJ5cjs.useMemo.call(void 0, () => {
+    return _deepmerge2.default.call(void 0, _nullishCoalesce(parentContext, () => ( {})), _nullishCoalesce(value, () => ( {})), {
       isMergeableObject: isPlainObject
     });
   }, [parentContext, value]);
@@ -3007,12 +2989,12 @@ var BaseContextSystemProvider = ({
   const contextValue = useContextSystemBridge({
     value
   });
-  return /* @__PURE__ */ _jsx(ComponentsContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ComponentsContext.Provider, {
     value: contextValue,
     children
   });
 };
-var ContextSystemProvider = memo(BaseContextSystemProvider);
+var ContextSystemProvider = _chunkI5467ZJ5cjs.memo.call(void 0, BaseContextSystemProvider);
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
@@ -3027,13 +3009,13 @@ function getStyledClassName(namespace) {
 var getStyledClassNameFromKey = memize(getStyledClassName);
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
-function contextConnect(Component2, namespace) {
-  return _contextConnect(Component2, namespace, {
+function contextConnect(Component, namespace) {
+  return _contextConnect(Component, namespace, {
     forwardsRef: true
   });
 }
-function _contextConnect(Component2, namespace, options) {
-  const WrappedComponent = options?.forwardsRef ? forwardRef(Component2) : Component2;
+function _contextConnect(Component, namespace, options) {
+  const WrappedComponent = _optionalChain([options, 'optionalAccess', _7 => _7.forwardsRef]) ? _chunkI5467ZJ5cjs.forwardRef.call(void 0, Component) : Component;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -3050,28 +3032,28 @@ function _contextConnect(Component2, namespace, options) {
     selector: `.${getStyledClassNameFromKey(namespace)}`
   });
 }
-function getConnectNamespace(Component2) {
-  if (!Component2) {
+function getConnectNamespace(Component) {
+  if (!Component) {
     return [];
   }
   let namespaces = [];
-  if (Component2[CONNECT_STATIC_NAMESPACE]) {
-    namespaces = Component2[CONNECT_STATIC_NAMESPACE];
+  if (Component[CONNECT_STATIC_NAMESPACE]) {
+    namespaces = Component[CONNECT_STATIC_NAMESPACE];
   }
-  if (Component2.type && Component2.type[CONNECT_STATIC_NAMESPACE]) {
-    namespaces = Component2.type[CONNECT_STATIC_NAMESPACE];
+  if (Component.type && Component.type[CONNECT_STATIC_NAMESPACE]) {
+    namespaces = Component.type[CONNECT_STATIC_NAMESPACE];
   }
   return namespaces;
 }
-function hasConnectNamespace(Component2, match2) {
-  if (!Component2) {
+function hasConnectNamespace(Component, match2) {
+  if (!Component) {
     return false;
   }
   if (typeof match2 === "string") {
-    return getConnectNamespace(Component2).includes(match2);
+    return getConnectNamespace(Component).includes(match2);
   }
   if (Array.isArray(match2)) {
-    return match2.some((result) => getConnectNamespace(Component2).includes(result));
+    return match2.some((result) => getConnectNamespace(Component).includes(result));
   }
   return false;
 }
@@ -3094,7 +3076,7 @@ function useContextSystem(props, namespace) {
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("useContextSystem: Please provide a namespace") : void 0;
   }
-  const contextProps = contextSystemProps?.[namespace] || {};
+  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _8 => _8[namespace]]) || {};
   const finalComponentProps = {
     ...getConnectedNamespace(),
     ...getNamespace(namespace)
@@ -3121,8 +3103,8 @@ function useContextSystem(props, namespace) {
 }
 
 // ../../../node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@18.3.27_react@18.3.1__@types+react@18.3.27_react@18.3.1/node_modules/@emotion/styled/base/dist/emotion-styled-base.esm.js
-import _extends2 from "@babel/runtime/helpers/esm/extends";
-import * as React4 from "react";
+
+
 
 // ../../../node_modules/.pnpm/@emotion+is-prop-valid@1.4.0/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
 var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
@@ -3263,7 +3245,7 @@ var createStyled = function createStyled2(tag, options) {
       }
     });
     Styled.withComponent = function(nextTag, nextOptions) {
-      var newStyled = createStyled2(nextTag, _extends2({}, options, nextOptions, {
+      var newStyled = createStyled2(nextTag, _extends4.default.call(void 0, {}, options, nextOptions, {
         shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true)
       }));
       return newStyled.apply(void 0, styles);
@@ -3273,7 +3255,7 @@ var createStyled = function createStyled2(tag, options) {
 };
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
-import { jsx as _jsx2 } from "react/jsx-runtime";
+
 var PolymorphicDiv = /* @__PURE__ */ createStyled("div", process.env.NODE_ENV === "production" ? {
   target: "e19lxcc00"
 } : {
@@ -3284,13 +3266,13 @@ function UnforwardedView({
   as,
   ...restProps
 }, ref) {
-  return /* @__PURE__ */ _jsx2(PolymorphicDiv, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PolymorphicDiv, {
     as,
     ref,
     ...restProps
   });
 }
-var View = Object.assign(forwardRef(UnforwardedView), {
+var View = Object.assign(_chunkI5467ZJ5cjs.forwardRef.call(void 0, UnforwardedView), {
   selector: ".components-view"
 });
 var component_default = View;
@@ -3306,8 +3288,8 @@ var useBreakpointIndex = (options = {}) => {
   } else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) {
     throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
   }
-  const [value, setValue] = useState(defaultIndex);
-  useEffect(() => {
+  const [value, setValue] = _chunkI5467ZJ5cjs.useState.call(void 0, defaultIndex);
+  _chunkI5467ZJ5cjs.useEffect.call(void 0, () => {
     const getIndex = () => breakpoints.filter((bp) => {
       return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
     }).length;
@@ -3354,7 +3336,7 @@ function space(value) {
     return "0";
   }
   const asInt = typeof value === "number" ? value : Number(value);
-  if (typeof window !== "undefined" && window.CSS?.supports?.("margin", value.toString()) || Number.isNaN(asInt)) {
+  if (typeof window !== "undefined" && _optionalChain([window, 'access', _9 => _9.CSS, 'optionalAccess', _10 => _10.supports, 'optionalCall', _11 => _11("margin", value.toString())]) || Number.isNaN(asInt)) {
     return value.toString();
   }
   return `calc(${GRID_BASE} * ${value})`;
@@ -3443,9 +3425,9 @@ function useFlex(props) {
   const direction = useResponsiveValue(directionAsArray);
   const isColumn = typeof direction === "string" && !!direction.includes("column");
   const cx2 = useCx();
-  const classes = useMemo(() => {
+  const classes = _chunkI5467ZJ5cjs.useMemo.call(void 0, () => {
     const base = /* @__PURE__ */ css({
-      alignItems: align ?? (isColumn ? "normal" : "center"),
+      alignItems: _nullishCoalesce(align, () => ( (isColumn ? "normal" : "center"))),
       flexDirection: direction,
       flexWrap: wrap ? "wrap" : void 0,
       gap: space(gap),
@@ -3463,10 +3445,10 @@ function useFlex(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/flex/context.mjs
-var FlexContext = createContext({
+var FlexContext = _chunkI5467ZJ5cjs.createContext.call(void 0, {
   flexItemDisplay: void 0
 });
-var useFlexContext = () => useContext(FlexContext);
+var useFlexContext = () => _chunkI5467ZJ5cjs.useContext.call(void 0, FlexContext);
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/flex/flex-item/hook.mjs
 function useFlexItem(props) {
@@ -3490,10 +3472,10 @@ function useFlexItem(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/flex/flex-item/component.mjs
-import { jsx as _jsx3 } from "react/jsx-runtime";
+
 function UnconnectedFlexItem(props, forwardedRef) {
   const flexItemProps = useFlexItem(props);
-  return /* @__PURE__ */ _jsx3(component_default, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
     ...flexItemProps,
     ref: forwardedRef
   });
@@ -3602,7 +3584,7 @@ function useTruncate(props) {
     numberOfLines
   }) : children;
   const shouldTruncate = !!childrenAsText && ellipsizeMode === TRUNCATE_TYPE.auto;
-  const classes = useMemo(() => {
+  const classes = _chunkI5467ZJ5cjs.useMemo.call(void 0, () => {
     const truncateLines = /* @__PURE__ */ css(numberOfLines === 1 ? "word-break: break-all;" : "", " -webkit-box-orient:vertical;-webkit-line-clamp:", numberOfLines, ";display:-webkit-box;overflow:hidden;" + (process.env.NODE_ENV === "production" ? "" : ";label:truncateLines;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBMEQyQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBUUlVOQ0FURV9FTExJUFNJUywgVFJVTkNBVEVfVFlQRSwgdHJ1bmNhdGVDb250ZW50IH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyB1c2VDeCB9IGZyb20gJy4uL3V0aWxzL2hvb2tzL3VzZS1jeCc7XG5pbXBvcnQgdHlwZSB7IFRydW5jYXRlUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlVHJ1bmNhdGUoXG5cdHByb3BzOiBXb3JkUHJlc3NDb21wb25lbnRQcm9wczwgVHJ1bmNhdGVQcm9wcywgJ3NwYW4nID5cbikge1xuXHRjb25zdCB7XG5cdFx0Y2xhc3NOYW1lLFxuXHRcdGNoaWxkcmVuLFxuXHRcdGVsbGlwc2lzID0gVFJVTkNBVEVfRUxMSVBTSVMsXG5cdFx0ZWxsaXBzaXplTW9kZSA9IFRSVU5DQVRFX1RZUEUuYXV0byxcblx0XHRsaW1pdCA9IDAsXG5cdFx0bnVtYmVyT2ZMaW5lcyA9IDAsXG5cdFx0Li4ub3RoZXJQcm9wc1xuXHR9ID0gdXNlQ29udGV4dFN5c3RlbSggcHJvcHMsICdUcnVuY2F0ZScgKTtcblxuXHRjb25zdCBjeCA9IHVzZUN4KCk7XG5cblx0bGV0IGNoaWxkcmVuQXNUZXh0O1xuXHRpZiAoIHR5cGVvZiBjaGlsZHJlbiA9PT0gJ3N0cmluZycgKSB7XG5cdFx0Y2hpbGRyZW5Bc1RleHQgPSBjaGlsZHJlbjtcblx0fSBlbHNlIGlmICggdHlwZW9mIGNoaWxkcmVuID09PSAnbnVtYmVyJyApIHtcblx0XHRjaGlsZHJlbkFzVGV4dCA9IGNoaWxkcmVuLnRvU3RyaW5nKCk7XG5cdH1cblxuXHRjb25zdCB0cnVuY2F0ZWRDb250ZW50ID0gY2hpbGRyZW5Bc1RleHRcblx0XHQ/IHRydW5jYXRlQ29udGVudCggY2hpbGRyZW5Bc1RleHQsIHtcblx0XHRcdFx0ZWxsaXBzaXMsXG5cdFx0XHRcdGVsbGlwc2l6ZU1vZGUsXG5cdFx0XHRcdGxpbWl0LFxuXHRcdFx0XHRudW1iZXJPZkxpbmVzLFxuXHRcdCAgfSApXG5cdFx0OiBjaGlsZHJlbjtcblxuXHRjb25zdCBzaG91bGRUcnVuY2F0ZSA9XG5cdFx0ISEgY2hpbGRyZW5Bc1RleHQgJiYgZWxsaXBzaXplTW9kZSA9PT0gVFJVTkNBVEVfVFlQRS5hdXRvO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Ly8gVGhlIGB3b3JkLWJyZWFrOiBicmVhay1hbGxgIHByb3BlcnR5IGZpcnN0IG1ha2VzIHN1cmUgYSB0ZXh0IGxpbmVcblx0XHQvLyBicmVha3MgZXZlbiB3aGVuIGl0IGNvbnRhaW5zICd1bmJyZWFrYWJsZScgY29udGVudCBzdWNoIGFzIGxvbmcgVVJMcy5cblx0XHQvLyBTZWUgaHR0cHM6Ly9naXRodWIuY29tL1dvcmRQcmVzcy9ndXRlbmJlcmcvaXNzdWVzLzYwODYwLlxuXHRcdGNvbnN0IHRydW5jYXRlTGluZXMgPSBjc3NgXG5cdFx0XHQkeyBudW1iZXJPZkxpbmVzID09PSAxID8gJ3dvcmQtYnJlYWs6IGJyZWFrLWFsbDsnIDogJycgfVxuXHRcdFx0LXdlYmtpdC1ib3gtb3JpZW50OiB2ZXJ0aWNhbDtcblx0XHRcdC13ZWJraXQtbGluZS1jbGFtcDogJHsgbnVtYmVyT2ZMaW5lcyB9O1xuXHRcdFx0ZGlzcGxheTogLXdlYmtpdC1ib3g7XG5cdFx0XHRvdmVyZmxvdzogaGlkZGVuO1xuXHRcdGA7XG5cblx0XHRyZXR1cm4gY3goXG5cdFx0XHRzaG91bGRUcnVuY2F0ZSAmJiAhIG51bWJlck9mTGluZXMgJiYgc3R5bGVzLlRydW5jYXRlLFxuXHRcdFx0c2hvdWxkVHJ1bmNhdGUgJiYgISEgbnVtYmVyT2ZMaW5lcyAmJiB0cnVuY2F0ZUxpbmVzLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgWyBjbGFzc05hbWUsIGN4LCBudW1iZXJPZkxpbmVzLCBzaG91bGRUcnVuY2F0ZSBdICk7XG5cblx0cmV0dXJuIHsgLi4ub3RoZXJQcm9wcywgY2xhc3NOYW1lOiBjbGFzc2VzLCBjaGlsZHJlbjogdHJ1bmNhdGVkQ29udGVudCB9O1xufVxuIl19 */");
     return cx2(shouldTruncate && !numberOfLines && Truncate, shouldTruncate && !!numberOfLines && truncateLines, className);
   }, [className, cx2, numberOfLines, shouldTruncate]);
@@ -3615,7 +3597,7 @@ function useTruncate(props) {
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/styles.mjs
 var styles_exports3 = {};
-__export(styles_exports3, {
+_chunkEMMSS5I5cjs.__export.call(void 0, styles_exports3, {
   Text: () => Text,
   block: () => block2,
   destructive: () => destructive,
@@ -3652,7 +3634,7 @@ var upperCase = process.env.NODE_ENV === "production" ? {
 };
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/utils.mjs
-var import_highlight_words_core = __toESM(require_dist(), 1);
+var import_highlight_words_core = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_dist(), 1);
 var lowercaseProps = (object) => {
   const mapped = {};
   for (const key in object) {
@@ -3723,9 +3705,9 @@ function createHighlighterText({
       if (typeof HighlightTag !== "string") {
         props.highlightIndex = highlightIndex;
       }
-      return createElement(HighlightTag, props);
+      return _chunkI5467ZJ5cjs.createElement.call(void 0, HighlightTag, props);
     }
-    return createElement("span", {
+    return _chunkI5467ZJ5cjs.createElement.call(void 0, "span", {
       children: text,
       className: unhighlightClassName,
       key: index,
@@ -3840,7 +3822,7 @@ function useText(props) {
     });
   }
   const cx2 = useCx();
-  const classes = useMemo(() => {
+  const classes = _chunkI5467ZJ5cjs.useMemo.call(void 0, () => {
     const sx = {};
     const lineHeight = getLineHeight(adjustLineHeightForInnerControls, lineHeightProp);
     sx.Base = /* @__PURE__ */ css({
@@ -3879,13 +3861,13 @@ function useText(props) {
   };
   const truncateProps = useTruncate(finalComponentProps);
   if (!truncate && Array.isArray(children)) {
-    content = Children.map(children, (child) => {
+    content = _chunkI5467ZJ5cjs.Children.map(children, (child) => {
       if (typeof child !== "object" || child === null || !("props" in child)) {
         return child;
       }
       const isLink = hasConnectNamespace(child, ["Link"]);
       if (isLink) {
-        return cloneElement(child, {
+        return _chunkI5467ZJ5cjs.cloneElement.call(void 0, child, {
           size: child.props.size || "inherit"
         });
       }
@@ -3899,10 +3881,10 @@ function useText(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/component.mjs
-import { jsx as _jsx4 } from "react/jsx-runtime";
+
 function UnconnectedText(props, forwardedRef) {
   const textProps = useText(props);
-  return /* @__PURE__ */ _jsx4(component_default, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
     as: "span",
     ...textProps,
     ref: forwardedRef
@@ -4019,11 +4001,11 @@ function getValidChildren(children) {
   if (typeof children === "string") {
     return [children];
   }
-  return Children.toArray(children).filter((child) => isValidElement(child));
+  return _chunkI5467ZJ5cjs.Children.toArray(children).filter((child) => _chunkI5467ZJ5cjs.isValidElement.call(void 0, child));
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/h-stack/hook.mjs
-import { jsx as _jsx5 } from "react/jsx-runtime";
+
 function useHStack(props) {
   const {
     alignment = "edge",
@@ -4039,7 +4021,7 @@ function useHStack(props) {
     if (_isSpacer) {
       const childElement = child;
       const _key = childElement.key || `hstack-${index}`;
-      return /* @__PURE__ */ _jsx5(component_default2, {
+      return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
         isBlock: true,
         ...childElement.props
       }, _key);
@@ -4078,10 +4060,10 @@ function useVStack(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/v-stack/component.mjs
-import { jsx as _jsx6 } from "react/jsx-runtime";
+
 function UnconnectedVStack(props, forwardedRef) {
   const vStackProps = useVStack(props);
-  return /* @__PURE__ */ _jsx6(component_default, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
     ...vStackProps,
     ref: forwardedRef
   });
@@ -4164,7 +4146,7 @@ function useGrid(props) {
   const gridTemplateColumns = templateColumns || !!columns && `repeat( ${column2}, 1fr )`;
   const gridTemplateRows = templateRows || !!rows && `repeat( ${row}, 1fr )`;
   const cx2 = useCx();
-  const classes = useMemo(() => {
+  const classes = _chunkI5467ZJ5cjs.useMemo.call(void 0, () => {
     const alignmentProps = getAlignmentProps2(alignment);
     const gridClasses = /* @__PURE__ */ css({
       alignItems: align,
@@ -4187,10 +4169,10 @@ function useGrid(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
-import { jsx as _jsx7 } from "react/jsx-runtime";
+
 function UnconnectedGrid(props, forwardedRef) {
   const gridProps = useGrid(props);
-  return /* @__PURE__ */ _jsx7(component_default, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
     ...gridProps,
     ref: forwardedRef
   });
@@ -4199,13 +4181,13 @@ var Grid = contextConnect(UnconnectedGrid, "Grid");
 var component_default6 = Grid;
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
-import { __ as __2 } from "@wordpress/i18n";
-import clsx from "clsx";
-import { useContext as useContext6, useMemo as useMemo3 } from "react";
+var _i18n = require('@wordpress/i18n');
+var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
+
 
 // src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
-import { __ } from "@wordpress/i18n";
-import { useMemo as useMemo2 } from "react";
+
+
 function useLeaderboardLegendItems({
   data,
   primaryColor,
@@ -4214,9 +4196,9 @@ function useLeaderboardLegendItems({
   withOverlayLabel = false,
   legendLabels
 }) {
-  const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
-  const { getElementStyles } = useGlobalChartsContext();
-  return useMemo2(() => {
+  const { leaderboardChart: leaderboardChartSettings } = _chunkTVV7ZI7Ccjs.useGlobalChartsTheme.call(void 0, );
+  const { getElementStyles } = _chunkTVV7ZI7Ccjs.useGlobalChartsContext.call(void 0, );
+  return _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
       return [];
     }
@@ -4226,7 +4208,7 @@ function useLeaderboardLegendItems({
       overrideColor: primaryColor || leaderboardChartSettings.primaryColor
     });
     items.push({
-      label: legendLabels?.primary || __("Current period", "jetpack-charts"),
+      label: _optionalChain([legendLabels, 'optionalAccess', _12 => _12.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
       value: "",
       color: resolvedPrimaryColor
     });
@@ -4236,7 +4218,7 @@ function useLeaderboardLegendItems({
         overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
       });
       items.push({
-        label: legendLabels?.comparison || __("Previous period", "jetpack-charts"),
+        label: _optionalChain([legendLabels, 'optionalAccess', _13 => _13.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
         value: "",
         color: resolvedSecondaryColor
       });
@@ -4272,20 +4254,20 @@ var leaderboard_chart_module_default = {
 };
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
-import { Fragment as Fragment5, jsx as jsx3, jsxs } from "react/jsx-runtime";
+
 var defaultValueFormatter = (value) => {
-  return formatMetricValue(value, "number", {
+  return _chunkZVGEDXDPcjs.formatMetricValue.call(void 0, value, "number", {
     useMultipliers: true,
     decimals: 1
   });
 };
 var defaultDeltaFormatter = (value) => {
-  return formatMetricValue(value / 100, "average", {
+  return _chunkZVGEDXDPcjs.formatMetricValue.call(void 0, value / 100, "average", {
     decimals: 0,
     signDisplay: "exceptZero"
   });
 };
-var BarLabel = ({ label }) => /* @__PURE__ */ jsx3(Fragment5, { children: typeof label === "string" ? /* @__PURE__ */ jsx3(component_default4, { className: leaderboard_chart_module_default.label, children: label }) : label });
+var BarLabel = ({ label }) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default4, { className: leaderboard_chart_module_default.label, children: label }) : label });
 var BarWithLabel = ({
   entry,
   withComparison,
@@ -4295,18 +4277,18 @@ var BarWithLabel = ({
   animation,
   isPrimaryVisible = true,
   isComparisonVisible = true
-}) => /* @__PURE__ */ jsxs(
+}) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
   "div",
   {
-    className: clsx(leaderboard_chart_module_default.barWithLabelContainer, {
+    className: _clsx2.default.call(void 0, leaderboard_chart_module_default.barWithLabelContainer, {
       [leaderboard_chart_module_default["is-overlay"]]: withOverlayLabel
     }),
     children: [
-      /* @__PURE__ */ jsx3(BarLabel, { label: entry.label }),
-      isPrimaryVisible && /* @__PURE__ */ jsx3(
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarLabel, { label: entry.label }),
+      isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
         "div",
         {
-          className: clsx(leaderboard_chart_module_default.bar, {
+          className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
             [leaderboard_chart_module_default["bar--animated"]]: animation
           }),
           style: {
@@ -4315,10 +4297,10 @@ var BarWithLabel = ({
           }
         }
       ),
-      withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ jsx3(
+      withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
         "div",
         {
-          className: clsx(leaderboard_chart_module_default.bar, {
+          className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
             [leaderboard_chart_module_default["bar--animated"]]: animation
           }),
           style: {
@@ -4354,9 +4336,9 @@ var LeaderboardChartInternal = ({
   style,
   children
 }) => {
-  const chartId = useChartId(providedChartId);
-  const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
-  const { otherChildren } = useChartChildren(children, "LeaderboardChart");
+  const chartId = _chunkTVV7ZI7Ccjs.useChartId.call(void 0, providedChartId);
+  const { leaderboardChart: leaderboardChartSettings } = _chunkTVV7ZI7Ccjs.useGlobalChartsTheme.call(void 0, );
+  const { otherChildren } = _chunkHIWNB5PKcjs.useChartChildren.call(void 0, children, "LeaderboardChart");
   const {
     labelSpacing,
     rowGap,
@@ -4365,7 +4347,7 @@ var LeaderboardChartInternal = ({
     secondaryColor: settingsSecondaryColor,
     deltaColors
   } = leaderboardChartSettings;
-  const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+  const { getElementStyles, isSeriesVisible } = _chunkTVV7ZI7Ccjs.useGlobalChartsContext.call(void 0, );
   const { color: resolvedPrimaryColor } = getElementStyles({
     index: 0,
     overrideColor: primaryColor || settingsPrimaryColor
@@ -4382,19 +4364,19 @@ var LeaderboardChartInternal = ({
     withOverlayLabel,
     legendLabels
   });
-  const isPrimaryVisible = useMemo3(() => {
+  const isPrimaryVisible = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive || legendItems.length === 0) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[0].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const isComparisonVisible = useMemo3(() => {
+  const isComparisonVisible = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive || legendItems.length < 2) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[1].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const allSeriesHidden = useMemo3(() => {
+  const allSeriesHidden = _react.useMemo.call(void 0, () => {
     if (!legendInteractive) return false;
     if (withComparison && !withOverlayLabel) {
       return !isPrimaryVisible && !isComparisonVisible;
@@ -4408,24 +4390,24 @@ var LeaderboardChartInternal = ({
     withOverlayLabel
   ]);
   const isDataValid = Boolean(data && data.length > 0);
-  const chartMetadata = useMemo3(
+  const chartMetadata = _react.useMemo.call(void 0, 
     () => ({
       withComparison,
       withOverlayLabel
     }),
     [withComparison, withOverlayLabel]
   );
-  useChartRegistration({
+  _chunkTVV7ZI7Ccjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "leaderboard",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = _chunkTVV7ZI7Ccjs.usePrefersReducedMotion.call(void 0, );
   if (!data || data.length === 0) {
-    return /* @__PURE__ */ jsx3(
-      SingleChartContext.Provider,
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+      _chunkTVV7ZI7Ccjs.SingleChartContext.Provider,
       {
         value: {
           chartId,
@@ -4433,17 +4415,17 @@ var LeaderboardChartInternal = ({
           // LeaderboardChart doesn't need specific dimensions
           chartHeight: 0
         },
-        children: /* @__PURE__ */ jsxs(
+        children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
           "div",
           {
-            className: clsx(
+            className: _clsx2.default.call(void 0, 
               leaderboard_chart_module_default.leaderboardChart,
               { [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading },
               className
             ),
             style,
             children: [
-              /* @__PURE__ */ jsx3("div", { className: leaderboard_chart_module_default.emptyState, children: loading ? __2("Loading\u2026", "jetpack-charts") : __2("No data available", "jetpack-charts") }),
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: leaderboard_chart_module_default.emptyState, children: loading ? _i18n.__.call(void 0, "Loading\u2026", "jetpack-charts") : _i18n.__.call(void 0, "No data available", "jetpack-charts") }),
               otherChildren
             ]
           }
@@ -4451,8 +4433,8 @@ var LeaderboardChartInternal = ({
       }
     );
   }
-  return /* @__PURE__ */ jsx3(
-    SingleChartContext.Provider,
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+    _chunkTVV7ZI7Ccjs.SingleChartContext.Provider,
     {
       value: {
         chartId,
@@ -4460,10 +4442,10 @@ var LeaderboardChartInternal = ({
         // LeaderboardChart doesn't need specific dimensions
         chartHeight: 0
       },
-      children: /* @__PURE__ */ jsxs(
+      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
         "div",
         {
-          className: clsx(
+          className: _clsx2.default.call(void 0, 
             leaderboard_chart_module_default.leaderboardChart,
             {
               [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading,
@@ -4474,11 +4456,11 @@ var LeaderboardChartInternal = ({
           ),
           style,
           children: [
-            allSeriesHidden ? /* @__PURE__ */ jsx3("div", { className: leaderboard_chart_module_default.emptyState, children: __2("All series are hidden. Click legend items to show data.", "jetpack-charts") }) : /* @__PURE__ */ jsx3(component_default6, { templateColumns: "minmax(0, 1fr) auto", rowGap, columnGap, children: data.map((entry) => {
+            allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { className: leaderboard_chart_module_default.emptyState, children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts") }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default6, { templateColumns: "minmax(0, 1fr) auto", rowGap, columnGap, children: data.map((entry) => {
               const colorIndex = Math.sign(entry.delta) + 1;
               const deltaColor = deltaColors[colorIndex];
-              return /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx3(component_default5, { spacing: labelSpacing, children: /* @__PURE__ */ jsx3(
+              return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI5467ZJ5cjs.Fragment, { children: [
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default5, { spacing: labelSpacing, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
                   BarWithLabel,
                   {
                     entry,
@@ -4491,22 +4473,22 @@ var LeaderboardChartInternal = ({
                     animation: animation && !loading && !prefersReducedMotion
                   }
                 ) }),
-                /* @__PURE__ */ jsxs(
+                /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, 
                   "div",
                   {
-                    className: clsx(leaderboard_chart_module_default.valueContainer, {
+                    className: _clsx2.default.call(void 0, leaderboard_chart_module_default.valueContainer, {
                       [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
                     }),
                     children: [
-                      isPrimaryVisible && /* @__PURE__ */ jsx3(component_default4, { children: valueFormatter(entry.currentValue) }),
-                      withComparison && isComparisonVisible && /* @__PURE__ */ jsx3(component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
+                      isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default4, { children: valueFormatter(entry.currentValue) }),
+                      withComparison && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default4, { style: { color: deltaColor }, children: deltaFormatter(entry.delta) })
                     ]
                   }
                 )
               ] }, entry.id);
             }) }),
-            showLegend && /* @__PURE__ */ jsx3(
-              Legend,
+            showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
+              _chunkTVV7ZI7Ccjs.Legend,
               {
                 orientation: legendOrientation,
                 position: legendPosition,
@@ -4526,28 +4508,28 @@ var LeaderboardChartInternal = ({
   );
 };
 var LeaderboardChartWithProvider = (props) => {
-  const existingContext = useContext6(GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkTVV7ZI7Ccjs.GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ jsx3(LeaderboardChartInternal, { ...props });
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props });
   }
-  return /* @__PURE__ */ jsx3(GlobalChartsProvider, { children: /* @__PURE__ */ jsx3(LeaderboardChartInternal, { ...props }) });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTVV7ZI7Ccjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, { ...props }) });
 };
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
-var LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, {
-  Legend
+var LeaderboardChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, LeaderboardChartWithProvider, {
+  Legend: _chunkTVV7ZI7Ccjs.Legend
 });
-var LeaderboardChartResponsive = attachSubComponents(
-  withResponsive(LeaderboardChartWithProvider),
+var LeaderboardChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, 
+  _chunkHOTYXYXVcjs.withResponsive.call(void 0, LeaderboardChartWithProvider),
   {
-    Legend
+    Legend: _chunkTVV7ZI7Ccjs.Legend
   }
 );
 
-export {
-  useLeaderboardLegendItems,
-  LeaderboardChart,
-  LeaderboardChartResponsive
-};
+
+
+
+
+exports.useLeaderboardLegendItems = useLeaderboardLegendItems; exports.LeaderboardChart = LeaderboardChart; exports.LeaderboardChartResponsive = LeaderboardChartResponsive;
 /*! Bundled license information:
 
 react-is/cjs/react-is.production.min.js:
@@ -4578,4 +4560,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-XRHHMYWE.js.map
+//# sourceMappingURL=chunk-XYRHRIOW.cjs.map
