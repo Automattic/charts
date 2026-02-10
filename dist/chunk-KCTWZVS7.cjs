@@ -3,12 +3,12 @@
 var _chunkOTZT3MC2cjs = require('./chunk-OTZT3MC2.cjs');
 
 
-var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
-
-
 
 
 var _chunkHIWNB5PKcjs = require('./chunk-HIWNB5PK.cjs');
+
+
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
 var _chunkHOTYXYXVcjs = require('./chunk-HOTYXYXV.cjs');
@@ -359,4 +359,4 @@ var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-K5NOYNTU.cjs.map
+//# sourceMappingURL=chunk-KCTWZVS7.cjs.map
