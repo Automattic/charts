@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.56.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Remove redundant moduleNameMapper from jest config.
+
 ## [0.56.0] - 2026-02-10
 ### Added
 - Add `renderTooltip` prop for custom tooltip rendering in pie charts. [#46971]
@@ -669,6 +676,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.56.1-alpha]: https://github.com/Automattic/charts/compare/v0.56.0...v0.56.1-alpha
 [0.56.0]: https://github.com/Automattic/charts/compare/v0.55.0...v0.56.0
 [0.55.0]: https://github.com/Automattic/charts/compare/v0.54.3...v0.55.0
 [0.54.3]: https://github.com/Automattic/charts/compare/v0.54.2...v0.54.3
