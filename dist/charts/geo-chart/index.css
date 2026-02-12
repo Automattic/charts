@@ -93,6 +93,12 @@
   flex-shrink: 0;
 }
 
+/* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
+.a8ccharts-GSKfBD {
+  min-width: 0;
+  min-height: 0;
+}
+
 /* esbuild-sass-plugin:css-chunk:src/charts/geo-chart/geo-chart.module.scss */
 .a8ccharts-JvcqOz {
   position: relative;

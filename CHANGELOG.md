@@ -12,6 +12,10 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Remove redundant moduleNameMapper from jest config.
 
+### Fixed
+- Allow responsive wrapper to shrink properly in flex layouts by adding min-width and min-height CSS properties.
+- Charts: fix chart height and size calculations for Pie Chart and variants.
+
 ## [0.56.0] - 2026-02-10
 ### Added
 - Add `renderTooltip` prop for custom tooltip rendering in pie charts. [#46971]
