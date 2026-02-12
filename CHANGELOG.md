@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Remove redundant moduleNameMapper from jest config.
 
+### Fixed
+- Compatibility: Clean up deprecated CSS.
+
 ## [0.56.0] - 2026-02-10
 ### Added
 - Add `renderTooltip` prop for custom tooltip rendering in pie charts. [#46971]
