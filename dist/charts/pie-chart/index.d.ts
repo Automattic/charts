@@ -1,9 +1,8 @@
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.js';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DOQK1ctx.js';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-BCFQlzTM.js';
 import { C as ChartComponentWithComposition } from '../../types-DQNnq5Fr.js';
-import { GapSize } from '@wordpress/theme';
 import '../../legend-jjMmhSg3.js';
 import '../../types-C05PdDJa.js';
 import '@visx/legend';
@@ -87,12 +86,6 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
      * When provided, replaces the default BaseTooltip with custom content.
      */
     renderTooltip?: (params: PieChartRenderTooltipParams) => ReactNode;
-    /**
-     * Gap between chart elements (SVG, legend, children).
-     * Uses WordPress design system tokens.
-     * @default 'md'
-     */
-    gap?: GapSize;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
 type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;

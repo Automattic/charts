@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode } from 'react';
-import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-DOQK1ctx.cjs';
+import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-BCFQlzTM.cjs';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -98,19 +98,17 @@ declare const useChartMargin: (height: number, options: BaseChartProps["options"
 };
 
 /**
- * Hook to measure the width and height of a DOM element.
- * Returns a ref callback to attach to the element and the current dimensions in pixels.
+ * Hook to measure the height of a DOM element.
+ * Returns a ref to attach to the element and the current height in pixels.
  *
  * @param {object} props               - Optional props.
- * @param {number} props.initialWidth  - The initial width to use.
  * @param {number} props.initialHeight - The initial height to use.
  *
- * @return {[Function, number, number]} A tuple containing a ref callback, width, and height in pixels
+ * @return {[Function, number]} A tuple containing a ref to attach to the element and the current height in pixels
  */
-declare function useElementSize<T extends HTMLElement = HTMLDivElement>({ initialWidth, initialHeight, }?: {
-    initialWidth?: number;
+declare function useElementHeight<T extends HTMLElement = HTMLDivElement>({ initialHeight, }?: {
     initialHeight?: number;
-}): [(node: T | null) => void, number, number];
+}): [(node: T | null) => void, number];
 
 /**
  * Hook to detect if children contain a Legend component (composition pattern).
@@ -238,4 +236,4 @@ declare const useInteractiveLegendData: <T extends DataPointWithPercentage>({ da
  */
 declare function usePrefersReducedMotion(): boolean;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementSize, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
