@@ -11,7 +11,7 @@ import {
 } from "./chunk-5XI443YP.js";
 import {
   withResponsive
-} from "./chunk-VKXEGONO.js";
+} from "./chunk-C33AQZEC.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -359,4 +359,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-PG2PMWB4.js.map
+//# sourceMappingURL=chunk-EJHLLXBV.js.map

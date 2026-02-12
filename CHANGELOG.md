@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Remove redundant moduleNameMapper from jest config.
 
 ### Fixed
+- Allow responsive wrapper to shrink properly in flex layouts by adding min-width and min-height CSS properties.
 - Compatibility: Clean up deprecated CSS.
 
 ## [0.56.0] - 2026-02-10

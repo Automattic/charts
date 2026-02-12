@@ -7,7 +7,7 @@ var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
-var _chunkHOTYXYXVcjs = require('./chunk-HOTYXYXV.cjs');
+var _chunkNW3RUYK2cjs = require('./chunk-NW3RUYK2.cjs');
 
 
 
@@ -1043,7 +1043,7 @@ var LineChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, LineChartWith
   Annotation: line_chart_annotation_default
 });
 var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, 
-  _chunkHOTYXYXVcjs.withResponsive.call(void 0, LineChartWithProvider),
+  _chunkNW3RUYK2cjs.withResponsive.call(void 0, LineChartWithProvider),
   {
     Legend: _chunkTVV7ZI7Ccjs.Legend,
     AnnotationsOverlay: line_chart_annotations_overlay_default,
@@ -1055,4 +1055,4 @@ var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-MHPM4VM6.cjs.map
+//# sourceMappingURL=chunk-KOF32DBL.cjs.map

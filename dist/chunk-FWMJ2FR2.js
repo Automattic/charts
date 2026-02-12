@@ -1,6 +1,6 @@
 import {
   withResponsive
-} from "./chunk-VKXEGONO.js";
+} from "./chunk-C33AQZEC.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -118,4 +118,4 @@ export {
   GeoChartWithProvider,
   GeoChartResponsive
 };
-//# sourceMappingURL=chunk-4GZN73UT.js.map
+//# sourceMappingURL=chunk-FWMJ2FR2.js.map

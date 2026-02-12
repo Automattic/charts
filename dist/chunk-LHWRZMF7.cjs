@@ -11,7 +11,7 @@ var _chunkHIWNB5PKcjs = require('./chunk-HIWNB5PK.cjs');
 var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 
-var _chunkHOTYXYXVcjs = require('./chunk-HOTYXYXV.cjs');
+var _chunkNW3RUYK2cjs = require('./chunk-NW3RUYK2.cjs');
 
 
 
@@ -347,7 +347,7 @@ var PieSemiCircleChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, PieS
   HTML: _chunkHIWNB5PKcjs.ChartHTML
 });
 var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, 
-  _chunkHOTYXYXVcjs.withResponsive.call(void 0, PieSemiCircleChartWithProvider),
+  _chunkNW3RUYK2cjs.withResponsive.call(void 0, PieSemiCircleChartWithProvider),
   {
     Legend: _chunkTVV7ZI7Ccjs.Legend,
     SVG: _chunkHIWNB5PKcjs.ChartSVG,
@@ -359,4 +359,4 @@ var PieSemiCircleChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-KCTWZVS7.cjs.map
+//# sourceMappingURL=chunk-LHWRZMF7.cjs.map

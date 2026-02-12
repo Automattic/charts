@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _chunkHOTYXYXVcjs = require('./chunk-HOTYXYXV.cjs');
+var _chunkNW3RUYK2cjs = require('./chunk-NW3RUYK2.cjs');
 
 
 
@@ -112,10 +112,10 @@ var GeoChartWithProvider = (props) => {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTVV7ZI7Ccjs.GlobalChartsProvider, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GeoChartInternal, { ...props }) });
 };
 GeoChartWithProvider.displayName = "GeoChart";
-var GeoChartResponsive = _chunkHOTYXYXVcjs.withResponsive.call(void 0, GeoChartWithProvider);
+var GeoChartResponsive = _chunkNW3RUYK2cjs.withResponsive.call(void 0, GeoChartWithProvider);
 
 
 
 
 exports.GeoChartWithProvider = GeoChartWithProvider; exports.GeoChartResponsive = GeoChartResponsive;
-//# sourceMappingURL=chunk-MZIJOH7W.cjs.map
+//# sourceMappingURL=chunk-MFRS2PEY.cjs.map

@@ -1,5 +1,12 @@
 // src/charts/private/with-responsive/with-responsive.tsx
 import { useParentSize } from "@visx/responsive";
+
+// src/charts/private/with-responsive/with-responsive.module.scss
+var with_responsive_module_default = {
+  "container": "a8ccharts-GSKfBD"
+};
+
+// src/charts/private/with-responsive/with-responsive.tsx
 import { jsx } from "react/jsx-runtime";
 var useResponsiveDimensions = ({
   resizeDebounceTime = 300,
@@ -56,6 +63,7 @@ function withResponsive(WrappedComponent) {
       {
         ref: parentRef,
         "data-testid": "responsive-wrapper",
+        className: with_responsive_module_default.container,
         style: {
           width: size ?? width ?? "100%",
           height: size ?? height ?? defaultHeight
@@ -77,4 +85,4 @@ function withResponsive(WrappedComponent) {
 export {
   withResponsive
 };
-//# sourceMappingURL=chunk-VKXEGONO.js.map
+//# sourceMappingURL=chunk-C33AQZEC.js.map

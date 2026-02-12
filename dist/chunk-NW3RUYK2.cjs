@@ -1,5 +1,12 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } }// src/charts/private/with-responsive/with-responsive.tsx
 var _responsive = require('@visx/responsive');
+
+// src/charts/private/with-responsive/with-responsive.module.scss
+var with_responsive_module_default = {
+  "container": "a8ccharts-GSKfBD"
+};
+
+// src/charts/private/with-responsive/with-responsive.tsx
 var _jsxruntime = require('react/jsx-runtime');
 var useResponsiveDimensions = ({
   resizeDebounceTime = 300,
@@ -56,6 +63,7 @@ function withResponsive(WrappedComponent) {
       {
         ref: parentRef,
         "data-testid": "responsive-wrapper",
+        className: with_responsive_module_default.container,
         style: {
           width: _nullishCoalesce(_nullishCoalesce(size, () => ( width)), () => ( "100%")),
           height: _nullishCoalesce(_nullishCoalesce(size, () => ( height)), () => ( defaultHeight))
@@ -77,4 +85,4 @@ function withResponsive(WrappedComponent) {
 
 
 exports.withResponsive = withResponsive;
-//# sourceMappingURL=chunk-HOTYXYXV.cjs.map
+//# sourceMappingURL=chunk-NW3RUYK2.cjs.map

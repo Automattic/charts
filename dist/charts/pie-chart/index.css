@@ -105,6 +105,12 @@
   transform: translate(-50%, -100%);
 }
 
+/* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
+.a8ccharts-GSKfBD {
+  min-width: 0;
+  min-height: 0;
+}
+
 /* esbuild-sass-plugin:css-chunk:src/charts/pie-chart/pie-chart.module.scss */
 .a8ccharts-C-n-Gu {
   display: flex;
