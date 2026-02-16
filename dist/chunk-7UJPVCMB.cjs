@@ -3,6 +3,10 @@
 var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 
 
+
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
+
+
 var _chunkNW3RUYK2cjs = require('./chunk-NW3RUYK2.cjs');
 
 
@@ -26,10 +30,6 @@ var _chunkTVV7ZI7Ccjs = require('./chunk-TVV7ZI7C.cjs');
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-
-var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 // src/charts/bar-chart/bar-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -605,4 +605,4 @@ var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-OCNNJBXV.cjs.map
+//# sourceMappingURL=chunk-7UJPVCMB.cjs.map

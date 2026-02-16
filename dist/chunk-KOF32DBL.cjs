@@ -3,6 +3,10 @@
 var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 
 
+
+var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
+
+
 var _chunkNW3RUYK2cjs = require('./chunk-NW3RUYK2.cjs');
 
 
@@ -26,10 +30,6 @@ var _chunkTVV7ZI7Ccjs = require('./chunk-TVV7ZI7C.cjs');
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-
-var _chunk7HROSZRScjs = require('./chunk-7HROSZRS.cjs');
 
 // src/charts/line-chart/line-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -1055,4 +1055,4 @@ var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0,
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-HNMMMUU5.cjs.map
+//# sourceMappingURL=chunk-KOF32DBL.cjs.map

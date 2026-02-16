@@ -2,6 +2,10 @@ import {
   Stack
 } from "./chunk-MEIVKY4K.js";
 import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-5XI443YP.js";
+import {
   withResponsive
 } from "./chunk-C33AQZEC.js";
 import {
@@ -26,10 +30,6 @@ import {
   attachSubComponents,
   isSafari
 } from "./chunk-TE63Y5PX.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-5XI443YP.js";
 
 // src/charts/bar-chart/bar-chart.tsx
 import { formatNumber } from "@automattic/number-formatters";
@@ -605,4 +605,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-JRLKGKOR.js.map
+//# sourceMappingURL=chunk-2VPPTJS2.js.map
