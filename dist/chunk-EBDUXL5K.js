@@ -1,4 +1,7 @@
 import {
+  Stack
+} from "./chunk-MEIVKY4K.js";
+import {
   GlobalChartsContext,
   GlobalChartsProvider,
   useChartId,
@@ -105,6 +108,7 @@ var ConversionFunnelChartInternal = ({
   animation,
   className,
   chartId: providedChartId,
+  height,
   style,
   renderStepLabel,
   renderStepRate,
@@ -237,6 +241,7 @@ var ConversionFunnelChartInternal = ({
       document.removeEventListener("mousedown", handleDocumentClick);
     };
   }, [clearSelectionAndRef]);
+  const resolvedHeight = height ?? style?.height ?? "100%";
   const {
     primaryColor,
     backgroundColor,
@@ -290,9 +295,13 @@ var ConversionFunnelChartInternal = ({
   });
   const prefersReducedMotion = usePrefersReducedMotion();
   if (!isDataValid) {
-    return /* @__PURE__ */ _jsx("div", {
+    return /* @__PURE__ */ _jsx(Stack, {
+      direction: "column",
       className: clsx(conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
-      style,
+      style: {
+        ...style,
+        height: resolvedHeight
+      },
       children: /* @__PURE__ */ _jsx("div", {
         className: conversion_funnel_chart_module_default["empty-state"],
         children: loading ? "Loading..." : "No data available"
@@ -301,13 +310,17 @@ var ConversionFunnelChartInternal = ({
   }
   const maxRate = Math.max(...steps.map((step) => step.rate));
   return /* @__PURE__ */ _jsxs(_Fragment, {
-    children: [/* @__PURE__ */ _jsxs("div", {
+    children: [/* @__PURE__ */ _jsxs(Stack, {
+      direction: "column",
       ref: (node) => {
         portalContainerRef(node);
         chartRef.current = node;
       },
       className: clsx(conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
-      style,
+      style: {
+        ...style,
+        height: resolvedHeight
+      },
       children: [renderMainMetric ? renderMainMetric({
         mainRate,
         changeIndicator,
@@ -405,4 +418,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 export {
   ConversionFunnelChartWithProvider
 };
-//# sourceMappingURL=chunk-3N35LNHN.js.map
+//# sourceMappingURL=chunk-EBDUXL5K.js.map

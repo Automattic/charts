@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
+
+
 
 
 
@@ -105,6 +108,7 @@ var ConversionFunnelChartInternal = ({
   animation,
   className,
   chartId: providedChartId,
+  height,
   style,
   renderStepLabel,
   renderStepRate,
@@ -237,6 +241,7 @@ var ConversionFunnelChartInternal = ({
       document.removeEventListener("mousedown", handleDocumentClick);
     };
   }, [clearSelectionAndRef]);
+  const resolvedHeight = _nullishCoalesce(_nullishCoalesce(height, () => ( _optionalChain([style, 'optionalAccess', _5 => _5.height]))), () => ( "100%"));
   const {
     primaryColor,
     backgroundColor,
@@ -251,7 +256,7 @@ var ConversionFunnelChartInternal = ({
   }) : {
     color: primaryColor || "#000000"
   };
-  const isPositiveChange = _optionalChain([changeIndicator, 'optionalAccess', _5 => _5.startsWith, 'call', _6 => _6("+")]);
+  const isPositiveChange = _optionalChain([changeIndicator, 'optionalAccess', _6 => _6.startsWith, 'call', _7 => _7("+")]);
   const changeColor = isPositiveChange ? positiveChangeColor : negativeChangeColor;
   const barBackgroundColor = backgroundColor || _chunkZVGEDXDPcjs.hexToRgba.call(void 0, barColor, 0.08) || "rgba(0, 0, 0, 0.08)";
   const renderDefaultMainMetric = () => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
@@ -279,8 +284,8 @@ var ConversionFunnelChartInternal = ({
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     mainRate,
     changeIndicator,
-    stepsCount: _optionalChain([steps, 'optionalAccess', _7 => _7.length]) || 0
-  }), [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _8 => _8.length])]);
+    stepsCount: _optionalChain([steps, 'optionalAccess', _8 => _8.length]) || 0
+  }), [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _9 => _9.length])]);
   _chunkLSV7F26Bcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems: [],
@@ -290,9 +295,13 @@ var ConversionFunnelChartInternal = ({
   });
   const prefersReducedMotion = _chunkLSV7F26Bcjs.usePrefersReducedMotion.call(void 0, );
   if (!isDataValid) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkSH32YSZOcjs.Stack, {
+      direction: "column",
       className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
-      style,
+      style: {
+        ...style,
+        height: resolvedHeight
+      },
       children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
         className: conversion_funnel_chart_module_default["empty-state"],
         children: loading ? "Loading..." : "No data available"
@@ -301,13 +310,17 @@ var ConversionFunnelChartInternal = ({
   }
   const maxRate = Math.max(...steps.map((step) => step.rate));
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
-    children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+    children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkSH32YSZOcjs.Stack, {
+      direction: "column",
       ref: (node) => {
         portalContainerRef(node);
         chartRef.current = node;
       },
       className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
-      style,
+      style: {
+        ...style,
+        height: resolvedHeight
+      },
       children: [renderMainMetric ? renderMainMetric({
         mainRate,
         changeIndicator,
@@ -344,8 +357,8 @@ var ConversionFunnelChartInternal = ({
               })]
             }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
               className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["bar-container"], isBlurred && conversion_funnel_chart_module_default.disabled),
-              onClick: _optionalChain([stepHandlers, 'access', _9 => _9.get, 'call', _10 => _10(step.id), 'optionalAccess', _11 => _11.onClick]),
-              onKeyDown: _optionalChain([stepHandlers, 'access', _12 => _12.get, 'call', _13 => _13(step.id), 'optionalAccess', _14 => _14.onKeyDown]),
+              onClick: _optionalChain([stepHandlers, 'access', _10 => _10.get, 'call', _11 => _11(step.id), 'optionalAccess', _12 => _12.onClick]),
+              onKeyDown: _optionalChain([stepHandlers, 'access', _13 => _13.get, 'call', _14 => _14(step.id), 'optionalAccess', _15 => _15.onKeyDown]),
               role: "button",
               tabIndex: isBlurred ? -1 : 0,
               "aria-label": step.label,
@@ -405,4 +418,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 
 exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
-//# sourceMappingURL=chunk-IQ3JDTAE.cjs.map
+//# sourceMappingURL=chunk-KMYJJTSR.cjs.map

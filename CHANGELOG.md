@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Build: strip data-testid attributes from production builds to reduce bundle size and keep the DOM cleaner.
 
 ### Fixed
+- ConversionFunnelChart: Default to filling the parent container height and add a height prop for explicit sizing.
 - Relocate visx tooltip portals from document.body into the chart container to fix z-index stacking issues with sticky headers and other positioned elements.
 
 ## [0.56.3] - 2026-02-18

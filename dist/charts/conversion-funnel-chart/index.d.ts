@@ -71,6 +71,8 @@ interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 
     steps: FunnelStep[];
     /** Whether the chart is in loading state */
     loading?: boolean;
+    /** Height of the chart container. Accepts a number (pixels) or CSS string (e.g., "400px", "100%"). Falls back to style.height if set, otherwise defaults to "100%". */
+    height?: string | number;
     /** Custom styling */
     style?: React.CSSProperties;
     /** Custom render function for step labels */
