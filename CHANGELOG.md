@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Build: strip data-testid attributes from production builds to reduce bundle size and keep the DOM cleaner.
 
+### Fixed
+- Relocate visx tooltip portals from document.body into the chart container to fix z-index stacking issues with sticky headers and other positioned elements.
+
 ## [0.56.3] - 2026-02-18
 ### Changed
 - Set `.repository.url` in `package.json` to the mirror repo rather than the monorepo. [#47149]

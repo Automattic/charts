@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from 'react';
+import { MouseEvent, ReactNode, RefObject } from 'react';
 import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-BCFQlzTM.js';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
@@ -236,4 +236,30 @@ declare const useInteractiveLegendData: <T extends DataPointWithPercentage>({ da
  */
 declare function usePrefersReducedMotion(): boolean;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useXYChartTheme, useZeroValueDisplay };
+/**
+ * Relocates visx chart tooltip portals from `document.body` into a target
+ * container element. This allows the tooltips to participate in the same CSS
+ * stacking context as other elements in the container (e.g. a sticky header),
+ * so z-index ordering works correctly between them.
+ *
+ * The relocated portal divs use `position: fixed` at the viewport origin to
+ * preserve the tooltip coordinate system (visx calculates positions relative
+ * to the viewport).
+ *
+ * Because the visx Portal class calls `document.body.removeChild(node)` during
+ * unmount, we patch `document.body.removeChild` to gracefully handle nodes that
+ * were moved out of body. Without this, React throws a "not a child of this
+ * node" error when tooltips unmount.
+ *
+ * **Important:** The container and its ancestors must not have CSS `transform`,
+ * `perspective`, or `filter` properties set, as these create a new containing
+ * block for `position: fixed` children, breaking viewport-relative positioning.
+ *
+ * @param containerRef - Ref to the element that portals should be relocated into.
+ *                     The element referenced here, or one of its ancestors,
+ *                     should establish the desired stacking context (for example
+ *                     by using position and z-index).
+ */
+declare function useTooltipPortalRelocator(containerRef: RefObject<HTMLElement | null> | undefined): void;
+
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementHeight, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay };
