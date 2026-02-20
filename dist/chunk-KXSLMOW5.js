@@ -1,4 +1,8 @@
 import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
+import {
   Stack
 } from "./chunk-MEIVKY4K.js";
 import {
@@ -21,15 +25,11 @@ import {
   usePrefersReducedMotion,
   useXYChartTheme,
   useZeroValueDisplay
-} from "./chunk-AWNCAKZY.js";
+} from "./chunk-32ESS4MV.js";
 import {
   attachSubComponents,
   isSafari
 } from "./chunk-TE63Y5PX.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-BPYKWMI7.js";
 
 // src/charts/bar-chart/bar-chart.tsx
 import { formatNumber } from "@automattic/number-formatters";
@@ -608,4 +608,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-FMEAFBEE.js.map
+//# sourceMappingURL=chunk-KXSLMOW5.js.map

@@ -584,11 +584,38 @@ var useChartDataTransform = (data) => {
 // src/hooks/use-chart-margin.tsx
 var _scale = require('@visx/scale');
 
+var DEFAULT_MARGIN_TOP = 10;
+var DEFAULT_MARGIN_RIGHT = 20;
+var DEFAULT_MARGIN_BOTTOM = 20;
+var DEFAULT_MARGIN_LEFT = 20;
+var DEFAULT_BOTTOM_FOR_TOP_AXIS = 10;
+var DEFAULT_FONT_SIZE = 12;
+var DEFAULT_TICK_LENGTH = 8;
+var DEFAULT_Y_TICK_WIDTH = 40;
+var resolveFontSize = (val) => {
+  if (typeof val === "number" && !isNaN(val)) {
+    return val;
+  }
+  if (typeof val === "string") {
+    const parsed = parseFloat(val);
+    return isNaN(parsed) ? void 0 : parsed;
+  }
+  return void 0;
+};
+var getXAxisLabelMetrics = (theme, orientation) => {
+  const xAxisStyles = orientation === "top" ? _optionalChain([theme, 'access', _18 => _18.axisStyles, 'optionalAccess', _19 => _19.x, 'optionalAccess', _20 => _20.top]) : _optionalChain([theme, 'access', _21 => _21.axisStyles, 'optionalAccess', _22 => _22.x, 'optionalAccess', _23 => _23.bottom]);
+  const fontSize = resolveFontSize(_optionalChain([xAxisStyles, 'optionalAccess', _24 => _24.axisLabel, 'optionalAccess', _25 => _25.fontSize])) || resolveFontSize(_optionalChain([theme, 'access', _26 => _26.svgLabelSmall, 'optionalAccess', _27 => _27.fontSize])) || DEFAULT_FONT_SIZE;
+  const tickLength = _nullishCoalesce(_optionalChain([xAxisStyles, 'optionalAccess', _28 => _28.tickLength]), () => ( DEFAULT_TICK_LENGTH));
+  return {
+    fontSize,
+    tickLength
+  };
+};
 var useChartMargin = (height, options, data, theme, horizontal = false) => {
   const yTicks = _react.useMemo.call(void 0, () => {
     const allDataPoints = data.flatMap((series) => series.data);
     if (horizontal) {
-      return allDataPoints.map((d) => d.label || _optionalChain([options, 'access', _18 => _18.axis, 'optionalAccess', _19 => _19.y, 'optionalAccess', _20 => _20.tickFormat, 'call', _21 => _21(d.date.getTime(), 0, [])]));
+      return allDataPoints.map((d) => d.label || _optionalChain([options, 'access', _29 => _29.axis, 'optionalAccess', _30 => _30.y, 'optionalAccess', _31 => _31.tickFormat, 'call', _32 => _32(d.date.getTime(), 0, [])]));
     }
     const minY = Math.min(...allDataPoints.map((d) => d.value));
     const maxY = Math.max(...allDataPoints.map((d) => d.value));
@@ -597,28 +624,35 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
       domain: [minY, maxY],
       range: [height, 0]
     });
-    return _scale.getTicks.call(void 0, yScale, _optionalChain([options, 'access', _22 => _22.axis, 'optionalAccess', _23 => _23.y, 'optionalAccess', _24 => _24.numTicks]));
+    return _scale.getTicks.call(void 0, yScale, _optionalChain([options, 'access', _33 => _33.axis, 'optionalAccess', _34 => _34.y, 'optionalAccess', _35 => _35.numTicks]));
   }, [options, data, height, horizontal]);
   return _react.useMemo.call(void 0, () => {
     const defaultMargin = {
-      top: 10,
-      right: 20,
-      bottom: 20,
-      left: 20
+      top: DEFAULT_MARGIN_TOP,
+      right: DEFAULT_MARGIN_RIGHT,
+      bottom: DEFAULT_MARGIN_BOTTOM,
+      left: DEFAULT_MARGIN_LEFT
     };
-    const defaultTickWidth = 40;
-    const yAxisOrientation = _optionalChain([options, 'access', _25 => _25.axis, 'optionalAccess', _26 => _26.y, 'optionalAccess', _27 => _27.orientation]);
+    const yAxisOrientation = _optionalChain([options, 'access', _36 => _36.axis, 'optionalAccess', _37 => _37.y, 'optionalAccess', _38 => _38.orientation]);
     const yAxisStyles = yAxisOrientation === "right" ? theme.axisStyles.y.right : theme.axisStyles.y.left;
-    const yTickWidth = _chunkZVGEDXDPcjs.getLongestTickWidth.call(void 0, yTicks, _optionalChain([options, 'access', _28 => _28.axis, 'optionalAccess', _29 => _29.y, 'optionalAccess', _30 => _30.tickFormat]), yAxisStyles.axisLabel);
-    const yMarginValue = (_nullishCoalesce(yTickWidth, () => ( defaultTickWidth))) + (_nullishCoalesce(_optionalChain([yAxisStyles, 'optionalAccess', _31 => _31.tickLength]), () => ( 0)));
+    const yTickWidth = _chunkZVGEDXDPcjs.getLongestTickWidth.call(void 0, yTicks, _optionalChain([options, 'access', _39 => _39.axis, 'optionalAccess', _40 => _40.y, 'optionalAccess', _41 => _41.tickFormat]), yAxisStyles.axisLabel);
+    const yMarginValue = (_nullishCoalesce(yTickWidth, () => ( DEFAULT_Y_TICK_WIDTH))) + (_nullishCoalesce(_optionalChain([yAxisStyles, 'optionalAccess', _42 => _42.tickLength]), () => ( 0)));
     if (yAxisOrientation === "right") {
       defaultMargin.right = yMarginValue;
     } else {
       defaultMargin.left = yMarginValue;
     }
-    if (_optionalChain([options, 'access', _32 => _32.axis, 'optionalAccess', _33 => _33.x, 'optionalAccess', _34 => _34.orientation]) === "top") {
-      defaultMargin.top = 20;
-      defaultMargin.bottom = 10;
+    const xOrientation = _optionalChain([options, 'access', _43 => _43.axis, 'optionalAccess', _44 => _44.x, 'optionalAccess', _45 => _45.orientation]) === "top" ? "top" : "bottom";
+    const {
+      fontSize,
+      tickLength
+    } = getXAxisLabelMetrics(theme, xOrientation);
+    const computedXMargin = fontSize + tickLength;
+    if (xOrientation === "top") {
+      defaultMargin.top = Math.max(defaultMargin.top, computedXMargin);
+      defaultMargin.bottom = DEFAULT_BOTTOM_FOR_TOP_AXIS;
+    } else {
+      defaultMargin.bottom = Math.max(defaultMargin.bottom, computedXMargin);
     }
     return defaultMargin;
   }, [options, theme, yTicks]);
@@ -783,7 +817,7 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const domain = legendScale.domain();
   const getShapeStyle = _react.useCallback.call(void 0, ({
     index
-  }) => _optionalChain([items, 'access', _35 => _35[index], 'optionalAccess', _36 => _36.shapeStyle]), [items]);
+  }) => _optionalChain([items, 'access', _46 => _46[index], 'optionalAccess', _47 => _47.shapeStyle]), [items]);
   const handleLegendClick = _react.useCallback.call(void 0, (seriesLabel) => {
     if (interactive && chartId && context) {
       context.toggleSeriesVisibility(chartId, seriesLabel);
@@ -839,18 +873,18 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           "aria-pressed": interactive ? visible : void 0,
           "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
           ...legendItemProps,
-          children: [_optionalChain([items, 'access', _37 => _37[i], 'optionalAccess', _38 => _38.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
-            width: _optionalChain([items, 'access', _39 => _39[i], 'optionalAccess', _40 => _40.glyphSize]) * 2,
-            height: _optionalChain([items, 'access', _41 => _41[i], 'optionalAccess', _42 => _42.glyphSize]) * 2,
+          children: [_optionalChain([items, 'access', _48 => _48[i], 'optionalAccess', _49 => _49.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
+            width: _optionalChain([items, 'access', _50 => _50[i], 'optionalAccess', _51 => _51.glyphSize]) * 2,
+            height: _optionalChain([items, 'access', _52 => _52[i], 'optionalAccess', _53 => _53.glyphSize]) * 2,
             children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, {
-              children: _optionalChain([items, 'access', _43 => _43[i], 'optionalAccess', _44 => _44.renderGlyph, 'call', _45 => _45({
+              children: _optionalChain([items, 'access', _54 => _54[i], 'optionalAccess', _55 => _55.renderGlyph, 'call', _56 => _56({
                 key: `legend-glyph-${label.text}`,
                 datum: {},
                 index: i,
                 color: fill(label),
-                size: _optionalChain([items, 'access', _46 => _46[i], 'optionalAccess', _47 => _47.glyphSize]),
-                x: _optionalChain([items, 'access', _48 => _48[i], 'optionalAccess', _49 => _49.glyphSize]),
-                y: _optionalChain([items, 'access', _50 => _50[i], 'optionalAccess', _51 => _51.glyphSize])
+                size: _optionalChain([items, 'access', _57 => _57[i], 'optionalAccess', _58 => _58.glyphSize]),
+                x: _optionalChain([items, 'access', _59 => _59[i], 'optionalAccess', _60 => _60.glyphSize]),
+                y: _optionalChain([items, 'access', _61 => _61[i], 'optionalAccess', _62 => _62.glyphSize])
               })])
             })
           }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendShape, {
@@ -877,9 +911,9 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
               text: label.text,
               textOverflow,
               maxWidth
-            }), _optionalChain([items, 'access', _52 => _52.find, 'call', _53 => _53((item) => item.label === label.text), 'optionalAccess', _54 => _54.value]) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
+            }), _optionalChain([items, 'access', _63 => _63.find, 'call', _64 => _64((item) => item.label === label.text), 'optionalAccess', _65 => _65.value]) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
               className: base_legend_module_default["legend-item-value"],
-              children: ["\xA0", _optionalChain([items, 'access', _55 => _55.find, 'call', _56 => _56((item) => item.label === label.text), 'optionalAccess', _57 => _57.value])]
+              children: ["\xA0", _optionalChain([items, 'access', _66 => _66.find, 'call', _67 => _67((item) => item.label === label.text), 'optionalAccess', _68 => _68.value])]
             })]
           })]
         }, `legend-${label.text}-${i}`);
@@ -897,9 +931,9 @@ var Legend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
 }, ref) => {
   const context = _react.useContext.call(void 0, GlobalChartsContext);
   const singleChartContext = _react.useContext.call(void 0, SingleChartContext);
-  const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _58 => _58.chartId])));
+  const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _69 => _69.chartId])));
   const contextItems = _react.useMemo.call(void 0, () => {
-    return contextChartId && context ? _optionalChain([context, 'access', _59 => _59.getChartData, 'call', _60 => _60(contextChartId), 'optionalAccess', _61 => _61.legendItems]) : void 0;
+    return contextChartId && context ? _optionalChain([context, 'access', _70 => _70.getChartData, 'call', _71 => _71(contextChartId), 'optionalAccess', _72 => _72.legendItems]) : void 0;
   }, [contextChartId, context]);
   const legendItems = items || contextItems;
   if (!legendItems) {
@@ -960,7 +994,7 @@ function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, 
     });
     const baseItem = {
       label: series.label,
-      value: showValues ? _optionalChain([series, 'access', _62 => _62.data, 'optionalAccess', _63 => _63.length, 'optionalAccess', _64 => _64.toString, 'call', _65 => _65()]) || "0" : "",
+      value: showValues ? _optionalChain([series, 'access', _73 => _73.data, 'optionalAccess', _74 => _74.length, 'optionalAccess', _75 => _75.toString, 'call', _76 => _76()]) || "0" : "",
       color,
       shapeStyle: shapeStyles
     };
@@ -1195,4 +1229,4 @@ function usePrefersReducedMotion() {
 
 
 exports.SingleChartContext = SingleChartContext; exports.useSingleChartContext = useSingleChartContext; exports.useTooltipPortalRelocator = useTooltipPortalRelocator; exports.defaultTheme = defaultTheme; exports.GlobalChartsContext = GlobalChartsContext; exports.GlobalChartsProvider = GlobalChartsProvider; exports.useGlobalChartsContext = useGlobalChartsContext; exports.useChartId = useChartId; exports.useDeepMemo = useDeepMemo; exports.useChartMouseHandler = useChartMouseHandler; exports.useXYChartTheme = useXYChartTheme; exports.useChartDataTransform = useChartDataTransform; exports.useChartMargin = useChartMargin; exports.useElementHeight = useElementHeight; exports.useHasLegendChild = useHasLegendChild; exports.useTextTruncation = useTextTruncation; exports.useZeroValueDisplay = useZeroValueDisplay; exports.useInteractiveLegendData = useInteractiveLegendData; exports.usePrefersReducedMotion = usePrefersReducedMotion; exports.useChartRegistration = useChartRegistration; exports.useGlobalChartsTheme = useGlobalChartsTheme; exports.Legend = Legend; exports.useChartLegendItems = useChartLegendItems;
-//# sourceMappingURL=chunk-LSV7F26B.cjs.map
+//# sourceMappingURL=chunk-EJJO2QNB.cjs.map

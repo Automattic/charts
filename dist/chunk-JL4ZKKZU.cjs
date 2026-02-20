@@ -11,6 +11,9 @@ var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
 var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
 
 
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
+
+
 var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
@@ -25,13 +28,10 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkLSV7F26Bcjs = require('./chunk-LSV7F26B.cjs');
+var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 // src/charts/pie-chart/pie-chart.tsx
 var _group = require('@visx/group');
@@ -112,9 +112,9 @@ var PieChartInternal = ({
   tooltipOffsetY = -15,
   renderTooltip = renderDefaultPieTooltip
 }) => {
-  const providerTheme = _chunkLSV7F26Bcjs.useGlobalChartsTheme.call(void 0, );
-  const chartId = _chunkLSV7F26Bcjs.useChartId.call(void 0, providedChartId);
-  const [legendRef, legendHeight] = _chunkLSV7F26Bcjs.useElementHeight.call(void 0, );
+  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
+  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
+  const [legendRef, legendHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
   const {
     tooltipOpen,
     tooltipLeft,
@@ -141,12 +141,12 @@ var PieChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkLSV7F26Bcjs.useGlobalChartsContext.call(void 0, );
+  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
   const {
     visibleData,
     allSegmentsHidden,
     legendData
-  } = _chunkLSV7F26Bcjs.useInteractiveLegendData.call(void 0, {
+  } = _chunkEJJO2QNBcjs.useInteractiveLegendData.call(void 0, {
     data,
     chartId,
     legendInteractive,
@@ -156,7 +156,7 @@ var PieChartInternal = ({
     showValues: true,
     legendValueDisplay
   }), [legendValueDisplay]);
-  const legendItems = _chunkLSV7F26Bcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
+  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
   const {
     isValid,
     message
@@ -171,14 +171,14 @@ var PieChartInternal = ({
     gapScale,
     cornerScale
   }), [thickness, gapScale, cornerScale]);
-  _chunkLSV7F26Bcjs.useChartRegistration.call(void 0, {
+  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "pie",
     isDataValid: isValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkLSV7F26Bcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
   if (!isValid) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: _clsx2.default.call(void 0, "pie-chart", pie_chart_module_default["pie-chart"], className),
@@ -215,7 +215,7 @@ var PieChartInternal = ({
       }).color;
     }
   };
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: width,
@@ -318,7 +318,7 @@ var PieChartInternal = ({
             }
           }), !allSegmentsHidden && svgChildren]
         })]
-      }), showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.Legend, {
+      }), showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
         orientation: legendOrientation,
         position: legendPosition,
         alignment: legendAlignment,
@@ -344,13 +344,13 @@ var PieChartInternal = ({
   });
 };
 var PieChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieChartInternal, {
       ...props
     })
@@ -358,12 +358,12 @@ var PieChartWithProvider = (props) => {
 };
 PieChartWithProvider.displayName = "PieChart";
 var PieChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, PieChartWithProvider, {
-  Legend: _chunkLSV7F26Bcjs.Legend,
+  Legend: _chunkEJJO2QNBcjs.Legend,
   SVG: _chunkRCY6XLGUcjs.ChartSVG,
   HTML: _chunkRCY6XLGUcjs.ChartHTML
 });
 var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, PieChartWithProvider), {
-  Legend: _chunkLSV7F26Bcjs.Legend,
+  Legend: _chunkEJJO2QNBcjs.Legend,
   SVG: _chunkRCY6XLGUcjs.ChartSVG,
   HTML: _chunkRCY6XLGUcjs.ChartHTML
 });
@@ -372,4 +372,4 @@ var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-PAOT5JE2.cjs.map
+//# sourceMappingURL=chunk-JL4ZKKZU.cjs.map

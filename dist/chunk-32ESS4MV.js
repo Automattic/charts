@@ -584,6 +584,33 @@ var useChartDataTransform = (data) => {
 // src/hooks/use-chart-margin.tsx
 import { createScale, getTicks } from "@visx/scale";
 import { useMemo as useMemo5 } from "react";
+var DEFAULT_MARGIN_TOP = 10;
+var DEFAULT_MARGIN_RIGHT = 20;
+var DEFAULT_MARGIN_BOTTOM = 20;
+var DEFAULT_MARGIN_LEFT = 20;
+var DEFAULT_BOTTOM_FOR_TOP_AXIS = 10;
+var DEFAULT_FONT_SIZE = 12;
+var DEFAULT_TICK_LENGTH = 8;
+var DEFAULT_Y_TICK_WIDTH = 40;
+var resolveFontSize = (val) => {
+  if (typeof val === "number" && !isNaN(val)) {
+    return val;
+  }
+  if (typeof val === "string") {
+    const parsed = parseFloat(val);
+    return isNaN(parsed) ? void 0 : parsed;
+  }
+  return void 0;
+};
+var getXAxisLabelMetrics = (theme, orientation) => {
+  const xAxisStyles = orientation === "top" ? theme.axisStyles?.x?.top : theme.axisStyles?.x?.bottom;
+  const fontSize = resolveFontSize(xAxisStyles?.axisLabel?.fontSize) || resolveFontSize(theme.svgLabelSmall?.fontSize) || DEFAULT_FONT_SIZE;
+  const tickLength = xAxisStyles?.tickLength ?? DEFAULT_TICK_LENGTH;
+  return {
+    fontSize,
+    tickLength
+  };
+};
 var useChartMargin = (height, options, data, theme, horizontal = false) => {
   const yTicks = useMemo5(() => {
     const allDataPoints = data.flatMap((series) => series.data);
@@ -601,24 +628,31 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
   }, [options, data, height, horizontal]);
   return useMemo5(() => {
     const defaultMargin = {
-      top: 10,
-      right: 20,
-      bottom: 20,
-      left: 20
+      top: DEFAULT_MARGIN_TOP,
+      right: DEFAULT_MARGIN_RIGHT,
+      bottom: DEFAULT_MARGIN_BOTTOM,
+      left: DEFAULT_MARGIN_LEFT
     };
-    const defaultTickWidth = 40;
     const yAxisOrientation = options.axis?.y?.orientation;
     const yAxisStyles = yAxisOrientation === "right" ? theme.axisStyles.y.right : theme.axisStyles.y.left;
     const yTickWidth = getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, yAxisStyles.axisLabel);
-    const yMarginValue = (yTickWidth ?? defaultTickWidth) + (yAxisStyles?.tickLength ?? 0);
+    const yMarginValue = (yTickWidth ?? DEFAULT_Y_TICK_WIDTH) + (yAxisStyles?.tickLength ?? 0);
     if (yAxisOrientation === "right") {
       defaultMargin.right = yMarginValue;
     } else {
       defaultMargin.left = yMarginValue;
     }
-    if (options.axis?.x?.orientation === "top") {
-      defaultMargin.top = 20;
-      defaultMargin.bottom = 10;
+    const xOrientation = options.axis?.x?.orientation === "top" ? "top" : "bottom";
+    const {
+      fontSize,
+      tickLength
+    } = getXAxisLabelMetrics(theme, xOrientation);
+    const computedXMargin = fontSize + tickLength;
+    if (xOrientation === "top") {
+      defaultMargin.top = Math.max(defaultMargin.top, computedXMargin);
+      defaultMargin.bottom = DEFAULT_BOTTOM_FOR_TOP_AXIS;
+    } else {
+      defaultMargin.bottom = Math.max(defaultMargin.bottom, computedXMargin);
     }
     return defaultMargin;
   }, [options, theme, yTicks]);
@@ -1195,4 +1229,4 @@ export {
   Legend,
   useChartLegendItems
 };
-//# sourceMappingURL=chunk-AWNCAKZY.js.map
+//# sourceMappingURL=chunk-32ESS4MV.js.map

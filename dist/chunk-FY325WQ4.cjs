@@ -1,5 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
+
+
 var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 
 
@@ -21,15 +25,11 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkLSV7F26Bcjs = require('./chunk-LSV7F26B.cjs');
+var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
 
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 // src/charts/line-chart/line-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -182,7 +182,7 @@ var LineChartAnnotationsOverlay = ({
     chartRef,
     chartWidth,
     chartHeight
-  } = _chunkLSV7F26Bcjs.useSingleChartContext.call(void 0, );
+  } = _chunkEJJO2QNBcjs.useSingleChartContext.call(void 0, );
   const [scales, setScales] = _react.useState.call(void 0, null);
   const [scalesStable, setScalesStable] = _react.useState.call(void 0, false);
   const createScaleSignature = _react.useCallback.call(void 0, (scaleData) => {
@@ -361,7 +361,7 @@ var LineChartAnnotation = ({
   renderLabel,
   renderLabelPopover
 }) => {
-  const providerTheme = _chunkLSV7F26Bcjs.useGlobalChartsTheme.call(void 0, );
+  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
   const {
     xScale,
     yScale
@@ -734,15 +734,15 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   gridVisibility,
   gap = "md"
 }, ref) => {
-  const providerTheme = _chunkLSV7F26Bcjs.useGlobalChartsTheme.call(void 0, );
-  const theme = _chunkLSV7F26Bcjs.useXYChartTheme.call(void 0, data);
-  const chartId = _chunkLSV7F26Bcjs.useChartId.call(void 0, providedChartId);
-  const [svgWrapperRef, svgWrapperHeight] = _chunkLSV7F26Bcjs.useElementHeight.call(void 0, );
+  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
+  const theme = _chunkEJJO2QNBcjs.useXYChartTheme.call(void 0, data);
+  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
+  const [svgWrapperRef, svgWrapperHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
   const internalChartRef = _react.useRef.call(void 0, null);
-  const hasLegendChild = _chunkLSV7F26Bcjs.useHasLegendChild.call(void 0, children);
+  const hasLegendChild = _chunkEJJO2QNBcjs.useHasLegendChild.call(void 0, children);
   const chartHeight = svgWrapperHeight > 0 ? svgWrapperHeight : height;
   const hasLegend = showLegend || hasLegendChild;
   const isWaitingForMeasurement = hasLegend ? svgWrapperHeight === 0 : !chartHeight;
@@ -754,11 +754,11 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       margin: {}
     }
   }), [internalChartRef]);
-  const dataSorted = _chunkLSV7F26Bcjs.useChartDataTransform.call(void 0, data);
+  const dataSorted = _chunkEJJO2QNBcjs.useChartDataTransform.call(void 0, data);
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkLSV7F26Bcjs.useGlobalChartsContext.call(void 0, );
+  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
   const seriesWithVisibility = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive) {
       return dataSorted.map((series, index) => ({
@@ -840,7 +840,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       return themeGlyph ? themeGlyph(propsWithResolvedColor) : renderGlyph(propsWithResolvedColor);
     };
   }, [dataSorted, renderGlyph, getElementStyles]);
-  const defaultMargin = _chunkLSV7F26Bcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme);
+  const defaultMargin = _chunkEJJO2QNBcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme);
   const error = validateData(dataSorted);
   const isDataValid = !error;
   const legendOptions = _react.useMemo.call(void 0, () => ({
@@ -848,7 +848,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _66 => _66.radius])), () => ( 4))),
     renderGlyph
   }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _67 => _67.radius]), renderGlyph]);
-  const legendItems = _chunkLSV7F26Bcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
+  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     withGradientFill,
     smoothing,
@@ -857,14 +857,14 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     withEndGlyphs,
     withLegendGlyph
   }), [withGradientFill, smoothing, curveType, withStartGlyphs, withEndGlyphs, withLegendGlyph]);
-  _chunkLSV7F26Bcjs.useChartRegistration.call(void 0, {
+  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "line",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkLSV7F26Bcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
   const accessors = {
     xAccessor: (d) => _optionalChain([d, 'optionalAccess', _68 => _68.date]),
     yAccessor: (d) => _optionalChain([d, 'optionalAccess', _69 => _69.value])
@@ -875,7 +875,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       children: error
     });
   }
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
     orientation: legendOrientation,
     alignment: legendAlignment,
     position: legendPosition,
@@ -887,7 +887,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartRef: internalChartRef,
@@ -1032,14 +1032,14 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   });
 });
 var LineChartWithProvider = /* @__PURE__ */ _react.forwardRef.call(void 0, (props, ref) => {
-  const existingContext = _react.useContext.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
       ...props,
       ref
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
       ...props,
       ref
@@ -1048,12 +1048,12 @@ var LineChartWithProvider = /* @__PURE__ */ _react.forwardRef.call(void 0, (prop
 });
 LineChartWithProvider.displayName = "LineChart";
 var LineChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, LineChartWithProvider, {
-  Legend: _chunkLSV7F26Bcjs.Legend,
+  Legend: _chunkEJJO2QNBcjs.Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
 var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, LineChartWithProvider), {
-  Legend: _chunkLSV7F26Bcjs.Legend,
+  Legend: _chunkEJJO2QNBcjs.Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
@@ -1062,4 +1062,4 @@ var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _ch
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-E57XKXUW.cjs.map
+//# sourceMappingURL=chunk-FY325WQ4.cjs.map

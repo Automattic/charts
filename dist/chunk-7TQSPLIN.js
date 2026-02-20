@@ -7,6 +7,9 @@ import {
   useChartChildren
 } from "./chunk-6CCZL2JJ.js";
 import {
+  BaseTooltip
+} from "./chunk-BPYKWMI7.js";
+import {
   withResponsive
 } from "./chunk-TYIH5LMV.js";
 import {
@@ -21,13 +24,10 @@ import {
   useGlobalChartsContext,
   useInteractiveLegendData,
   usePrefersReducedMotion
-} from "./chunk-AWNCAKZY.js";
+} from "./chunk-32ESS4MV.js";
 import {
   attachSubComponents
 } from "./chunk-TE63Y5PX.js";
-import {
-  BaseTooltip
-} from "./chunk-BPYKWMI7.js";
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 import { Group } from "@visx/group";
@@ -348,4 +348,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-ONQQU4GL.js.map
+//# sourceMappingURL=chunk-7TQSPLIN.js.map

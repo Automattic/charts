@@ -1,5 +1,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
+
+
 var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 
 
@@ -21,15 +25,11 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkLSV7F26Bcjs = require('./chunk-LSV7F26B.cjs');
+var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
 
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 // src/charts/bar-chart/bar-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -293,18 +293,18 @@ var BarChartInternal = ({
   gap = "md"
 }) => {
   const horizontal = orientation === "horizontal";
-  const chartId = _chunkLSV7F26Bcjs.useChartId.call(void 0, providedChartId);
-  const theme = _chunkLSV7F26Bcjs.useXYChartTheme.call(void 0, data);
-  const dataSorted = _chunkLSV7F26Bcjs.useChartDataTransform.call(void 0, data);
-  const dataWithVisibleZeros = _chunkLSV7F26Bcjs.useZeroValueDisplay.call(void 0, dataSorted, {
+  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
+  const theme = _chunkEJJO2QNBcjs.useXYChartTheme.call(void 0, data);
+  const dataSorted = _chunkEJJO2QNBcjs.useChartDataTransform.call(void 0, data);
+  const dataWithVisibleZeros = _chunkEJJO2QNBcjs.useZeroValueDisplay.call(void 0, dataSorted, {
     enabled: showZeroValues
   });
-  const legendItems = _chunkLSV7F26Bcjs.useChartLegendItems.call(void 0, dataSorted);
+  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, dataSorted);
   const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
-  const defaultMargin = _chunkLSV7F26Bcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
-  const [svgWrapperRef, svgWrapperHeight] = _chunkLSV7F26Bcjs.useElementHeight.call(void 0, );
+  const defaultMargin = _chunkEJJO2QNBcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
+  const [svgWrapperRef, svgWrapperHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
-  const hasLegendChild = _chunkLSV7F26Bcjs.useHasLegendChild.call(void 0, children);
+  const hasLegendChild = _chunkEJJO2QNBcjs.useHasLegendChild.call(void 0, children);
   const chartHeight = svgWrapperHeight > 0 ? svgWrapperHeight : height;
   const hasLegend = showLegend || hasLegendChild;
   const isWaitingForMeasurement = hasLegend ? svgWrapperHeight === 0 : !chartHeight;
@@ -327,8 +327,8 @@ var BarChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkLSV7F26Bcjs.useGlobalChartsContext.call(void 0, );
-  const providerTheme = _chunkLSV7F26Bcjs.useGlobalChartsTheme.call(void 0, );
+  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
+  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
   const seriesWithVisibility = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
@@ -449,14 +449,14 @@ var BarChartInternal = ({
     orientation,
     withPatterns
   }), [orientation, withPatterns]);
-  _chunkLSV7F26Bcjs.useChartRegistration.call(void 0, {
+  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "bar",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkLSV7F26Bcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
   if (error) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"]),
@@ -465,7 +465,7 @@ var BarChartInternal = ({
   }
   const gridVisibility = _nullishCoalesce(gridVisibilityProp, () => ( chartOptions.gridVisibility));
   const highlightedBarStyle = createKeyboardHighlightStyle();
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
     orientation: legendOrientation,
     position: legendPosition,
     alignment: legendAlignment,
@@ -477,7 +477,7 @@ var BarChartInternal = ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: width,
@@ -584,13 +584,13 @@ var BarChartInternal = ({
   });
 };
 var BarChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLSV7F26Bcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, {
       ...props
     })
@@ -598,14 +598,14 @@ var BarChartWithProvider = (props) => {
 };
 BarChartWithProvider.displayName = "BarChart";
 var BarChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, BarChartWithProvider, {
-  Legend: _chunkLSV7F26Bcjs.Legend
+  Legend: _chunkEJJO2QNBcjs.Legend
 });
 var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, BarChartWithProvider), {
-  Legend: _chunkLSV7F26Bcjs.Legend
+  Legend: _chunkEJJO2QNBcjs.Legend
 });
 
 
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-H4YE7KZB.cjs.map
+//# sourceMappingURL=chunk-IHESL7H5.cjs.map
