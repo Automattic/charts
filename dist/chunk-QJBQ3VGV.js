@@ -1,8 +1,4 @@
 import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-BPYKWMI7.js";
-import {
   Stack
 } from "./chunk-MEIVKY4K.js";
 import {
@@ -30,6 +26,10 @@ import {
   attachSubComponents,
   isSafari
 } from "./chunk-TE63Y5PX.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
 
 // src/charts/line-chart/line-chart.tsx
 import { formatNumberCompact, formatNumber } from "@automattic/number-formatters";
@@ -1062,4 +1062,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-R23BFDIW.js.map
+//# sourceMappingURL=chunk-QJBQ3VGV.js.map

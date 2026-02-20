@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkCERFRCXDcjs = require('./chunk-CERFRCXD.cjs');
+var _chunkH4YE7KZBcjs = require('./chunk-H4YE7KZB.cjs');
 
 
 var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
@@ -164,7 +164,7 @@ var BarListChartInternal = ({
       yOffset: _nullishCoalesce(options.yOffset, () => ( getDefaultYOffset(data, yScale, height, isMultiSeries)))
     };
   }, [options, width, data, height]);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkCERFRCXDcjs.BarChart, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkH4YE7KZBcjs.BarChart, {
     orientation: "horizontal",
     gridVisibility: "none",
     data,
@@ -216,4 +216,4 @@ var BarListChartResponsive = _chunk7QDEU3KNcjs.withResponsive.call(void 0, BarLi
 
 
 exports.BarListChart = BarListChart; exports.BarListChartResponsive = BarListChartResponsive;
-//# sourceMappingURL=chunk-5N77S5N3.cjs.map
+//# sourceMappingURL=chunk-NL6JM5U7.cjs.map

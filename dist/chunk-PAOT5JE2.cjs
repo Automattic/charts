@@ -11,9 +11,6 @@ var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
 var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
 
 
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
-
-
 var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
@@ -32,6 +29,9 @@ var _chunkLSV7F26Bcjs = require('./chunk-LSV7F26B.cjs');
 
 
 var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
+
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 // src/charts/pie-chart/pie-chart.tsx
 var _group = require('@visx/group');
@@ -372,4 +372,4 @@ var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-4YYROZDJ.cjs.map
+//# sourceMappingURL=chunk-PAOT5JE2.cjs.map
