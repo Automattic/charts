@@ -25,7 +25,7 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('./chunk-X6K3SPYV.cjs');
 
 
 
@@ -182,7 +182,7 @@ var LineChartAnnotationsOverlay = ({
     chartRef,
     chartWidth,
     chartHeight
-  } = _chunkEJJO2QNBcjs.useSingleChartContext.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useSingleChartContext.call(void 0, );
   const [scales, setScales] = _react.useState.call(void 0, null);
   const [scalesStable, setScalesStable] = _react.useState.call(void 0, false);
   const createScaleSignature = _react.useCallback.call(void 0, (scaleData) => {
@@ -361,7 +361,7 @@ var LineChartAnnotation = ({
   renderLabel,
   renderLabelPopover
 }) => {
-  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
+  const providerTheme = _chunkX6K3SPYVcjs.useGlobalChartsTheme.call(void 0, );
   const {
     xScale,
     yScale
@@ -734,15 +734,15 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   gridVisibility,
   gap = "md"
 }, ref) => {
-  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
-  const theme = _chunkEJJO2QNBcjs.useXYChartTheme.call(void 0, data);
-  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
-  const [svgWrapperRef, svgWrapperHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
+  const providerTheme = _chunkX6K3SPYVcjs.useGlobalChartsTheme.call(void 0, );
+  const theme = _chunkX6K3SPYVcjs.useXYChartTheme.call(void 0, data);
+  const chartId = _chunkX6K3SPYVcjs.useChartId.call(void 0, providedChartId);
+  const [svgWrapperRef, svgWrapperHeight] = _chunkX6K3SPYVcjs.useElementHeight.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
   const internalChartRef = _react.useRef.call(void 0, null);
-  const hasLegendChild = _chunkEJJO2QNBcjs.useHasLegendChild.call(void 0, children);
+  const hasLegendChild = _chunkX6K3SPYVcjs.useHasLegendChild.call(void 0, children);
   const chartHeight = svgWrapperHeight > 0 ? svgWrapperHeight : height;
   const hasLegend = showLegend || hasLegendChild;
   const isWaitingForMeasurement = hasLegend ? svgWrapperHeight === 0 : !chartHeight;
@@ -754,11 +754,11 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       margin: {}
     }
   }), [internalChartRef]);
-  const dataSorted = _chunkEJJO2QNBcjs.useChartDataTransform.call(void 0, data);
+  const dataSorted = _chunkX6K3SPYVcjs.useChartDataTransform.call(void 0, data);
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useGlobalChartsContext.call(void 0, );
   const seriesWithVisibility = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive) {
       return dataSorted.map((series, index) => ({
@@ -840,7 +840,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       return themeGlyph ? themeGlyph(propsWithResolvedColor) : renderGlyph(propsWithResolvedColor);
     };
   }, [dataSorted, renderGlyph, getElementStyles]);
-  const defaultMargin = _chunkEJJO2QNBcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme);
+  const defaultMargin = _chunkX6K3SPYVcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme);
   const error = validateData(dataSorted);
   const isDataValid = !error;
   const legendOptions = _react.useMemo.call(void 0, () => ({
@@ -848,7 +848,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _66 => _66.radius])), () => ( 4))),
     renderGlyph
   }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _67 => _67.radius]), renderGlyph]);
-  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
+  const legendItems = _chunkX6K3SPYVcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     withGradientFill,
     smoothing,
@@ -857,14 +857,14 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     withEndGlyphs,
     withLegendGlyph
   }), [withGradientFill, smoothing, curveType, withStartGlyphs, withEndGlyphs, withLegendGlyph]);
-  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
+  _chunkX6K3SPYVcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "line",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkX6K3SPYVcjs.usePrefersReducedMotion.call(void 0, );
   const accessors = {
     xAccessor: (d) => _optionalChain([d, 'optionalAccess', _68 => _68.date]),
     yAccessor: (d) => _optionalChain([d, 'optionalAccess', _69 => _69.value])
@@ -875,7 +875,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       children: error
     });
   }
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.Legend, {
     orientation: legendOrientation,
     alignment: legendAlignment,
     position: legendPosition,
@@ -887,7 +887,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartRef: internalChartRef,
@@ -1032,14 +1032,14 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   });
 });
 var LineChartWithProvider = /* @__PURE__ */ _react.forwardRef.call(void 0, (props, ref) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
       ...props,
       ref
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
       ...props,
       ref
@@ -1048,12 +1048,12 @@ var LineChartWithProvider = /* @__PURE__ */ _react.forwardRef.call(void 0, (prop
 });
 LineChartWithProvider.displayName = "LineChart";
 var LineChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, LineChartWithProvider, {
-  Legend: _chunkEJJO2QNBcjs.Legend,
+  Legend: _chunkX6K3SPYVcjs.Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
 var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, LineChartWithProvider), {
-  Legend: _chunkEJJO2QNBcjs.Legend,
+  Legend: _chunkX6K3SPYVcjs.Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
@@ -1062,4 +1062,4 @@ var LineChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _ch
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-FY325WQ4.cjs.map
+//# sourceMappingURL=chunk-53KYDGNA.cjs.map

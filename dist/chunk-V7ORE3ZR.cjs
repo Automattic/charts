@@ -1,13 +1,13 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkIHESL7H5cjs = require('./chunk-IHESL7H5.cjs');
+var _chunkGBOJJWPUcjs = require('./chunk-GBOJJWPU.cjs');
 
 
 var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('./chunk-X6K3SPYV.cjs');
 
 // src/charts/bar-list-chart/bar-list-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -164,7 +164,7 @@ var BarListChartInternal = ({
       yOffset: _nullishCoalesce(options.yOffset, () => ( getDefaultYOffset(data, yScale, height, isMultiSeries)))
     };
   }, [options, width, data, height]);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkIHESL7H5cjs.BarChart, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGBOJJWPUcjs.BarChart, {
     orientation: "horizontal",
     gridVisibility: "none",
     data,
@@ -197,13 +197,13 @@ var BarListChartInternal = ({
   });
 };
 var BarListChart = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, {
       ...props
     })
@@ -216,4 +216,4 @@ var BarListChartResponsive = _chunk7QDEU3KNcjs.withResponsive.call(void 0, BarLi
 
 
 exports.BarListChart = BarListChart; exports.BarListChartResponsive = BarListChartResponsive;
-//# sourceMappingURL=chunk-Q6G3BGCL.cjs.map
+//# sourceMappingURL=chunk-V7ORE3ZR.cjs.map

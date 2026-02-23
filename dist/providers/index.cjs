@@ -6,7 +6,7 @@
 
 
 
-var _chunkEJJO2QNBcjs = require('../chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('../chunk-X6K3SPYV.cjs');
 require('../chunk-ZVGEDXDP.cjs');
 require('../chunk-EMMSS5I5.cjs');
 
@@ -17,5 +17,5 @@ require('../chunk-EMMSS5I5.cjs');
 
 
 
-exports.GlobalChartsContext = _chunkEJJO2QNBcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkEJJO2QNBcjs.GlobalChartsProvider; exports.defaultTheme = _chunkEJJO2QNBcjs.defaultTheme; exports.useChartId = _chunkEJJO2QNBcjs.useChartId; exports.useChartRegistration = _chunkEJJO2QNBcjs.useChartRegistration; exports.useGlobalChartsContext = _chunkEJJO2QNBcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme;
+exports.GlobalChartsContext = _chunkX6K3SPYVcjs.GlobalChartsContext; exports.GlobalChartsProvider = _chunkX6K3SPYVcjs.GlobalChartsProvider; exports.defaultTheme = _chunkX6K3SPYVcjs.defaultTheme; exports.useChartId = _chunkX6K3SPYVcjs.useChartId; exports.useChartRegistration = _chunkX6K3SPYVcjs.useChartRegistration; exports.useGlobalChartsContext = _chunkX6K3SPYVcjs.useGlobalChartsContext; exports.useGlobalChartsTheme = _chunkX6K3SPYVcjs.useGlobalChartsTheme;
 //# sourceMappingURL=index.cjs.map

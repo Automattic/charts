@@ -124,6 +124,7 @@ function useTooltipPortalRelocator(containerRef) {
       if (!isVisxPortalNode(node)) {
         return;
       }
+      node.style.opacity = "0";
       node.classList.add(use_tooltip_portal_relocator_module_default.relocatedPortal);
       const { activeElement } = node.ownerDocument;
       const focusedElement = activeElement instanceof HTMLElement && node.contains(activeElement) ? activeElement : null;
@@ -133,6 +134,11 @@ function useTooltipPortalRelocator(containerRef) {
       if (focusedElement) {
         focusedElement.focus();
       }
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          node.style.opacity = "";
+        });
+      });
     };
     installRemoveChildPatch();
     for (const child of Array.from(document.body.children)) {
@@ -1229,4 +1235,4 @@ function usePrefersReducedMotion() {
 
 
 exports.SingleChartContext = SingleChartContext; exports.useSingleChartContext = useSingleChartContext; exports.useTooltipPortalRelocator = useTooltipPortalRelocator; exports.defaultTheme = defaultTheme; exports.GlobalChartsContext = GlobalChartsContext; exports.GlobalChartsProvider = GlobalChartsProvider; exports.useGlobalChartsContext = useGlobalChartsContext; exports.useChartId = useChartId; exports.useDeepMemo = useDeepMemo; exports.useChartMouseHandler = useChartMouseHandler; exports.useXYChartTheme = useXYChartTheme; exports.useChartDataTransform = useChartDataTransform; exports.useChartMargin = useChartMargin; exports.useElementHeight = useElementHeight; exports.useHasLegendChild = useHasLegendChild; exports.useTextTruncation = useTextTruncation; exports.useZeroValueDisplay = useZeroValueDisplay; exports.useInteractiveLegendData = useInteractiveLegendData; exports.usePrefersReducedMotion = usePrefersReducedMotion; exports.useChartRegistration = useChartRegistration; exports.useGlobalChartsTheme = useGlobalChartsTheme; exports.Legend = Legend; exports.useChartLegendItems = useChartLegendItems;
-//# sourceMappingURL=chunk-EJJO2QNB.cjs.map
+//# sourceMappingURL=chunk-X6K3SPYV.cjs.map

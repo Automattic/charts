@@ -5,7 +5,7 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('./chunk-X6K3SPYV.cjs');
 
 
 
@@ -44,7 +44,7 @@ var GeoChartInternal = ({
       },
       backgroundColor
     }
-  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useGlobalChartsContext.call(void 0, );
   const loadingPlaceholder = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
     className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
     style: {
@@ -98,13 +98,13 @@ var GeoChartInternal = ({
   });
 };
 var GeoChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GeoChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GeoChartInternal, {
       ...props
     })
@@ -117,4 +117,4 @@ var GeoChartResponsive = _chunk7QDEU3KNcjs.withResponsive.call(void 0, GeoChartW
 
 
 exports.GeoChartWithProvider = GeoChartWithProvider; exports.GeoChartResponsive = GeoChartResponsive;
-//# sourceMappingURL=chunk-NGHXTIUE.cjs.map
+//# sourceMappingURL=chunk-43FLGE5W.cjs.map

@@ -25,7 +25,7 @@ var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
 
 
 
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('./chunk-X6K3SPYV.cjs');
 
 
 
@@ -293,18 +293,18 @@ var BarChartInternal = ({
   gap = "md"
 }) => {
   const horizontal = orientation === "horizontal";
-  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
-  const theme = _chunkEJJO2QNBcjs.useXYChartTheme.call(void 0, data);
-  const dataSorted = _chunkEJJO2QNBcjs.useChartDataTransform.call(void 0, data);
-  const dataWithVisibleZeros = _chunkEJJO2QNBcjs.useZeroValueDisplay.call(void 0, dataSorted, {
+  const chartId = _chunkX6K3SPYVcjs.useChartId.call(void 0, providedChartId);
+  const theme = _chunkX6K3SPYVcjs.useXYChartTheme.call(void 0, data);
+  const dataSorted = _chunkX6K3SPYVcjs.useChartDataTransform.call(void 0, data);
+  const dataWithVisibleZeros = _chunkX6K3SPYVcjs.useZeroValueDisplay.call(void 0, dataSorted, {
     enabled: showZeroValues
   });
-  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, dataSorted);
+  const legendItems = _chunkX6K3SPYVcjs.useChartLegendItems.call(void 0, dataSorted);
   const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
-  const defaultMargin = _chunkEJJO2QNBcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
-  const [svgWrapperRef, svgWrapperHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
+  const defaultMargin = _chunkX6K3SPYVcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme, horizontal);
+  const [svgWrapperRef, svgWrapperHeight] = _chunkX6K3SPYVcjs.useElementHeight.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
-  const hasLegendChild = _chunkEJJO2QNBcjs.useHasLegendChild.call(void 0, children);
+  const hasLegendChild = _chunkX6K3SPYVcjs.useHasLegendChild.call(void 0, children);
   const chartHeight = svgWrapperHeight > 0 ? svgWrapperHeight : height;
   const hasLegend = showLegend || hasLegendChild;
   const isWaitingForMeasurement = hasLegend ? svgWrapperHeight === 0 : !chartHeight;
@@ -327,8 +327,8 @@ var BarChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
-  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useGlobalChartsContext.call(void 0, );
+  const providerTheme = _chunkX6K3SPYVcjs.useGlobalChartsTheme.call(void 0, );
   const seriesWithVisibility = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
@@ -449,14 +449,14 @@ var BarChartInternal = ({
     orientation,
     withPatterns
   }), [orientation, withPatterns]);
-  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
+  _chunkX6K3SPYVcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "bar",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkX6K3SPYVcjs.usePrefersReducedMotion.call(void 0, );
   if (error) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"]),
@@ -465,7 +465,7 @@ var BarChartInternal = ({
   }
   const gridVisibility = _nullishCoalesce(gridVisibilityProp, () => ( chartOptions.gridVisibility));
   const highlightedBarStyle = createKeyboardHighlightStyle();
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.Legend, {
     orientation: legendOrientation,
     position: legendPosition,
     alignment: legendAlignment,
@@ -477,7 +477,7 @@ var BarChartInternal = ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: width,
@@ -584,13 +584,13 @@ var BarChartInternal = ({
   });
 };
 var BarChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarChartInternal, {
       ...props
     })
@@ -598,14 +598,14 @@ var BarChartWithProvider = (props) => {
 };
 BarChartWithProvider.displayName = "BarChart";
 var BarChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, BarChartWithProvider, {
-  Legend: _chunkEJJO2QNBcjs.Legend
+  Legend: _chunkX6K3SPYVcjs.Legend
 });
 var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, BarChartWithProvider), {
-  Legend: _chunkEJJO2QNBcjs.Legend
+  Legend: _chunkX6K3SPYVcjs.Legend
 });
 
 
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-IHESL7H5.cjs.map
+//# sourceMappingURL=chunk-GBOJJWPU.cjs.map

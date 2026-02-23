@@ -124,6 +124,7 @@ function useTooltipPortalRelocator(containerRef) {
       if (!isVisxPortalNode(node)) {
         return;
       }
+      node.style.opacity = "0";
       node.classList.add(use_tooltip_portal_relocator_module_default.relocatedPortal);
       const { activeElement } = node.ownerDocument;
       const focusedElement = activeElement instanceof HTMLElement && node.contains(activeElement) ? activeElement : null;
@@ -133,6 +134,11 @@ function useTooltipPortalRelocator(containerRef) {
       if (focusedElement) {
         focusedElement.focus();
       }
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          node.style.opacity = "";
+        });
+      });
     };
     installRemoveChildPatch();
     for (const child of Array.from(document.body.children)) {
@@ -1229,4 +1235,4 @@ export {
   Legend,
   useChartLegendItems
 };
-//# sourceMappingURL=chunk-32ESS4MV.js.map
+//# sourceMappingURL=chunk-7Z3FMTHV.js.map

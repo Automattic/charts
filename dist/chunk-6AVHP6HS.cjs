@@ -9,7 +9,7 @@ var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
 
 
 
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
+var _chunkX6K3SPYVcjs = require('./chunk-X6K3SPYV.cjs');
 
 
 
@@ -115,13 +115,13 @@ var ConversionFunnelChartInternal = ({
   renderMainMetric,
   renderTooltip
 }) => {
-  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
+  const chartId = _chunkX6K3SPYVcjs.useChartId.call(void 0, providedChartId);
   const {
     conversionFunnelChart: conversionFunnelChartSettings
-  } = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useGlobalChartsTheme.call(void 0, );
   const {
     getElementStyles
-  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
+  } = _chunkX6K3SPYVcjs.useGlobalChartsContext.call(void 0, );
   const chartRef = _react.useRef.call(void 0, null);
   const selectedBarRef = _react.useRef.call(void 0, null);
   const {
@@ -286,14 +286,14 @@ var ConversionFunnelChartInternal = ({
     changeIndicator,
     stepsCount: _optionalChain([steps, 'optionalAccess', _8 => _8.length]) || 0
   }), [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _9 => _9.length])]);
-  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
+  _chunkX6K3SPYVcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems: [],
     chartType: "conversion-funnel",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = _chunkX6K3SPYVcjs.usePrefersReducedMotion.call(void 0, );
   if (!isDataValid) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkSH32YSZOcjs.Stack, {
       direction: "column",
@@ -401,13 +401,13 @@ var ConversionFunnelChartInternal = ({
   });
 };
 var ConversionFunnelChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkX6K3SPYVcjs.GlobalChartsProvider, {
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ConversionFunnelChartInternal, {
       ...props
     })
@@ -418,4 +418,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 
 exports.ConversionFunnelChartWithProvider = ConversionFunnelChartWithProvider;
-//# sourceMappingURL=chunk-XCXAWMJQ.cjs.map
+//# sourceMappingURL=chunk-6AVHP6HS.cjs.map

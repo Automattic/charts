@@ -5,7 +5,7 @@ import {
   GlobalChartsContext,
   GlobalChartsProvider,
   useGlobalChartsContext
-} from "./chunk-32ESS4MV.js";
+} from "./chunk-7Z3FMTHV.js";
 import {
   lightenHexColor,
   normalizeColorToHex,
@@ -117,4 +117,4 @@ export {
   GeoChartWithProvider,
   GeoChartResponsive
 };
-//# sourceMappingURL=chunk-PCOI2GT5.js.map
+//# sourceMappingURL=chunk-DJJEWVYQ.js.map

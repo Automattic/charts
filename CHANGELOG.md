@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Simplify relocated portal positioning with CSS inset shorthand
 
+### Fixed
+- Tooltip: prevent flash at origin before visx calculates correct position.
+
 ## [0.56.5] - 2026-02-23
 ### Changed
 - Add dynamic x‑axis margin in `LineChart` to prevent crowded/clipped tick labels. [#45815]

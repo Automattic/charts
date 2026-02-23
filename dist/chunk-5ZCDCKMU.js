@@ -25,7 +25,7 @@ import {
   usePrefersReducedMotion,
   useSingleChartContext,
   useXYChartTheme
-} from "./chunk-32ESS4MV.js";
+} from "./chunk-7Z3FMTHV.js";
 import {
   attachSubComponents,
   isSafari
@@ -1062,4 +1062,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-DLSUC7RN.js.map
+//# sourceMappingURL=chunk-5ZCDCKMU.js.map

@@ -9,7 +9,7 @@ import {
   useGlobalChartsContext,
   useGlobalChartsTheme,
   usePrefersReducedMotion
-} from "./chunk-32ESS4MV.js";
+} from "./chunk-7Z3FMTHV.js";
 import {
   formatPercentage,
   hexToRgba
@@ -418,4 +418,4 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 export {
   ConversionFunnelChartWithProvider
 };
-//# sourceMappingURL=chunk-X6GX4QUJ.js.map
+//# sourceMappingURL=chunk-FBMIUPAS.js.map
