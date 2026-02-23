@@ -1,45 +1,45 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
-
-
-var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
-
-
-
-
-var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
-
-
-var _chunk7QDEU3KNcjs = require('./chunk-7QDEU3KN.cjs');
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _chunkEJJO2QNBcjs = require('./chunk-EJJO2QNB.cjs');
-
-
-var _chunkZVGEDXDPcjs = require('./chunk-ZVGEDXDP.cjs');
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
+import {
+  getStringWidth
+} from "./chunk-NFRB2POF.js";
+import {
+  radial_wipe_animation_default
+} from "./chunk-KXRWNFQJ.js";
+import {
+  ChartHTML,
+  ChartSVG,
+  useChartChildren
+} from "./chunk-6CCZL2JJ.js";
+import {
+  BaseTooltip
+} from "./chunk-BPYKWMI7.js";
+import {
+  withResponsive
+} from "./chunk-TYIH5LMV.js";
+import {
+  GlobalChartsContext,
+  GlobalChartsProvider,
+  Legend,
+  SingleChartContext,
+  useChartId,
+  useChartLegendItems,
+  useChartRegistration,
+  useElementHeight,
+  useGlobalChartsContext,
+  useGlobalChartsTheme,
+  useInteractiveLegendData,
+  usePrefersReducedMotion
+} from "./chunk-32ESS4MV.js";
+import {
+  attachSubComponents
+} from "./chunk-TE63Y5PX.js";
 
 // src/charts/pie-chart/pie-chart.tsx
-var _group = require('@visx/group');
-var _shape = require('@visx/shape');
-var _tooltip = require('@visx/tooltip');
-var _i18n = require('@wordpress/i18n');
-var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
-var _react = require('react');
+import { Group } from "@visx/group";
+import { Pie } from "@visx/shape";
+import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
+import { __ } from "@wordpress/i18n";
+import clsx from "clsx";
+import { useCallback, useContext, useMemo } from "react";
 
 // src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
@@ -48,11 +48,11 @@ var pie_chart_module_default = {
 };
 
 // src/charts/pie-chart/pie-chart.tsx
-var _jsxruntime = require('react/jsx-runtime');
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 var renderDefaultPieTooltip = ({
   tooltipData
 }) => {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkY3NNQMAXcjs.BaseTooltip, {
+  return /* @__PURE__ */ _jsx(BaseTooltip, {
     data: tooltipData,
     top: 0,
     left: 0,
@@ -112,9 +112,9 @@ var PieChartInternal = ({
   tooltipOffsetY = -15,
   renderTooltip = renderDefaultPieTooltip
 }) => {
-  const providerTheme = _chunkEJJO2QNBcjs.useGlobalChartsTheme.call(void 0, );
-  const chartId = _chunkEJJO2QNBcjs.useChartId.call(void 0, providedChartId);
-  const [legendRef, legendHeight] = _chunkEJJO2QNBcjs.useElementHeight.call(void 0, );
+  const providerTheme = useGlobalChartsTheme();
+  const chartId = useChartId(providedChartId);
+  const [legendRef, legendHeight] = useElementHeight();
   const {
     tooltipOpen,
     tooltipLeft,
@@ -122,17 +122,17 @@ var PieChartInternal = ({
     tooltipData,
     hideTooltip,
     showTooltip
-  } = _tooltip.useTooltip.call(void 0, );
+  } = useTooltip();
   const {
     containerRef,
     TooltipInPortal,
     containerBounds
-  } = _tooltip.useTooltipInPortal.call(void 0, {
+  } = useTooltipInPortal({
     detectBounds: true,
     scroll: true,
     debounce: 0
   });
-  const onMouseLeave = _react.useCallback.call(void 0, () => {
+  const onMouseLeave = useCallback(() => {
     if (!withTooltips) {
       return;
     }
@@ -141,22 +141,22 @@ var PieChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkEJJO2QNBcjs.useGlobalChartsContext.call(void 0, );
+  } = useGlobalChartsContext();
   const {
     visibleData,
     allSegmentsHidden,
     legendData
-  } = _chunkEJJO2QNBcjs.useInteractiveLegendData.call(void 0, {
+  } = useInteractiveLegendData({
     data,
     chartId,
     legendInteractive,
     isSeriesVisible
   });
-  const legendOptions = _react.useMemo.call(void 0, () => ({
+  const legendOptions = useMemo(() => ({
     showValues: true,
     legendValueDisplay
   }), [legendValueDisplay]);
-  const legendItems = _chunkEJJO2QNBcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
+  const legendItems = useChartLegendItems(legendData, legendOptions);
   const {
     isValid,
     message
@@ -165,24 +165,24 @@ var PieChartInternal = ({
     svgChildren,
     htmlChildren,
     otherChildren
-  } = _chunkRCY6XLGUcjs.useChartChildren.call(void 0, children, "PieChart");
-  const chartMetadata = _react.useMemo.call(void 0, () => ({
+  } = useChartChildren(children, "PieChart");
+  const chartMetadata = useMemo(() => ({
     thickness,
     gapScale,
     cornerScale
   }), [thickness, gapScale, cornerScale]);
-  _chunkEJJO2QNBcjs.useChartRegistration.call(void 0, {
+  useChartRegistration({
     chartId,
     legendItems,
     chartType: "pie",
     isDataValid: isValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkEJJO2QNBcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = usePrefersReducedMotion();
   if (!isValid) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-      className: _clsx2.default.call(void 0, "pie-chart", pie_chart_module_default["pie-chart"], className),
-      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+    return /* @__PURE__ */ _jsx("div", {
+      className: clsx("pie-chart", pie_chart_module_default["pie-chart"], className),
+      children: /* @__PURE__ */ _jsx("div", {
         className: pie_chart_module_default["error-message"],
         children: message
       })
@@ -215,40 +215,40 @@ var PieChartInternal = ({
       }).color;
     }
   };
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsx(SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: width,
       chartHeight: adjustedHeight
     },
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+    children: /* @__PURE__ */ _jsxs("div", {
       ref: containerRef,
-      className: _clsx2.default.call(void 0, "pie-chart", pie_chart_module_default["pie-chart"], {
+      className: clsx("pie-chart", pie_chart_module_default["pie-chart"], {
         [pie_chart_module_default["pie-chart--legend-top"]]: showLegend && legendPosition === "top"
       }, className),
-      children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "svg", {
+      children: [/* @__PURE__ */ _jsxs("svg", {
         viewBox: `0 0 ${width} ${adjustedHeight}`,
         preserveAspectRatio: "xMidYMid meet",
         width,
         height: adjustedHeight,
-        children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "defs", {
-          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk2A34OA5Ocjs.radial_wipe_animation_default, {
+        children: [/* @__PURE__ */ _jsx("defs", {
+          children: /* @__PURE__ */ _jsx(radial_wipe_animation_default, {
             id: `radial-wipe-${chartId}`,
             radius: outerRadius,
             innerRadius
           })
-        }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, {
+        }), /* @__PURE__ */ _jsxs(Group, {
           top: centerY,
           left: centerX,
           mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-          children: [allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
+          children: [allSegmentsHidden ? /* @__PURE__ */ _jsx("text", {
             textAnchor: "middle",
             dy: ".33em",
             fill: providerTheme.gridColor || "#ccc",
             fontSize: "14",
             fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-            children: _i18n.__.call(void 0, "All segments are hidden. Click legend items to show data.", "jetpack-charts")
-          }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _shape.Pie, {
+            children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
+          }) : /* @__PURE__ */ _jsx(Pie, {
             data: dataWithIndex,
             pieValue: accessors.value,
             outerRadius,
@@ -282,18 +282,18 @@ var PieChartInternal = ({
                   groupProps.onMouseLeave = onMouseLeave;
                 }
                 const fontSize = 12;
-                const estimatedTextWidth = _chunk7OZEQ5HEcjs.getStringWidth.call(void 0, arc.data.label, {
+                const estimatedTextWidth = getStringWidth(arc.data.label, {
                   fontSize
                 });
                 const labelPadding = 6;
                 const backgroundWidth = estimatedTextWidth + labelPadding * 2;
                 const backgroundHeight = fontSize + labelPadding * 2;
-                return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", {
+                return /* @__PURE__ */ _jsxs("g", {
                   ...groupProps,
-                  children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "path", {
+                  children: [/* @__PURE__ */ _jsx("path", {
                     ...pathProps
-                  }), showLabels && hasSpaceForLabel && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", {
-                    children: [providerTheme.labelBackgroundColor && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "rect", {
+                  }), showLabels && hasSpaceForLabel && /* @__PURE__ */ _jsxs("g", {
+                    children: [providerTheme.labelBackgroundColor && /* @__PURE__ */ _jsx("rect", {
                       x: centroidX - backgroundWidth / 2,
                       y: centroidY - backgroundHeight / 2,
                       width: backgroundWidth,
@@ -302,7 +302,7 @@ var PieChartInternal = ({
                       rx: 4,
                       ry: 4,
                       pointerEvents: "none"
-                    }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
+                    }), /* @__PURE__ */ _jsx("text", {
                       x: centroidX,
                       y: centroidY,
                       dy: ".33em",
@@ -318,7 +318,7 @@ var PieChartInternal = ({
             }
           }), !allSegmentsHidden && svgChildren]
         })]
-      }), showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.Legend, {
+      }), showLegend && /* @__PURE__ */ _jsx(Legend, {
         orientation: legendOrientation,
         position: legendPosition,
         alignment: legendAlignment,
@@ -330,10 +330,10 @@ var PieChartInternal = ({
         ref: legendRef,
         chartId,
         interactive: legendInteractive
-      }), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, {
+      }), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsx(TooltipInPortal, {
         top: tooltipTop || 0,
         left: tooltipLeft || 0,
-        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        children: /* @__PURE__ */ _jsx("div", {
           role: "tooltip",
           children: renderTooltip({
             tooltipData
@@ -344,32 +344,32 @@ var PieChartInternal = ({
   });
 };
 var PieChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsContext);
+  const existingContext = useContext(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieChartInternal, {
+    return /* @__PURE__ */ _jsx(PieChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkEJJO2QNBcjs.GlobalChartsProvider, {
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieChartInternal, {
+  return /* @__PURE__ */ _jsx(GlobalChartsProvider, {
+    children: /* @__PURE__ */ _jsx(PieChartInternal, {
       ...props
     })
   });
 };
 PieChartWithProvider.displayName = "PieChart";
-var PieChart = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, PieChartWithProvider, {
-  Legend: _chunkEJJO2QNBcjs.Legend,
-  SVG: _chunkRCY6XLGUcjs.ChartSVG,
-  HTML: _chunkRCY6XLGUcjs.ChartHTML
+var PieChart = attachSubComponents(PieChartWithProvider, {
+  Legend,
+  SVG: ChartSVG,
+  HTML: ChartHTML
 });
-var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chunk7QDEU3KNcjs.withResponsive.call(void 0, PieChartWithProvider), {
-  Legend: _chunkEJJO2QNBcjs.Legend,
-  SVG: _chunkRCY6XLGUcjs.ChartSVG,
-  HTML: _chunkRCY6XLGUcjs.ChartHTML
+var PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider), {
+  Legend,
+  SVG: ChartSVG,
+  HTML: ChartHTML
 });
 
-
-
-
-exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-6CS4O3UP.cjs.map
+export {
+  PieChart,
+  PieChartResponsive
+};
+//# sourceMappingURL=chunk-LT4YOIMM.js.map
