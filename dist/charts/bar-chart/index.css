@@ -1,10 +1,7 @@
 /* esbuild-sass-plugin:css-chunk:src/hooks/use-tooltip-portal-relocator.module.scss */
 .a8ccharts-jCw5dQ {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
+  inset: 0;
   overflow: visible;
   z-index: 1;
   pointer-events: none;
