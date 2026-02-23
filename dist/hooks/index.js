@@ -3,7 +3,7 @@ import {
   useChartMargin,
   useChartMouseHandler,
   useDeepMemo,
-  useElementHeight,
+  useElementSize,
   useHasLegendChild,
   useInteractiveLegendData,
   usePrefersReducedMotion,
@@ -11,7 +11,7 @@ import {
   useTooltipPortalRelocator,
   useXYChartTheme,
   useZeroValueDisplay
-} from "../chunk-7Z3FMTHV.js";
+} from "../chunk-RFSHE3HL.js";
 import "../chunk-TE63Y5PX.js";
 import "../chunk-G3PMV62Z.js";
 export {
@@ -19,7 +19,7 @@ export {
   useChartMargin,
   useChartMouseHandler,
   useDeepMemo,
-  useElementHeight,
+  useElementSize,
   useHasLegendChild,
   useInteractiveLegendData,
   usePrefersReducedMotion,

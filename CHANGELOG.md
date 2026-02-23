@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Simplify relocated portal positioning with CSS inset shorthand
 
 ### Fixed
+- Charts: fix chart height and size calculations for Pie Chart and variants.
 - Tooltip: prevent flash at origin before visx calculates correct position.
 
 ## [0.56.5] - 2026-02-23

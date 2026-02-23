@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-BCFQlzTM.cjs';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DOQK1ctx.cjs';
 import { C as ChartComponentWithComposition } from '../../types-BBwg4Evw.cjs';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
