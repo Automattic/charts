@@ -1,4 +1,4 @@
-// ../../../node_modules/.pnpm/@wordpress+element@6.39.0/node_modules/@wordpress/element/build-module/react.mjs
+// ../../../node_modules/.pnpm/@wordpress+element@6.40.0/node_modules/@wordpress/element/build-module/react.mjs
 import {
   Children,
   cloneElement,
@@ -48,4 +48,4 @@ export {
   useRef,
   useState
 };
-//# sourceMappingURL=chunk-SEKPIG5K.js.map
+//# sourceMappingURL=chunk-KNIMXN6Z.js.map

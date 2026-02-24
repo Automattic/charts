@@ -1,6 +1,6 @@
 import {
   forwardRef
-} from "./chunk-SEKPIG5K.js";
+} from "./chunk-KNIMXN6Z.js";
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 import * as React from "react";
@@ -395,7 +395,7 @@ function useRender(params) {
   return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.6.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.7.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 if (typeof document !== "undefined" && !document.head.querySelector("style[data-wp-hash='71d20935c2']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "71d20935c2");
@@ -422,4 +422,4 @@ var Stack = forwardRef(function Stack2({ direction, gap, align, justify, wrap, r
 export {
   Stack
 };
-//# sourceMappingURL=chunk-UZCEWI3J.js.map
+//# sourceMappingURL=chunk-IS5YYLTV.js.map

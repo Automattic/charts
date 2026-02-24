@@ -14,7 +14,7 @@ var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
 var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
-var _chunkAQADY76Ucjs = require('./chunk-AQADY76U.cjs');
+var _chunkUFRBUT2Dcjs = require('./chunk-UFRBUT2D.cjs');
 
 
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
@@ -242,7 +242,7 @@ var PieChartInternal = ({
       chartWidth: width,
       chartHeight: height
     },
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkAQADY76Ucjs.Stack, {
+    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkUFRBUT2Dcjs.Stack, {
       ref: containerRef,
       direction: "column",
       gap,
@@ -398,4 +398,4 @@ var PieChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-67XHFJYR.cjs.map
+//# sourceMappingURL=chunk-BXFD7JIG.cjs.map

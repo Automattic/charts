@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkI5467ZJ5cjs = require('./chunk-I5467ZJ5.cjs');
+var _chunkSUDERBUAcjs = require('./chunk-SUDERBUA.cjs');
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 var _react = require('react'); var React = _interopRequireWildcard(_react); var React4 = _interopRequireWildcard(_react); var React3 = _interopRequireWildcard(_react); var React2 = _interopRequireWildcard(_react);
@@ -395,7 +395,7 @@ function useRender(params) {
   return useRenderElement(_nullishCoalesce(params.defaultTagName, () => ( "div")), params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.6.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.7.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 if (typeof document !== "undefined" && !document.head.querySelector("style[data-wp-hash='71d20935c2']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "71d20935c2");
@@ -403,7 +403,7 @@ if (typeof document !== "undefined" && !document.head.querySelector("style[data-
   document.head.appendChild(style);
 }
 var style_default = { "stack": "_19ce0419607e1896__stack" };
-var Stack = _chunkI5467ZJ5cjs.forwardRef.call(void 0, function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
+var Stack = _chunkSUDERBUAcjs.forwardRef.call(void 0, function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
   const style = {
     gap: gap && `var(--wpds-dimension-gap-${gap})`,
     alignItems: align,
@@ -422,4 +422,4 @@ var Stack = _chunkI5467ZJ5cjs.forwardRef.call(void 0, function Stack2({ directio
 
 
 exports.Stack = Stack;
-//# sourceMappingURL=chunk-AQADY76U.cjs.map
+//# sourceMappingURL=chunk-UFRBUT2D.cjs.map

@@ -1,24 +1,24 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-var _chunkLFRNQ4OIcjs = require('./chunk-LFRNQ4OI.cjs');
-
-
-var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
-
-
-
-var _chunkYDVHT7GScjs = require('./chunk-YDVHT7GS.cjs');
+import {
+  BarChart
+} from "./chunk-SSFFCBCF.js";
+import {
+  withResponsive
+} from "./chunk-OP6PHB2U.js";
+import {
+  GlobalChartsContext,
+  GlobalChartsProvider
+} from "./chunk-RFSHE3HL.js";
 
 // src/charts/bar-list-chart/bar-list-chart.tsx
-var _numberformatters = require('@automattic/number-formatters');
-var _group = require('@visx/group');
-var _scale = require('@visx/scale');
-var _text = require('@visx/text');
-var _react = require('react');
-var _jsxruntime = require('react/jsx-runtime');
+import { formatNumberCompact } from "@automattic/number-formatters";
+import { Group } from "@visx/group";
+import { createScale, scaleBand } from "@visx/scale";
+import { Text } from "@visx/text";
+import { useContext, useMemo } from "react";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 var getScaleBandwidth = (scale) => {
   const s = scale;
-  return s && "bandwidth" in s ? _nullishCoalesce(_optionalChain([s, 'optionalAccess', _ => _.bandwidth, 'call', _2 => _2()]), () => ( 0)) : 0;
+  return s && "bandwidth" in s ? s?.bandwidth() ?? 0 : 0;
 };
 var DefaultLabelComponent = ({
   textProps,
@@ -27,7 +27,7 @@ var DefaultLabelComponent = ({
   label,
   formatter
 }) => {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
+  return /* @__PURE__ */ _jsx(Text, {
     ...textProps,
     textAnchor: "start",
     x,
@@ -42,7 +42,7 @@ var DefaultValueComponent = ({
   value,
   formatter
 }) => {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
+  return /* @__PURE__ */ _jsx(Text, {
     ...textProps,
     textAnchor: "end",
     x,
@@ -74,21 +74,21 @@ var AxisRenderer = ({
     from,
     formattedValue
   }, index) => {
-    const textProps = _nullishCoalesce(allTickLabelProps[index], () => ( {}));
+    const textProps = allTickLabelProps[index] ?? {};
     delete textProps.textAnchor;
     delete textProps.dx;
     const sum = data.reduce((acc, {
       data: seriesData
-    }) => acc + (_nullishCoalesce(_optionalChain([seriesData, 'access', _3 => _3[index], 'optionalAccess', _4 => _4.value]), () => ( 0))), 0);
+    }) => acc + (seriesData[index]?.value ?? 0), 0);
     const y = from.y + yOffset;
-    return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, {
-      children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, LabelComponent, {
+    return /* @__PURE__ */ _jsxs(Group, {
+      children: [/* @__PURE__ */ _jsx(LabelComponent, {
         textProps,
         x: labelPosition,
         y,
         label: formattedValue,
         formatter: labelFormatter
-      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ValueComponent, {
+      }), /* @__PURE__ */ _jsx(ValueComponent, {
         textProps,
         x: valuePosition,
         y,
@@ -107,13 +107,13 @@ var getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
   const dataKeys = data.map(({
     label
   }) => label);
-  const yScale = _scale.createScale.call(void 0, {
+  const yScale = createScale({
     type: "band",
     range: [0, height],
     domain: dataKeys,
     ...yScaleConfig
   });
-  const groupScale = _scale.scaleBand.call(void 0, {
+  const groupScale = scaleBand({
     domain: dataKeys,
     range: [0, getScaleBandwidth(yScale)],
     padding: yScaleConfig.paddingInner
@@ -135,7 +135,7 @@ var BarListChartInternal = ({
   },
   ...rest
 }) => {
-  const chartOptions = _react.useMemo.call(void 0, () => {
+  const chartOptions = useMemo(() => {
     const isMultiSeries = data.length > 1;
     const defaultYScale = {
       // For multi series, set default padding larger to look better.
@@ -148,23 +148,23 @@ var BarListChartInternal = ({
     };
     const yScale = {
       ...defaultYScale,
-      ..._nullishCoalesce(options.yScale, () => ( {}))
+      ...options.yScale ?? {}
     };
     const xScale = {
       ...defaultXScale,
-      ..._nullishCoalesce(options.xScale, () => ( {}))
+      ...options.xScale ?? {}
     };
     return {
       yScale,
       xScale,
-      labelPosition: _nullishCoalesce(options.labelPosition, () => ( (isMultiSeries ? 0 : 10))),
-      valueFormatter: _nullishCoalesce(options.valueFormatter, () => ( ((value) => _numberformatters.formatNumberCompact.call(void 0, value)))),
-      labelFormatter: _nullishCoalesce(options.labelFormatter, () => ( ((value) => String(value)))),
-      valuePosition: _nullishCoalesce(options.valuePosition, () => ( width)),
-      yOffset: _nullishCoalesce(options.yOffset, () => ( getDefaultYOffset(data, yScale, height, isMultiSeries)))
+      labelPosition: options.labelPosition ?? (isMultiSeries ? 0 : 10),
+      valueFormatter: options.valueFormatter ?? ((value) => formatNumberCompact(value)),
+      labelFormatter: options.labelFormatter ?? ((value) => String(value)),
+      valuePosition: options.valuePosition ?? width,
+      yOffset: options.yOffset ?? getDefaultYOffset(data, yScale, height, isMultiSeries)
     };
   }, [options, width, data, height]);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLFRNQ4OIcjs.BarChart, {
+  return /* @__PURE__ */ _jsx(BarChart, {
     orientation: "horizontal",
     gridVisibility: "none",
     data,
@@ -174,7 +174,7 @@ var BarListChartInternal = ({
     options: {
       axis: {
         y: {
-          children: (renderProps) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, AxisRenderer, {
+          children: (renderProps) => /* @__PURE__ */ _jsx(AxisRenderer, {
             ...renderProps,
             data,
             yOffset: chartOptions.yOffset,
@@ -197,23 +197,23 @@ var BarListChartInternal = ({
   });
 };
 var BarListChart = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunkYDVHT7GScjs.GlobalChartsContext);
+  const existingContext = useContext(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, {
+    return /* @__PURE__ */ _jsx(BarListChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkYDVHT7GScjs.GlobalChartsProvider, {
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarListChartInternal, {
+  return /* @__PURE__ */ _jsx(GlobalChartsProvider, {
+    children: /* @__PURE__ */ _jsx(BarListChartInternal, {
       ...props
     })
   });
 };
 BarListChart.displayName = "BarListChart";
-var BarListChartResponsive = _chunkASLARV7Lcjs.withResponsive.call(void 0, BarListChart);
+var BarListChartResponsive = withResponsive(BarListChart);
 
-
-
-
-exports.BarListChart = BarListChart; exports.BarListChartResponsive = BarListChartResponsive;
-//# sourceMappingURL=chunk-II7IHOP6.cjs.map
+export {
+  BarListChart,
+  BarListChartResponsive
+};
+//# sourceMappingURL=chunk-MDRCAGKZ.js.map

@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});// ../../../node_modules/.pnpm/@wordpress+element@6.39.0/node_modules/@wordpress/element/build-module/react.mjs
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});// ../../../node_modules/.pnpm/@wordpress+element@6.40.0/node_modules/@wordpress/element/build-module/react.mjs
 
 
 
@@ -48,4 +48,4 @@ var _react = require('react');
 
 
 exports.Children = _react.Children; exports.cloneElement = _react.cloneElement; exports.createContext = _react.createContext; exports.createElement = _react.createElement; exports.forwardRef = _react.forwardRef; exports.Fragment = _react.Fragment; exports.isValidElement = _react.isValidElement; exports.memo = _react.memo; exports.useCallback = _react.useCallback; exports.useContext = _react.useContext; exports.useEffect = _react.useEffect; exports.useMemo = _react.useMemo; exports.useRef = _react.useRef; exports.useState = _react.useState;
-//# sourceMappingURL=chunk-I5467ZJ5.cjs.map
+//# sourceMappingURL=chunk-SUDERBUA.cjs.map
