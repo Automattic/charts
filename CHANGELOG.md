@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Simplify relocated portal positioning with CSS inset shorthand
+- Update package dependencies.
 
 ### Fixed
 - Charts: fix chart height and size calculations for Pie Chart and variants.

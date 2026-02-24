@@ -4,7 +4,7 @@
 var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
-var _chunkSH32YSZOcjs = require('./chunk-SH32YSZO.cjs');
+var _chunkAQADY76Ucjs = require('./chunk-AQADY76U.cjs');
 
 
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
@@ -483,7 +483,7 @@ var BarChartInternal = ({
       chartWidth: width,
       chartHeight
     },
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkSH32YSZOcjs.Stack, {
+    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkAQADY76Ucjs.Stack, {
       direction: "column",
       gap,
       className: _clsx2.default.call(void 0, "bar-chart", bar_chart_module_default["bar-chart"], {
@@ -608,4 +608,4 @@ var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-ANPLI5J6.cjs.map
+//# sourceMappingURL=chunk-LFRNQ4OI.cjs.map
