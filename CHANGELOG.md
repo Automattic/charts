@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
+- Improve AI agent documentation and validation workflow for chart development.
 - Simplify relocated portal positioning with CSS inset shorthand
 - Update package dependencies.
 
