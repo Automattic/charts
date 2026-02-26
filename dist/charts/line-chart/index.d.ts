@@ -1,9 +1,8 @@
 import { L as Legend } from '../../legend-jjMmhSg3.js';
-import { B as BaseChartProps, j as SeriesData, c as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-DOQK1ctx.js';
+import { B as BaseChartProps, j as SeriesData, c as DataPointDate, A as AnnotationStyles, O as Optional } from '../../types-CzdN7rUe.js';
 import { FC, ReactNode, SVGProps } from 'react';
 import { GlyphProps } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { GapSize } from '@wordpress/theme';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import '../../types-C05PdDJa.js';
 import '@visx/legend';
@@ -15,6 +14,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 interface ChartInstanceRef {
@@ -77,12 +77,6 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
     };
     legendInteractive?: boolean;
     children?: ReactNode;
-    /**
-     * Gap between chart elements (SVG, legend, children).
-     * Uses WordPress design system tokens.
-     * @default 'md'
-     */
-    gap?: GapSize;
 }
 type TooltipDatum = {
     key: string;

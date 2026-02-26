@@ -15,6 +15,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Charts: fix chart height and size calculations for Pie Chart and variants.
+- Charts: fix PieSemiCircleChart height and size calculations to be responsive by default, maintaining 2:1 width-to-height ratio.
 - Tooltip: prevent flash at origin before visx calculates correct position.
 
 ## [0.56.5] - 2026-02-23

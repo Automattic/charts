@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode, RefObject } from 'react';
-import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-DOQK1ctx.cjs';
+import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-CzdN7rUe.cjs';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -10,6 +10,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 /**

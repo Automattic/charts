@@ -1,5 +1,5 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-B1UqSoVO.cjs';
-import { L as LeaderboardEntry } from '../../types-DOQK1ctx.cjs';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-COtgamhe.cjs';
+import { L as LeaderboardEntry } from '../../types-CzdN7rUe.cjs';
 export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.cjs';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.cjs';
 import 'react/jsx-runtime';
@@ -14,6 +14,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import '@wordpress/theme';
 import 'react-google-charts';
 import '@visx/legend';
 

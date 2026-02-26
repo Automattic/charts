@@ -7,6 +7,7 @@ import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleType, ScaleInput } from '@visx/scale';
 import { TextProps } from '@visx/text/lib/Text';
 import { EventHandlerParams, LineStyles, GridStyles, GlyphProps } from '@visx/xychart';
+import { GapSize } from '@wordpress/theme';
 import { PointerEvent, ReactNode, CSSProperties } from 'react';
 import { GoogleDataTableColumn, GoogleDataTableRow } from 'react-google-charts';
 
@@ -428,6 +429,12 @@ type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
      * Whether to show chart animation on initial render or not
      */
     animation?: boolean;
+    /**
+     * Gap between chart elements (SVG, legend, children).
+     * Uses WordPress design system tokens.
+     * @default 'md'
+     */
+    gap?: GapSize;
     /**
      * More options for the chart.
      */

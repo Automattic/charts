@@ -10,7 +10,7 @@ import "./chunk-NFRB2POF.js";
 import {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
-} from "./chunk-66QIOYNL.js";
+} from "./chunk-VPAEBI2F.js";
 import "./chunk-KXRWNFQJ.js";
 import "./chunk-6CCZL2JJ.js";
 import {

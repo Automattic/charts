@@ -1,9 +1,8 @@
 import { L as Legend } from '../../legend-jjMmhSg3.js';
-import { O as Optional, B as BaseChartProps, j as SeriesData, c as DataPointDate } from '../../types-DOQK1ctx.js';
+import { O as Optional, B as BaseChartProps, j as SeriesData, c as DataPointDate } from '../../types-CzdN7rUe.js';
 import { FC, ReactNode, ComponentType } from 'react';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import { GapSize } from '@wordpress/theme';
 import '../../types-C05PdDJa.js';
 import '@visx/legend';
 import '@visx/xychart';
@@ -15,6 +14,7 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
@@ -24,12 +24,6 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     showZeroValues?: boolean;
     legendInteractive?: boolean;
     children?: ReactNode;
-    /**
-     * Gap between chart elements (SVG, legend, children).
-     * Uses WordPress design system tokens.
-     * @default 'md'
-     */
-    gap?: GapSize;
 }
 type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
 interface BarChartSubComponents {

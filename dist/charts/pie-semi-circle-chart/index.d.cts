@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DOQK1ctx.cjs';
+import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-CzdN7rUe.cjs';
 import { C as ChartComponentWithComposition } from '../../types-BBwg4Evw.cjs';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
@@ -16,6 +16,7 @@ import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 /**
@@ -29,7 +30,9 @@ type PieSemiCircleChartRenderTooltipParams = {
 };
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
-     * Width of the chart in pixels; height would be half of this value calculated automatically.
+     * Explicit width of the chart container in pixels.
+     * When omitted, the chart fills its parent container's width.
+     * The chart always maintains a 2:1 width-to-height ratio, constrained by available space.
      */
     width?: number;
     /**

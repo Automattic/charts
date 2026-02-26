@@ -1,7 +1,7 @@
-export { C as ChartRegistration, E as ElementStyles, c as GetElementStylesParams, G as GlobalChartsContext, e as GlobalChartsContextValue, a as GlobalChartsProvider, d as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from '../themes-B4C55YKD.js';
+export { C as ChartRegistration, E as ElementStyles, c as GetElementStylesParams, G as GlobalChartsContext, e as GlobalChartsContextValue, a as GlobalChartsProvider, d as defaultTheme, u as useGlobalChartsContext, b as useGlobalChartsTheme } from '../themes-DQzmaSze.js';
 import { B as BaseLegendItem } from '../types-C05PdDJa.js';
 import 'react';
-import '../types-DOQK1ctx.js';
+import '../types-CzdN7rUe.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -11,6 +11,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import '@wordpress/theme';
 import 'react-google-charts';
 import '@visx/legend';
 

@@ -1,7 +1,7 @@
 export { M as MetricValueType, f as formatMetricValue } from '../format-metric-value-MXm5DtQ_.cjs';
 import { TickFormatter } from '@visx/axis';
 import { AnyD3Scale, ScaleInput } from '@visx/scale';
-import { j as SeriesData, C as ChartTheme, b as CompleteChartTheme } from '../types-DOQK1ctx.cjs';
+import { j as SeriesData, C as ChartTheme, b as CompleteChartTheme } from '../types-CzdN7rUe.cjs';
 import { LegendShape } from '@visx/legend/lib/types';
 import { LineStyles } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -9,6 +9,7 @@ import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
 import '@visx/annotation/lib/components/LineSubject';
 import '@visx/text/lib/Text';
+import '@wordpress/theme';
 import 'react';
 import 'react-google-charts';
 

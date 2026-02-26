@@ -496,22 +496,24 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss */
-.a8ccharts-8tyaQj {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 20px;
+.a8ccharts-V0wiEb {
+  height: 100%;
+  width: 100%;
 }
-.a8ccharts-M1lF7A {
-  flex-direction: column-reverse;
+.a8ccharts-hGowej {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .a8ccharts-8tyaQj .a8ccharts-EKZS3j {
-  margin-bottom: 0;
   font-weight: 600;
   font-size: 16px;
 }
 .a8ccharts-8tyaQj .a8ccharts-v85A8- {
-  margin-top: 0;
   font-size: 14px;
 }
 

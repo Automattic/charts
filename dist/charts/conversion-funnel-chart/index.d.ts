@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { B as BaseChartProps } from '../../types-DOQK1ctx.js';
+import { B as BaseChartProps } from '../../types-CzdN7rUe.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -9,6 +9,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 /**

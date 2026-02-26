@@ -1,7 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { FC } from 'react';
-import { B as BaseChartProps, G as GeoData } from '../../types-DOQK1ctx.js';
+import { B as BaseChartProps, G as GeoData } from '../../types-CzdN7rUe.js';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -11,6 +11,7 @@ import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@visx/xychart';
+import '@wordpress/theme';
 import 'react-google-charts';
 
 /**
