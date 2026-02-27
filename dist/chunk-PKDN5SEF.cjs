@@ -4,10 +4,10 @@
 var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
-var _chunkUFRBUT2Dcjs = require('./chunk-UFRBUT2D.cjs');
-
-
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
+
+
+var _chunkUFRBUT2Dcjs = require('./chunk-UFRBUT2D.cjs');
 
 
 
@@ -608,4 +608,4 @@ var BarChartResponsive = _chunkZVGEDXDPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-X7JL2NYJ.cjs.map
+//# sourceMappingURL=chunk-PKDN5SEF.cjs.map
