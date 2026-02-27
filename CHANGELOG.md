@@ -5,20 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.56.6-alpha] - unreleased
+## [0.56.7-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Improve AI agent documentation and validation workflow for chart development.
-- Simplify relocated portal positioning with CSS inset shorthand
 - Standardize chart documentation structure: add Responsive Behavior and Legends as standard sections, remove Browser Compatibility and Performance Considerations sections, and align all chart docs to established template.
-- Update package dependencies.
+
+## [0.56.6] - 2026-02-26
+### Changed
+- Simplify relocated portal positioning with CSS inset shorthand. [#47220]
+- Update package dependencies. [#47285] [#47300] [#47309]
 
 ### Fixed
-- Charts: fix chart height and size calculations for Pie Chart and variants.
-- Charts: fix PieSemiCircleChart height and size calculations to be responsive by default, maintaining 2:1 width-to-height ratio.
-- Tooltip: prevent flash at origin before visx calculates correct position.
+- Fix chart height and size calculations for Pie Chart and variants. [#47074]
+- Fix `PieSemiCircleChart` height and size calculations to be responsive by default, maintaining 2:1 width-to-height ratio. [#47312]
+- Tooltip: Prevent flash at origin before visx calculates correct position. [#47189]
 
 ## [0.56.5] - 2026-02-23
 ### Changed
@@ -713,7 +716,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[0.56.6-alpha]: https://github.com/Automattic/charts/compare/v0.56.5...v0.56.6-alpha
+[0.56.7-alpha]: https://github.com/Automattic/charts/compare/v0.56.6...v0.56.7-alpha
+[0.56.6]: https://github.com/Automattic/charts/compare/v0.56.5...v0.56.6
 [0.56.5]: https://github.com/Automattic/charts/compare/v0.56.4...v0.56.5
 [0.56.4]: https://github.com/Automattic/charts/compare/v0.56.3...v0.56.4
 [0.56.3]: https://github.com/Automattic/charts/compare/v0.56.2...v0.56.3
