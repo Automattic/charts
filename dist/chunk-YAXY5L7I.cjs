@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkL2VQ7GIYcjs = require('./chunk-L2VQ7GIY.cjs');
+var _chunkO2JIANHKcjs = require('./chunk-O2JIANHK.cjs');
 
 
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
@@ -128,7 +128,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
     ref,
     className: _clsx2.default.call(void 0, "sparkline", sparkline_module_default.sparkline, className),
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkL2VQ7GIYcjs.LineChart, {
+    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkO2JIANHKcjs.LineChart, {
       data: seriesWithGradient,
       width,
       height,
@@ -162,4 +162,4 @@ var Sparkline = _chunkASLARV7Lcjs.withResponsive.call(void 0, SparklineUnrespons
 
 
 exports.SparklineUnresponsive = SparklineUnresponsive; exports.Sparkline = Sparkline;
-//# sourceMappingURL=chunk-PSK2FSJ5.cjs.map
+//# sourceMappingURL=chunk-YAXY5L7I.cjs.map
