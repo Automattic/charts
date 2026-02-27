@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Improve AI agent documentation and validation workflow for chart development.
 - Simplify relocated portal positioning with CSS inset shorthand
+- Standardize chart documentation structure: add Responsive Behavior and Legends as standard sections, remove Browser Compatibility and Performance Considerations sections, and align all chart docs to established template.
 - Update package dependencies.
 
 ### Fixed
