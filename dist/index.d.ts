@@ -3,7 +3,7 @@ export { BarListChart, BarListChartUnresponsive } from './charts/bar-list-chart/
 export { ConversionFunnelChart } from './charts/conversion-funnel-chart/index.js';
 export { A as AnnotationStyles, B as BaseChartProps, a as ButtonWithPopover, C as ChartTheme, b as CompleteChartTheme, D as DataPoint, c as DataPointDate, d as DataPointPercentage, G as GeoData, e as GradientStop, f as GridProps, L as LeaderboardEntry, M as MultipleDataPointsDate, O as Optional, g as OrientationType, P as PopoverButtonAttributes, h as PopoverElement, i as PopoverElementAttributes, S as ScaleOptions, j as SeriesData, k as SeriesDataOptions, T as ToggleEvent } from './types-CzdN7rUe.js';
 export { GeoChart, GeoChartProps, GeoChartUnresponsive, GeoRegion, GeoResolution } from './charts/geo-chart/index.js';
-export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-BSgEw_Um.js';
+export { L as LeaderboardChart, a as LeaderboardChartUnresponsive } from './leaderboard-chart-DiChkf4H.js';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
 export { L as Legend } from './legend-jjMmhSg3.js';
 export { LegendValueDisplay, useChartLegendItems } from './components/legend/index.js';

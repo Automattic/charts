@@ -309,18 +309,19 @@
 
 /* esbuild-sass-plugin:css-chunk:src/charts/leaderboard-chart/leaderboard-chart.module.scss */
 .a8ccharts-V3NYDq {
-  display: flex;
-  flex-direction: column;
   transition: opacity 0.3s ease-in-out;
 }
-.a8ccharts-9sUdJT {
-  flex-direction: column-reverse;
-}
-.a8ccharts-768THZ {
-  gap: 16px;
+.a8ccharts-WHNERS {
+  height: 100%;
+  width: 100%;
 }
 .a8ccharts-JQbl6A {
   opacity: 0.5;
+}
+.a8ccharts-Ml1kKc {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 .a8ccharts-ETItHW {
   display: grid;
@@ -356,8 +357,6 @@
   }
 }
 .a8ccharts-B6VcRn {
-  display: flex;
-  gap: 4px;
   justify-content: flex-end;
 }
 .a8ccharts-GB7tyM {

@@ -1,4 +1,4 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-BSgEw_Um.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-DiChkf4H.js';
 import { L as LeaderboardEntry } from '../../types-CzdN7rUe.js';
 export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.js';
 import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
