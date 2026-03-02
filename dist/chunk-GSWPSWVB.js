@@ -1,17 +1,14 @@
 import {
-  getStringWidth
-} from "./chunk-NFRB2POF.js";
-import {
   radial_wipe_animation_default
 } from "./chunk-KXRWNFQJ.js";
+import {
+  getStringWidth
+} from "./chunk-NFRB2POF.js";
 import {
   ChartHTML,
   ChartSVG,
   useChartChildren
 } from "./chunk-6CCZL2JJ.js";
-import {
-  BaseTooltip
-} from "./chunk-BPYKWMI7.js";
 import {
   Stack
 } from "./chunk-IS5YYLTV.js";
@@ -35,6 +32,9 @@ import {
 import {
   attachSubComponents
 } from "./chunk-TE63Y5PX.js";
+import {
+  BaseTooltip
+} from "./chunk-BPYKWMI7.js";
 
 // src/charts/pie-chart/pie-chart.tsx
 import { Group } from "@visx/group";
@@ -398,4 +398,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-7FDQGBY7.js.map
+//# sourceMappingURL=chunk-GSWPSWVB.js.map
