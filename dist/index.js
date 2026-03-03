@@ -25,6 +25,9 @@ import {
   TrendIndicator
 } from "./chunk-XWYZIFZW.js";
 import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-YYVBW3XY.js";
+import {
   BarListChart,
   BarListChartResponsive
 } from "./chunk-IHAM5KCH.js";
@@ -35,9 +38,6 @@ import {
 import {
   BaseTooltip
 } from "./chunk-BPYKWMI7.js";
-import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-YYVBW3XY.js";
 import "./chunk-Z26M4V2M.js";
 import {
   GeoChartResponsive,
