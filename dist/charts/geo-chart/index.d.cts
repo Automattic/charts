@@ -1,7 +1,7 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { FC } from 'react';
-import { B as BaseChartProps, G as GeoData } from '../../types-CzdN7rUe.cjs';
+import { B as BaseChartProps, G as GeoData } from '../../types-DZordNiO.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
