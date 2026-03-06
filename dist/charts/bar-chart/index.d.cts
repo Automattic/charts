@@ -1,9 +1,9 @@
-import { L as Legend } from '../../legend-C9ahiwOt.cjs';
+import { L as Legend } from '../../legend-C9rjQsgY.cjs';
 import { O as Optional, B as BaseChartProps, j as SeriesData, c as DataPointDate } from '../../types-DZordNiO.cjs';
 import { FC, ReactNode, ComponentType } from 'react';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import '../../types-C05PdDJa.cjs';
+import '../../types-rG19BIbu.cjs';
 import '@visx/legend';
 import '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';

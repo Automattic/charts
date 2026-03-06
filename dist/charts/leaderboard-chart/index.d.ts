@@ -1,7 +1,7 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-vV89LajX.js';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-CMFcSCMC.js';
 import { L as LeaderboardEntry } from '../../types-DZordNiO.js';
 export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.js';
-import { B as BaseLegendItem } from '../../types-C05PdDJa.js';
+import { B as BaseLegendItem } from '../../types-rG19BIbu.js';
 import 'react/jsx-runtime';
 import '../../with-responsive-CNfhzAUu.js';
 import 'react';

@@ -1,17 +1,17 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkOM2G4XAJcjs = require('../../chunk-OM2G4XAJ.cjs');
+var _chunkSUIFNQE5cjs = require('../../chunk-SUIFNQE5.cjs');
 require('../../chunk-2A34OA5O.cjs');
 require('../../chunk-RCY6XLGU.cjs');
 require('../../chunk-Y3NNQMAX.cjs');
 require('../../chunk-I35UYJJR.cjs');
 require('../../chunk-ASLARV7L.cjs');
-require('../../chunk-N3VZKO2Q.cjs');
+require('../../chunk-ZMKLYXJN.cjs');
 require('../../chunk-VTS3PNMS.cjs');
 require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.PieSemiCircleChart = _chunkOM2G4XAJcjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkOM2G4XAJcjs.PieSemiCircleChart;
+exports.PieSemiCircleChart = _chunkSUIFNQE5cjs.PieSemiCircleChartResponsive; exports.PieSemiCircleChartUnresponsive = _chunkSUIFNQE5cjs.PieSemiCircleChart;
 //# sourceMappingURL=index.cjs.map
