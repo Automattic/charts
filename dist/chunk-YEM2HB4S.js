@@ -1,48 +1,48 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _chunkI35UYJJRcjs = require('./chunk-I35UYJJR.cjs');
-
-
-var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
-
-
-
-
-
-
-
-
-
-
-var _chunk4BAOQYIOcjs = require('./chunk-4BAOQYIO.cjs');
-
-
-
-var _chunkVTS3PNMScjs = require('./chunk-VTS3PNMS.cjs');
-
-
-
-
-var _chunkEMMSS5I5cjs = require('./chunk-EMMSS5I5.cjs');
+import {
+  useChartChildren
+} from "./chunk-6CCZL2JJ.js";
+import {
+  Children,
+  Fragment,
+  Stack,
+  cloneElement,
+  createContext,
+  createElement,
+  forwardRef,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "./chunk-Z26M4V2M.js";
+import {
+  withResponsive
+} from "./chunk-OP6PHB2U.js";
+import {
+  GlobalChartsContext,
+  GlobalChartsProvider,
+  Legend,
+  SingleChartContext,
+  useChartId,
+  useChartRegistration,
+  useGlobalChartsContext,
+  useGlobalChartsTheme,
+  usePrefersReducedMotion
+} from "./chunk-2JHA5FMW.js";
+import {
+  attachSubComponents,
+  formatMetricValue
+} from "./chunk-DAU3HNEG.js";
+import {
+  __commonJS,
+  __export,
+  __toESM
+} from "./chunk-G3PMV62Z.js";
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js
-var require_react_is_production_min = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is_production_min = __commonJS({
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js"(exports) {
     "use strict";
     var b2 = "function" === typeof Symbol && Symbol.for;
@@ -155,7 +155,7 @@ var require_react_is_production_min = _chunkEMMSS5I5cjs.__commonJS.call(void 0, 
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js
-var require_react_is_development = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is_development = __commonJS({
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js"(exports) {
     "use strict";
     if (process.env.NODE_ENV !== "production") {
@@ -310,7 +310,7 @@ var require_react_is_development = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js
-var require_react_is = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is = __commonJS({
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV === "production") {
@@ -322,7 +322,7 @@ var require_react_is = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
 });
 
 // ../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_hoist_non_react_statics_cjs = __commonJS({
   "../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js"(exports, module) {
     "use strict";
     var reactIs = require_react_is();
@@ -410,7 +410,7 @@ var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void
 });
 
 // ../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js
-var require_dist = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_dist = __commonJS({
   "../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js"(exports, module) {
     module.exports = /******/
     (function(modules) {
@@ -627,21 +627,21 @@ function replace(input, re, value) {
 }
 
 // ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
-var _tslib = require('tslib');
+import { __assign } from "tslib";
 function dotCase(input, options) {
   if (options === void 0) {
     options = {};
   }
-  return noCase(input, _tslib.__assign.call(void 0, { delimiter: "." }, options));
+  return noCase(input, __assign({ delimiter: "." }, options));
 }
 
 // ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
-
+import { __assign as __assign2 } from "tslib";
 function paramCase(input, options) {
   if (options === void 0) {
     options = {};
   }
-  return dotCase(input, _tslib.__assign.call(void 0, { delimiter: "-" }, options));
+  return dotCase(input, __assign2({ delimiter: "-" }, options));
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/values.mjs
@@ -651,23 +651,23 @@ function isValueDefined(value) {
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
-  const mountedRef = _chunkI35UYJJRcjs.useRef.call(void 0, false);
-  _chunkI35UYJJRcjs.useEffect.call(void 0, () => {
+  const mountedRef = useRef(false);
+  useEffect(() => {
     if (mountedRef.current) {
       return effect();
     }
     mountedRef.current = true;
     return void 0;
   }, deps);
-  _chunkI35UYJJRcjs.useEffect.call(void 0, () => () => {
+  useEffect(() => () => {
     mountedRef.current = false;
   }, []);
 }
 var use_update_effect_default = useUpdateEffect;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
-var _react = require('react'); var React2 = _interopRequireWildcard(_react); var React = _interopRequireWildcard(_react); var React3 = _interopRequireWildcard(_react); var React4 = _interopRequireWildcard(_react);
-
+import * as React2 from "react";
+import { useContext as useContext3, forwardRef as forwardRef3 } from "react";
 
 // ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
 var isDevelopment = false;
@@ -1526,7 +1526,7 @@ var createCache = function createCache2(options) {
 };
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
-var _extends3 = require('@babel/runtime/helpers/esm/extends'); var _extends4 = _interopRequireDefault(_extends3);
+import _extends from "@babel/runtime/helpers/esm/extends";
 
 // ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.esm.js
 var isBrowser2 = typeof document !== "undefined";
@@ -1834,7 +1834,7 @@ function serializeStyles(args, registered, mergedProps) {
 }
 
 // ../../../node_modules/.pnpm/@emotion+use-insertion-effect-with-fallbacks@1.2.0_react@18.3.1/node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.esm.js
-
+import * as React from "react";
 var isBrowser3 = typeof document !== "undefined";
 var syncFallback = function syncFallback2(create) {
   return create();
@@ -1858,18 +1858,18 @@ var EmotionCacheContext = /* @__PURE__ */ React2.createContext(
 );
 var CacheProvider = EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
-  return _react.useContext.call(void 0, EmotionCacheContext);
+  return useContext3(EmotionCacheContext);
 };
 var withEmotionCache = function withEmotionCache2(func) {
-  return /* @__PURE__ */ _react.forwardRef.call(void 0, function(props, ref) {
-    var cache2 = _react.useContext.call(void 0, EmotionCacheContext);
+  return /* @__PURE__ */ forwardRef3(function(props, ref) {
+    var cache2 = useContext3(EmotionCacheContext);
     return func(props, cache2, ref);
   });
 };
 if (!isBrowser4) {
   withEmotionCache = function withEmotionCache3(func) {
     return function(props) {
-      var cache2 = _react.useContext.call(void 0, EmotionCacheContext);
+      var cache2 = useContext3(EmotionCacheContext);
       if (cache2 === null) {
         cache2 = createCache({
           key: "css"
@@ -1950,9 +1950,9 @@ var Emotion = /* @__PURE__ */ withEmotionCache(function(props, cache2, ref) {
 var Emotion$1 = Emotion;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-react.esm.js
-
-require('@babel/runtime/helpers/extends');
-var import_hoist_non_react_statics = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_hoist_non_react_statics_cjs());
+import * as React3 from "react";
+import "@babel/runtime/helpers/extends";
+var import_hoist_non_react_statics = __toESM(require_hoist_non_react_statics_cjs());
 var jsx = function jsx2(type, props) {
   var args = arguments;
   if (props == null || !hasOwn.call(props, "css")) {
@@ -2107,7 +2107,7 @@ var cache = _createEmotion.cache;
 var isSerializedStyles = (o2) => typeof o2 !== "undefined" && o2 !== null && ["name", "styles"].every((p2) => typeof o2[p2] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
-  const cx2 = _chunkI35UYJJRcjs.useCallback.call(void 0, (...classNames) => {
+  const cx2 = useCallback((...classNames) => {
     if (cache2 === null) {
       throw new Error("The `useCx` hook should be only used within a valid Emotion Cache Context");
     }
@@ -2419,7 +2419,7 @@ function _getComputedBackgroundColor(backgroundColor) {
     return "";
   }
   el.style.background = backgroundColor;
-  const computedColor = _optionalChain([window, 'optionalAccess', _ => _.getComputedStyle, 'call', _2 => _2(el), 'access', _3 => _3.background]);
+  const computedColor = window?.getComputedStyle(el).background;
   el.style.background = "";
   return computedColor || "";
 }
@@ -2583,13 +2583,13 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 });
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-var _deepmerge = require('deepmerge'); var _deepmerge2 = _interopRequireDefault(_deepmerge);
-var _indexjs = require('fast-deep-equal/es6/index.js'); var _indexjs2 = _interopRequireDefault(_indexjs);
+import deepmerge from "deepmerge";
+import fastDeepEqual from "fast-deep-equal/es6/index.js";
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.40.0/node_modules/@wordpress/warning/build-module/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.41.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.40.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.41.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
   return globalThis.SCRIPT_DEBUG === true;
 }
@@ -2609,29 +2609,29 @@ function warning(message) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-var _jsxruntime = require('react/jsx-runtime');
-var ComponentsContext = _chunkI35UYJJRcjs.createContext.call(void 0, 
+import { jsx as _jsx } from "react/jsx-runtime";
+var ComponentsContext = createContext(
   /** @type {Record<string, any>} */
   {}
 );
 ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => _chunkI35UYJJRcjs.useContext.call(void 0, ComponentsContext);
+var useComponentsContext = () => useContext(ComponentsContext);
 function useContextSystemBridge({
   value
 }) {
   const parentContext = useComponentsContext();
-  const valueRef = _chunkI35UYJJRcjs.useRef.call(void 0, value);
+  const valueRef = useRef(value);
   use_update_effect_default(() => {
     if (
       // Objects are equivalent.
-      _indexjs2.default.call(void 0, valueRef.current, value) && // But not the same reference.
+      fastDeepEqual(valueRef.current, value) && // But not the same reference.
       valueRef.current !== value
     ) {
       globalThis.SCRIPT_DEBUG === true ? warning(`Please memoize your context: ${JSON.stringify(value)}`) : void 0;
     }
   }, [value]);
-  const config = _chunkI35UYJJRcjs.useMemo.call(void 0, () => {
-    return _deepmerge2.default.call(void 0, _nullishCoalesce(parentContext, () => ( {})), _nullishCoalesce(value, () => ( {})), {
+  const config = useMemo(() => {
+    return deepmerge(parentContext ?? {}, value ?? {}, {
       isMergeableObject: isPlainObject
     });
   }, [parentContext, value]);
@@ -2644,12 +2644,12 @@ var BaseContextSystemProvider = ({
   const contextValue = useContextSystemBridge({
     value
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ComponentsContext.Provider, {
+  return /* @__PURE__ */ _jsx(ComponentsContext.Provider, {
     value: contextValue,
     children
   });
 };
-var ContextSystemProvider = _chunkI35UYJJRcjs.memo.call(void 0, BaseContextSystemProvider);
+var ContextSystemProvider = memo(BaseContextSystemProvider);
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
@@ -2670,7 +2670,7 @@ function contextConnect(Component, namespace) {
   });
 }
 function _contextConnect(Component, namespace, options) {
-  const WrappedComponent = _optionalChain([options, 'optionalAccess', _4 => _4.forwardsRef]) ? _chunkI35UYJJRcjs.forwardRef.call(void 0, Component) : Component;
+  const WrappedComponent = options?.forwardsRef ? forwardRef(Component) : Component;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -2731,7 +2731,7 @@ function useContextSystem(props, namespace) {
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("useContextSystem: Please provide a namespace") : void 0;
   }
-  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _5 => _5[namespace]]) || {};
+  const contextProps = contextSystemProps?.[namespace] || {};
   const finalComponentProps = {
     ...getConnectedNamespace(),
     ...getNamespace(namespace)
@@ -2758,8 +2758,8 @@ function useContextSystem(props, namespace) {
 }
 
 // ../../../node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1__@types+react@18.3.28_react@18.3.1/node_modules/@emotion/styled/base/dist/emotion-styled-base.esm.js
-
-
+import _extends2 from "@babel/runtime/helpers/esm/extends";
+import * as React4 from "react";
 
 // ../../../node_modules/.pnpm/@emotion+is-prop-valid@1.4.0/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
 var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
@@ -2900,7 +2900,7 @@ var createStyled = function createStyled2(tag, options) {
       }
     });
     Styled.withComponent = function(nextTag, nextOptions) {
-      var newStyled = createStyled2(nextTag, _extends4.default.call(void 0, {}, options, nextOptions, {
+      var newStyled = createStyled2(nextTag, _extends2({}, options, nextOptions, {
         shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true)
       }));
       return newStyled.apply(void 0, styles);
@@ -2910,7 +2910,7 @@ var createStyled = function createStyled2(tag, options) {
 };
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
-
+import { jsx as _jsx2 } from "react/jsx-runtime";
 var PolymorphicDiv = /* @__PURE__ */ createStyled("div", process.env.NODE_ENV === "production" ? {
   target: "e19lxcc00"
 } : {
@@ -2921,13 +2921,13 @@ function UnforwardedView({
   as,
   ...restProps
 }, ref) {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PolymorphicDiv, {
+  return /* @__PURE__ */ _jsx2(PolymorphicDiv, {
     as,
     ref,
     ...restProps
   });
 }
-var View = Object.assign(_chunkI35UYJJRcjs.forwardRef.call(void 0, UnforwardedView), {
+var View = Object.assign(forwardRef(UnforwardedView), {
   selector: ".components-view"
 });
 var component_default = View;
@@ -2943,8 +2943,8 @@ var useBreakpointIndex = (options = {}) => {
   } else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) {
     throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
   }
-  const [value, setValue] = _chunkI35UYJJRcjs.useState.call(void 0, defaultIndex);
-  _chunkI35UYJJRcjs.useEffect.call(void 0, () => {
+  const [value, setValue] = useState(defaultIndex);
+  useEffect(() => {
     const getIndex = () => breakpoints.filter((bp) => {
       return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
     }).length;
@@ -2985,7 +2985,7 @@ function space(value) {
     return "0";
   }
   const asInt = typeof value === "number" ? value : Number(value);
-  if (typeof window !== "undefined" && _optionalChain([window, 'access', _6 => _6.CSS, 'optionalAccess', _7 => _7.supports, 'optionalCall', _8 => _8("margin", value.toString())]) || Number.isNaN(asInt)) {
+  if (typeof window !== "undefined" && window.CSS?.supports?.("margin", value.toString()) || Number.isNaN(asInt)) {
     return value.toString();
   }
   return `calc(${GRID_BASE} * ${value})`;
@@ -3091,7 +3091,7 @@ function useTruncate(props) {
     numberOfLines
   }) : children;
   const shouldTruncate = !!childrenAsText && ellipsizeMode === TRUNCATE_TYPE.auto;
-  const classes = _chunkI35UYJJRcjs.useMemo.call(void 0, () => {
+  const classes = useMemo(() => {
     const truncateLines = /* @__PURE__ */ css(numberOfLines === 1 ? "word-break: break-all;" : "", " -webkit-box-orient:vertical;-webkit-line-clamp:", numberOfLines, ";display:-webkit-box;overflow:hidden;" + (process.env.NODE_ENV === "production" ? "" : ";label:truncateLines;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBMEQyQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBUUlVOQ0FURV9FTExJUFNJUywgVFJVTkNBVEVfVFlQRSwgdHJ1bmNhdGVDb250ZW50IH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyB1c2VDeCB9IGZyb20gJy4uL3V0aWxzL2hvb2tzL3VzZS1jeCc7XG5pbXBvcnQgdHlwZSB7IFRydW5jYXRlUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlVHJ1bmNhdGUoXG5cdHByb3BzOiBXb3JkUHJlc3NDb21wb25lbnRQcm9wczwgVHJ1bmNhdGVQcm9wcywgJ3NwYW4nID5cbikge1xuXHRjb25zdCB7XG5cdFx0Y2xhc3NOYW1lLFxuXHRcdGNoaWxkcmVuLFxuXHRcdGVsbGlwc2lzID0gVFJVTkNBVEVfRUxMSVBTSVMsXG5cdFx0ZWxsaXBzaXplTW9kZSA9IFRSVU5DQVRFX1RZUEUuYXV0byxcblx0XHRsaW1pdCA9IDAsXG5cdFx0bnVtYmVyT2ZMaW5lcyA9IDAsXG5cdFx0Li4ub3RoZXJQcm9wc1xuXHR9ID0gdXNlQ29udGV4dFN5c3RlbSggcHJvcHMsICdUcnVuY2F0ZScgKTtcblxuXHRjb25zdCBjeCA9IHVzZUN4KCk7XG5cblx0bGV0IGNoaWxkcmVuQXNUZXh0O1xuXHRpZiAoIHR5cGVvZiBjaGlsZHJlbiA9PT0gJ3N0cmluZycgKSB7XG5cdFx0Y2hpbGRyZW5Bc1RleHQgPSBjaGlsZHJlbjtcblx0fSBlbHNlIGlmICggdHlwZW9mIGNoaWxkcmVuID09PSAnbnVtYmVyJyApIHtcblx0XHRjaGlsZHJlbkFzVGV4dCA9IGNoaWxkcmVuLnRvU3RyaW5nKCk7XG5cdH1cblxuXHRjb25zdCB0cnVuY2F0ZWRDb250ZW50ID0gY2hpbGRyZW5Bc1RleHRcblx0XHQ/IHRydW5jYXRlQ29udGVudCggY2hpbGRyZW5Bc1RleHQsIHtcblx0XHRcdFx0ZWxsaXBzaXMsXG5cdFx0XHRcdGVsbGlwc2l6ZU1vZGUsXG5cdFx0XHRcdGxpbWl0LFxuXHRcdFx0XHRudW1iZXJPZkxpbmVzLFxuXHRcdCAgfSApXG5cdFx0OiBjaGlsZHJlbjtcblxuXHRjb25zdCBzaG91bGRUcnVuY2F0ZSA9XG5cdFx0ISEgY2hpbGRyZW5Bc1RleHQgJiYgZWxsaXBzaXplTW9kZSA9PT0gVFJVTkNBVEVfVFlQRS5hdXRvO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Ly8gVGhlIGB3b3JkLWJyZWFrOiBicmVhay1hbGxgIHByb3BlcnR5IGZpcnN0IG1ha2VzIHN1cmUgYSB0ZXh0IGxpbmVcblx0XHQvLyBicmVha3MgZXZlbiB3aGVuIGl0IGNvbnRhaW5zICd1bmJyZWFrYWJsZScgY29udGVudCBzdWNoIGFzIGxvbmcgVVJMcy5cblx0XHQvLyBTZWUgaHR0cHM6Ly9naXRodWIuY29tL1dvcmRQcmVzcy9ndXRlbmJlcmcvaXNzdWVzLzYwODYwLlxuXHRcdGNvbnN0IHRydW5jYXRlTGluZXMgPSBjc3NgXG5cdFx0XHQkeyBudW1iZXJPZkxpbmVzID09PSAxID8gJ3dvcmQtYnJlYWs6IGJyZWFrLWFsbDsnIDogJycgfVxuXHRcdFx0LXdlYmtpdC1ib3gtb3JpZW50OiB2ZXJ0aWNhbDtcblx0XHRcdC13ZWJraXQtbGluZS1jbGFtcDogJHsgbnVtYmVyT2ZMaW5lcyB9O1xuXHRcdFx0ZGlzcGxheTogLXdlYmtpdC1ib3g7XG5cdFx0XHRvdmVyZmxvdzogaGlkZGVuO1xuXHRcdGA7XG5cblx0XHRyZXR1cm4gY3goXG5cdFx0XHRzaG91bGRUcnVuY2F0ZSAmJiAhIG51bWJlck9mTGluZXMgJiYgc3R5bGVzLlRydW5jYXRlLFxuXHRcdFx0c2hvdWxkVHJ1bmNhdGUgJiYgISEgbnVtYmVyT2ZMaW5lcyAmJiB0cnVuY2F0ZUxpbmVzLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgWyBjbGFzc05hbWUsIGN4LCBudW1iZXJPZkxpbmVzLCBzaG91bGRUcnVuY2F0ZSBdICk7XG5cblx0cmV0dXJuIHsgLi4ub3RoZXJQcm9wcywgY2xhc3NOYW1lOiBjbGFzc2VzLCBjaGlsZHJlbjogdHJ1bmNhdGVkQ29udGVudCB9O1xufVxuIl19 */");
     return cx2(shouldTruncate && !numberOfLines && Truncate, shouldTruncate && !!numberOfLines && truncateLines, className);
   }, [className, cx2, numberOfLines, shouldTruncate]);
@@ -3104,7 +3104,7 @@ function useTruncate(props) {
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/styles.mjs
 var styles_exports2 = {};
-_chunkEMMSS5I5cjs.__export.call(void 0, styles_exports2, {
+__export(styles_exports2, {
   Text: () => Text,
   block: () => block,
   destructive: () => destructive,
@@ -3139,7 +3139,7 @@ var upperCase = process.env.NODE_ENV === "production" ? {
 };
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/utils.mjs
-var import_highlight_words_core = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_dist(), 1);
+var import_highlight_words_core = __toESM(require_dist(), 1);
 var lowercaseProps = (object) => {
   const mapped = {};
   for (const key in object) {
@@ -3210,9 +3210,9 @@ function createHighlighterText({
       if (typeof HighlightTag !== "string") {
         props.highlightIndex = highlightIndex;
       }
-      return _chunkI35UYJJRcjs.createElement.call(void 0, HighlightTag, props);
+      return createElement(HighlightTag, props);
     }
-    return _chunkI35UYJJRcjs.createElement.call(void 0, "span", {
+    return createElement("span", {
       children: text,
       className: unhighlightClassName,
       key: index,
@@ -3326,7 +3326,7 @@ function useText(props) {
     });
   }
   const cx2 = useCx();
-  const classes = _chunkI35UYJJRcjs.useMemo.call(void 0, () => {
+  const classes = useMemo(() => {
     const sx = {};
     const lineHeight = getLineHeight(adjustLineHeightForInnerControls, lineHeightProp);
     sx.Base = /* @__PURE__ */ css({
@@ -3365,13 +3365,13 @@ function useText(props) {
   };
   const truncateProps = useTruncate(finalComponentProps);
   if (!truncate && Array.isArray(children)) {
-    content = _chunkI35UYJJRcjs.Children.map(children, (child) => {
+    content = Children.map(children, (child) => {
       if (typeof child !== "object" || child === null || !("props" in child)) {
         return child;
       }
       const isLink = hasConnectNamespace(child, ["Link"]);
       if (isLink) {
-        return _chunkI35UYJJRcjs.cloneElement.call(void 0, child, {
+        return cloneElement(child, {
           size: child.props.size || "inherit"
         });
       }
@@ -3385,10 +3385,10 @@ function useText(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/component.mjs
-
+import { jsx as _jsx3 } from "react/jsx-runtime";
 function UnconnectedText(props, forwardedRef) {
   const textProps = useText(props);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
+  return /* @__PURE__ */ _jsx3(component_default, {
     as: "span",
     ...textProps,
     ref: forwardedRef
@@ -3472,7 +3472,7 @@ function useGrid(props) {
   const gridTemplateColumns = templateColumns || !!columns && `repeat( ${column2}, 1fr )`;
   const gridTemplateRows = templateRows || !!rows && `repeat( ${row}, 1fr )`;
   const cx2 = useCx();
-  const classes = _chunkI35UYJJRcjs.useMemo.call(void 0, () => {
+  const classes = useMemo(() => {
     const alignmentProps = getAlignmentProps(alignment);
     const gridClasses = /* @__PURE__ */ css({
       alignItems: align,
@@ -3495,10 +3495,10 @@ function useGrid(props) {
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.2.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
-
+import { jsx as _jsx4 } from "react/jsx-runtime";
 function UnconnectedGrid(props, forwardedRef) {
   const gridProps = useGrid(props);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
+  return /* @__PURE__ */ _jsx4(component_default, {
     ...gridProps,
     ref: forwardedRef
   });
@@ -3507,13 +3507,13 @@ var Grid = contextConnect(UnconnectedGrid, "Grid");
 var component_default3 = Grid;
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
-var _i18n = require('@wordpress/i18n');
-var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
-
+import { __ as __2 } from "@wordpress/i18n";
+import clsx from "clsx";
+import { useContext as useContext6, useMemo as useMemo3 } from "react";
 
 // src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
-
-
+import { __ } from "@wordpress/i18n";
+import { useMemo as useMemo2 } from "react";
 function useLeaderboardLegendItems({
   data,
   primaryColor,
@@ -3522,9 +3522,9 @@ function useLeaderboardLegendItems({
   withOverlayLabel = false,
   legendLabels
 }) {
-  const { leaderboardChart: leaderboardChartSettings } = _chunk4BAOQYIOcjs.useGlobalChartsTheme.call(void 0, );
-  const { getElementStyles } = _chunk4BAOQYIOcjs.useGlobalChartsContext.call(void 0, );
-  return _react.useMemo.call(void 0, () => {
+  const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
+  const { getElementStyles } = useGlobalChartsContext();
+  return useMemo2(() => {
     if (!data || data.length === 0) {
       return [];
     }
@@ -3534,7 +3534,7 @@ function useLeaderboardLegendItems({
       overrideColor: primaryColor || leaderboardChartSettings.primaryColor
     });
     items.push({
-      label: _optionalChain([legendLabels, 'optionalAccess', _9 => _9.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
+      label: legendLabels?.primary || __("Current period", "jetpack-charts"),
       color: resolvedPrimaryColor
     });
     if (withComparison && !withOverlayLabel) {
@@ -3543,7 +3543,7 @@ function useLeaderboardLegendItems({
         overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
       });
       items.push({
-        label: _optionalChain([legendLabels, 'optionalAccess', _10 => _10.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
+        label: legendLabels?.comparison || __("Previous period", "jetpack-charts"),
         color: resolvedSecondaryColor
       });
     }
@@ -3578,23 +3578,23 @@ var leaderboard_chart_module_default = {
 };
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
-
+import { jsx as _jsx5, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 var defaultValueFormatter = (value) => {
-  return _chunkVTS3PNMScjs.formatMetricValue.call(void 0, value, "number", {
+  return formatMetricValue(value, "number", {
     useMultipliers: true,
     decimals: 1
   });
 };
 var defaultDeltaFormatter = (value) => {
-  return _chunkVTS3PNMScjs.formatMetricValue.call(void 0, value / 100, "average", {
+  return formatMetricValue(value / 100, "average", {
     decimals: 0,
     signDisplay: "exceptZero"
   });
 };
 var BarLabel = ({
   label
-}) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
-  children: typeof label === "string" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+}) => /* @__PURE__ */ _jsx5(_Fragment, {
+  children: typeof label === "string" ? /* @__PURE__ */ _jsx5(component_default2, {
     className: leaderboard_chart_module_default.label,
     children: label
   }) : label
@@ -3608,22 +3608,22 @@ var BarWithLabel = ({
   animation,
   isPrimaryVisible = true,
   isComparisonVisible = true
-}) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
-  className: _clsx2.default.call(void 0, leaderboard_chart_module_default.barWithLabelContainer, {
+}) => /* @__PURE__ */ _jsxs("div", {
+  className: clsx(leaderboard_chart_module_default.barWithLabelContainer, {
     [leaderboard_chart_module_default["is-overlay"]]: withOverlayLabel
   }),
-  children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarLabel, {
+  children: [/* @__PURE__ */ _jsx5(BarLabel, {
     label: entry.label
-  }), isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-    className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
+  }), isPrimaryVisible && /* @__PURE__ */ _jsx5("div", {
+    className: clsx(leaderboard_chart_module_default.bar, {
       [leaderboard_chart_module_default["bar--animated"]]: animation
     }),
     style: {
       width: entry.currentShare + "%",
       backgroundColor: primaryColor
     }
-  }), withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-    className: _clsx2.default.call(void 0, leaderboard_chart_module_default.bar, {
+  }), withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ _jsx5("div", {
+    className: clsx(leaderboard_chart_module_default.bar, {
       [leaderboard_chart_module_default["bar--animated"]]: animation
     }),
     style: {
@@ -3658,10 +3658,10 @@ var LeaderboardChartInternal = ({
   style,
   children
 }) => {
-  const chartId = _chunk4BAOQYIOcjs.useChartId.call(void 0, providedChartId);
+  const chartId = useChartId(providedChartId);
   const {
     leaderboardChart: leaderboardChartSettings
-  } = _chunk4BAOQYIOcjs.useGlobalChartsTheme.call(void 0, );
+  } = useGlobalChartsTheme();
   const legendShapeStyles = {
     width: 8,
     height: 8,
@@ -3669,7 +3669,7 @@ var LeaderboardChartInternal = ({
   };
   const {
     otherChildren
-  } = _chunkRCY6XLGUcjs.useChartChildren.call(void 0, children, "LeaderboardChart");
+  } = useChartChildren(children, "LeaderboardChart");
   const {
     labelSpacing,
     rowGap,
@@ -3681,7 +3681,7 @@ var LeaderboardChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunk4BAOQYIOcjs.useGlobalChartsContext.call(void 0, );
+  } = useGlobalChartsContext();
   const {
     color: resolvedPrimaryColor
   } = getElementStyles({
@@ -3702,19 +3702,19 @@ var LeaderboardChartInternal = ({
     withOverlayLabel,
     legendLabels
   });
-  const isPrimaryVisible = _react.useMemo.call(void 0, () => {
+  const isPrimaryVisible = useMemo3(() => {
     if (!chartId || !legendInteractive || legendItems.length === 0) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[0].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const isComparisonVisible = _react.useMemo.call(void 0, () => {
+  const isComparisonVisible = useMemo3(() => {
     if (!chartId || !legendInteractive || legendItems.length < 2) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[1].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const allSeriesHidden = _react.useMemo.call(void 0, () => {
+  const allSeriesHidden = useMemo3(() => {
     if (!legendInteractive) return false;
     if (withComparison && !withOverlayLabel) {
       return !isPrimaryVisible && !isComparisonVisible;
@@ -3722,29 +3722,29 @@ var LeaderboardChartInternal = ({
     return !isPrimaryVisible;
   }, [legendInteractive, isPrimaryVisible, isComparisonVisible, withComparison, withOverlayLabel]);
   const isDataValid = Boolean(data && data.length > 0);
-  const chartMetadata = _react.useMemo.call(void 0, () => ({
+  const chartMetadata = useMemo3(() => ({
     withComparison,
     withOverlayLabel
   }), [withComparison, withOverlayLabel]);
-  _chunk4BAOQYIOcjs.useChartRegistration.call(void 0, {
+  useChartRegistration({
     chartId,
     legendItems,
     chartType: "leaderboard",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunk4BAOQYIOcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = usePrefersReducedMotion();
   if (!data || data.length === 0) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk4BAOQYIOcjs.SingleChartContext.Provider, {
+    return /* @__PURE__ */ _jsx5(SingleChartContext.Provider, {
       value: {
         chartId,
         chartWidth: 0,
         // LeaderboardChart doesn't need specific dimensions
         chartHeight: 0
       },
-      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI35UYJJRcjs.Stack, {
+      children: /* @__PURE__ */ _jsxs(Stack, {
         direction: "column",
-        className: _clsx2.default.call(void 0, leaderboard_chart_module_default.leaderboardChart, {
+        className: clsx(leaderboard_chart_module_default.leaderboardChart, {
           [leaderboard_chart_module_default["leaderboardChart--responsive"]]: !propWidth && !propHeight
         }, {
           [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading
@@ -3755,14 +3755,14 @@ var LeaderboardChartInternal = ({
           width: propWidth || void 0,
           height: propHeight || void 0
         },
-        children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        children: [/* @__PURE__ */ _jsx5("div", {
           className: leaderboard_chart_module_default.emptyState,
-          children: loading ? _i18n.__.call(void 0, "Loading\u2026", "jetpack-charts") : _i18n.__.call(void 0, "No data available", "jetpack-charts")
+          children: loading ? __2("Loading\u2026", "jetpack-charts") : __2("No data available", "jetpack-charts")
         }), otherChildren]
       })
     });
   }
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk4BAOQYIOcjs.Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsx5(Legend, {
     orientation: legendOrientation,
     position: legendPosition,
     alignment: legendAlignment,
@@ -3771,16 +3771,16 @@ var LeaderboardChartInternal = ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk4BAOQYIOcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsx5(SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: 0,
       // LeaderboardChart doesn't need specific dimensions
       chartHeight: 0
     },
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI35UYJJRcjs.Stack, {
+    children: /* @__PURE__ */ _jsxs(Stack, {
       direction: "column",
-      className: _clsx2.default.call(void 0, leaderboard_chart_module_default.leaderboardChart, {
+      className: clsx(leaderboard_chart_module_default.leaderboardChart, {
         [leaderboard_chart_module_default["leaderboardChart--responsive"]]: !propWidth && !propHeight,
         [leaderboard_chart_module_default["leaderboardChart--loading"]]: loading
       }, className),
@@ -3790,23 +3790,23 @@ var LeaderboardChartInternal = ({
         width: propWidth || void 0,
         height: propHeight || void 0
       },
-      children: [legendPosition === "top" && legendElement, /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+      children: [legendPosition === "top" && legendElement, /* @__PURE__ */ _jsx5("div", {
         className: leaderboard_chart_module_default.leaderboardChart__content,
-        children: allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        children: allSeriesHidden ? /* @__PURE__ */ _jsx5("div", {
           className: leaderboard_chart_module_default.emptyState,
-          children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
-        }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default3, {
+          children: __2("All series are hidden. Click legend items to show data.", "jetpack-charts")
+        }) : /* @__PURE__ */ _jsx5(component_default3, {
           templateColumns: "minmax(0, 1fr) auto",
           rowGap,
           columnGap,
           children: data.map((entry) => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = deltaColors[colorIndex];
-            return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI35UYJJRcjs.Fragment, {
-              children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkI35UYJJRcjs.Stack, {
+            return /* @__PURE__ */ _jsxs(Fragment, {
+              children: [/* @__PURE__ */ _jsx5(Stack, {
                 direction: "column",
                 gap: labelSpacing,
-                children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BarWithLabel, {
+                children: /* @__PURE__ */ _jsx5(BarWithLabel, {
                   entry,
                   withComparison,
                   withOverlayLabel,
@@ -3816,15 +3816,15 @@ var LeaderboardChartInternal = ({
                   isComparisonVisible,
                   animation: animation && !loading && !prefersReducedMotion
                 })
-              }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI35UYJJRcjs.Stack, {
+              }), /* @__PURE__ */ _jsxs(Stack, {
                 direction: "row",
                 gap: "xs",
-                className: _clsx2.default.call(void 0, leaderboard_chart_module_default.valueContainer, {
+                className: clsx(leaderboard_chart_module_default.valueContainer, {
                   [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
                 }),
-                children: [isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+                children: [isPrimaryVisible && /* @__PURE__ */ _jsx5(component_default2, {
                   children: valueFormatter(entry.currentValue)
-                }), withComparison && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+                }), withComparison && isComparisonVisible && /* @__PURE__ */ _jsx5(component_default2, {
                   style: {
                     color: deltaColor
                   },
@@ -3839,31 +3839,31 @@ var LeaderboardChartInternal = ({
   });
 };
 var LeaderboardChartWithProvider = (props) => {
-  const existingContext = _react.useContext.call(void 0, _chunk4BAOQYIOcjs.GlobalChartsContext);
+  const existingContext = useContext6(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, {
+    return /* @__PURE__ */ _jsx5(LeaderboardChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk4BAOQYIOcjs.GlobalChartsProvider, {
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LeaderboardChartInternal, {
+  return /* @__PURE__ */ _jsx5(GlobalChartsProvider, {
+    children: /* @__PURE__ */ _jsx5(LeaderboardChartInternal, {
       ...props
     })
   });
 };
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
-var LeaderboardChart = _chunkVTS3PNMScjs.attachSubComponents.call(void 0, LeaderboardChartWithProvider, {
-  Legend: _chunk4BAOQYIOcjs.Legend
+var LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, {
+  Legend
 });
-var LeaderboardChartResponsive = _chunkVTS3PNMScjs.attachSubComponents.call(void 0, _chunkASLARV7Lcjs.withResponsive.call(void 0, LeaderboardChartWithProvider), {
-  Legend: _chunk4BAOQYIOcjs.Legend
+var LeaderboardChartResponsive = attachSubComponents(withResponsive(LeaderboardChartWithProvider), {
+  Legend
 });
 
-
-
-
-
-exports.useLeaderboardLegendItems = useLeaderboardLegendItems; exports.LeaderboardChart = LeaderboardChart; exports.LeaderboardChartResponsive = LeaderboardChartResponsive;
+export {
+  useLeaderboardLegendItems,
+  LeaderboardChart,
+  LeaderboardChartResponsive
+};
 /*! Bundled license information:
 
 react-is/cjs/react-is.production.min.js:
@@ -3894,4 +3894,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-KNMYL4T4.cjs.map
+//# sourceMappingURL=chunk-YEM2HB4S.js.map
