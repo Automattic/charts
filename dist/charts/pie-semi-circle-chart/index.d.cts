@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
 import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DZordNiO.cjs';
-import { C as ChartComponentWithComposition } from '../../types-Dv1HCiNo.cjs';
+import { C as ChartComponentWithComposition } from '../../types-KtOPPzPX.cjs';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
-import '../../legend-C9rjQsgY.cjs';
-import '../../types-rG19BIbu.cjs';
+import '../../legend-C2grwnWk.cjs';
+import '../../types-I67mddpr.cjs';
 import '@visx/legend';
 import '@visx/xychart';
 import '@visx/legend/lib/types';

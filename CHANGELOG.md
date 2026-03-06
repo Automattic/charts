@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Charts: Fix leaderboard chart height calculation to include legend layout and keep responsive sizing by default.
+- Legend: Fix value rendering for falsy values (e.g. 0), guard against empty string spans, make value optional in types, and use index-based lookup for better performance.
 
 ## [0.56.7] - 2026-03-02
 ### Changed
