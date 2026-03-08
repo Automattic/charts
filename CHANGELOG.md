@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - BREAKING: Legend: Replace individual visx styling props with itemStyles, labelStyles, shapeStyles objects, rename legendItemClassName to itemClassName, add labelClassName, and move maxWidth/textOverflow into labelStyles. LeaderboardChart: replace legendShapeWidth/legendShapeHeight with legendShapeStyles.
 - Breaking: Legend theme properties (`legendShapeStyles`, `legendLabelStyles`, `legendContainerStyles`) are now nested under a `legend` object (`legend.shapeStyles`, `legend.labelStyles`, `legend.containerStyles`) in `ChartTheme`.
 - Switch to Native TypeScript compiler based on Go.
+- Update package dependencies.
 
 ### Fixed
 - Charts: Fix leaderboard chart height calculation to include legend layout and keep responsive sizing by default.
