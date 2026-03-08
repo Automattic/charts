@@ -151,8 +151,12 @@ interface EnhancedSeriesData extends Omit<SeriesData, 'data'> {
 }
 interface UseZeroValueDisplayOptions {
     enabled: boolean;
-    minValueRatio?: number;
-    maxValueRatio?: number;
+    /**
+     * The pixel length of the value axis (height for vertical charts, width for
+     * horizontal charts). Used to calculate a minimum visible value that ensures
+     * zero-value bars are at least MIN_PIXEL_HEIGHT pixels tall along that axis.
+     */
+    valueAxisLength?: number;
 }
 declare const useZeroValueDisplay: (data: SeriesData[], options?: UseZeroValueDisplayOptions) => SeriesData[] | EnhancedSeriesData[];
 
