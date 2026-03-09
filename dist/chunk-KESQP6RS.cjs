@@ -1,45 +1,45 @@
-import {
-  radial_wipe_animation_default
-} from "./chunk-KXRWNFQJ.js";
-import {
-  ChartHTML,
-  ChartSVG,
-  useChartChildren
-} from "./chunk-6CCZL2JJ.js";
-import {
-  BaseTooltip
-} from "./chunk-BPYKWMI7.js";
-import {
-  Stack
-} from "./chunk-Z26M4V2M.js";
-import {
-  withResponsive
-} from "./chunk-OP6PHB2U.js";
-import {
-  GlobalChartsContext,
-  GlobalChartsProvider,
-  Legend,
-  SingleChartContext,
-  useChartId,
-  useChartLegendItems,
-  useChartRegistration,
-  useElementSize,
-  useGlobalChartsContext,
-  useInteractiveLegendData,
-  usePrefersReducedMotion
-} from "./chunk-32DH6JDF.js";
-import {
-  attachSubComponents
-} from "./chunk-DAU3HNEG.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
+
+
+
+
+var _chunkRCY6XLGUcjs = require('./chunk-RCY6XLGU.cjs');
+
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
+
+
+var _chunkVAWWVZS3cjs = require('./chunk-VAWWVZS3.cjs');
+
+
+var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
+
+
+
+
+
+
+
+
+
+
+
+
+var _chunkRHHVEJHJcjs = require('./chunk-RHHVEJHJ.cjs');
+
+
+var _chunkVTS3PNMScjs = require('./chunk-VTS3PNMS.cjs');
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
-import { Group } from "@visx/group";
-import { Pie } from "@visx/shape";
-import { Text } from "@visx/text";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
-import { __ } from "@wordpress/i18n";
-import clsx from "clsx";
-import { useCallback, useContext, useMemo } from "react";
+var _group = require('@visx/group');
+var _shape = require('@visx/shape');
+var _text = require('@visx/text');
+var _tooltip = require('@visx/tooltip');
+var _i18n = require('@wordpress/i18n');
+var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
+var _react = require('react');
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
@@ -51,11 +51,11 @@ var pie_semi_circle_chart_module_default = {
 };
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
-import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+var _jsxruntime = require('react/jsx-runtime');
 var renderDefaultPieSemiCircleTooltip = ({
   tooltipData
 }) => {
-  return /* @__PURE__ */ _jsx(BaseTooltip, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkY3NNQMAXcjs.BaseTooltip, {
     data: tooltipData,
     top: 0,
     left: 0,
@@ -118,8 +118,8 @@ var PieSemiCircleChartInternal = ({
   renderTooltip = renderDefaultPieSemiCircleTooltip,
   gap = "md"
 }) => {
-  const chartId = useChartId(providedChartId);
-  const [svgWrapperRef, svgWrapperWidth, svgWrapperHeight] = useElementSize();
+  const chartId = _chunkRHHVEJHJcjs.useChartId.call(void 0, providedChartId);
+  const [svgWrapperRef, svgWrapperWidth, svgWrapperHeight] = _chunkRHHVEJHJcjs.useElementSize.call(void 0, );
   const {
     tooltipOpen,
     tooltipLeft,
@@ -127,17 +127,17 @@ var PieSemiCircleChartInternal = ({
     tooltipData,
     hideTooltip,
     showTooltip
-  } = useTooltip();
+  } = _tooltip.useTooltip.call(void 0, );
   const {
     containerRef,
     TooltipInPortal,
     containerBounds
-  } = useTooltipInPortal({
+  } = _tooltip.useTooltipInPortal.call(void 0, {
     detectBounds: true,
     scroll: true,
     debounce: 0
   });
-  const handleMouseMove = useCallback((event, arc) => {
+  const handleMouseMove = _react.useCallback.call(void 0, (event, arc) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return;
     }
@@ -147,10 +147,10 @@ var PieSemiCircleChartInternal = ({
       tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
     });
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top, showTooltip, tooltipOffsetX, tooltipOffsetY]);
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = _react.useCallback.call(void 0, () => {
     hideTooltip();
   }, [hideTooltip]);
-  const handleArcMouseMove = useCallback((arc) => (event) => {
+  const handleArcMouseMove = _react.useCallback.call(void 0, (arc) => (event) => {
     handleMouseMove(event, arc);
   }, [handleMouseMove]);
   const {
@@ -160,18 +160,18 @@ var PieSemiCircleChartInternal = ({
   const {
     getElementStyles,
     isSeriesVisible
-  } = useGlobalChartsContext();
+  } = _chunkRHHVEJHJcjs.useGlobalChartsContext.call(void 0, );
   const {
     visibleData,
     allSegmentsHidden,
     legendData
-  } = useInteractiveLegendData({
+  } = _chunkRHHVEJHJcjs.useInteractiveLegendData.call(void 0, {
     data,
     chartId,
     legendInteractive,
     isSeriesVisible
   });
-  const accessors = useMemo(() => ({
+  const accessors = _react.useMemo.call(void 0, () => ({
     value: (d) => d.value,
     sort: (a, b) => b.value - a.value,
     fill: (d) => getElementStyles({
@@ -179,38 +179,38 @@ var PieSemiCircleChartInternal = ({
       index: d.index
     }).color
   }), [getElementStyles]);
-  const legendOptions = useMemo(() => ({
+  const legendOptions = _react.useMemo.call(void 0, () => ({
     showValues: true,
     legendValueDisplay
   }), [legendValueDisplay]);
-  const legendItems = useChartLegendItems(legendData, legendOptions);
+  const legendItems = _chunkRHHVEJHJcjs.useChartLegendItems.call(void 0, legendData, legendOptions);
   const {
     svgChildren,
     htmlChildren,
     otherChildren
-  } = useChartChildren(children, "PieSemiCircleChart");
-  const chartMetadata = useMemo(() => ({
+  } = _chunkRCY6XLGUcjs.useChartChildren.call(void 0, children, "PieSemiCircleChart");
+  const chartMetadata = _react.useMemo.call(void 0, () => ({
     thickness,
     clockwise
   }), [thickness, clockwise]);
-  useChartRegistration({
+  _chunkRHHVEJHJcjs.useChartRegistration.call(void 0, {
     chartId,
     legendItems,
     chartType: "pie-semi-circle",
     isDataValid: isValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const prefersReducedMotion = _chunkRHHVEJHJcjs.usePrefersReducedMotion.call(void 0, );
   const effectiveWidth = propWidth || DEFAULT_WIDTH;
   if (!isValid) {
     const errorWidth = propHeight ? Math.min(propWidth || propHeight * 2, propHeight * 2) : effectiveWidth;
     const errorHeight = errorWidth / 2;
-    return /* @__PURE__ */ _jsx("div", {
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: pie_semi_circle_chart_module_default["pie-semi-circle-chart"],
-      children: /* @__PURE__ */ _jsx("svg", {
+      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
         width: errorWidth,
         height: errorHeight,
-        children: /* @__PURE__ */ _jsx("text", {
+        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
           x: "50%",
           y: "50%",
           textAnchor: "middle",
@@ -235,7 +235,7 @@ var PieSemiCircleChartInternal = ({
   });
   const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
   const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
-  const legendElement = showLegend && /* @__PURE__ */ _jsx(Legend, {
+  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRHHVEJHJcjs.Legend, {
     orientation: legendOrientation,
     position: legendPosition,
     alignment: legendAlignment,
@@ -248,51 +248,51 @@ var PieSemiCircleChartInternal = ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsx(SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRHHVEJHJcjs.SingleChartContext.Provider, {
     value: {
       chartId,
       chartWidth: width,
       chartHeight: height
     },
-    children: /* @__PURE__ */ _jsxs(Stack, {
+    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkVAWWVZS3cjs.Stack, {
       ref: containerRef,
       direction: "column",
       gap,
-      className: clsx("pie-semi-circle-chart", pie_semi_circle_chart_module_default["pie-semi-circle-chart"], {
+      className: _clsx2.default.call(void 0, "pie-semi-circle-chart", pie_semi_circle_chart_module_default["pie-semi-circle-chart"], {
         [pie_semi_circle_chart_module_default["pie-semi-circle-chart--responsive"]]: !propWidth && !propHeight
       }, className),
       style: {
         width: propWidth || void 0,
         height: propHeight || void 0
       },
-      children: [legendPosition === "top" && legendElement, /* @__PURE__ */ _jsx("div", {
+      children: [legendPosition === "top" && legendElement, /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
         ref: svgWrapperRef,
         className: pie_semi_circle_chart_module_default["pie-semi-circle-chart__svg-wrapper"],
-        children: /* @__PURE__ */ _jsxs("svg", {
+        children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "svg", {
           width,
           height,
           viewBox: `0 0 ${width} ${height}`,
-          children: [/* @__PURE__ */ _jsx("defs", {
-            children: /* @__PURE__ */ _jsx(radial_wipe_animation_default, {
+          children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "defs", {
+            children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk2A34OA5Ocjs.radial_wipe_animation_default, {
               id: `radial-wipe-${chartId}`,
               radius,
               innerRadius,
               startAngle: "-180deg",
               wipePercentage: 50
             })
-          }), /* @__PURE__ */ _jsx(Group, {
+          }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, {
             top: height,
             left: width / 2,
             mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-            children: allSegmentsHidden ? /* @__PURE__ */ _jsx("text", {
+            children: allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
               textAnchor: "middle",
               y: -radius / 2,
               fill: "#ccc",
               fontSize: "14",
               fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
-              children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
-            }) : /* @__PURE__ */ _jsxs(_Fragment, {
-              children: [/* @__PURE__ */ _jsx(Pie, {
+              children: _i18n.__.call(void 0, "All segments are hidden. Click legend items to show data.", "jetpack-charts")
+            }) : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
+              children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _shape.Pie, {
                 data: dataWithIndex,
                 pieValue: accessors.value,
                 outerRadius: radius,
@@ -303,23 +303,23 @@ var PieSemiCircleChartInternal = ({
                 endAngle,
                 pieSort: accessors.sort,
                 children: (pie) => {
-                  return pie.arcs.map((arc) => /* @__PURE__ */ _jsx("g", {
+                  return pie.arcs.map((arc) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "g", {
                     onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
                     onMouseLeave: withTooltips ? handleMouseLeave : void 0,
-                    children: /* @__PURE__ */ _jsx("path", {
+                    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "path", {
                       d: pie.path(arc) || "",
                       fill: accessors.fill(arc.data)
                     })
                   }, arc.data.label));
                 }
-              }), /* @__PURE__ */ _jsxs(Group, {
-                children: [/* @__PURE__ */ _jsx(Text, {
+              }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, {
+                children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
                   textAnchor: "middle",
                   verticalAnchor: "start",
                   y: -40,
                   className: pie_semi_circle_chart_module_default.label,
                   children: label
-                }), /* @__PURE__ */ _jsx(Text, {
+                }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
                   textAnchor: "middle",
                   verticalAnchor: "start",
                   y: -20,
@@ -330,10 +330,10 @@ var PieSemiCircleChartInternal = ({
             })
           })]
         })
-      }), legendPosition !== "top" && legendElement, withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsx(TooltipInPortal, {
+      }), legendPosition !== "top" && legendElement, withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, TooltipInPortal, {
         top: tooltipTop || 0,
         left: tooltipLeft || 0,
-        children: /* @__PURE__ */ _jsx("div", {
+        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
           role: "tooltip",
           children: renderTooltip({
             tooltipData
@@ -344,32 +344,32 @@ var PieSemiCircleChartInternal = ({
   });
 };
 var PieSemiCircleChartWithProvider = (props) => {
-  const existingContext = useContext(GlobalChartsContext);
+  const existingContext = _react.useContext.call(void 0, _chunkRHHVEJHJcjs.GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsx(PieSemiCircleChartInternal, {
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieSemiCircleChartInternal, {
       ...props
     });
   }
-  return /* @__PURE__ */ _jsx(GlobalChartsProvider, {
-    children: /* @__PURE__ */ _jsx(PieSemiCircleChartInternal, {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRHHVEJHJcjs.GlobalChartsProvider, {
+    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, PieSemiCircleChartInternal, {
       ...props
     })
   });
 };
 PieSemiCircleChartWithProvider.displayName = "PieSemiCircleChart";
-var PieSemiCircleChart = attachSubComponents(PieSemiCircleChartWithProvider, {
-  Legend,
-  SVG: ChartSVG,
-  HTML: ChartHTML
+var PieSemiCircleChart = _chunkVTS3PNMScjs.attachSubComponents.call(void 0, PieSemiCircleChartWithProvider, {
+  Legend: _chunkRHHVEJHJcjs.Legend,
+  SVG: _chunkRCY6XLGUcjs.ChartSVG,
+  HTML: _chunkRCY6XLGUcjs.ChartHTML
 });
-var PieSemiCircleChartResponsive = attachSubComponents(withResponsive(PieSemiCircleChartWithProvider), {
-  Legend,
-  SVG: ChartSVG,
-  HTML: ChartHTML
+var PieSemiCircleChartResponsive = _chunkVTS3PNMScjs.attachSubComponents.call(void 0, _chunkASLARV7Lcjs.withResponsive.call(void 0, PieSemiCircleChartWithProvider), {
+  Legend: _chunkRHHVEJHJcjs.Legend,
+  SVG: _chunkRCY6XLGUcjs.ChartSVG,
+  HTML: _chunkRCY6XLGUcjs.ChartHTML
 });
 
-export {
-  PieSemiCircleChart,
-  PieSemiCircleChartResponsive
-};
-//# sourceMappingURL=chunk-V36ERY7Y.js.map
+
+
+
+exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
+//# sourceMappingURL=chunk-KESQP6RS.cjs.map

@@ -32,7 +32,7 @@ import {
   Suspense
 } from "react";
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 import * as React from "react";
 var UNINITIALIZED = {};
 function useRefWithInit(init, initArg) {
@@ -43,7 +43,7 @@ function useRefWithInit(init, initArg) {
   return ref;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/formatErrorMessage.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/formatErrorMessage.js
 function formatErrorMessage(code, ...args) {
   const url = new URL("https://base-ui.com/production-error");
   url.searchParams.set("code", code.toString());
@@ -51,10 +51,10 @@ function formatErrorMessage(code, ...args) {
   return `Base UI error #${code}; visit ${url} for the full message.`;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
 import * as React4 from "react";
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
 function useMergedRefs(a, b, c, d) {
   const forkRef = useRefWithInit(createForkRef).current;
   if (didChange(forkRef, a, b, c, d)) {
@@ -143,17 +143,17 @@ function update(forkRef, refs) {
   };
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
 import * as React3 from "react";
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
 import * as React2 from "react";
 var majorVersion = parseInt(React2.version, 10);
 function isReactVersionAtLeast(reactVersionToCheck) {
   return majorVersion >= reactVersionToCheck;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
 function getReactElementRef(element) {
   if (!/* @__PURE__ */ React3.isValidElement(element)) {
     return null;
@@ -163,7 +163,7 @@ function getReactElementRef(element) {
   return (isReactVersionAtLeast(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
 function mergeObjects(a, b) {
   if (a && !b) {
     return a;
@@ -180,7 +180,7 @@ function mergeObjects(a, b) {
   return void 0;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/getStateAttributesProps.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/getStateAttributesProps.js
 function getStateAttributesProps(state, customMapping) {
   const props = {};
   for (const key in state) {
@@ -201,17 +201,17 @@ function getStateAttributesProps(state, customMapping) {
   return props;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
 function resolveClassName(className, state) {
   return typeof className === "function" ? className(state) : className;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
 function resolveStyle(style, state) {
   return typeof style === "function" ? style(state) : style;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
 var EMPTY_PROPS = {};
 function mergeProps(a, b, c, d, e) {
   let merged = {
@@ -334,11 +334,11 @@ function isSyntheticEvent(event) {
   return event != null && typeof event === "object" && "nativeEvent" in event;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.4_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/empty.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/empty.js
 var EMPTY_ARRAY = Object.freeze([]);
 var EMPTY_OBJECT = Object.freeze({});
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
 import { createElement as _createElement } from "react";
 function useRenderElement(element, componentProps, params = {}) {
   const renderProp = componentProps.render;
@@ -386,6 +386,7 @@ function useRenderElementProps(componentProps, params = {}) {
   }
   return outProps;
 }
+var REACT_LAZY_TYPE = /* @__PURE__ */ Symbol.for("react.lazy");
 function evaluateRenderProp(element, render, props, state) {
   if (render) {
     if (typeof render === "function") {
@@ -393,7 +394,17 @@ function evaluateRenderProp(element, render, props, state) {
     }
     const mergedProps = mergeProps(props, render.props);
     mergedProps.ref = props.ref;
-    return /* @__PURE__ */ React4.cloneElement(render, mergedProps);
+    let newElement = render;
+    if (newElement?.$$typeof === REACT_LAZY_TYPE) {
+      const children = React4.Children.toArray(render);
+      newElement = children[0];
+    }
+    if (process.env.NODE_ENV !== "production") {
+      if (!/* @__PURE__ */ React4.isValidElement(newElement)) {
+        throw new Error(["Base UI: The `render` prop was provided an invalid React element as `React.isValidElement(render)` is `false`.", "A valid React element must be provided to the `render` prop because it is cloned with props to replace the default element.", "https://base-ui.com/r/invalid-render-prop"].join("\n"));
+      }
+    }
+    return /* @__PURE__ */ React4.cloneElement(newElement, mergedProps);
   }
   if (element) {
     if (typeof element === "string") {
@@ -420,7 +431,7 @@ function renderTag(Tag, props) {
   return /* @__PURE__ */ React4.createElement(Tag, props);
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
 function useRender(params) {
   return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
@@ -465,4 +476,4 @@ export {
   useState,
   Stack
 };
-//# sourceMappingURL=chunk-Z26M4V2M.js.map
+//# sourceMappingURL=chunk-7E63GIQ4.js.map

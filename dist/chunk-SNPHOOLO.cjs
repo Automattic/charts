@@ -4,7 +4,7 @@
 var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
-var _chunkI35UYJJRcjs = require('./chunk-I35UYJJR.cjs');
+var _chunkVAWWVZS3cjs = require('./chunk-VAWWVZS3.cjs');
 
 
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
@@ -896,7 +896,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       chartWidth: width,
       chartHeight
     },
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkI35UYJJRcjs.Stack, {
+    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _chunkVAWWVZS3cjs.Stack, {
       direction: "column",
       gap,
       className: _clsx2.default.call(void 0, "line-chart", line_chart_module_default["line-chart"], {
@@ -1064,4 +1064,4 @@ var LineChartResponsive = _chunkVTS3PNMScjs.attachSubComponents.call(void 0, _ch
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-YE2T52VZ.cjs.map
+//# sourceMappingURL=chunk-SNPHOOLO.cjs.map
