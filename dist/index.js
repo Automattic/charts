@@ -1,4 +1,8 @@
 import {
+  LeaderboardChart,
+  LeaderboardChartResponsive
+} from "./chunk-2NCY7R4G.js";
+import {
   PieChart,
   PieChartResponsive
 } from "./chunk-BCX5THDQ.js";
@@ -8,6 +12,7 @@ import {
   PieSemiCircleChartResponsive
 } from "./chunk-V36ERY7Y.js";
 import "./chunk-KXRWNFQJ.js";
+import "./chunk-6CCZL2JJ.js";
 import {
   Sparkline,
   SparklineUnresponsive
@@ -16,11 +21,6 @@ import {
   LineChart,
   LineChartResponsive
 } from "./chunk-WLODYNLB.js";
-import {
-  LeaderboardChart,
-  LeaderboardChartResponsive
-} from "./chunk-2NCY7R4G.js";
-import "./chunk-6CCZL2JJ.js";
 import {
   TrendIndicator
 } from "./chunk-XWYZIFZW.js";
