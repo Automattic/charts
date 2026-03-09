@@ -10,6 +10,9 @@ import {
   useChartChildren
 } from "./chunk-6CCZL2JJ.js";
 import {
+  BaseTooltip
+} from "./chunk-BPYKWMI7.js";
+import {
   Stack
 } from "./chunk-Z26M4V2M.js";
 import {
@@ -32,9 +35,6 @@ import {
 import {
   attachSubComponents
 } from "./chunk-DAU3HNEG.js";
-import {
-  BaseTooltip
-} from "./chunk-BPYKWMI7.js";
 
 // src/charts/pie-chart/pie-chart.tsx
 import { Group } from "@visx/group";
@@ -400,4 +400,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-WC2ZTAB5.js.map
+//# sourceMappingURL=chunk-BCX5THDQ.js.map
