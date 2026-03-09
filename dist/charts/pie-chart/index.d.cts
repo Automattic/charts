@@ -1,13 +1,12 @@
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { ReactNode } from 'react';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { O as Optional, B as BaseChartProps, d as DataPointPercentage } from '../../types-DZordNiO.cjs';
-import { C as ChartComponentWithComposition } from '../../types-KtOPPzPX.cjs';
-import '../../legend-C2grwnWk.cjs';
-import '../../types-I67mddpr.cjs';
-import '@visx/legend';
-import '@visx/xychart';
+import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-DJVOwGz-.cjs';
+import { C as ChartComponentWithComposition } from '../../types-BR92vZ_H.cjs';
+import '../../legend-BC_6yOtq.cjs';
 import '@visx/legend/lib/types';
+import '@visx/xychart';
+import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';

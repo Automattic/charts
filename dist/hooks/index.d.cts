@@ -1,7 +1,8 @@
-import { MouseEvent, ReactNode, RefObject } from 'react';
-import { D as DataPoint, j as SeriesData, k as SeriesDataOptions, B as BaseChartProps, c as DataPointDate } from '../types-DZordNiO.cjs';
+import { MouseEvent, RefObject } from 'react';
+import { D as DataPoint, o as SeriesData, p as SeriesDataOptions, B as BaseChartProps, d as DataPointDate } from '../types-DJVOwGz-.cjs';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
+import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -112,14 +113,6 @@ declare function useElementSize<T extends HTMLElement = HTMLDivElement>({ initia
     initialWidth?: number;
     initialHeight?: number;
 }): [(node: T | null) => void, number, number];
-
-/**
- * Hook to detect if children contain a Legend component (composition pattern).
- *
- * @param {ReactNode} children - React children to search through
- * @return {boolean}           Whether a Legend component is present in children
- */
-declare function useHasLegendChild(children: ReactNode): boolean;
 
 /**
  * Hook to detect if text content is truncated within its container.
@@ -269,4 +262,4 @@ declare function usePrefersReducedMotion(): boolean;
  */
 declare function useTooltipPortalRelocator(containerRef: RefObject<HTMLElement | null> | undefined): void;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementSize, useHasLegendChild, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay };
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementSize, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay };

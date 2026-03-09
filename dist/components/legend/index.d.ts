@@ -1,10 +1,10 @@
-export { L as Legend } from '../../legend-Cj0xM5dU.js';
-import { j as SeriesData, c as DataPointDate, d as DataPointPercentage } from '../../types-DZordNiO.js';
-import { B as BaseLegendItem } from '../../types-I67mddpr.js';
-export { c as BaseLegendProps, L as LegendItemStyles, a as LegendLabelStyles, d as LegendProps, b as LegendShapeStyles } from '../../types-I67mddpr.js';
+export { L as Legend } from '../../legend-CcVxGWEo.js';
+import { o as SeriesData, d as DataPointDate, e as DataPointPercentage, a as BaseLegendItem } from '../../types-DJVOwGz-.js';
+export { q as BaseLegendProps, h as LegendItemStyles, i as LegendLabelStyles, j as LegendPosition, r as LegendProps, k as LegendShapeStyles } from '../../types-DJVOwGz-.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { GlyphProps } from '@visx/xychart';
 import { ReactNode } from 'react';
+import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -14,7 +14,6 @@ import '@visx/scale';
 import '@visx/text/lib/Text';
 import '@wordpress/theme';
 import 'react-google-charts';
-import '@visx/legend';
 
 type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';
 interface ChartLegendOptions {

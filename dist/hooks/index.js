@@ -4,14 +4,13 @@ import {
   useChartMouseHandler,
   useDeepMemo,
   useElementSize,
-  useHasLegendChild,
   useInteractiveLegendData,
   usePrefersReducedMotion,
   useTextTruncation,
   useTooltipPortalRelocator,
   useXYChartTheme,
   useZeroValueDisplay
-} from "../chunk-32DH6JDF.js";
+} from "../chunk-65DPH4GD.js";
 import "../chunk-DAU3HNEG.js";
 import "../chunk-G3PMV62Z.js";
 export {
@@ -20,7 +19,6 @@ export {
   useChartMouseHandler,
   useDeepMemo,
   useElementSize,
-  useHasLegendChild,
   useInteractiveLegendData,
   usePrefersReducedMotion,
   useTextTruncation,

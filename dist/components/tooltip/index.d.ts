@@ -1,8 +1,10 @@
 export { B as BaseTooltip, a as BaseTooltipProps, T as TooltipData } from '../../base-tooltip-DOq93wjU.js';
-import { c as DataPointDate, j as SeriesData } from '../../types-DZordNiO.js';
+import { d as DataPointDate, o as SeriesData } from '../../types-DJVOwGz-.js';
 import { TooltipProps as TooltipProps$1, RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import { ReactNode } from 'react';
 import 'react/jsx-runtime';
+import '@visx/legend';
+import '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -11,7 +13,6 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
-import '@visx/xychart';
 import '@wordpress/theme';
 import 'react-google-charts';
 

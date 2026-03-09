@@ -8,6 +8,9 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/components/legend/private/base-legend.module.scss */
+.a8ccharts-89ApsU {
+  align-self: stretch;
+}
 .a8ccharts-AELBvX {
   display: flex;
   flex-direction: row;
@@ -19,6 +22,15 @@
   flex-direction: column;
   gap: 8px;
 }
+.a8ccharts-DEe0wg {
+  justify-content: flex-start;
+}
+.a8ccharts-WBKF9I {
+  justify-content: center;
+}
+.a8ccharts-JfwMng {
+  justify-content: flex-end;
+}
 .a8ccharts-fX8uQe.a8ccharts-DEe0wg {
   align-items: flex-start;
 }
@@ -27,30 +39,6 @@
 }
 .a8ccharts-fX8uQe.a8ccharts-JfwMng {
   align-items: flex-end;
-}
-.a8ccharts-8Y73Kh {
-  position: relative;
-}
-.a8ccharts-8Y73Kh.a8ccharts-DEe0wg {
-  justify-content: flex-start;
-}
-.a8ccharts-8Y73Kh.a8ccharts-WBKF9I {
-  justify-content: center;
-}
-.a8ccharts-8Y73Kh.a8ccharts-JfwMng {
-  justify-content: flex-end;
-}
-.a8ccharts-TVM-IY {
-  position: relative;
-}
-.a8ccharts-TVM-IY.a8ccharts-DEe0wg {
-  justify-content: flex-start;
-}
-.a8ccharts-TVM-IY.a8ccharts-WBKF9I {
-  justify-content: center;
-}
-.a8ccharts-TVM-IY.a8ccharts-JfwMng {
-  justify-content: flex-end;
 }
 .a8ccharts-Vflwq8 {
   display: flex;

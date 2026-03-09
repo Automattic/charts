@@ -1,10 +1,11 @@
-export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-DR7CGb0L.cjs';
-import { L as LeaderboardEntry } from '../../types-DZordNiO.cjs';
+export { L as LeaderboardChart, b as LeaderboardChartProps, a as LeaderboardChartUnresponsive } from '../../leaderboard-chart-6EKU1GdV.cjs';
+import { L as LeaderboardEntry, a as BaseLegendItem } from '../../types-DJVOwGz-.cjs';
 export { M as MetricValueType, f as formatMetricValue } from '../../format-metric-value-MXm5DtQ_.cjs';
-import { B as BaseLegendItem } from '../../types-I67mddpr.cjs';
 import 'react/jsx-runtime';
 import '../../with-responsive-CNfhzAUu.cjs';
 import 'react';
+import '@visx/legend';
+import '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -13,10 +14,8 @@ import '@visx/axis';
 import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
-import '@visx/xychart';
 import '@wordpress/theme';
 import 'react-google-charts';
-import '@visx/legend';
 
 /**
  * Hook to create legend items from leaderboard data
