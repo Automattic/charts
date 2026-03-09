@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Add identity-obj-proxy to enable CSS module class assertions in tests.
+
 ### Changed
 - BREAKING: Legend: Replace individual visx styling props with itemStyles, labelStyles, shapeStyles objects, rename legendItemClassName to itemClassName, add labelClassName, and move maxWidth/textOverflow into labelStyles. LeaderboardChart: replace legendShapeWidth/legendShapeHeight with legendShapeStyles.
 - Breaking: Legend theme properties (`legendShapeStyles`, `legendLabelStyles`, `legendContainerStyles`) are now nested under a `legend` object (`legend.shapeStyles`, `legend.labelStyles`, `legend.containerStyles`) in `ChartTheme`.
