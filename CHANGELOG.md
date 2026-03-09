@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.57.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Update dependencies.
+
 ## [0.57.0] - 2026-03-09
 ### Added
 - Add identity-obj-proxy to enable CSS module class assertions in tests. [#47476]
@@ -728,6 +735,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[0.57.1-alpha]: https://github.com/Automattic/charts/compare/v0.57.0...v0.57.1-alpha
 [0.57.0]: https://github.com/Automattic/charts/compare/v0.56.7...v0.57.0
 [0.56.7]: https://github.com/Automattic/charts/compare/v0.56.6...v0.56.7
 [0.56.6]: https://github.com/Automattic/charts/compare/v0.56.5...v0.56.6

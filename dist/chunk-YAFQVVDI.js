@@ -1,39 +1,39 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// ../../../node_modules/.pnpm/@wordpress+element@6.40.0/node_modules/@wordpress/element/build-module/react.mjs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _react = require('react'); var React = _interopRequireWildcard(_react); var React4 = _interopRequireWildcard(_react); var React3 = _interopRequireWildcard(_react); var React2 = _interopRequireWildcard(_react);
+// ../../../node_modules/.pnpm/@wordpress+element@6.41.0/node_modules/@wordpress/element/build-module/react.mjs
+import {
+  Children,
+  cloneElement,
+  Component,
+  createContext,
+  createElement,
+  createRef,
+  forwardRef,
+  Fragment,
+  isValidElement,
+  memo,
+  PureComponent,
+  StrictMode,
+  useCallback,
+  useContext,
+  useDebugValue,
+  useDeferredValue,
+  useEffect,
+  useId,
+  useMemo,
+  useImperativeHandle,
+  useInsertionEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+  startTransition,
+  lazy,
+  Suspense
+} from "react";
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
-
+import * as React from "react";
 var UNINITIALIZED = {};
 function useRefWithInit(init, initArg) {
   const ref = React.useRef(UNINITIALIZED);
@@ -52,7 +52,7 @@ function formatErrorMessage(code, ...args) {
 }
 
 // ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
-
+import * as React4 from "react";
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
 function useMergedRefs(a, b, c, d) {
@@ -144,10 +144,10 @@ function update(forkRef, refs) {
 }
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
-
+import * as React3 from "react";
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
-
+import * as React2 from "react";
 var majorVersion = parseInt(React2.version, 10);
 function isReactVersionAtLeast(reactVersionToCheck) {
   return majorVersion >= reactVersionToCheck;
@@ -160,7 +160,7 @@ function getReactElementRef(element) {
   }
   const reactElement = element;
   const propsWithRef = reactElement.props;
-  return _nullishCoalesce((isReactVersionAtLeast(19) ? _optionalChain([propsWithRef, 'optionalAccess', _ => _.ref]) : reactElement.ref), () => ( null));
+  return (isReactVersionAtLeast(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
 }
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.5_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
@@ -185,7 +185,7 @@ function getStateAttributesProps(state, customMapping) {
   const props = {};
   for (const key in state) {
     const value = state[key];
-    if (_optionalChain([customMapping, 'optionalAccess', _2 => _2.hasOwnProperty, 'call', _3 => _3(key)])) {
+    if (customMapping?.hasOwnProperty(key)) {
       const customProps = customMapping[key](value);
       if (customProps != null) {
         Object.assign(props, customProps);
@@ -291,7 +291,7 @@ function resolvePropsGetter(inputProps, previousProps) {
   if (isPropsGetter(inputProps)) {
     return inputProps(previousProps);
   }
-  return _nullishCoalesce(inputProps, () => ( EMPTY_PROPS));
+  return inputProps ?? EMPTY_PROPS;
 }
 function mergeEventHandlers(ourHandler, theirHandler) {
   if (!theirHandler) {
@@ -306,12 +306,12 @@ function mergeEventHandlers(ourHandler, theirHandler) {
       makeEventPreventable(baseUIEvent);
       const result2 = theirHandler(baseUIEvent);
       if (!baseUIEvent.baseUIHandlerPrevented) {
-        _optionalChain([ourHandler, 'optionalCall', _4 => _4(baseUIEvent)]);
+        ourHandler?.(baseUIEvent);
       }
       return result2;
     }
     const result = theirHandler(event);
-    _optionalChain([ourHandler, 'optionalCall', _5 => _5(event)]);
+    ourHandler?.(event);
     return result;
   };
 }
@@ -339,14 +339,14 @@ var EMPTY_ARRAY = Object.freeze([]);
 var EMPTY_OBJECT = Object.freeze({});
 
 // ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
-
+import { createElement as _createElement } from "react";
 function useRenderElement(element, componentProps, params = {}) {
   const renderProp = componentProps.render;
   const outProps = useRenderElementProps(componentProps, params);
   if (params.enabled === false) {
     return null;
   }
-  const state = _nullishCoalesce(params.state, () => ( EMPTY_OBJECT));
+  const state = params.state ?? EMPTY_OBJECT;
   return evaluateRenderProp(element, renderProp, outProps, state);
 }
 function useRenderElementProps(componentProps, params = {}) {
@@ -365,7 +365,7 @@ function useRenderElementProps(componentProps, params = {}) {
   const className = enabled ? resolveClassName(classNameProp, state) : void 0;
   const style = enabled ? resolveStyle(styleProp, state) : void 0;
   const stateProps = enabled ? getStateAttributesProps(state, stateAttributesMapping) : EMPTY_OBJECT;
-  const outProps = enabled ? _nullishCoalesce(mergeObjects(stateProps, Array.isArray(props) ? mergePropsN(props) : props), () => ( EMPTY_OBJECT)) : EMPTY_OBJECT;
+  const outProps = enabled ? mergeObjects(stateProps, Array.isArray(props) ? mergePropsN(props) : props) ?? EMPTY_OBJECT : EMPTY_OBJECT;
   if (typeof document !== "undefined") {
     if (!enabled) {
       useMergedRefs(null, null);
@@ -395,7 +395,7 @@ function evaluateRenderProp(element, render, props, state) {
     const mergedProps = mergeProps(props, render.props);
     mergedProps.ref = props.ref;
     let newElement = render;
-    if (_optionalChain([newElement, 'optionalAccess', _6 => _6.$$typeof]) === REACT_LAZY_TYPE) {
+    if (newElement?.$$typeof === REACT_LAZY_TYPE) {
       const children = React4.Children.toArray(render);
       newElement = children[0];
     }
@@ -415,14 +415,14 @@ function evaluateRenderProp(element, render, props, state) {
 }
 function renderTag(Tag, props) {
   if (Tag === "button") {
-    return /* @__PURE__ */ _react.createElement.call(void 0, "button", {
+    return /* @__PURE__ */ _createElement("button", {
       type: "button",
       ...props,
       key: props.key
     });
   }
   if (Tag === "img") {
-    return /* @__PURE__ */ _react.createElement.call(void 0, "img", {
+    return /* @__PURE__ */ _createElement("img", {
       alt: "",
       ...props,
       key: props.key
@@ -433,20 +433,29 @@ function renderTag(Tag, props) {
 
 // ../../../node_modules/.pnpm/@base-ui+react@1.2.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
 function useRender(params) {
-  return useRenderElement(_nullishCoalesce(params.defaultTagName, () => ( "div")), params, params);
+  return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.7.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
-if (typeof document !== "undefined" && !document.head.querySelector("style[data-wp-hash='71d20935c2']")) {
+// ../../../node_modules/.pnpm/@wordpress+ui@0.8.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@16.26.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='71d20935c2']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "71d20935c2");
   style.appendChild(document.createTextNode("@layer wp-ui-utilities, wp-ui-components, wp-ui-compositions, wp-ui-overrides;@layer wp-ui-components{._19ce0419607e1896__stack{display:flex}}"));
   document.head.appendChild(style);
 }
 var style_default = { "stack": "_19ce0419607e1896__stack" };
-var Stack = _react.forwardRef.call(void 0, function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
+var gapTokens = {
+  xs: "var(--wpds-dimension-gap-xs, 4px)",
+  sm: "var(--wpds-dimension-gap-sm, 8px)",
+  md: "var(--wpds-dimension-gap-md, 12px)",
+  lg: "var(--wpds-dimension-gap-lg, 16px)",
+  xl: "var(--wpds-dimension-gap-xl, 24px)",
+  "2xl": "var(--wpds-dimension-gap-2xl, 32px)",
+  "3xl": "var(--wpds-dimension-gap-3xl, 40px)"
+};
+var Stack = forwardRef(function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
   const style = {
-    gap: gap && `var(--wpds-dimension-gap-${gap})`,
+    gap: gap && gapTokens[gap],
     alignItems: align,
     justifyContent: justify,
     flexDirection: direction,
@@ -460,20 +469,20 @@ var Stack = _react.forwardRef.call(void 0, function Stack2({ direction, gap, ali
   return element;
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-exports.Children = _react.Children; exports.cloneElement = _react.cloneElement; exports.createContext = _react.createContext; exports.createElement = _react.createElement; exports.forwardRef = _react.forwardRef; exports.Fragment = _react.Fragment; exports.memo = _react.memo; exports.useCallback = _react.useCallback; exports.useContext = _react.useContext; exports.useEffect = _react.useEffect; exports.useMemo = _react.useMemo; exports.useRef = _react.useRef; exports.useState = _react.useState; exports.Stack = Stack;
-//# sourceMappingURL=chunk-VAWWVZS3.cjs.map
+export {
+  Children,
+  cloneElement,
+  createContext,
+  createElement,
+  forwardRef,
+  Fragment,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  Stack
+};
+//# sourceMappingURL=chunk-YAFQVVDI.js.map
