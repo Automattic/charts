@@ -8,11 +8,6 @@ import {
 } from "./chunk-B5NTPHAV.js";
 import "./chunk-NFRB2POF.js";
 import {
-  PieSemiCircleChart,
-  PieSemiCircleChartResponsive
-} from "./chunk-3WM4E55U.js";
-import "./chunk-KXRWNFQJ.js";
-import {
   Sparkline,
   SparklineUnresponsive
 } from "./chunk-EX6RINGV.js";
@@ -20,6 +15,11 @@ import {
   LineChart,
   LineChartResponsive
 } from "./chunk-DKP5T4SQ.js";
+import {
+  PieSemiCircleChart,
+  PieSemiCircleChartResponsive
+} from "./chunk-3WM4E55U.js";
+import "./chunk-KXRWNFQJ.js";
 import {
   TrendIndicator
 } from "./chunk-XWYZIFZW.js";
