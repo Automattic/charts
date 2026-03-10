@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Security
+- Fix ReDoS vulnerability in date parsing timezone detection.
+
 ### Changed
 - Charts: Fix Legend position prop in the composition API so that legends render in the correct top or bottom slot. Remove useHasLegendChild hook from @automattic/charts/hooks (charts now derive legend presence from useChartChildren).
 - Update dependencies.

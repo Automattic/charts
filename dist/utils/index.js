@@ -18,7 +18,7 @@ import {
   parseRgbString,
   resolveCssVariable,
   validateHexColor
-} from "../chunk-DAU3HNEG.js";
+} from "../chunk-JJIMABHT.js";
 import "../chunk-G3PMV62Z.js";
 export {
   attachSubComponents,
