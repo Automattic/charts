@@ -1,8 +1,9 @@
-import { L as Legend } from '../../legend-CcVxGWEo.js';
-import { O as Optional, B as BaseChartProps, o as SeriesData, d as DataPointDate } from '../../types-DJVOwGz-.js';
+import { L as Legend } from '../../legend-DLswHhOk.js';
+import { O as Optional, B as BaseChartProps, o as SeriesData, d as DataPointDate } from '../../types-ChOUI9-N.js';
 import { FC, ReactNode, ComponentType } from 'react';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
+import '../../types-BuSrRM4p.js';
 import '@visx/legend';
 import '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -21,7 +22,6 @@ interface BarChartProps extends BaseChartProps<SeriesData[]> {
     orientation?: 'horizontal' | 'vertical';
     withPatterns?: boolean;
     showZeroValues?: boolean;
-    legendInteractive?: boolean;
     children?: ReactNode;
 }
 type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;

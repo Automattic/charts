@@ -1,22 +1,23 @@
 import { ReactNode } from 'react';
+import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-ChOUI9-N.cjs';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-DJVOwGz-.cjs';
-import { C as ChartComponentWithComposition } from '../../types-BR92vZ_H.cjs';
+import { C as ChartComponentWithComposition } from '../../types-B5f6XQ7Q.cjs';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
-import '../../legend-BC_6yOtq.cjs';
-import '@visx/legend/lib/types';
-import '@visx/xychart';
-import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
 import '@visx/annotation/lib/components/LineSubject';
 import '@visx/axis';
+import '@visx/legend/lib/types';
 import '@visx/scale';
 import '@visx/text/lib/Text';
+import '@visx/xychart';
 import '@wordpress/theme';
 import 'react-google-charts';
+import '../../legend-DFkosEvC.cjs';
+import '../../types-Dfw9VOKI.cjs';
+import '@visx/legend';
 
 /**
  * Parameters passed to the renderTooltip function for semi-circle charts.
@@ -63,12 +64,6 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
      * - 'none': Shows no values, only labels
      */
     legendValueDisplay?: LegendValueDisplay;
-    /**
-     * Enable interactive legend items that can toggle segment visibility.
-     * Requires chartId and GlobalChartsProvider.
-     * When segments are hidden, percentages are recalculated so visible segments total 100%.
-     */
-    legendInteractive?: boolean;
     /**
      * Horizontal offset for tooltip positioning in pixels (default: 0)
      */

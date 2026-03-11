@@ -1,8 +1,7 @@
 import { MouseEvent, RefObject } from 'react';
-import { D as DataPoint, o as SeriesData, p as SeriesDataOptions, B as BaseChartProps, d as DataPointDate } from '../types-DJVOwGz-.js';
+import { D as DataPoint, o as SeriesData, p as SeriesDataOptions, B as BaseChartProps, d as DataPointDate } from '../types-ChOUI9-N.js';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
-import '@visx/legend';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
