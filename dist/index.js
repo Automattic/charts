@@ -28,9 +28,6 @@ import {
   BarListChartResponsive
 } from "./chunk-B64LISFA.js";
 import {
-  ConversionFunnelChartWithProvider
-} from "./chunk-EV4FH3TJ.js";
-import {
   BarChart,
   BarChartResponsive
 } from "./chunk-Q374RJQW.js";
@@ -42,6 +39,9 @@ import {
 import {
   BaseTooltip
 } from "./chunk-BPYKWMI7.js";
+import {
+  ConversionFunnelChartWithProvider
+} from "./chunk-EV4FH3TJ.js";
 import "./chunk-YAFQVVDI.js";
 import {
   GeoChartResponsive,
