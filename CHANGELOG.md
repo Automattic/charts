@@ -17,6 +17,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Fix Legend position prop in the composition API so that legends render in the correct top or bottom slot. Remove useHasLegendChild hook from @automattic/charts/hooks (charts now derive legend presence from useChartChildren).
 - Update dependencies.
 
+### Fixed
+- Bundle fast-deep-equal as a non-external dependency to fix compatibility with webpack strict ESM mode.
+
 ## [0.57.0] - 2026-03-09
 ### Added
 - Add identity-obj-proxy to enable CSS module class assertions in tests. [#47476]
