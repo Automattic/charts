@@ -3,14 +3,14 @@ import {
   useChartChildren
 } from "./chunk-KRWGSOJ2.js";
 import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-BPYKWMI7.js";
-import {
   Legend,
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-WTQYGUNF.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
 import {
   Stack
 } from "./chunk-YAFQVVDI.js";
@@ -614,4 +614,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-PBRAKNXT.js.map
+//# sourceMappingURL=chunk-B6NLZFRW.js.map
