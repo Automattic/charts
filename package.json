@@ -180,7 +180,7 @@
 		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.1.1",
+		"@automattic/number-formatters": "^1.1.2-alpha",
 		"@babel/runtime": "7.28.6",
 		"@react-spring/web": "9.7.5",
 		"@visx/annotation": "^3.12.0",
