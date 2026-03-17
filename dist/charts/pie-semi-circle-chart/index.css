@@ -102,6 +102,13 @@
   transform: translate(-50%, -100%);
 }
 
+/* esbuild-sass-plugin:css-chunk:src/charts/private/chart-layout/chart-layout.module.scss */
+.a8ccharts-gXtQZk {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
 /* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
 .a8ccharts-GSKfBD {
   min-width: 0;
@@ -113,14 +120,9 @@
   height: 100%;
   width: 100%;
 }
-.a8ccharts-hGowej {
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
+.a8ccharts-1khYG1 {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
 }
 .a8ccharts-8tyaQj .a8ccharts-EKZS3j {
   font-weight: 600;

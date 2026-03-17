@@ -102,6 +102,13 @@
   transform: translate(-50%, -100%);
 }
 
+/* esbuild-sass-plugin:css-chunk:src/charts/private/chart-layout/chart-layout.module.scss */
+.a8ccharts-gXtQZk {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
 /* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
 .a8ccharts-GSKfBD {
   min-width: 0;
@@ -110,22 +117,14 @@
 
 /* esbuild-sass-plugin:css-chunk:src/charts/pie-chart/pie-chart.module.scss */
 .a8ccharts-C-n-Gu {
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  align-items: center;
 }
 .a8ccharts-IQVR6j {
   height: 100%;
   width: 100%;
 }
-.a8ccharts-iQ1Rki {
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
+.a8ccharts-eGV3AE {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
 }
 /*# sourceMappingURL=index.css.map */

@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Security
 - Fix ReDoS vulnerability in date parsing timezone detection.
 
+### Added
+- ChartLayout: Add component for shared chart and legend layout.
+
 ### Changed
 - Breaking: Consolidate flat legend props into a nested legend configuration object on BaseChartProps.
 - Charts: Fix Legend position prop in the composition API so that legends render in the correct top or bottom slot. Remove useHasLegendChild hook from @automattic/charts/hooks (charts now derive legend presence from useChartChildren).

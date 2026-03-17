@@ -102,6 +102,13 @@
   transform: translate(-50%, -100%);
 }
 
+/* esbuild-sass-plugin:css-chunk:src/charts/private/chart-layout/chart-layout.module.scss */
+.a8ccharts-gXtQZk {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
 /* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
 .a8ccharts-GSKfBD {
   min-width: 0;
@@ -109,10 +116,6 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/bar-chart/bar-chart.module.scss */
-.a8ccharts-9CsqC0 {
-  flex: 1;
-  min-height: 0;
-}
 .a8ccharts-3gflnB svg {
   overflow: visible;
 }
