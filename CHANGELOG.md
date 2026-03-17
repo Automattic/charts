@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - ChartLayout: Add component for shared chart and legend layout.
 
+### Changed
+- Standardize legend stories and documentation across all chart types.
+
 ## [0.58.0] - 2026-03-16
 ### Security
 - Fix ReDoS vulnerability in date parsing timezone detection. [#47524]
