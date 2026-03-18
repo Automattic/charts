@@ -15,12 +15,12 @@ var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
 var _chunkFDBGXBW2cjs = require('./chunk-FDBGXBW2.cjs');
 
 
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
-
-
 
 
 var _chunkXVBH5XHEcjs = require('./chunk-XVBH5XHE.cjs');
+
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
 var _chunkREZTQ4PHcjs = require('./chunk-REZTQ4PH.cjs');
@@ -407,4 +407,4 @@ var PieChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-GTJP7T6P.cjs.map
+//# sourceMappingURL=chunk-JRPEREJY.cjs.map
