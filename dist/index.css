@@ -116,7 +116,6 @@
   height: 100%;
   font-size: var(--wpds-font-size-md, 13px);
   color: var(--wpds-color-fg-content-neutral-weak, #6d6d6d);
-  box-sizing: border-box;
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/private/with-responsive/with-responsive.module.scss */
