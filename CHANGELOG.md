@@ -15,6 +15,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Standardize legend stories and documentation across all chart types.
 
+### Fixed
+- Fix empty-state text wrapping when all legend items are hidden.
+
 ## [0.58.0] - 2026-03-16
 ### Security
 - Fix ReDoS vulnerability in date parsing timezone detection. [#47524]

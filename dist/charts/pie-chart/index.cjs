@@ -1,9 +1,10 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkG22WUFXIcjs = require('../../chunk-G22WUFXI.cjs');
+var _chunkJRPEREJYcjs = require('../../chunk-JRPEREJY.cjs');
 require('../../chunk-7OZEQ5HE.cjs');
 require('../../chunk-2A34OA5O.cjs');
+require('../../chunk-5NWDCSDI.cjs');
 require('../../chunk-FDBGXBW2.cjs');
 require('../../chunk-XVBH5XHE.cjs');
 require('../../chunk-Y3NNQMAX.cjs');
@@ -15,5 +16,5 @@ require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.PieChart = _chunkG22WUFXIcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunkG22WUFXIcjs.PieChart;
+exports.PieChart = _chunkJRPEREJYcjs.PieChartResponsive; exports.PieChartUnresponsive = _chunkJRPEREJYcjs.PieChart;
 //# sourceMappingURL=index.cjs.map

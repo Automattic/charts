@@ -1,4 +1,7 @@
 import {
+  SvgEmptyState
+} from "./chunk-AB3FUPTC.js";
+import {
   ChartLayout,
   useChartChildren
 } from "./chunk-5CWC5Z5L.js";
@@ -22,7 +25,6 @@ import {
   useChartMargin,
   useChartRegistration,
   useGlobalChartsContext,
-  useGlobalChartsTheme,
   usePrefersReducedMotion,
   useXYChartTheme,
   useZeroValueDisplay
@@ -327,7 +329,6 @@ var BarChartInternal = ({
     getElementStyles,
     isSeriesVisible
   } = useGlobalChartsContext();
-  const providerTheme = useGlobalChartsTheme();
   const seriesWithVisibility = useMemo2(() => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
@@ -542,13 +543,11 @@ var BarChartInternal = ({
                 })]
               }), highlightedBarStyle && /* @__PURE__ */ _jsx2("style", {
                 children: highlightedBarStyle
-              }), allSeriesHidden ? /* @__PURE__ */ _jsx2("text", {
+              }), allSeriesHidden ? /* @__PURE__ */ _jsx2(SvgEmptyState, {
                 x: width / 2,
                 y: chartHeight / 2,
-                textAnchor: "middle",
-                fill: providerTheme.gridStyles?.stroke || "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                width,
+                height: chartHeight,
                 children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
               }) : null, /* @__PURE__ */ _jsx2(BarGroup, {
                 padding: chartOptions.barGroup.padding,
@@ -615,4 +614,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-SZ6RMHXH.js.map
+//# sourceMappingURL=chunk-AQINLRWV.js.map

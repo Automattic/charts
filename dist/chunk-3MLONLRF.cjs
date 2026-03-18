@@ -3,6 +3,9 @@
 var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
 
 
+var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
+
+
 
 
 
@@ -297,12 +300,11 @@ var PieSemiCircleChartInternal = ({
               top: height,
               left: width / 2,
               mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-              children: allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
-                textAnchor: "middle",
+              children: allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk5NWDCSDIcjs.SvgEmptyState, {
+                x: 0,
                 y: -radius / 2,
-                fill: "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                width,
+                height,
                 children: _i18n.__.call(void 0, "All segments are hidden. Click legend items to show data.", "jetpack-charts")
               }) : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
                 children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _shape.Pie, {
@@ -377,4 +379,4 @@ var PieSemiCircleChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(vo
 
 
 exports.PieSemiCircleChart = PieSemiCircleChart; exports.PieSemiCircleChartResponsive = PieSemiCircleChartResponsive;
-//# sourceMappingURL=chunk-LJW7EISC.cjs.map
+//# sourceMappingURL=chunk-3MLONLRF.cjs.map

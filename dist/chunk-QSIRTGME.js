@@ -5,6 +5,9 @@ import {
   radial_wipe_animation_default
 } from "./chunk-KXRWNFQJ.js";
 import {
+  SvgEmptyState
+} from "./chunk-AB3FUPTC.js";
+import {
   ChartHTML,
   ChartLayout,
   ChartSVG,
@@ -292,12 +295,11 @@ var PieChartInternal = ({
               top: centerY,
               left: centerX,
               mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-              children: [allSegmentsHidden ? /* @__PURE__ */ _jsx("text", {
-                textAnchor: "middle",
-                dy: ".33em",
-                fill: providerTheme.gridColor || "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+              children: [allSegmentsHidden ? /* @__PURE__ */ _jsx(SvgEmptyState, {
+                x: 0,
+                y: 0,
+                width,
+                height,
                 children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
               }) : /* @__PURE__ */ _jsx(Pie, {
                 data: dataWithIndex,
@@ -405,4 +407,4 @@ export {
   PieChart,
   PieChartResponsive
 };
-//# sourceMappingURL=chunk-RDFIAGP3.js.map
+//# sourceMappingURL=chunk-QSIRTGME.js.map

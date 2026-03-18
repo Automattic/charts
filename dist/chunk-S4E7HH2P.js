@@ -2,6 +2,9 @@ import {
   radial_wipe_animation_default
 } from "./chunk-KXRWNFQJ.js";
 import {
+  SvgEmptyState
+} from "./chunk-AB3FUPTC.js";
+import {
   ChartHTML,
   ChartLayout,
   ChartSVG,
@@ -297,12 +300,11 @@ var PieSemiCircleChartInternal = ({
               top: height,
               left: width / 2,
               mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-              children: allSegmentsHidden ? /* @__PURE__ */ _jsx("text", {
-                textAnchor: "middle",
+              children: allSegmentsHidden ? /* @__PURE__ */ _jsx(SvgEmptyState, {
+                x: 0,
                 y: -radius / 2,
-                fill: "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                width,
+                height,
                 children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
               }) : /* @__PURE__ */ _jsxs(_Fragment, {
                 children: [/* @__PURE__ */ _jsx(Pie, {
@@ -377,4 +379,4 @@ export {
   PieSemiCircleChart,
   PieSemiCircleChartResponsive
 };
-//# sourceMappingURL=chunk-B6RB23ZK.js.map
+//# sourceMappingURL=chunk-S4E7HH2P.js.map

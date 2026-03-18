@@ -1,7 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkRJ734NKCcjs = require('../../chunk-RJ734NKC.cjs');
+var _chunkTBKK3NAGcjs = require('../../chunk-TBKK3NAG.cjs');
+require('../../chunk-5NWDCSDI.cjs');
 require('../../chunk-FDBGXBW2.cjs');
 require('../../chunk-XVBH5XHE.cjs');
 require('../../chunk-Y3NNQMAX.cjs');
@@ -13,5 +14,5 @@ require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.BarChart = _chunkRJ734NKCcjs.BarChartResponsive; exports.BarChartUnresponsive = _chunkRJ734NKCcjs.BarChart;
+exports.BarChart = _chunkTBKK3NAGcjs.BarChartResponsive; exports.BarChartUnresponsive = _chunkTBKK3NAGcjs.BarChart;
 //# sourceMappingURL=index.cjs.map

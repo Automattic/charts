@@ -6,6 +6,9 @@ var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
 var _chunk2A34OA5Ocjs = require('./chunk-2A34OA5O.cjs');
 
 
+var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
+
+
 
 
 
@@ -292,12 +295,11 @@ var PieChartInternal = ({
               top: centerY,
               left: centerX,
               mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-              children: [allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
-                textAnchor: "middle",
-                dy: ".33em",
-                fill: providerTheme.gridColor || "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+              children: [allSegmentsHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk5NWDCSDIcjs.SvgEmptyState, {
+                x: 0,
+                y: 0,
+                width,
+                height,
                 children: _i18n.__.call(void 0, "All segments are hidden. Click legend items to show data.", "jetpack-charts")
               }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _shape.Pie, {
                 data: dataWithIndex,
@@ -405,4 +407,4 @@ var PieChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.PieChart = PieChart; exports.PieChartResponsive = PieChartResponsive;
-//# sourceMappingURL=chunk-G22WUFXI.cjs.map
+//# sourceMappingURL=chunk-JRPEREJY.cjs.map

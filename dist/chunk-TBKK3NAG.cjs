@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
+
+
 
 var _chunkFDBGXBW2cjs = require('./chunk-FDBGXBW2.cjs');
 
@@ -14,7 +17,6 @@ var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 
 var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
-
 
 
 
@@ -327,7 +329,6 @@ var BarChartInternal = ({
     getElementStyles,
     isSeriesVisible
   } = _chunkWYK7EL5Rcjs.useGlobalChartsContext.call(void 0, );
-  const providerTheme = _chunkWYK7EL5Rcjs.useGlobalChartsTheme.call(void 0, );
   const seriesWithVisibility = _react.useMemo.call(void 0, () => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
@@ -542,13 +543,11 @@ var BarChartInternal = ({
                 })]
               }), highlightedBarStyle && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "style", {
                 children: highlightedBarStyle
-              }), allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "text", {
+              }), allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk5NWDCSDIcjs.SvgEmptyState, {
                 x: width / 2,
                 y: chartHeight / 2,
-                textAnchor: "middle",
-                fill: _optionalChain([providerTheme, 'access', _26 => _26.gridStyles, 'optionalAccess', _27 => _27.stroke]) || "#ccc",
-                fontSize: "14",
-                fontFamily: "-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif",
+                width,
+                height: chartHeight,
                 children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
               }) : null, /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarGroup, {
                 padding: chartOptions.barGroup.padding,
@@ -561,12 +560,12 @@ var BarChartInternal = ({
                     return null;
                   }
                   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarSeries, {
-                    dataKey: _optionalChain([seriesData, 'optionalAccess', _28 => _28.label]),
+                    dataKey: _optionalChain([seriesData, 'optionalAccess', _26 => _26.label]),
                     data: seriesData.data,
                     yAccessor: chartOptions.accessors.yAccessor,
                     xAccessor: chartOptions.accessors.xAccessor,
                     colorAccessor: getBarBackground(index)
-                  }, _optionalChain([seriesData, 'optionalAccess', _29 => _29.label]));
+                  }, _optionalChain([seriesData, 'optionalAccess', _27 => _27.label]));
                 })
               }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, {
                 ...chartOptions.axis.x
@@ -615,4 +614,4 @@ var BarChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-RJ734NKC.cjs.map
+//# sourceMappingURL=chunk-TBKK3NAG.cjs.map
