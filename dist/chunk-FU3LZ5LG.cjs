@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunkFDBGXBW2cjs = require('./chunk-FDBGXBW2.cjs');
+var _chunkHBBGUXZKcjs = require('./chunk-HBBGUXZK.cjs');
 
 
 
@@ -3726,7 +3726,7 @@ var LeaderboardChartInternal = ({
   const {
     legendChildren,
     nonLegendChildren
-  } = _chunkFDBGXBW2cjs.useChartChildren.call(void 0, children, "LeaderboardChart");
+  } = _chunkHBBGUXZKcjs.useChartChildren.call(void 0, children, "LeaderboardChart");
   const {
     labelSpacing,
     rowGap,
@@ -3796,7 +3796,7 @@ var LeaderboardChartInternal = ({
       value: {
         chartId
       },
-      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkFDBGXBW2cjs.ChartLayout, {
+      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkHBBGUXZKcjs.ChartLayout, {
         legendPosition,
         legendElement: false,
         legendChildren,
@@ -3834,7 +3834,7 @@ var LeaderboardChartInternal = ({
     value: {
       chartId
     },
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkFDBGXBW2cjs.ChartLayout, {
+    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkHBBGUXZKcjs.ChartLayout, {
       legendPosition,
       legendElement,
       legendChildren,
@@ -3953,4 +3953,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-ET6OWXYL.cjs.map
+//# sourceMappingURL=chunk-FU3LZ5LG.cjs.map

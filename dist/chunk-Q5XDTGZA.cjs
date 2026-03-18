@@ -4,7 +4,7 @@ var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
 
 
 
-var _chunkFDBGXBW2cjs = require('./chunk-FDBGXBW2.cjs');
+var _chunkHBBGUXZKcjs = require('./chunk-HBBGUXZK.cjs');
 
 
 
@@ -303,7 +303,7 @@ var BarChartInternal = ({
   const {
     legendChildren,
     nonLegendChildren
-  } = _chunkFDBGXBW2cjs.useChartChildren.call(void 0, children, "BarChart");
+  } = _chunkHBBGUXZKcjs.useChartChildren.call(void 0, children, "BarChart");
   const [measuredChartHeight, setMeasuredChartHeight] = _react.useState.call(void 0, );
   const handleContentHeightChange = _react.useCallback.call(void 0, (contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
@@ -485,7 +485,7 @@ var BarChartInternal = ({
       chartWidth: width,
       chartHeight: measuredChartHeight || 0
     },
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkFDBGXBW2cjs.ChartLayout, {
+    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkHBBGUXZKcjs.ChartLayout, {
       legendPosition,
       legendElement,
       legendChildren,
@@ -614,4 +614,4 @@ var BarChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _chu
 
 
 exports.BarChart = BarChart; exports.BarChartResponsive = BarChartResponsive;
-//# sourceMappingURL=chunk-TBKK3NAG.cjs.map
+//# sourceMappingURL=chunk-Q5XDTGZA.cjs.map

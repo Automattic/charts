@@ -4,7 +4,7 @@ import {
 import {
   ChartLayout,
   useChartChildren
-} from "./chunk-5CWC5Z5L.js";
+} from "./chunk-G642YA6J.js";
 import {
   Legend,
   SingleChartContext,
@@ -614,4 +614,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-AQINLRWV.js.map
+//# sourceMappingURL=chunk-OOGJ46XK.js.map

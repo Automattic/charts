@@ -1,7 +1,7 @@
 import {
   ChartLayout,
   useChartChildren
-} from "./chunk-5CWC5Z5L.js";
+} from "./chunk-G642YA6J.js";
 import {
   Legend,
   SingleChartContext
@@ -3953,4 +3953,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-AHOEQ3O7.js.map
+//# sourceMappingURL=chunk-6O4UMV3Z.js.map

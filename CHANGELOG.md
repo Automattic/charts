@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - ChartLayout: Add component for shared chart and legend layout.
 
 ### Changed
+- Move tooltip portal containerRef off ChartLayout to inner svg-wrapper in pie charts.
 - Standardize legend stories and documentation across all chart types.
 
 ### Fixed
