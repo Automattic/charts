@@ -1,66 +1,66 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
-
-
-
-var _chunkFDBGXBW2cjs = require('./chunk-FDBGXBW2.cjs');
-
-
-
-
-
-var _chunkXVBH5XHEcjs = require('./chunk-XVBH5XHE.cjs');
-
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
-
-
-var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
-
-
-
-
-
-
-
-
-
-
-
-var _chunkWYK7EL5Rcjs = require('./chunk-WYK7EL5R.cjs');
-
-
-
-var _chunkMXGLYWVPcjs = require('./chunk-MXGLYWVP.cjs');
+import {
+  SvgEmptyState
+} from "./chunk-AB3FUPTC.js";
+import {
+  ChartLayout,
+  useChartChildren
+} from "./chunk-5CWC5Z5L.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
+import {
+  Legend,
+  SingleChartContext,
+  useChartLegendItems,
+  useSingleChartContext
+} from "./chunk-WTQYGUNF.js";
+import {
+  withResponsive
+} from "./chunk-OP6PHB2U.js";
+import {
+  GlobalChartsContext,
+  GlobalChartsProvider,
+  useChartDataTransform,
+  useChartId,
+  useChartMargin,
+  useChartRegistration,
+  useGlobalChartsContext,
+  useGlobalChartsTheme,
+  usePrefersReducedMotion,
+  useXYChartTheme
+} from "./chunk-2I67QUIV.js";
+import {
+  attachSubComponents,
+  isSafari
+} from "./chunk-JJIMABHT.js";
 
 // src/charts/line-chart/line-chart.tsx
-var _numberformatters = require('@automattic/number-formatters');
-var _curve = require('@visx/curve');
-var _gradient = require('@visx/gradient');
-var _scale = require('@visx/scale');
-var _xychart = require('@visx/xychart');
-var _i18n = require('@wordpress/i18n');
-var _clsx = require('clsx'); var _clsx2 = _interopRequireDefault(_clsx);
-var _datefns = require('date-fns');
-var _react = require('react');
+import { formatNumberCompact, formatNumber } from "@automattic/number-formatters";
+import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
+import { LinearGradient } from "@visx/gradient";
+import { scaleTime } from "@visx/scale";
+import { XYChart, AreaSeries, Grid, Axis, DataContext as DataContext5 } from "@visx/xychart";
+import { __ as __2 } from "@wordpress/i18n";
+import clsx2 from "clsx";
+import { differenceInHours, differenceInYears } from "date-fns";
+import { useMemo as useMemo2, useContext as useContext4, forwardRef, useImperativeHandle, useState as useState4, useRef as useRef3, useCallback as useCallback2, createElement as _createElement } from "react";
 
 // src/charts/private/default-glyph/default-glyph.tsx
-
-
-var _jsxruntime = require('react/jsx-runtime');
+import { DataContext } from "@visx/xychart";
+import { useContext } from "react";
+import { jsx as _jsx } from "react/jsx-runtime";
 var DefaultGlyph = (props) => {
   const {
     theme
-  } = _react.useContext.call(void 0, _xychart.DataContext) || {};
+  } = useContext(DataContext) || {};
   const position = props.position || "start";
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "circle", {
+  return /* @__PURE__ */ _jsx("circle", {
     cx: props.x,
     cy: props.y,
     r: props.size,
     fill: props.color,
-    stroke: _optionalChain([theme, 'optionalAccess', _ => _.backgroundColor]),
+    stroke: theme?.backgroundColor,
     strokeWidth: 1.5,
     paintOrder: "fill",
     ...props.glyphStyle
@@ -88,11 +88,11 @@ var line_chart_module_default = {
 };
 
 // src/charts/line-chart/private/line-chart-annotation-label-popover.tsx
-
-
-var _gridicons = require('gridicons'); var _gridicons2 = _interopRequireDefault(_gridicons);
-
-
+import { __ } from "@wordpress/i18n";
+import clsx from "clsx";
+import Gridicon from "gridicons";
+import { useEffect, useId, useRef, useState } from "react";
+import { jsx as _jsx2, jsxs as _jsxs } from "react/jsx-runtime";
 var POPOVER_BUTTON_SIZE = 44;
 var LineChartAnnotationLabelWithPopover = ({
   title,
@@ -100,12 +100,12 @@ var LineChartAnnotationLabelWithPopover = ({
   renderLabel,
   renderLabelPopover
 }) => {
-  const popoverId = _react.useId.call(void 0, );
-  const buttonRef = _react.useRef.call(void 0, null);
-  const popoverRef = _react.useRef.call(void 0, null);
-  const [isPositioned, setIsPositioned] = _react.useState.call(void 0, false);
-  const isBrowserSafari = _chunkMXGLYWVPcjs.isSafari.call(void 0, );
-  _react.useEffect.call(void 0, () => {
+  const popoverId = useId();
+  const buttonRef = useRef(null);
+  const popoverRef = useRef(null);
+  const [isPositioned, setIsPositioned] = useState(false);
+  const isBrowserSafari = isSafari();
+  useEffect(() => {
     const button = buttonRef.current;
     const popover = popoverRef.current;
     if (!button || !popover) return;
@@ -126,12 +126,12 @@ var LineChartAnnotationLabelWithPopover = ({
       if (popover.matches(":popover-open")) {
         positionPopover();
       }
-    } catch (e2) {
+    } catch {
     }
   }, [isBrowserSafari]);
-  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+  return /* @__PURE__ */ _jsxs("div", {
     className: line_chart_module_default["line-chart__annotation-label"],
-    children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "button", {
+    children: [/* @__PURE__ */ _jsx2("button", {
       ref: buttonRef,
       popovertarget: popoverId,
       className: line_chart_module_default["line-chart__annotation-label-trigger-button"],
@@ -140,30 +140,30 @@ var LineChartAnnotationLabelWithPopover = ({
         height: `${POPOVER_BUTTON_SIZE}px`,
         transform: `translate(${POPOVER_BUTTON_SIZE / 2}px, 0)`
       },
-      "aria-label": title || _i18n.__.call(void 0, "View details", "jetpack-charts"),
+      "aria-label": title || __("View details", "jetpack-charts"),
       children: renderLabel({
         title,
         subtitle
       })
-    }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+    }), /* @__PURE__ */ _jsx2("div", {
       ref: popoverRef,
       id: popoverId,
       popover: "auto",
-      className: _clsx2.default.call(void 0, line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
-      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+      className: clsx(line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
+      children: /* @__PURE__ */ _jsxs("div", {
         className: line_chart_module_default["line-chart__annotation-label-popover-header"],
-        children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        children: [/* @__PURE__ */ _jsx2("div", {
           className: line_chart_module_default["line-chart__annotation-label-popover-content"],
           children: renderLabelPopover({
             title,
             subtitle
           })
-        }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "button", {
+        }), /* @__PURE__ */ _jsx2("button", {
           popovertarget: popoverId,
           popovertargetaction: "hide",
           className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
-          "aria-label": _i18n.__.call(void 0, "Close", "jetpack-charts"),
-          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _gridicons2.default, {
+          "aria-label": __("Close", "jetpack-charts"),
+          children: /* @__PURE__ */ _jsx2(Gridicon, {
             icon: "cross",
             size: 16
           })
@@ -175,9 +175,9 @@ var LineChartAnnotationLabelWithPopover = ({
 var line_chart_annotation_label_popover_default = LineChartAnnotationLabelWithPopover;
 
 // src/charts/line-chart/private/line-chart-annotations-overlay.tsx
-
-
-
+import { DataContext as DataContext2 } from "@visx/xychart";
+import { useEffect as useEffect2, useState as useState2, useCallback } from "react";
+import { jsx as _jsx3 } from "react/jsx-runtime";
 var LineChartAnnotationsOverlay = ({
   children
 }) => {
@@ -185,18 +185,18 @@ var LineChartAnnotationsOverlay = ({
     chartRef,
     chartWidth,
     chartHeight
-  } = _chunkXVBH5XHEcjs.useSingleChartContext.call(void 0, );
-  const [scales, setScales] = _react.useState.call(void 0, null);
-  const [scalesStable, setScalesStable] = _react.useState.call(void 0, false);
-  const createScaleSignature = _react.useCallback.call(void 0, (scaleData) => {
+  } = useSingleChartContext();
+  const [scales, setScales] = useState2(null);
+  const [scalesStable, setScalesStable] = useState2(false);
+  const createScaleSignature = useCallback((scaleData) => {
     const xDomain = scaleData.xScale.domain();
     const yDomain = scaleData.yScale.domain();
     const xRange = scaleData.xScale.range();
     const yRange = scaleData.yScale.range();
     return `${xDomain.join(",")}-${yDomain.join(",")}-${xRange.join(",")}-${yRange.join(",")}`;
   }, []);
-  const getScalesData = _react.useCallback.call(void 0, () => {
-    if (_optionalChain([chartRef, 'optionalAccess', _2 => _2.current])) {
+  const getScalesData = useCallback(() => {
+    if (chartRef?.current) {
       const scaleData = chartRef.current.getScales();
       if (scaleData) {
         const scaleInfo = {
@@ -211,7 +211,7 @@ var LineChartAnnotationsOverlay = ({
     }
     return null;
   }, [chartRef, createScaleSignature]);
-  _react.useEffect.call(void 0, () => {
+  useEffect2(() => {
     let timeoutId = null;
     let lastSignature = null;
     let retryCount = 0;
@@ -259,9 +259,9 @@ var LineChartAnnotationsOverlay = ({
     width: chartWidth,
     height: chartHeight
   };
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.DataContext.Provider, {
+  return /* @__PURE__ */ _jsx3(DataContext2.Provider, {
     value: dataContextValue,
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
+    children: /* @__PURE__ */ _jsx3("svg", {
       width: chartWidth,
       height: chartHeight,
       className: line_chart_module_default["line-chart__annotations-overlay"],
@@ -272,11 +272,11 @@ var LineChartAnnotationsOverlay = ({
 var line_chart_annotations_overlay_default = LineChartAnnotationsOverlay;
 
 // src/charts/line-chart/private/line-chart-annotation.tsx
-var _annotation = require('@visx/annotation');
-
-var _deepmerge = require('deepmerge'); var _deepmerge2 = _interopRequireDefault(_deepmerge);
-
-
+import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
+import { DataContext as DataContext3 } from "@visx/xychart";
+import merge from "deepmerge";
+import { useContext as useContext2, useRef as useRef2, useEffect as useEffect3, useState as useState3, useMemo } from "react";
+import { jsx as _jsx4, jsxs as _jsxs2 } from "react/jsx-runtime";
 var ANNOTATION_MAX_WIDTH = 125;
 var ANNOTATION_INIT_HEIGHT = 100;
 var getLabelPosition = ({
@@ -289,8 +289,8 @@ var getLabelPosition = ({
   maxWidth,
   height
 }) => {
-  const annotationMaxWidth = _nullishCoalesce(maxWidth, () => ( ANNOTATION_MAX_WIDTH));
-  const annotationHeight = _nullishCoalesce(height, () => ( ANNOTATION_INIT_HEIGHT));
+  const annotationMaxWidth = maxWidth ?? ANNOTATION_MAX_WIDTH;
+  const annotationHeight = height ?? ANNOTATION_INIT_HEIGHT;
   let dx = 15;
   let dy = 15;
   let isFlippedHorizontally = false;
@@ -364,21 +364,21 @@ var LineChartAnnotation = ({
   renderLabel,
   renderLabelPopover
 }) => {
-  const providerTheme = _chunkWYK7EL5Rcjs.useGlobalChartsTheme.call(void 0, );
+  const providerTheme = useGlobalChartsTheme();
   const {
     xScale,
     yScale
-  } = _react.useContext.call(void 0, _xychart.DataContext) || {};
-  const labelRef = _react.useRef.call(void 0, null);
-  const [height, setHeight] = _react.useState.call(void 0, null);
-  const styles = _deepmerge2.default.call(void 0, _nullishCoalesce(providerTheme.annotationStyles, () => ( {})), _nullishCoalesce(datumStyles, () => ( {})));
-  _react.useEffect.call(void 0, () => {
-    if (_optionalChain([labelRef, 'access', _3 => _3.current, 'optionalAccess', _4 => _4.getBBox])) {
+  } = useContext2(DataContext3) || {};
+  const labelRef = useRef2(null);
+  const [height, setHeight] = useState3(null);
+  const styles = merge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
+  useEffect3(() => {
+    if (labelRef.current?.getBBox) {
       const bbox = labelRef.current.getBBox();
       setHeight(bbox.height);
     }
   }, []);
-  const positionData = _react.useMemo.call(void 0, () => {
+  const positionData = useMemo(() => {
     if (!datum || !datum.date || datum.value == null || !xScale || !yScale) return null;
     const x2 = xScale(datum.date);
     const y2 = yScale(datum.value);
@@ -406,7 +406,7 @@ var LineChartAnnotation = ({
       y: y2,
       yMin: yMin2,
       yMax: yMax2,
-      maxWidth: _optionalChain([styles, 'optionalAccess', _5 => _5.label, 'optionalAccess', _6 => _6.maxWidth]),
+      maxWidth: styles?.label?.maxWidth,
       height
     });
     return {
@@ -418,7 +418,7 @@ var LineChartAnnotation = ({
       xMax: xMax2,
       ...position
     };
-  }, [datum, xScale, yScale, subjectType, _optionalChain([styles, 'optionalAccess', _7 => _7.label, 'optionalAccess', _8 => _8.maxWidth]), height, renderLabel]);
+  }, [datum, xScale, yScale, subjectType, styles?.label?.maxWidth, height, renderLabel]);
   if (!positionData) return null;
   const {
     x,
@@ -433,13 +433,13 @@ var LineChartAnnotation = ({
     isFlippedVertically
   } = positionData;
   const getLabelY = () => {
-    const labelY = _optionalChain([styles, 'optionalAccess', _9 => _9.label, 'optionalAccess', _10 => _10.y]);
+    const labelY = styles?.label?.y;
     if (labelY === "start") return yMax;
     if (labelY === "end") return yMin;
     return labelY;
   };
   const getLabelX = () => {
-    const labelX = _optionalChain([styles, 'optionalAccess', _11 => _11.label, 'optionalAccess', _12 => _12.x]);
+    const labelX = styles?.label?.x;
     if (labelX === "start") return xMin;
     if (labelX === "end") return xMax;
     return labelX;
@@ -451,38 +451,38 @@ var LineChartAnnotation = ({
   const getSafariHTMLLabelPosition = () => {
     const labelWidth = POPOVER_BUTTON_SIZE;
     const labelHeight = POPOVER_BUTTON_SIZE;
-    return _chunkMXGLYWVPcjs.isSafari.call(void 0, ) ? {
+    return isSafari() ? {
       transform: `translate(${x + (dx || 0) + (typeof labelPosition.x === "number" ? labelPosition.x - x : 0) - labelWidth}px, ${y + (dy || 0) + (typeof labelPosition.y === "number" ? labelPosition.y - y : 0) - labelHeight}px)`,
       width: labelWidth,
       height: labelHeight
     } : void 0;
   };
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "g", {
-    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _annotation.Annotation, {
+  return /* @__PURE__ */ _jsx4("g", {
+    children: /* @__PURE__ */ _jsxs2(Annotation, {
       x,
       y,
       dx,
       dy,
-      children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Connector, {
-        ..._optionalChain([styles, 'optionalAccess', _13 => _13.connector])
-      }), subjectType === "circle" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.CircleSubject, {
-        ..._optionalChain([styles, 'optionalAccess', _14 => _14.circleSubject])
-      }), subjectType === "line-vertical" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
+      children: [/* @__PURE__ */ _jsx4(Connector, {
+        ...styles?.connector
+      }), subjectType === "circle" && /* @__PURE__ */ _jsx4(CircleSubject, {
+        ...styles?.circleSubject
+      }), subjectType === "line-vertical" && /* @__PURE__ */ _jsx4(LineSubject, {
         min: yMax,
         max: yMin,
-        ..._optionalChain([styles, 'optionalAccess', _15 => _15.lineSubject]),
+        ...styles?.lineSubject,
         orientation: "vertical"
-      }), subjectType === "line-horizontal" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
+      }), subjectType === "line-horizontal" && /* @__PURE__ */ _jsx4(LineSubject, {
         min: xMin,
         max: xMax,
-        ..._optionalChain([styles, 'optionalAccess', _16 => _16.lineSubject]),
+        ...styles?.lineSubject,
         orientation: "horizontal"
-      }), renderLabel ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.HtmlLabel, {
-        ..._optionalChain([styles, 'optionalAccess', _17 => _17.label]),
+      }), renderLabel ? /* @__PURE__ */ _jsx4(HtmlLabel, {
+        ...styles?.label,
         ...labelPosition,
-        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        children: /* @__PURE__ */ _jsx4("div", {
           style: getSafariHTMLLabelPosition(),
-          children: renderLabelPopover ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_annotation_label_popover_default, {
+          children: renderLabelPopover ? /* @__PURE__ */ _jsx4(line_chart_annotation_label_popover_default, {
             title,
             subtitle,
             renderLabel,
@@ -492,15 +492,15 @@ var LineChartAnnotation = ({
             subtitle
           })
         })
-      }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "g", {
+      }) : /* @__PURE__ */ _jsx4("g", {
         ref: labelRef,
-        children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Label, {
+        children: /* @__PURE__ */ _jsx4(Label, {
           title,
           subtitle,
-          ..._optionalChain([styles, 'optionalAccess', _18 => _18.label]),
+          ...styles?.label,
           ...labelPosition,
           horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally),
-          verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, _nullishCoalesce(height, () => ( ANNOTATION_INIT_HEIGHT)))
+          verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, height ?? ANNOTATION_INIT_HEIGHT)
         })
       })]
     })
@@ -509,8 +509,8 @@ var LineChartAnnotation = ({
 var line_chart_annotation_default = LineChartAnnotation;
 
 // src/charts/line-chart/private/line-chart-glyph.tsx
-
-
+import { DataContext as DataContext4 } from "@visx/xychart";
+import { useContext as useContext3 } from "react";
 var toNumber = (val) => {
   const num = typeof val === "number" ? val : parseFloat(val);
   return isNaN(num) ? void 0 : num;
@@ -527,14 +527,14 @@ var LineChartGlyph = ({
   const {
     xScale,
     yScale
-  } = _react.useContext.call(void 0, _xychart.DataContext) || {};
+  } = useContext3(DataContext4) || {};
   if (!xScale || !yScale) return null;
   if (data.data.length === 0) return null;
   const point = position === "start" ? data.data[0] : data.data[data.data.length - 1];
   const x = xScale(accessors.xAccessor(point));
   const y = yScale(accessors.yAccessor(point));
   if (typeof x !== "number" || typeof y !== "number") return null;
-  const size = Math.max(0, _nullishCoalesce(toNumber(_optionalChain([glyphStyle, 'optionalAccess', _19 => _19.radius])), () => ( 4)));
+  const size = Math.max(0, toNumber(glyphStyle?.radius) ?? 4);
   return renderGlyph({
     key: `${position}-glyph-${data.label}`,
     index,
@@ -550,10 +550,10 @@ var LineChartGlyph = ({
 var line_chart_glyph_default = LineChartGlyph;
 
 // src/charts/line-chart/line-chart.tsx
-
+import { jsx as _jsx5, jsxs as _jsxs3 } from "react/jsx-runtime";
 var X_TICK_WIDTH = 60;
 var defaultRenderGlyph = (props) => {
-  return /* @__PURE__ */ _react.createElement.call(void 0, DefaultGlyph, {
+  return /* @__PURE__ */ _createElement(DefaultGlyph, {
     ...props,
     key: props.key
   });
@@ -564,44 +564,44 @@ var toNumber2 = (val) => {
 };
 var getCurveType = (type, smoothing) => {
   if (!type) {
-    return smoothing ? _curve.curveCatmullRom : _curve.curveLinear;
+    return smoothing ? curveCatmullRom : curveLinear;
   }
   switch (type) {
     case "smooth":
-      return _curve.curveCatmullRom;
+      return curveCatmullRom;
     case "monotone":
-      return _curve.curveMonotoneX;
+      return curveMonotoneX;
     case "linear":
-      return _curve.curveLinear;
+      return curveLinear;
     default:
-      return _curve.curveLinear;
+      return curveLinear;
   }
 };
 var renderDefaultTooltip = (params) => {
   const {
     tooltipData
   } = params;
-  const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _20 => _20.nearestDatum, 'optionalAccess', _21 => _21.datum]);
+  const nearestDatum = tooltipData?.nearestDatum?.datum;
   if (!nearestDatum) return null;
-  const tooltipPoints = Object.entries(_optionalChain([tooltipData, 'optionalAccess', _22 => _22.datumByKey]) || {}).map(([key, {
+  const tooltipPoints = Object.entries(tooltipData?.datumByKey || {}).map(([key, {
     datum
   }]) => ({
     key,
     value: datum.value
   })).sort((a, b) => b.value - a.value);
-  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+  return /* @__PURE__ */ _jsxs3("div", {
     className: line_chart_module_default["line-chart__tooltip"],
-    children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+    children: [/* @__PURE__ */ _jsx5("div", {
       className: line_chart_module_default["line-chart__tooltip-date"],
-      children: _optionalChain([nearestDatum, 'access', _23 => _23.date, 'optionalAccess', _24 => _24.toLocaleDateString, 'call', _25 => _25()])
-    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+      children: nearestDatum.date?.toLocaleDateString()
+    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxs3("div", {
       className: line_chart_module_default["line-chart__tooltip-row"],
-      children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
+      children: [/* @__PURE__ */ _jsxs3("span", {
         className: line_chart_module_default["line-chart__tooltip-label"],
         children: [point.key, ":"]
-      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", {
+      }), /* @__PURE__ */ _jsx5("span", {
         className: line_chart_module_default["line-chart__tooltip-value"],
-        children: _numberformatters.formatNumber.call(void 0, point.value)
+        children: formatNumber(point.value)
       })]
     }, point.key))]
   });
@@ -627,26 +627,26 @@ var formatHourTick = (timestamp) => {
   });
 };
 var getFormatter = (sortedData) => {
-  const minX = Math.min(...sortedData.map((datom) => _optionalChain([datom, 'access', _26 => _26.data, 'access', _27 => _27.at, 'call', _28 => _28(0), 'optionalAccess', _29 => _29.date])));
-  const maxX = Math.max(...sortedData.map((datom) => _optionalChain([datom, 'access', _30 => _30.data, 'access', _31 => _31.at, 'call', _32 => _32(-1), 'optionalAccess', _33 => _33.date])));
-  const diffInHours = Math.abs(_datefns.differenceInHours.call(void 0, maxX, minX));
+  const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
+  const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
+  const diffInHours = Math.abs(differenceInHours(maxX, minX));
   if (diffInHours <= 24) {
     return formatHourTick;
   }
-  const diffInYears = Math.abs(_datefns.differenceInYears.call(void 0, maxX, minX));
+  const diffInYears = Math.abs(differenceInYears(maxX, minX));
   if (diffInYears <= 1) {
     return formatDateTick;
   }
   return formatYearTick;
 };
 var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
-  const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _34 => _34.data, 'access', _35 => _35.at, 'call', _36 => _36(0), 'optionalAccess', _37 => _37.date])));
-  const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _38 => _38.data, 'access', _39 => _39.at, 'call', _40 => _40(-1), 'optionalAccess', _41 => _41.date])));
-  const xScale = _scale.scaleTime.call(void 0, {
+  const minX = Math.min(...data.map((datom) => datom.data.at(0)?.date));
+  const maxX = Math.max(...data.map((datom) => datom.data.at(-1)?.date));
+  const xScale = scaleTime({
     domain: [minX, maxX]
   });
   const upperBound = Math.min(
-    _optionalChain([data, 'access', _42 => _42[0], 'optionalAccess', _43 => _43.data, 'access', _44 => _44.length]) || 3,
+    data[0]?.data.length || 3,
     // A sane fallback to avoid NaN when no data is present
     Math.ceil(chartWidth / X_TICK_WIDTH)
   );
@@ -670,7 +670,7 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   return secondBestGuess;
 };
 var validateData = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _45 => _45.length])) return "No data available";
+  if (!data?.length) return "No data available";
   const hasInvalidData = data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())));
   if (hasInvalidData) return "Invalid data";
   return null;
@@ -681,10 +681,10 @@ var LineChartScalesRef = ({
   height,
   margin
 }) => {
-  const context = _react.useContext.call(void 0, _xychart.DataContext);
-  _react.useImperativeHandle.call(void 0, chartRef, () => ({
+  const context = useContext4(DataContext5);
+  useImperativeHandle(chartRef, () => ({
     getScales: () => {
-      if (!_optionalChain([context, 'optionalAccess', _46 => _46.xScale]) || !_optionalChain([context, 'optionalAccess', _47 => _47.yScale])) {
+      if (!context?.xScale || !context?.yScale) {
         return null;
       }
       return {
@@ -700,7 +700,7 @@ var LineChartScalesRef = ({
   }), [context, width, height, margin]);
   return null;
 };
-var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
+var LineChartInternal = /* @__PURE__ */ forwardRef(({
   data,
   chartId: providedChartId,
   width,
@@ -730,39 +730,39 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   gridVisibility,
   gap = "md"
 }, ref) => {
-  const legendInteractive = _nullishCoalesce(legend.interactive, () => ( false));
-  const legendShape = _nullishCoalesce(legend.shape, () => ( "line"));
-  const legendPosition = _nullishCoalesce(legend.position, () => ( "bottom"));
-  const providerTheme = _chunkWYK7EL5Rcjs.useGlobalChartsTheme.call(void 0, );
-  const theme = _chunkWYK7EL5Rcjs.useXYChartTheme.call(void 0, data);
-  const chartId = _chunkWYK7EL5Rcjs.useChartId.call(void 0, providedChartId);
-  const chartRef = _react.useRef.call(void 0, null);
-  const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
-  const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
-  const internalChartRef = _react.useRef.call(void 0, null);
+  const legendInteractive = legend.interactive ?? false;
+  const legendShape = legend.shape ?? "line";
+  const legendPosition = legend.position ?? "bottom";
+  const providerTheme = useGlobalChartsTheme();
+  const theme = useXYChartTheme(data);
+  const chartId = useChartId(providedChartId);
+  const chartRef = useRef3(null);
+  const [selectedIndex, setSelectedIndex] = useState4(void 0);
+  const [isNavigating, setIsNavigating] = useState4(false);
+  const internalChartRef = useRef3(null);
   const {
     legendChildren,
     nonLegendChildren
-  } = _chunkFDBGXBW2cjs.useChartChildren.call(void 0, children, "LineChart");
-  const [measuredChartHeight, setMeasuredChartHeight] = _react.useState.call(void 0, );
-  const handleContentHeightChange = _react.useCallback.call(void 0, (contentHeight) => {
+  } = useChartChildren(children, "LineChart");
+  const [measuredChartHeight, setMeasuredChartHeight] = useState4();
+  const handleContentHeightChange = useCallback2((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
-  _react.useImperativeHandle.call(void 0, ref, () => ({
-    getScales: () => _optionalChain([internalChartRef, 'access', _48 => _48.current, 'optionalAccess', _49 => _49.getScales, 'call', _50 => _50()]) || null,
-    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _51 => _51.current, 'optionalAccess', _52 => _52.getChartDimensions, 'call', _53 => _53()]) || {
+  useImperativeHandle(ref, () => ({
+    getScales: () => internalChartRef.current?.getScales() || null,
+    getChartDimensions: () => internalChartRef.current?.getChartDimensions() || {
       width: 0,
       height: 0,
       margin: {}
     }
   }), [internalChartRef]);
-  const dataSorted = _chunkWYK7EL5Rcjs.useChartDataTransform.call(void 0, data);
+  const dataSorted = useChartDataTransform(data);
   const {
     getElementStyles,
     isSeriesVisible
-  } = _chunkWYK7EL5Rcjs.useGlobalChartsContext.call(void 0, );
-  const seriesWithVisibility = _react.useMemo.call(void 0, () => {
+  } = useGlobalChartsContext();
+  const seriesWithVisibility = useMemo2(() => {
     if (!chartId || !legendInteractive) {
       return dataSorted.map((series, index) => ({
         series,
@@ -776,7 +776,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       isVisible: isSeriesVisible(chartId, series.label)
     }));
   }, [dataSorted, chartId, isSeriesVisible, legendInteractive]);
-  const allSeriesHidden = _react.useMemo.call(void 0, () => {
+  const allSeriesHidden = useMemo2(() => {
     return seriesWithVisibility.every(({
       isVisible
     }) => !isVisible);
@@ -786,16 +786,16 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     onChartFocus,
     onChartBlur,
     onChartKeyDown
-  } = _chunkY3NNQMAXcjs.useKeyboardNavigation.call(void 0, {
+  } = useKeyboardNavigation({
     selectedIndex,
     setSelectedIndex,
     isNavigating,
     setIsNavigating,
     chartRef,
-    totalPoints: _optionalChain([dataSorted, 'access', _54 => _54[0], 'optionalAccess', _55 => _55.data, 'access', _56 => _56.length]) || 0
+    totalPoints: dataSorted[0]?.data.length || 0
   });
-  const chartOptions = _react.useMemo.call(void 0, () => {
-    const formatter = _optionalChain([options, 'optionalAccess', _57 => _57.axis, 'optionalAccess', _58 => _58.x, 'optionalAccess', _59 => _59.tickFormat]) || getFormatter(dataSorted);
+  const chartOptions = useMemo2(() => {
+    const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
     return {
       axis: {
         x: {
@@ -803,29 +803,29 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
           tickFormat: formatter,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _60 => _60.axis, 'optionalAccess', _61 => _61.x])
+          ...options?.axis?.x
         },
         y: {
           orientation: "left",
           numTicks: 4,
-          tickFormat: _numberformatters.formatNumberCompact,
+          tickFormat: formatNumberCompact,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _62 => _62.axis, 'optionalAccess', _63 => _63.y])
+          ...options?.axis?.y
         }
       },
       xScale: {
         type: "time",
-        ..._optionalChain([options, 'optionalAccess', _64 => _64.xScale])
+        ...options?.xScale
       },
       yScale: {
         type: "linear",
         nice: true,
         zero: false,
-        ..._optionalChain([options, 'optionalAccess', _65 => _65.yScale])
+        ...options?.yScale
       }
     };
   }, [options, dataSorted, width]);
-  const tooltipRenderGlyph = _react.useMemo.call(void 0, () => {
+  const tooltipRenderGlyph = useMemo2(() => {
     return (props) => {
       const seriesIndex = dataSorted.findIndex((series) => series.label === props.key || series.data.includes(props.datum));
       const seriesData = dataSorted[seriesIndex];
@@ -843,16 +843,16 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       return themeGlyph ? themeGlyph(propsWithResolvedColor) : renderGlyph(propsWithResolvedColor);
     };
   }, [dataSorted, renderGlyph, getElementStyles]);
-  const defaultMargin = _chunkWYK7EL5Rcjs.useChartMargin.call(void 0, height, chartOptions, dataSorted, theme);
+  const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
   const error = validateData(dataSorted);
   const isDataValid = !error;
-  const legendOptions = _react.useMemo.call(void 0, () => ({
+  const legendOptions = useMemo2(() => ({
     withGlyph: withLegendGlyph,
-    glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _66 => _66.radius])), () => ( 4))),
+    glyphSize: Math.max(0, toNumber2(glyphStyle?.radius) ?? 4),
     renderGlyph
-  }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _67 => _67.radius]), renderGlyph]);
-  const legendItems = _chunkXVBH5XHEcjs.useChartLegendItems.call(void 0, dataSorted, legendOptions, legendShape);
-  const chartMetadata = _react.useMemo.call(void 0, () => ({
+  }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
+  const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
+  const chartMetadata = useMemo2(() => ({
     withGradientFill,
     smoothing,
     curveType,
@@ -860,27 +860,27 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     withEndGlyphs,
     withLegendGlyph
   }), [withGradientFill, smoothing, curveType, withStartGlyphs, withEndGlyphs, withLegendGlyph]);
-  _chunkWYK7EL5Rcjs.useChartRegistration.call(void 0, {
+  useChartRegistration({
     chartId,
     legendItems,
     chartType: "line",
     isDataValid,
     metadata: chartMetadata
   });
-  const prefersReducedMotion = _chunkWYK7EL5Rcjs.usePrefersReducedMotion.call(void 0, );
+  const prefersReducedMotion = usePrefersReducedMotion();
   const accessors = {
-    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _68 => _68.date]),
-    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _69 => _69.value])
+    xAccessor: (d) => d?.date,
+    yAccessor: (d) => d?.value
   };
   if (error) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-      className: _clsx2.default.call(void 0, "line-chart", line_chart_module_default["line-chart"]),
+    return /* @__PURE__ */ _jsx5("div", {
+      className: clsx2("line-chart", line_chart_module_default["line-chart"]),
       children: error
     });
   }
-  const legendElement = showLegend && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkXVBH5XHEcjs.Legend, {
-    orientation: _nullishCoalesce(legend.orientation, () => ( "horizontal")),
-    alignment: _nullishCoalesce(legend.alignment, () => ( "center")),
+  const legendElement = showLegend && /* @__PURE__ */ _jsx5(Legend, {
+    orientation: legend.orientation ?? "horizontal",
+    alignment: legend.alignment ?? "center",
     position: legendPosition,
     labelStyles: legend.labelStyles,
     itemClassName: legend.itemClassName,
@@ -891,19 +891,19 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     chartId,
     interactive: legendInteractive
   });
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkXVBH5XHEcjs.SingleChartContext.Provider, {
+  return /* @__PURE__ */ _jsx5(SingleChartContext.Provider, {
     value: {
       chartId,
       chartRef: internalChartRef,
       chartWidth: width,
       chartHeight: measuredChartHeight || 0
     },
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkFDBGXBW2cjs.ChartLayout, {
+    children: /* @__PURE__ */ _jsx5(ChartLayout, {
       legendPosition,
       legendElement,
       legendChildren,
       gap,
-      className: _clsx2.default.call(void 0, "line-chart", line_chart_module_default["line-chart"], {
+      className: clsx2("line-chart", line_chart_module_default["line-chart"], {
         [line_chart_module_default["line-chart--animated"]]: animation && !prefersReducedMotion
       }, className),
       style: {
@@ -916,16 +916,16 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
         contentHeight
       }) => {
         const chartHeight = contentHeight > 0 ? contentHeight : height;
-        return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        return /* @__PURE__ */ _jsx5("div", {
           role: "grid",
-          "aria-label": _i18n.__.call(void 0, "Line chart", "jetpack-charts"),
+          "aria-label": __2("Line chart", "jetpack-charts"),
           tabIndex: 0,
           onKeyDown: onChartKeyDown,
           onFocus: onChartFocus,
           onBlur: onChartBlur,
-          children: chartHeight > 0 && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+          children: chartHeight > 0 && /* @__PURE__ */ _jsx5("div", {
             ref: chartRef,
-            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _xychart.XYChart, {
+            children: /* @__PURE__ */ _jsxs3(XYChart, {
               theme,
               width,
               height: chartHeight,
@@ -940,19 +940,19 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
               onPointerMove,
               onPointerOut,
               pointerEventsDataKey: "nearest",
-              children: [gridVisibility !== "none" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Grid, {
+              children: [gridVisibility !== "none" && /* @__PURE__ */ _jsx5(Grid, {
                 columns: false,
                 numTicks: 4
-              }), chartOptions.axis.x.display && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, {
+              }), chartOptions.axis.x.display && /* @__PURE__ */ _jsx5(Axis, {
                 ...chartOptions.axis.x
-              }), chartOptions.axis.y.display && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, {
+              }), chartOptions.axis.y.display && /* @__PURE__ */ _jsx5(Axis, {
                 ...chartOptions.axis.y
-              }), allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk5NWDCSDIcjs.SvgEmptyState, {
+              }), allSeriesHidden ? /* @__PURE__ */ _jsx5(SvgEmptyState, {
                 x: width / 2,
                 y: chartHeight / 2,
                 width,
                 height: chartHeight,
-                children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
+                children: __2("All series are hidden. Click legend items to show data.", "jetpack-charts")
               }) : null, seriesWithVisibility.map(({
                 series: seriesData,
                 index,
@@ -973,46 +973,46 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                   stroke: color,
                   ...lineStyles
                 };
-                return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "g", {
-                  children: [withGradientFill && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _gradient.LinearGradient, {
+                return /* @__PURE__ */ _jsxs3("g", {
+                  children: [withGradientFill && /* @__PURE__ */ _jsx5(LinearGradient, {
                     id: `area-gradient-${chartId}-${index + 1}`,
                     from: color,
                     fromOpacity: 0.4,
                     toOpacity: 0.1,
                     to: providerTheme.backgroundColor,
-                    ..._optionalChain([seriesData, 'access', _70 => _70.options, 'optionalAccess', _71 => _71.gradient]),
-                    children: _optionalChain([seriesData, 'access', _72 => _72.options, 'optionalAccess', _73 => _73.gradient, 'optionalAccess', _74 => _74.stops, 'optionalAccess', _75 => _75.map, 'call', _76 => _76((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "stop", {
+                    ...seriesData.options?.gradient,
+                    children: seriesData.options?.gradient?.stops?.map((stop, stopIndex) => /* @__PURE__ */ _jsx5("stop", {
                       offset: stop.offset,
                       stopColor: stop.color || color,
-                      stopOpacity: _nullishCoalesce(stop.opacity, () => ( 1))
-                    }, `${stop.offset}-${stop.color || color}`))])
-                  }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.AreaSeries, {
-                    dataKey: _optionalChain([seriesData, 'optionalAccess', _77 => _77.label]),
+                      stopOpacity: stop.opacity ?? 1
+                    }, `${stop.offset}-${stop.color || color}`))
+                  }), /* @__PURE__ */ _jsx5(AreaSeries, {
+                    dataKey: seriesData?.label,
                     data: seriesData.data,
                     ...accessors,
                     fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
                     renderLine: true,
                     curve: getCurveType(curveType, smoothing),
                     lineProps
-                  }, _optionalChain([seriesData, 'optionalAccess', _78 => _78.label])), withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
+                  }, seriesData?.label), withStartGlyphs && /* @__PURE__ */ _jsx5(line_chart_glyph_default, {
                     index,
                     data: seriesData,
                     color,
-                    renderGlyph: _nullishCoalesce(glyph, () => ( renderGlyph)),
+                    renderGlyph: glyph ?? renderGlyph,
                     accessors,
                     glyphStyle,
                     position: "start"
-                  }), withEndGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
+                  }), withEndGlyphs && /* @__PURE__ */ _jsx5(line_chart_glyph_default, {
                     index,
                     data: seriesData,
                     color,
-                    renderGlyph: _nullishCoalesce(glyph, () => ( renderGlyph)),
+                    renderGlyph: glyph ?? renderGlyph,
                     accessors,
                     glyphStyle,
                     position: "end"
                   })]
-                }, _optionalChain([seriesData, 'optionalAccess', _79 => _79.label]) || index);
-              }), withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkY3NNQMAXcjs.AccessibleTooltip, {
+                }, seriesData?.label || index);
+              }), withTooltips && /* @__PURE__ */ _jsx5(AccessibleTooltip, {
                 detectBounds: true,
                 snapTooltipToDatumX: true,
                 snapTooltipToDatumY: true,
@@ -1020,13 +1020,13 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                 renderTooltip,
                 renderGlyph: tooltipRenderGlyph,
                 glyphStyle,
-                showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _80 => _80.showVertical]),
-                showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _81 => _81.showHorizontal]),
+                showVerticalCrosshair: withTooltipCrosshairs?.showVertical,
+                showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal,
                 selectedIndex,
                 tooltipRef,
                 keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
                 series: dataSorted
-              }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartScalesRef, {
+              }), /* @__PURE__ */ _jsx5(LineChartScalesRef, {
                 chartRef: internalChartRef,
                 width,
                 height,
@@ -1039,35 +1039,35 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     })
   });
 });
-var LineChartWithProvider = /* @__PURE__ */ _react.forwardRef.call(void 0, (props, ref) => {
-  const existingContext = _react.useContext.call(void 0, _chunkWYK7EL5Rcjs.GlobalChartsContext);
+var LineChartWithProvider = /* @__PURE__ */ forwardRef((props, ref) => {
+  const existingContext = useContext4(GlobalChartsContext);
   if (existingContext) {
-    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
+    return /* @__PURE__ */ _jsx5(LineChartInternal, {
       ...props,
       ref
     });
   }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkWYK7EL5Rcjs.GlobalChartsProvider, {
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, LineChartInternal, {
+  return /* @__PURE__ */ _jsx5(GlobalChartsProvider, {
+    children: /* @__PURE__ */ _jsx5(LineChartInternal, {
       ...props,
       ref
     })
   });
 });
 LineChartWithProvider.displayName = "LineChart";
-var LineChart = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, LineChartWithProvider, {
-  Legend: _chunkXVBH5XHEcjs.Legend,
+var LineChart = attachSubComponents(LineChartWithProvider, {
+  Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
-var LineChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _chunkASLARV7Lcjs.withResponsive.call(void 0, LineChartWithProvider), {
-  Legend: _chunkXVBH5XHEcjs.Legend,
+var LineChartResponsive = attachSubComponents(withResponsive(LineChartWithProvider), {
+  Legend,
   AnnotationsOverlay: line_chart_annotations_overlay_default,
   Annotation: line_chart_annotation_default
 });
 
-
-
-
-exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-HUS2YPAR.cjs.map
+export {
+  LineChart,
+  LineChartResponsive
+};
+//# sourceMappingURL=chunk-NB734TLU.js.map
