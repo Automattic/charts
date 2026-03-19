@@ -1,11 +1,7 @@
 import {
   ChartLayout,
   useChartChildren
-} from "./chunk-G642YA6J.js";
-import {
-  Legend,
-  SingleChartContext
-} from "./chunk-WTQYGUNF.js";
+} from "./chunk-3BOQFXDC.js";
 import {
   Children,
   Fragment,
@@ -25,6 +21,10 @@ import {
 import {
   withResponsive
 } from "./chunk-OP6PHB2U.js";
+import {
+  Legend,
+  SingleChartContext
+} from "./chunk-WTQYGUNF.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -3953,4 +3953,4 @@ is-plain-object/dist/is-plain-object.mjs:
    * Released under the MIT License.
    *)
 */
-//# sourceMappingURL=chunk-6O4UMV3Z.js.map
+//# sourceMappingURL=chunk-WKQ5XSDY.js.map

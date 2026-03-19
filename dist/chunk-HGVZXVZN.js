@@ -4,20 +4,16 @@ import {
 import {
   ChartLayout,
   useChartChildren
-} from "./chunk-G642YA6J.js";
+} from "./chunk-3BOQFXDC.js";
+import {
+  withResponsive
+} from "./chunk-OP6PHB2U.js";
 import {
   Legend,
   SingleChartContext,
   useChartLegendItems,
   useSingleChartContext
 } from "./chunk-WTQYGUNF.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-BPYKWMI7.js";
-import {
-  withResponsive
-} from "./chunk-OP6PHB2U.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -34,6 +30,10 @@ import {
   attachSubComponents,
   isSafari
 } from "./chunk-JJIMABHT.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
 
 // src/charts/line-chart/line-chart.tsx
 import { formatNumberCompact, formatNumber } from "@automattic/number-formatters";
@@ -1070,4 +1070,4 @@ export {
   LineChart,
   LineChartResponsive
 };
-//# sourceMappingURL=chunk-R5DY2EVG.js.map
+//# sourceMappingURL=chunk-HGVZXVZN.js.map

@@ -4,20 +4,16 @@ var _chunk5NWDCSDIcjs = require('./chunk-5NWDCSDI.cjs');
 
 
 
-var _chunkHBBGUXZKcjs = require('./chunk-HBBGUXZK.cjs');
+var _chunkNL53FCS3cjs = require('./chunk-NL53FCS3.cjs');
+
+
+var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
 
 
 
 
 
 var _chunkXVBH5XHEcjs = require('./chunk-XVBH5XHE.cjs');
-
-
-
-var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
-
-
-var _chunkASLARV7Lcjs = require('./chunk-ASLARV7L.cjs');
 
 
 
@@ -34,6 +30,10 @@ var _chunkWYK7EL5Rcjs = require('./chunk-WYK7EL5R.cjs');
 
 
 var _chunkMXGLYWVPcjs = require('./chunk-MXGLYWVP.cjs');
+
+
+
+var _chunkY3NNQMAXcjs = require('./chunk-Y3NNQMAX.cjs');
 
 // src/charts/line-chart/line-chart.tsx
 var _numberformatters = require('@automattic/number-formatters');
@@ -743,7 +743,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const {
     legendChildren,
     nonLegendChildren
-  } = _chunkHBBGUXZKcjs.useChartChildren.call(void 0, children, "LineChart");
+  } = _chunkNL53FCS3cjs.useChartChildren.call(void 0, children, "LineChart");
   const [measuredChartHeight, setMeasuredChartHeight] = _react.useState.call(void 0, );
   const handleContentHeightChange = _react.useCallback.call(void 0, (contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
@@ -898,7 +898,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       chartWidth: width,
       chartHeight: measuredChartHeight || 0
     },
-    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkHBBGUXZKcjs.ChartLayout, {
+    children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkNL53FCS3cjs.ChartLayout, {
       legendPosition,
       legendElement,
       legendChildren,
@@ -1070,4 +1070,4 @@ var LineChartResponsive = _chunkMXGLYWVPcjs.attachSubComponents.call(void 0, _ch
 
 
 exports.LineChart = LineChart; exports.LineChartResponsive = LineChartResponsive;
-//# sourceMappingURL=chunk-P6PN4MS4.cjs.map
+//# sourceMappingURL=chunk-NXWHCQUF.cjs.map
