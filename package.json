@@ -22,79 +22,7 @@
 			"import": "./dist/index.js",
 			"require": "./dist/index.cjs"
 		},
-		"./bar-chart": {
-			"import": "./dist/charts/bar-chart/index.js",
-			"require": "./dist/charts/bar-chart/index.cjs"
-		},
-		"./bar-chart/style.css": "./dist/charts/bar-chart/index.css",
-		"./bar-list-chart": {
-			"import": "./dist/charts/bar-list-chart/index.js",
-			"require": "./dist/charts/bar-list-chart/index.cjs"
-		},
-		"./bar-list-chart/style.css": "./dist/charts/bar-list-chart/index.css",
-		"./conversion-funnel-chart": {
-			"import": "./dist/charts/conversion-funnel-chart/index.js",
-			"require": "./dist/charts/conversion-funnel-chart/index.cjs"
-		},
-		"./conversion-funnel-chart/style.css": "./dist/charts/conversion-funnel-chart/index.css",
-		"./geo-chart": {
-			"import": "./dist/charts/geo-chart/index.js",
-			"require": "./dist/charts/geo-chart/index.cjs"
-		},
-		"./geo-chart/style.css": "./dist/charts/geo-chart/index.css",
-		"./hooks": {
-			"import": "./dist/hooks/index.js",
-			"require": "./dist/hooks/index.cjs"
-		},
-		"./leaderboard-chart": {
-			"import": "./dist/charts/leaderboard-chart/index.js",
-			"require": "./dist/charts/leaderboard-chart/index.cjs"
-		},
-		"./leaderboard-chart/style.css": "./dist/charts/leaderboard-chart/index.css",
-		"./legend": {
-			"import": "./dist/components/legend/index.js",
-			"require": "./dist/components/legend/index.cjs"
-		},
-		"./legend/style.css": "./dist/components/legend/index.css",
-		"./line-chart": {
-			"import": "./dist/charts/line-chart/index.js",
-			"require": "./dist/charts/line-chart/index.cjs"
-		},
-		"./line-chart/style.css": "./dist/charts/line-chart/index.css",
-		"./pie-chart": {
-			"import": "./dist/charts/pie-chart/index.js",
-			"require": "./dist/charts/pie-chart/index.cjs"
-		},
-		"./pie-chart/style.css": "./dist/charts/pie-chart/index.css",
-		"./pie-semi-circle-chart": {
-			"import": "./dist/charts/pie-semi-circle-chart/index.js",
-			"require": "./dist/charts/pie-semi-circle-chart/index.cjs"
-		},
-		"./pie-semi-circle-chart/style.css": "./dist/charts/pie-semi-circle-chart/index.css",
-		"./providers": {
-			"import": "./dist/providers/index.js",
-			"require": "./dist/providers/index.cjs"
-		},
-		"./sparkline": {
-			"import": "./dist/charts/sparkline/index.js",
-			"require": "./dist/charts/sparkline/index.cjs"
-		},
-		"./sparkline/style.css": "./dist/charts/sparkline/index.css",
 		"./style.css": "./dist/index.css",
-		"./tooltip": {
-			"import": "./dist/components/tooltip/index.js",
-			"require": "./dist/components/tooltip/index.cjs"
-		},
-		"./tooltip/style.css": "./dist/components/tooltip/index.css",
-		"./trend-indicator": {
-			"import": "./dist/components/trend-indicator/index.js",
-			"require": "./dist/components/trend-indicator/index.cjs"
-		},
-		"./trend-indicator/style.css": "./dist/components/trend-indicator/index.css",
-		"./utils": {
-			"import": "./dist/utils/index.js",
-			"require": "./dist/utils/index.cjs"
-		},
 		"./visx/group": {
 			"import": "./dist/visx/group/index.js",
 			"require": "./dist/visx/group/index.cjs"
@@ -114,51 +42,6 @@
 		"*": {
 			".": [
 				"./dist/index.d.ts"
-			],
-			"bar-chart": [
-				"./dist/charts/bar-chart/index.d.ts"
-			],
-			"bar-list-chart": [
-				"./dist/charts/bar-list-chart/index.d.ts"
-			],
-			"conversion-funnel-chart": [
-				"./dist/charts/conversion-funnel-chart/index.d.ts"
-			],
-			"geo-chart": [
-				"./dist/charts/geo-chart/index.d.ts"
-			],
-			"hooks": [
-				"./dist/hooks/index.d.ts"
-			],
-			"leaderboard-chart": [
-				"./dist/charts/leaderboard-chart/index.d.ts"
-			],
-			"legend": [
-				"./dist/components/legend/index.d.ts"
-			],
-			"line-chart": [
-				"./dist/charts/line-chart/index.d.ts"
-			],
-			"pie-chart": [
-				"./dist/charts/pie-chart/index.d.ts"
-			],
-			"pie-semi-circle-chart": [
-				"./dist/charts/pie-semi-circle-chart/index.d.ts"
-			],
-			"sparkline": [
-				"./dist/charts/sparkline/index.d.ts"
-			],
-			"providers": [
-				"./dist/providers/index.d.ts"
-			],
-			"tooltip": [
-				"./dist/components/tooltip/index.d.ts"
-			],
-			"trend-indicator": [
-				"./dist/components/trend-indicator/index.d.ts"
-			],
-			"utils": [
-				"./dist/utils/index.d.ts"
 			],
 			"visx/group": [
 				"./dist/visx/group/index.d.ts"

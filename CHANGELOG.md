@@ -18,6 +18,9 @@ This is an alpha version! The changes listed here are not final.
 - Remove `percentage` from DataPointPercentage interface.
 - Standardize legend stories and documentation across all chart types.
 
+### Removed
+- Remove individual chart entry point exports in favor of the main package entry point for v1.
+
 ### Fixed
 - Fix empty-state text wrapping when all legend items are hidden.
 
