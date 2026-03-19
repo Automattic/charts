@@ -1,4 +1,7 @@
 import {
+  TrendIndicator
+} from "./chunk-XWYZIFZW.js";
+import {
   LeaderboardChart,
   LeaderboardChartResponsive
 } from "./chunk-6O4UMV3Z.js";
@@ -20,9 +23,6 @@ import {
   LineChart,
   LineChartResponsive
 } from "./chunk-R5DY2EVG.js";
-import {
-  TrendIndicator
-} from "./chunk-XWYZIFZW.js";
 import {
   BarListChart,
   BarListChartResponsive
