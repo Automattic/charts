@@ -1,5 +1,5 @@
 import { MouseEvent, RefObject } from 'react';
-import { D as DataPoint, o as SeriesData, p as SeriesDataOptions, B as BaseChartProps, d as DataPointDate } from '../types-ChOUI9-N.cjs';
+import { D as DataPoint, p as SeriesData, q as SeriesDataOptions, B as BaseChartProps, d as DataPointDate } from '../types-rXqh76Ut.cjs';
 import * as _visx_xychart from '@visx/xychart';
 import { XYChartTheme } from '@visx/xychart';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -152,9 +152,24 @@ interface UseZeroValueDisplayOptions {
 }
 declare const useZeroValueDisplay: (data: SeriesData[], options?: UseZeroValueDisplayOptions) => SeriesData[] | EnhancedSeriesData[];
 
+interface DataPointWithValue {
+    value: number;
+}
+/**
+ * Hook to calculate percentages from values for chart data.
+ * Ensures percentages are always derived from values (single source of truth).
+ *
+ * @param data - Array of data points with values
+ * @return Data with calculated percentages
+ */
+declare const useDataWithPercentages: <T extends DataPointWithValue>(data: T[]) => (T & {
+    percentage: number;
+})[];
+
 /**
  * Data point interface for charts with interactive legends.
- * Requires label for series identification, value for calculations, and percentage for display.
+ * Requires label for series identification, value for calculations,
+ * and percentage (should be pre-calculated by the chart component).
  */
 interface DataPointWithPercentage {
     label: string;
@@ -165,7 +180,7 @@ interface DataPointWithPercentage {
  * Parameters for the useInteractiveLegendData hook.
  */
 interface UseInteractiveLegendDataParams<T extends DataPointWithPercentage> {
-    /** The chart data to filter based on legend visibility */
+    /** The chart data with pre-calculated percentages */
     data: T[];
     /** Unique chart identifier, required for interactive legends */
     chartId: string | undefined;
@@ -183,9 +198,9 @@ interface UseInteractiveLegendDataResult<T extends DataPointWithPercentage> {
     /** Boolean indicating if all segments are hidden */
     allSegmentsHidden: boolean;
     /**
-     * Legend data with recalculated percentages for visible items.
-     * Uses original data for hidden items, but shows recalculated percentages for visible ones.
-     * This ensures the legend displays accurate percentages while maintaining all entries.
+     * Legend data with stable percentage formatting.
+     * Hidden items keep their original percentage.
+     * Visible items show recalculated percentages that total 100%.
      */
     legendData: T[];
 }
@@ -261,4 +276,4 @@ declare function usePrefersReducedMotion(): boolean;
  */
 declare function useTooltipPortalRelocator(containerRef: RefObject<HTMLElement | null> | undefined): void;
 
-export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDeepMemo, useElementSize, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay };
+export { useChartDataTransform, useChartMargin, useChartMouseHandler, useDataWithPercentages, useDeepMemo, useElementSize, useInteractiveLegendData, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay };

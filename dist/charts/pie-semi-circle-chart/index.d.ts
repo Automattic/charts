@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-ChOUI9-N.js';
+import { O as Optional, B as BaseChartProps, e as DataPointPercentage, f as DataPointPercentageCalculated } from '../../types-rXqh76Ut.js';
 import { LegendValueDisplay } from '../../components/legend/index.js';
-import { C as ChartComponentWithComposition } from '../../types-BsHooDbM.js';
+import { C as ChartComponentWithComposition } from '../../types-DJfNRq-m.js';
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.js';
 import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 import '@visx/annotation/lib/components/CircleSubject';
@@ -15,8 +15,8 @@ import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '@wordpress/theme';
 import 'react-google-charts';
-import '../../legend-DLswHhOk.js';
-import '../../types-BuSrRM4p.js';
+import '../../legend-BPCrMAsK.js';
+import '../../types-BSQVn7e9.js';
 import '@visx/legend';
 
 /**
@@ -24,9 +24,9 @@ import '@visx/legend';
  */
 type PieSemiCircleChartRenderTooltipParams = {
     /**
-     * The data point being hovered, including label, value, and percentage.
+     * The data point being hovered, including label, value, and calculated percentage.
      */
-    tooltipData: DataPointPercentage;
+    tooltipData: DataPointPercentageCalculated;
 };
 interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**
@@ -81,7 +81,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;
 type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;
-type ArcData = PieArcDatum<DataPointPercentage>;
+type ArcData = PieArcDatum<DataPointPercentageCalculated>;
 declare const PieSemiCircleChart: PieSemiCircleChartComponent;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 

@@ -1,7 +1,7 @@
-export { L as Legend } from '../../legend-DLswHhOk.js';
-import { o as SeriesData, d as DataPointDate, e as DataPointPercentage } from '../../types-ChOUI9-N.js';
-import { B as BaseLegendItem } from '../../types-BuSrRM4p.js';
-export { a as BaseLegendProps, L as LegendProps } from '../../types-BuSrRM4p.js';
+export { L as Legend } from '../../legend-BPCrMAsK.js';
+import { p as SeriesData, d as DataPointDate, f as DataPointPercentageCalculated } from '../../types-rXqh76Ut.js';
+import { B as BaseLegendItem } from '../../types-BSQVn7e9.js';
+export { a as BaseLegendProps, L as LegendProps } from '../../types-BSQVn7e9.js';
 import { LegendShape } from '@visx/legend/lib/types';
 import { GlyphProps } from '@visx/xychart';
 import { ReactNode } from 'react';
@@ -32,6 +32,6 @@ interface ChartLegendOptions {
  * @param legendShape - The shape type for legend items (string literal or React component)
  * @return Array of legend items ready for display
  */
-declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentage[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
+declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentageCalculated[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 
 export { BaseLegendItem, type ChartLegendOptions, type LegendValueDisplay, useChartLegendItems };

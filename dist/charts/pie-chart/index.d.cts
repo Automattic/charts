@@ -1,8 +1,8 @@
 import { R as ResponsiveConfig } from '../../with-responsive-CNfhzAUu.cjs';
 import { ReactNode } from 'react';
-import { O as Optional, B as BaseChartProps, e as DataPointPercentage } from '../../types-ChOUI9-N.cjs';
+import { O as Optional, B as BaseChartProps, e as DataPointPercentage, f as DataPointPercentageCalculated } from '../../types-rXqh76Ut.cjs';
 import { LegendValueDisplay } from '../../components/legend/index.cjs';
-import { C as ChartComponentWithComposition } from '../../types-B5f6XQ7Q.cjs';
+import { C as ChartComponentWithComposition } from '../../types-CwTaoPVW.cjs';
 import '@visx/annotation/lib/components/CircleSubject';
 import '@visx/annotation/lib/components/Connector';
 import '@visx/annotation/lib/components/Label';
@@ -14,8 +14,8 @@ import '@visx/text/lib/Text';
 import '@visx/xychart';
 import '@wordpress/theme';
 import 'react-google-charts';
-import '../../legend-DFkosEvC.cjs';
-import '../../types-Dfw9VOKI.cjs';
+import '../../legend-D0eOtcbC.cjs';
+import '../../types-BJD8zoGS.cjs';
 import '@visx/legend';
 
 /**
@@ -23,9 +23,9 @@ import '@visx/legend';
  */
 type PieChartRenderTooltipParams = {
     /**
-     * The data point being hovered, including label, value, and percentage.
+     * The data point being hovered, including label, value, and calculated percentage.
      */
-    tooltipData: DataPointPercentage;
+    tooltipData: DataPointPercentageCalculated;
 };
 interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
     /**

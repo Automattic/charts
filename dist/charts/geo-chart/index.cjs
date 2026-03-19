@@ -1,13 +1,13 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkBBAUQOW6cjs = require('../../chunk-BBAUQOW6.cjs');
+var _chunkO5HJETHLcjs = require('../../chunk-O5HJETHL.cjs');
 require('../../chunk-ASLARV7L.cjs');
-require('../../chunk-WYK7EL5R.cjs');
+require('../../chunk-P2LIEOFQ.cjs');
 require('../../chunk-MXGLYWVP.cjs');
 require('../../chunk-EMMSS5I5.cjs');
 
 
 
-exports.GeoChart = _chunkBBAUQOW6cjs.GeoChartResponsive; exports.GeoChartUnresponsive = _chunkBBAUQOW6cjs.GeoChartWithProvider;
+exports.GeoChart = _chunkO5HJETHLcjs.GeoChartResponsive; exports.GeoChartUnresponsive = _chunkO5HJETHLcjs.GeoChartWithProvider;
 //# sourceMappingURL=index.cjs.map
