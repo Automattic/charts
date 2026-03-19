@@ -4,15 +4,19 @@ import {
 import {
   ChartLayout,
   useChartChildren
-} from "./chunk-3BOQFXDC.js";
-import {
-  withResponsive
-} from "./chunk-OP6PHB2U.js";
+} from "./chunk-G642YA6J.js";
 import {
   Legend,
   SingleChartContext,
   useChartLegendItems
 } from "./chunk-WTQYGUNF.js";
+import {
+  AccessibleTooltip,
+  useKeyboardNavigation
+} from "./chunk-BPYKWMI7.js";
+import {
+  withResponsive
+} from "./chunk-OP6PHB2U.js";
 import {
   GlobalChartsContext,
   GlobalChartsProvider,
@@ -29,10 +33,6 @@ import {
   attachSubComponents,
   isSafari
 } from "./chunk-JJIMABHT.js";
-import {
-  AccessibleTooltip,
-  useKeyboardNavigation
-} from "./chunk-BPYKWMI7.js";
 
 // src/charts/bar-chart/bar-chart.tsx
 import { formatNumber } from "@automattic/number-formatters";
@@ -614,4 +614,4 @@ export {
   BarChart,
   BarChartResponsive
 };
-//# sourceMappingURL=chunk-Z7DS6USQ.js.map
+//# sourceMappingURL=chunk-OOGJ46XK.js.map
