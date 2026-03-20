@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { CSSProperties, PointerEvent, ReactNode, ComponentProps, FC, ComponentType, SVGProps, PropsWithChildren, MouseEvent, RefObject } from 'react';
+import { CSSProperties, ReactNode, PointerEvent, ComponentProps, FC, ComponentType, SVGProps, PropsWithChildren } from 'react';
 import { LegendOrdinal } from '@visx/legend';
 import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubject';
 import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
@@ -7,10 +7,9 @@ import { LabelProps } from '@visx/annotation/lib/components/Label';
 import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
-import { ScaleType, ScaleInput, AnyD3Scale } from '@visx/scale';
+import { ScaleInput, ScaleType } from '@visx/scale';
 import { TextProps } from '@visx/text/lib/Text';
-import * as _visx_xychart from '@visx/xychart';
-import { LineStyles, EventHandlerParams, GridStyles, GlyphProps, XYChartTheme } from '@visx/xychart';
+import { LineStyles, EventHandlerParams, GridStyles, GlyphProps } from '@visx/xychart';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
 import { GapSize } from '@wordpress/theme';
 import { GoogleDataTableColumn, GoogleDataTableRow } from 'react-google-charts';
@@ -290,7 +289,7 @@ type CompleteChartTheme = Required<ChartTheme> & {
         margin: Required<NonNullable<ChartTheme['sparkline']>['margin']>;
     };
 };
-declare type AxisOptions = {
+type AxisOptions = {
     orientation?: OrientationType;
     numTicks?: number;
     axisClassName?: string;
@@ -544,25 +543,6 @@ type GridProps = {
      */
     top?: number;
 };
-/**
- * Local type definitions for Popover API attributes and events
- * These are used to avoid extending React module types while still getting type safety
- * NOTE: These type definitions are only needed for React 18 and below.
- * React 19+ includes Popover API types in the official React type definitions, so these can be removed when upgrading.
- */
-interface PopoverButtonAttributes {
-    popovertarget?: string;
-    popovertargetaction?: 'hide' | 'show' | 'toggle';
-}
-interface PopoverElementAttributes {
-    popover?: 'auto' | 'manual' | '';
-}
-type ButtonWithPopover = PopoverButtonAttributes;
-type PopoverElement = PopoverElementAttributes;
-interface ToggleEvent extends Event {
-    newState: 'open' | 'closed';
-    oldState: 'open' | 'closed';
-}
 
 type VisxLegendProps = Pick<ComponentProps<typeof LegendOrdinal>, 'className' | 'shape' | 'fill' | 'size' | 'labelFormat' | 'labelTransform'>;
 type BaseLegendProps = VisxLegendProps & {
@@ -936,18 +916,6 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
 };
 
 /**
- * Utility function to create chart components with composition API.
- *
- * This function attaches subcomponents to a chart component to enable
- * dot notation access like <Chart.Legend />, <Chart.Tooltip />, etc.
- *
- * @param Chart         - The main chart component
- * @param subComponents - Object containing subcomponents to attach
- * @return Chart component with attached subcomponents
- */
-declare function attachSubComponents<TChart, TSubComponents extends Record<string, unknown>>(Chart: TChart, subComponents: TSubComponents): TChart & TSubComponents;
-
-/**
  * @file Date parsing utilities using date-fns for local timezone handling
  *
  * This module provides utilities for parsing various date string formats and converting
@@ -1039,48 +1007,6 @@ declare const formatMetricValue: (value: string | number, type?: MetricValueType
 declare const formatPercentage: (value: number) => string;
 
 /**
- * Returns the width of the longest tick.
- *
- * @param          ticks      - Ticks to get the width of.
- * @param          formatTick - Function to format the tick.
- * @param {object} labelStyle - Style object for the label.
- * @return {number} - Width of the longest tick.
- */
-declare const getLongestTickWidth: <T extends AnyD3Scale>(ticks: ScaleInput<T>[], formatTick: TickFormatter<ScaleInput<T>>, labelStyle?: object) => number;
-
-/**
- * Utility function to get consolidated line styles for a series
- * This consolidates the logic used by both LineChart and Legend components
- *
- * @param {SeriesData} seriesData    - The series data containing styling options
- * @param {number}     index         - The index of the series in the data array
- * @param {ChartTheme} providerTheme - The chart theme configuration
- * @return {LineStyles} The consolidated line styles for the series
- */
-declare function getSeriesLineStyles(seriesData: SeriesData, index: number, providerTheme: ChartTheme): LineStyles;
-/**
- * Utility function to get stroke color for a series
- *
- * @param {SeriesData} seriesData  - The series data containing styling options
- * @param {number}     index       - The index of the series in the data array
- * @param {string[]}   themeColors - Array of theme colors
- * @return {string} The stroke color for the series
- */
-declare function getSeriesStroke(seriesData: SeriesData, index: number, themeColors: string[]): string;
-/**
- * Utility function to get shape styles for a legend item
- *
- * @param {SeriesData}  series      - The series data containing styling options
- * @param {number}      index       - The index of the series in the data array
- * @param {ChartTheme}  theme       - The chart theme configuration
- * @param {LegendShape} legendShape - The shape to use for the item (optional)
- * @return {Record< string, unknown >} The shape styles for the item
- */
-declare function getItemShapeStyles(series: SeriesData, index: number, theme: ChartTheme, legendShape?: LegendShape<SeriesData[], number>): Record<string, unknown>;
-
-declare const isSafari: () => boolean;
-
-/**
  * Merges chart themes with proper precedence.
  * The second theme (override) takes precedence over the first theme (base).
  *
@@ -1153,20 +1079,6 @@ declare const normalizeColorToHex: (color: string, element?: HTMLElement | null,
  * @throws {Error} if hex string is malformed
  */
 declare const lightenHexColor: (hex: string, blend: number) => string;
-
-/**
- * Resolves a CSS custom property (variable) to its computed value.
- * Handles multiple formats:
- * - Plain variable names: '--my-color'
- * - CSS var() syntax: 'var(--my-color)'
- * - CSS var() with fallback: 'var(--my-color, #ffffff)'
- * - Regular values (returned as-is): '#ffffff', 'red'
- *
- * @param value   - A CSS variable name, var() expression, or regular value
- * @param element - Optional DOM element to resolve the variable from (defaults to document.documentElement)
- * @return The resolved value, fallback value, or null if unresolvable
- */
-declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
 
 /**
  * Hook to create legend items from leaderboard data
@@ -1592,23 +1504,6 @@ interface AccessibleTooltipProps extends Omit<TooltipProps$1<DataPointDate>, 're
     mode?: 'individual' | 'group';
 }
 declare const AccessibleTooltip: React.FC<AccessibleTooltipProps>;
-interface UseKeyboardNavigationProps {
-    selectedIndex: number | undefined;
-    setSelectedIndex: (index: number | undefined) => void;
-    isNavigating: boolean;
-    setIsNavigating: (navigating: boolean) => void;
-    chartRef: React.RefObject<HTMLDivElement>;
-    /**
-     * Total number of navigation points (length of tooltip data array)
-     */
-    totalPoints: number;
-}
-declare const useKeyboardNavigation: ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, }: UseKeyboardNavigationProps) => {
-    tooltipRef: (element: HTMLDivElement | null) => void;
-    onChartFocus: () => void;
-    onChartBlur: () => void;
-    onChartKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-};
 
 type TooltipProps = {
     data: {
@@ -1716,253 +1611,4 @@ declare const useGlobalChartsTheme: () => CompleteChartTheme;
  */
 declare const defaultTheme: CompleteChartTheme;
 
-/**
- * Custom hook to memoize a value using deep equality comparison.
- * Prevents unnecessary re-renders when objects have the same content but different references.
- *
- * @param value - The value to memoize with deep equality comparison
- * @return The memoized value that only changes when deeply different
- */
-declare const useDeepMemo: <T>(value: T) => T;
-
-type UseChartMouseHandlerProps = {
-    /**
-     * Whether tooltips are enabled
-     */
-    withTooltips: boolean;
-    /**
-     * Horizontal offset for tooltip positioning in pixels (default: 0)
-     */
-    offsetX?: number;
-    /**
-     * Vertical offset for tooltip positioning in pixels (default: -10)
-     */
-    offsetY?: number;
-};
-type UseChartMouseHandlerReturn = {
-    /**
-     * Handler for mouse move events
-     */
-    onMouseMove: (event: MouseEvent<SVGElement>, data: DataPoint) => void;
-    /**
-     * Handler for mouse leave events
-     */
-    onMouseLeave: () => void;
-    /**
-     * Whether the tooltip is currently open
-     */
-    tooltipOpen: boolean;
-    /**
-     * The current tooltip data
-     */
-    tooltipData: DataPoint | null;
-    /**
-     * The current tooltip left position
-     */
-    tooltipLeft: number | undefined;
-    /**
-     * The current tooltip top position
-     */
-    tooltipTop: number | undefined;
-};
-/**
- * Hook to handle mouse interactions for chart components
- *
- * @param {UseChartMouseHandlerProps} props - Hook configuration
- * @return {UseChartMouseHandlerReturn} Object containing handlers and tooltip state
- */
-declare const useChartMouseHandler: ({ withTooltips, offsetX, offsetY, }: UseChartMouseHandlerProps) => UseChartMouseHandlerReturn;
-
-declare const useXYChartTheme: (data: SeriesData[]) => _visx_xychart.XYChartTheme;
-
-/**
- * Hook that transforms and sorts chart data, handling date parsing and sorting
- *
- * This hook extracts the common data transformation logic used in both line-chart
- * and bar-chart components. It:
- * 1. Parses date strings into Date objects using parseAsLocalDate
- * 2. Sorts data points by date when date properties are present
- * 3. Returns the original data unchanged when no date properties are found
- *
- * @param {SeriesData[]} data - The raw chart data to transform
- * @return {SeriesData[]} The transformed and sorted data
- */
-declare const useChartDataTransform: (data: SeriesData[]) => {
-    data: any[];
-    group?: string;
-    label: string;
-    options?: SeriesDataOptions;
-}[];
-
-declare const useChartMargin: (height: number, options: BaseChartProps["options"], data: SeriesData[], theme: XYChartTheme, horizontal?: boolean) => {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-};
-
-/**
- * Hook to measure the width and height of a DOM element.
- * Returns a ref callback to attach to the element and the current dimensions in pixels.
- *
- * @param {object} props               - Optional props.
- * @param {number} props.initialWidth  - The initial width to use.
- * @param {number} props.initialHeight - The initial height to use.
- *
- * @return {[Function, number, number]} A tuple containing a ref callback, width, and height in pixels
- */
-declare function useElementSize<T extends HTMLElement = HTMLDivElement>({ initialWidth, initialHeight, }?: {
-    initialWidth?: number;
-    initialHeight?: number;
-}): [(node: T | null) => void, number, number];
-
-/**
- * Hook to detect if text content is truncated within its container.
- * Uses ResizeObserver to dynamically track changes in element size.
- *
- * @param enabled - Whether truncation detection should be active. Defaults to true.
- * @return A tuple containing:
- * - [0] refCallback: Function to attach to the text element as a ref
- * - [1] isTruncated: Boolean indicating if the text is currently truncated
- *
- * @example
- * ```tsx
- * const [textRef, isTruncated] = useTextTruncation(true);
- *
- * return (
- *   <span ref={textRef} title={isTruncated ? fullText : undefined}>
- *     {text}
- *   </span>
- * );
- * ```
- */
-declare function useTextTruncation(enabled?: boolean): [(node: HTMLElement | null) => void, boolean];
-
-type EnhancedDataPoint = DataPointDate & {
-    visualValue?: number;
-};
-interface EnhancedSeriesData extends Omit<SeriesData, 'data'> {
-    data: EnhancedDataPoint[];
-}
-interface UseZeroValueDisplayOptions {
-    enabled: boolean;
-    /**
-     * The pixel length of the value axis (height for vertical charts, width for
-     * horizontal charts). Used to calculate a minimum visible value that ensures
-     * zero-value bars are at least MIN_PIXEL_HEIGHT pixels tall along that axis.
-     */
-    valueAxisLength?: number;
-}
-declare const useZeroValueDisplay: (data: SeriesData[], options?: UseZeroValueDisplayOptions) => SeriesData[] | EnhancedSeriesData[];
-
-/**
- * Data point interface for charts with interactive legends.
- * Requires label for series identification, value for calculations,
- * and percentage (should be pre-calculated by the chart component).
- */
-interface DataPointWithPercentage {
-    label: string;
-    value: number;
-    percentage: number;
-}
-/**
- * Parameters for the useInteractiveLegendData hook.
- */
-interface UseInteractiveLegendDataParams<T extends DataPointWithPercentage> {
-    /** The chart data with pre-calculated percentages */
-    data: T[];
-    /** Unique chart identifier, required for interactive legends */
-    chartId: string | undefined;
-    /** Whether interactive legend filtering is enabled */
-    legendInteractive: boolean;
-    /** Function to check if a series is visible in the legend */
-    isSeriesVisible: (chartId: string, label: string) => boolean;
-}
-/**
- * Return value from the useInteractiveLegendData hook.
- */
-interface UseInteractiveLegendDataResult<T extends DataPointWithPercentage> {
-    /** Filtered data array containing only visible segments with recalculated percentages */
-    visibleData: T[];
-    /** Boolean indicating if all segments are hidden */
-    allSegmentsHidden: boolean;
-    /**
-     * Legend data with stable percentage formatting.
-     * Hidden items keep their original percentage.
-     * Visible items show recalculated percentages that total 100%.
-     */
-    legendData: T[];
-}
-/**
- * Custom hook to filter and recalculate chart data for interactive legends.
- *
- * When interactive legends are enabled, this hook:
- * 1. Filters data to show only visible series based on legend selection
- * 2. Recalculates percentages so visible segments total 100%
- * 3. Tracks whether all segments are hidden to show empty state
- *
- * This is particularly useful for pie charts, donut charts, and semi-circle charts
- * where segment visibility and percentages need to be dynamically adjusted.
- *
- * @example
- * ```tsx
- * const { visibleData, allSegmentsHidden, legendData } = useInteractiveLegendData({
- *   data: chartData,
- *   chartId: 'my-pie-chart',
- *   legendInteractive: true,
- *   isSeriesVisible: (id, label) => context.isSeriesVisible(id, label),
- * });
- *
- * // Use legendData for creating legend items (shows recalculated percentages)
- * const legendItems = useChartLegendItems(legendData, legendOptions);
- *
- * if (allSegmentsHidden) {
- *   return <EmptyState />;
- * }
- *
- * // Use visibleData for rendering the chart (only visible segments)
- * return <PieChart data={visibleData} />;
- * ```
- *
- * @param params                   - Configuration object for the hook
- * @param params.data              - The chart data to filter
- * @param params.chartId           - Unique identifier for the chart (required for interactive mode)
- * @param params.legendInteractive - Whether to enable interactive filtering
- * @param params.isSeriesVisible   - Function to check series visibility
- * @return Object containing visibleData, allSegmentsHidden flag, and legendData with recalculated percentages
- */
-declare const useInteractiveLegendData: <T extends DataPointWithPercentage>({ data, chartId, legendInteractive, isSeriesVisible, }: UseInteractiveLegendDataParams<T>) => UseInteractiveLegendDataResult<T>;
-
-/**
- * Custom hook to determine if the user prefers reduced motion.
- * @return {boolean} A boolean indicating the user's preference for reduced motion.
- */
-declare function usePrefersReducedMotion(): boolean;
-
-/**
- * Relocates visx chart tooltip portals from `document.body` into a target
- * container element. This allows the tooltips to participate in the same CSS
- * stacking context as other elements in the container (e.g. a sticky header),
- * so z-index ordering works correctly between them.
- *
- * The relocated portal divs use `position: fixed` at the viewport origin to
- * preserve the tooltip coordinate system (visx calculates positions relative
- * to the viewport).
- *
- * Because the visx Portal class calls `document.body.removeChild(node)` during
- * unmount, we patch `document.body.removeChild` to gracefully handle nodes that
- * were moved out of body. Without this, React throws a "not a child of this
- * node" error when tooltips unmount.
- *
- * **Important:** The container and its ancestors must not have CSS `transform`,
- * `perspective`, or `filter` properties set, as these create a new containing
- * block for `position: fixed` children, breaking viewport-relative positioning.
- *
- * @param containerRef - Ref to the element that portals should be relocated into.
- *                     The element referenced here, or one of its ancestors,
- *                     should establish the desired stacking context (for example
- *                     by using position and z-index).
- */
-declare function useTooltipPortalRelocator(containerRef: RefObject<HTMLElement | null> | undefined): void;
-
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ButtonWithPopover, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ChartType, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type DataPointPercentageCalculated, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type PopoverButtonAttributes, type PopoverElement, type PopoverElementAttributes, type RenderLabelProps, type RenderLineGlyphProps, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type ToggleEvent, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, attachSubComponents, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, getItemShapeStyles, getLongestTickWidth, getSeriesLineStyles, getSeriesStroke, hexToRgba, isSafari, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, resolveCssVariable, useChartDataTransform, useChartLegendItems, useChartMargin, useChartMouseHandler, useDeepMemo, useElementSize, useGlobalChartsContext, useGlobalChartsTheme, useInteractiveLegendData, useKeyboardNavigation, useLeaderboardLegendItems, usePrefersReducedMotion, useTextTruncation, useTooltipPortalRelocator, useXYChartTheme, useZeroValueDisplay, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };

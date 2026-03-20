@@ -15,6 +15,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Charts: Fix broken story references and simplify legend sections in Storybook docs.
 - Move tooltip portal containerRef off ChartLayout to inner svg-wrapper in pie charts.
+- Remove internal hooks, utilities, and types from public exports to reduce API surface.
 - Remove `percentage` from DataPointPercentage interface.
 - Standardize legend stories and documentation across all chart types.
 

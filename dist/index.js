@@ -642,7 +642,7 @@ import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@vi
 import { Axis, BarSeries, BarGroup, Grid, XYChart } from "@visx/xychart";
 import { __ } from "@wordpress/i18n";
 import clsx2 from "clsx";
-import { useCallback as useCallback8, useContext as useContext9, useState as useState6, useRef as useRef7, useMemo as useMemo15 } from "react";
+import { useCallback as useCallback7, useContext as useContext9, useState as useState6, useRef as useRef7, useMemo as useMemo15 } from "react";
 
 // src/components/legend/legend.tsx
 import { useContext as useContext5, useMemo as useMemo9, forwardRef as forwardRef2 } from "react";
@@ -897,9 +897,6 @@ function getSeriesLineStyles(seriesData, index, providerTheme) {
   const themeSemanticLineStyle = providerTheme?.lineChart?.lineStyles?.[seriesData.options?.type];
   const themeSeriesLineStyle = providerTheme?.seriesLineStyles?.[index % providerTheme.seriesLineStyles.length];
   return seriesData.options?.seriesLineStyle ?? themeSemanticLineStyle ?? themeSeriesLineStyle ?? {};
-}
-function getSeriesStroke(seriesData, index, themeColors) {
-  return seriesData.options?.stroke ?? themeColors[index % themeColors.length];
 }
 function getItemShapeStyles(series, index, theme, legendShape) {
   const seriesShapeStyles = series.options?.legendShapeStyle ?? {};
@@ -1443,49 +1440,6 @@ var useDeepMemo = (value) => {
   return ref.current;
 };
 
-// src/hooks/use-chart-mouse-handler.ts
-import { localPoint } from "@visx/event";
-import { useTooltip } from "@visx/tooltip";
-import { useCallback as useCallback2 } from "react";
-var useChartMouseHandler = ({
-  withTooltips,
-  offsetX = 0,
-  offsetY = -10
-}) => {
-  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
-  const onMouseMove = useCallback2(
-    (event, data) => {
-      if (!withTooltips) {
-        return;
-      }
-      const coords = localPoint(event);
-      if (!coords) {
-        return;
-      }
-      showTooltip({
-        tooltipData: data,
-        tooltipLeft: coords.x + offsetX,
-        tooltipTop: coords.y + offsetY
-      });
-    },
-    [withTooltips, showTooltip, offsetX, offsetY]
-  );
-  const onMouseLeave = useCallback2(() => {
-    if (!withTooltips) {
-      return;
-    }
-    hideTooltip();
-  }, [withTooltips, hideTooltip]);
-  return {
-    onMouseMove,
-    onMouseLeave,
-    tooltipOpen,
-    tooltipData: tooltipData || null,
-    tooltipLeft,
-    tooltipTop
-  };
-};
-
 // src/hooks/use-xychart-theme.ts
 import { buildChartTheme } from "@visx/xychart";
 import { useMemo as useMemo2 } from "react";
@@ -1608,7 +1562,7 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
 };
 
 // src/hooks/use-element-size.ts
-import { useState as useState2, useCallback as useCallback3, useRef as useRef3 } from "react";
+import { useState as useState2, useCallback as useCallback2, useRef as useRef3 } from "react";
 function useElementSize({
   initialWidth = 0,
   initialHeight = 0
@@ -1616,7 +1570,7 @@ function useElementSize({
   const [width, setWidth] = useState2(initialWidth);
   const [height, setHeight] = useState2(initialHeight);
   const observerRef = useRef3(null);
-  const refCallback = useCallback3((node2) => {
+  const refCallback = useCallback2((node2) => {
     if (observerRef.current) {
       observerRef.current.disconnect();
       observerRef.current = null;
@@ -1637,11 +1591,11 @@ function useElementSize({
 }
 
 // src/hooks/use-text-truncation.ts
-import { useCallback as useCallback4, useRef as useRef4, useState as useState3 } from "react";
+import { useCallback as useCallback3, useRef as useRef4, useState as useState3 } from "react";
 function useTextTruncation(enabled = true) {
   const [isTruncated, setIsTruncated] = useState3(false);
   const observerRef = useRef4(null);
-  const refCallback = useCallback4(
+  const refCallback = useCallback3(
     (node2) => {
       if (observerRef.current) {
         observerRef.current.disconnect();
@@ -1833,7 +1787,7 @@ import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import clsx from "clsx";
-import { forwardRef, useCallback as useCallback5, useContext as useContext4 } from "react";
+import { forwardRef, useCallback as useCallback4, useContext as useContext4 } from "react";
 
 // src/components/legend/utils/value-or-identity.ts
 function valueOrIdentity(_) {
@@ -1943,27 +1897,27 @@ var BaseLegend = /* @__PURE__ */ forwardRef(({
     range: items.map((item) => item.color)
   });
   const domain = legendScale.domain();
-  const getShapeStyle = useCallback5(({
+  const getShapeStyle = useCallback4(({
     index
   }) => items[index]?.shapeStyle, [items]);
-  const handleLegendClick = useCallback5((seriesLabel) => {
+  const handleLegendClick = useCallback4((seriesLabel) => {
     if (interactive && chartId && context) {
       context.toggleSeriesVisibility(chartId, seriesLabel);
     }
   }, [interactive, chartId, context]);
-  const isSeriesVisible = useCallback5((seriesLabel) => {
+  const isSeriesVisible = useCallback4((seriesLabel) => {
     if (!interactive || !chartId || !context) {
       return true;
     }
     return context.isSeriesVisible(chartId, seriesLabel);
   }, [interactive, chartId, context]);
-  const createClickHandler = useCallback5((labelText) => {
+  const createClickHandler = useCallback4((labelText) => {
     if (!interactive) {
       return void 0;
     }
     return () => handleLegendClick(labelText);
   }, [interactive, handleLegendClick]);
-  const createKeyDownHandler = useCallback5((labelText) => {
+  const createKeyDownHandler = useCallback4((labelText) => {
     if (!interactive) {
       return void 0;
     }
@@ -2246,7 +2200,7 @@ var BaseTooltip = ({
 
 // src/components/tooltip/accessible-tooltip.tsx
 import { Tooltip, TooltipContext } from "@visx/xychart";
-import { useContext as useContext6, useEffect as useEffect5, useCallback as useCallback6, useMemo as useMemo11 } from "react";
+import { useContext as useContext6, useEffect as useEffect5, useCallback as useCallback5, useMemo as useMemo11 } from "react";
 import { jsx as _jsx5 } from "react/jsx-runtime";
 var AccessibleTooltip = ({
   renderTooltip,
@@ -2339,20 +2293,20 @@ var useKeyboardNavigation = ({
   chartRef,
   totalPoints
 }) => {
-  const tooltipRef = useCallback6((element) => {
+  const tooltipRef = useCallback5((element) => {
     if (element && selectedIndex !== void 0) {
       element.focus();
     }
   }, [selectedIndex]);
-  const onChartFocus = useCallback6(() => {
+  const onChartFocus = useCallback5(() => {
     if (!isNavigating && selectedIndex !== void 0) {
       setSelectedIndex(0);
     }
   }, [isNavigating, selectedIndex, setSelectedIndex]);
-  const onChartBlur = useCallback6(() => {
+  const onChartBlur = useCallback5(() => {
     setIsNavigating(false);
   }, [setIsNavigating]);
-  const onChartKeyDown = useCallback6((event) => {
+  const onChartKeyDown = useCallback5((event) => {
     if (totalPoints === 0) return;
     if (event.key === "Tab") {
       chartRef.current?.focus();
@@ -2886,7 +2840,7 @@ import {
   memo,
   PureComponent,
   StrictMode,
-  useCallback as useCallback7,
+  useCallback as useCallback6,
   useContext as useContext7,
   useDebugValue,
   useDeferredValue,
@@ -3428,7 +3382,7 @@ var BarChartInternal = ({
     nonLegendChildren
   } = useChartChildren(children, "BarChart");
   const [measuredChartHeight, setMeasuredChartHeight] = useState6();
-  const handleContentHeightChange = useCallback8((contentHeight) => {
+  const handleContentHeightChange = useCallback7((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
@@ -3471,11 +3425,11 @@ var BarChartInternal = ({
       isVisible
     }) => !isVisible);
   }, [seriesWithVisibility]);
-  const getBarBackground = useCallback8((index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({
+  const getBarBackground = useCallback7((index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({
     data: dataSorted[index],
     index
   }).color, [withPatterns, getElementStyles, dataSorted, chartId]);
-  const renderDefaultTooltip2 = useCallback8(({
+  const renderDefaultTooltip2 = useCallback7(({
     tooltipData
   }) => {
     const nearestDatum = tooltipData?.nearestDatum?.datum;
@@ -3497,7 +3451,7 @@ var BarChartInternal = ({
       })]
     });
   }, [chartOptions.tooltip]);
-  const renderPattern = useCallback8((index, color) => {
+  const renderPattern = useCallback7((index, color) => {
     const patternType = index % 4;
     const id = getPatternId(chartId, index);
     const commonProps = {
@@ -3536,7 +3490,7 @@ var BarChartInternal = ({
         }, id);
     }
   }, [chartId]);
-  const createPatternBorderStyle = useCallback8((index, color) => {
+  const createPatternBorderStyle = useCallback7((index, color) => {
     const patternId = getPatternId(chartId, index);
     return `
 			.visx-bar[fill="url(#${patternId})"] {
@@ -3545,7 +3499,7 @@ var BarChartInternal = ({
 				}
 			`;
   }, [chartId]);
-  const createKeyboardHighlightStyle = useCallback8(() => {
+  const createKeyboardHighlightStyle = useCallback7(() => {
     if (selectedIndex === void 0) return "";
     const maxDataPoints = Math.max(...data.map((s2) => s2.data.length));
     const dataPointIndex = Math.floor(selectedIndex / data.length);
@@ -3937,9 +3891,9 @@ BarListChart.displayName = "BarListChart";
 var BarListChartResponsive = withResponsive(BarListChart);
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
-import { useTooltip as useTooltip2, useTooltipInPortal } from "@visx/tooltip";
+import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import clsx3 from "clsx";
-import { useRef as useRef8, useMemo as useMemo17, useEffect as useEffect8, useCallback as useCallback10, useContext as useContext11 } from "react";
+import { useRef as useRef8, useMemo as useMemo17, useEffect as useEffect8, useCallback as useCallback9, useContext as useContext11 } from "react";
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
@@ -3967,10 +3921,10 @@ var conversion_funnel_chart_module_default = {
 };
 
 // src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
-import { useCallback as useCallback9, useState as useState7 } from "react";
+import { useCallback as useCallback8, useState as useState7 } from "react";
 var useFunnelSelection = (hideTooltip) => {
   const [clickedStep, setClickedStep] = useState7(null);
-  const handleBarClick = useCallback9(
+  const handleBarClick = useCallback8(
     (stepId) => {
       if (clickedStep === stepId) {
         setClickedStep(null);
@@ -3981,7 +3935,7 @@ var useFunnelSelection = (hideTooltip) => {
     },
     [clickedStep, hideTooltip]
   );
-  const handleBarKeyDown = useCallback9(
+  const handleBarKeyDown = useCallback8(
     (stepId, event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -3999,11 +3953,11 @@ var useFunnelSelection = (hideTooltip) => {
     },
     [clickedStep, hideTooltip]
   );
-  const clearSelection = useCallback9(() => {
+  const clearSelection = useCallback8(() => {
     setClickedStep(null);
     hideTooltip?.();
   }, [hideTooltip]);
-  const getStepState = useCallback9(
+  const getStepState = useCallback8(
     (stepId) => ({
       isClicked: clickedStep === stepId,
       isBlurred: clickedStep !== null && clickedStep !== stepId
@@ -4052,7 +4006,7 @@ var ConversionFunnelChartInternal = ({
     tooltipOpen,
     showTooltip,
     hideTooltip
-  } = useTooltip2();
+  } = useTooltip();
   const {
     handleBarClick,
     handleBarKeyDown,
@@ -4069,19 +4023,19 @@ var ConversionFunnelChartInternal = ({
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
     scroll: true
   });
-  const clearSelectionAndRef = useCallback10(() => {
+  const clearSelectionAndRef = useCallback9(() => {
     clearSelection();
     selectedBarRef.current = null;
     hideTooltip();
   }, [clearSelection, hideTooltip]);
-  const showTooltipAt = useCallback10((step, x2, y2) => {
+  const showTooltipAt = useCallback9((step, x2, y2) => {
     showTooltip({
       tooltipData: step,
       tooltipLeft: x2,
       tooltipTop: y2 - 10
     });
   }, [showTooltip]);
-  const getMouseTooltipCoords = useCallback10((event) => {
+  const getMouseTooltipCoords = useCallback9((event) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return null;
     }
@@ -4090,7 +4044,7 @@ var ConversionFunnelChartInternal = ({
       y: event.clientY - containerBounds.top
     };
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]);
-  const getKeyboardTooltipCoords = useCallback10((event) => {
+  const getKeyboardTooltipCoords = useCallback9((event) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return null;
     }
@@ -4102,7 +4056,7 @@ var ConversionFunnelChartInternal = ({
       y: y2
     };
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]);
-  const handleStepInteraction = useCallback10((step, event, interactionType) => {
+  const handleStepInteraction = useCallback9((step, event, interactionType) => {
     selectedBarRef.current = event.currentTarget;
     const {
       isClicked
@@ -5900,7 +5854,7 @@ var cache = _createEmotion.cache;
 var isSerializedStyles = (o2) => typeof o2 !== "undefined" && o2 !== null && ["name", "styles"].every((p2) => typeof o2[p2] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
-  const cx2 = useCallback7((...classNames) => {
+  const cx2 = useCallback6((...classNames) => {
     if (cache2 === null) {
       throw new Error("The `useCx` hook should be only used within a valid Emotion Cache Context");
     }
@@ -7661,7 +7615,7 @@ import { XYChart as XYChart2, AreaSeries, Grid as Grid3, Axis as Axis2, DataCont
 import { __ as __6 } from "@wordpress/i18n";
 import clsx7 from "clsx";
 import { differenceInHours, differenceInYears } from "date-fns";
-import { useMemo as useMemo22, useContext as useContext21, forwardRef as forwardRef6, useImperativeHandle as useImperativeHandle2, useState as useState11, useRef as useRef12, useCallback as useCallback12, createElement as _createElement2 } from "react";
+import { useMemo as useMemo22, useContext as useContext21, forwardRef as forwardRef6, useImperativeHandle as useImperativeHandle2, useState as useState11, useRef as useRef12, useCallback as useCallback11, createElement as _createElement2 } from "react";
 
 // src/charts/private/default-glyph/default-glyph.tsx
 import { DataContext as DataContext2 } from "@visx/xychart";
@@ -7793,7 +7747,7 @@ var line_chart_annotation_label_popover_default = LineChartAnnotationLabelWithPo
 
 // src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 import { DataContext as DataContext3 } from "@visx/xychart";
-import { useEffect as useEffect10, useState as useState9, useCallback as useCallback11 } from "react";
+import { useEffect as useEffect10, useState as useState9, useCallback as useCallback10 } from "react";
 import { jsx as _jsx23 } from "react/jsx-runtime";
 var LineChartAnnotationsOverlay = ({
   children
@@ -7805,14 +7759,14 @@ var LineChartAnnotationsOverlay = ({
   } = useSingleChartContext();
   const [scales, setScales] = useState9(null);
   const [scalesStable, setScalesStable] = useState9(false);
-  const createScaleSignature = useCallback11((scaleData) => {
+  const createScaleSignature = useCallback10((scaleData) => {
     const xDomain = scaleData.xScale.domain();
     const yDomain = scaleData.yScale.domain();
     const xRange = scaleData.xScale.range();
     const yRange = scaleData.yScale.range();
     return `${xDomain.join(",")}-${yDomain.join(",")}-${xRange.join(",")}-${yRange.join(",")}`;
   }, []);
-  const getScalesData = useCallback11(() => {
+  const getScalesData = useCallback10(() => {
     if (chartRef?.current) {
       const scaleData = chartRef.current.getScales();
       if (scaleData) {
@@ -8362,7 +8316,7 @@ var LineChartInternal = /* @__PURE__ */ forwardRef6(({
     nonLegendChildren
   } = useChartChildren(children, "LineChart");
   const [measuredChartHeight, setMeasuredChartHeight] = useState11();
-  const handleContentHeightChange = useCallback12((contentHeight) => {
+  const handleContentHeightChange = useCallback11((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
@@ -8686,10 +8640,10 @@ var LineChartResponsive = attachSubComponents(withResponsive(LineChartWithProvid
 // src/charts/pie-chart/pie-chart.tsx
 import { Group as Group4 } from "@visx/group";
 import { Pie } from "@visx/shape";
-import { useTooltip as useTooltip3, useTooltipInPortal as useTooltipInPortal2 } from "@visx/tooltip";
+import { useTooltip as useTooltip2, useTooltipInPortal as useTooltipInPortal2 } from "@visx/tooltip";
 import { __ as __7 } from "@wordpress/i18n";
 import clsx8 from "clsx";
-import { useCallback as useCallback13, useContext as useContext22, useMemo as useMemo23 } from "react";
+import { useCallback as useCallback12, useContext as useContext22, useMemo as useMemo23 } from "react";
 
 // src/charts/private/radial-wipe-animation/radial-wipe-animation.tsx
 import { jsx as _jsx26 } from "react/jsx-runtime";
@@ -8817,7 +8771,7 @@ var PieChartInternal = ({
     tooltipData,
     hideTooltip,
     showTooltip
-  } = useTooltip3();
+  } = useTooltip2();
   const {
     containerRef,
     TooltipInPortal,
@@ -8827,7 +8781,7 @@ var PieChartInternal = ({
     scroll: true,
     debounce: 0
   });
-  const onMouseLeave = useCallback13(() => {
+  const onMouseLeave = useCallback12(() => {
     if (!withTooltips) {
       return;
     }
@@ -9097,10 +9051,10 @@ var PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider
 import { Group as Group5 } from "@visx/group";
 import { Pie as Pie2 } from "@visx/shape";
 import { Text as Text4 } from "@visx/text";
-import { useTooltip as useTooltip4, useTooltipInPortal as useTooltipInPortal3 } from "@visx/tooltip";
+import { useTooltip as useTooltip3, useTooltipInPortal as useTooltipInPortal3 } from "@visx/tooltip";
 import { __ as __8 } from "@wordpress/i18n";
 import clsx9 from "clsx";
-import { useCallback as useCallback14, useContext as useContext23, useMemo as useMemo24 } from "react";
+import { useCallback as useCallback13, useContext as useContext23, useMemo as useMemo24 } from "react";
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
@@ -9182,7 +9136,7 @@ var PieSemiCircleChartInternal = ({
     tooltipData,
     hideTooltip,
     showTooltip
-  } = useTooltip4();
+  } = useTooltip3();
   const {
     containerRef,
     TooltipInPortal,
@@ -9192,7 +9146,7 @@ var PieSemiCircleChartInternal = ({
     scroll: true,
     debounce: 0
   });
-  const handleMouseMove = useCallback14((event, arc) => {
+  const handleMouseMove = useCallback13((event, arc) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return;
     }
@@ -9202,10 +9156,10 @@ var PieSemiCircleChartInternal = ({
       tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
     });
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top, showTooltip, tooltipOffsetX, tooltipOffsetY]);
-  const handleMouseLeave = useCallback14(() => {
+  const handleMouseLeave = useCallback13(() => {
     hideTooltip();
   }, [hideTooltip]);
-  const handleArcMouseMove = useCallback14((arc) => (event) => {
+  const handleArcMouseMove = useCallback13((arc) => (event) => {
     handleMouseMove(event, arc);
   }, [handleMouseMove]);
   const {
@@ -9668,17 +9622,11 @@ export {
   SparklineUnresponsive,
   GlobalChartsProvider as ThemeProvider,
   TrendIndicator,
-  attachSubComponents,
   defaultTheme,
   formatMetricValue,
   formatPercentage,
   getColorDistance,
-  getItemShapeStyles,
-  getLongestTickWidth,
-  getSeriesLineStyles,
-  getSeriesStroke,
   hexToRgba,
-  isSafari,
   isValidHexColor,
   lightenHexColor,
   mergeThemes,
@@ -9686,23 +9634,10 @@ export {
   parseAsLocalDate,
   parseHslString,
   parseRgbString,
-  resolveCssVariable,
-  useChartDataTransform,
   useChartLegendItems,
-  useChartMargin,
-  useChartMouseHandler,
-  useDeepMemo,
-  useElementSize,
   useGlobalChartsContext,
   useGlobalChartsTheme,
-  useInteractiveLegendData,
-  useKeyboardNavigation,
   useLeaderboardLegendItems,
-  usePrefersReducedMotion,
-  useTextTruncation,
-  useTooltipPortalRelocator,
-  useXYChartTheme,
-  useZeroValueDisplay,
   validateHexColor
 };
 /*! Bundled license information:
