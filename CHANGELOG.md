@@ -18,6 +18,7 @@ This is an alpha version! The changes listed here are not final.
 - Remove internal hooks, utilities, and types from public exports to reduce API surface.
 - Remove `percentage` from DataPointPercentage interface.
 - Standardize legend stories and documentation across all chart types.
+- Update package dependencies.
 
 ### Removed
 - Remove individual chart entry point exports in favor of the main package entry point for v1.
