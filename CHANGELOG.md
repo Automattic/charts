@@ -22,6 +22,7 @@ This is an alpha version! The changes listed here are not final.
 - Remove individual chart entry point exports in favor of the main package entry point for v1.
 
 ### Fixed
+- Derive default legend shape from chart type in composition API.
 - Fix empty-state text wrapping when all legend items are hidden.
 
 ## [0.58.0] - 2026-03-16

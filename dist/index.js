@@ -2051,17 +2051,25 @@ var BaseLegend = /* @__PURE__ */ forwardRef(({
 
 // src/components/legend/legend.tsx
 import { jsx as _jsx3 } from "react/jsx-runtime";
+var defaultShapeByChartType = {
+  line: "line",
+  bar: "rect",
+  pie: "circle",
+  "pie-semi-circle": "circle",
+  leaderboard: "circle"
+};
 var Legend = /* @__PURE__ */ forwardRef2(({
   chartId,
   items,
+  shape,
   ...props
 }, ref) => {
   const context = useContext5(GlobalChartsContext);
   const singleChartContext = useContext5(SingleChartContext);
   const contextChartId = chartId ?? singleChartContext?.chartId;
-  const contextItems = useMemo9(() => {
-    return contextChartId && context ? context.getChartData(contextChartId)?.legendItems : void 0;
-  }, [contextChartId, context]);
+  const chartData = useMemo9(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
+  const contextItems = chartData?.legendItems;
+  const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
   const legendItems = items || contextItems;
   if (!legendItems) {
     return null;
@@ -2069,6 +2077,7 @@ var Legend = /* @__PURE__ */ forwardRef2(({
   return /* @__PURE__ */ _jsx3(BaseLegend, {
     ref,
     items: legendItems,
+    shape: resolvedShape,
     ...props,
     chartId: contextChartId
   });
