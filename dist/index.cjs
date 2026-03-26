@@ -4296,6 +4296,43 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 
 var _reactgooglecharts = require('react-google-charts');
 
+// src/utils/sanitize-html.ts
+var _dompurify = require('dompurify'); var _dompurify2 = _interopRequireDefault(_dompurify);
+_dompurify2.default.addHook("afterSanitizeAttributes", (node2) => {
+  if (node2.tagName === "A" && node2.getAttribute("target") === "_blank") {
+    node2.setAttribute("rel", "noopener noreferrer");
+  }
+});
+function sanitizeHtml(html) {
+  return _dompurify2.default.sanitize(html, {
+    ALLOWED_TAGS: [
+      "a",
+      "b",
+      "br",
+      "div",
+      "em",
+      "i",
+      "li",
+      "ol",
+      "p",
+      "small",
+      "span",
+      "strong",
+      "sub",
+      "sup",
+      "table",
+      "tbody",
+      "td",
+      "th",
+      "thead",
+      "tr",
+      "u",
+      "ul"
+    ],
+    ALLOWED_ATTR: ["class", "href", "target", "rel"]
+  });
+}
+
 // src/charts/geo-chart/geo-chart.module.scss
 var geo_chart_module_default = {
   "container": "a8ccharts-JvcqOz"
@@ -4337,7 +4374,40 @@ var GeoChartInternal = ({
   const lightColorHex = lightenHexColor(fullColorHex, 0.8);
   const backgroundColorHex = normalizeColorToHex(backgroundColor, null, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
   const defaultFillColorHex = normalizeColorToHex(featureFillColor, null, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const hasHtmlTooltips = _react.useMemo.call(void 0, () => data.length > 0 && data[0].some((col) => typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true), [data]);
+  const sanitizedData = _react.useMemo.call(void 0, () => {
+    if (data.length === 0) {
+      return {
+        data,
+        hasHtmlTooltips: false
+      };
+    }
+    const htmlTooltipIndices = [];
+    for (let i2 = 0; i2 < data[0].length; i2++) {
+      const col = data[0][i2];
+      if (typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true) {
+        htmlTooltipIndices.push(i2);
+      }
+    }
+    if (htmlTooltipIndices.length === 0) {
+      return {
+        data,
+        hasHtmlTooltips: false
+      };
+    }
+    const sanitizedRows = data.slice(1).map((row) => {
+      const newRow = [...row];
+      for (const colIndex of htmlTooltipIndices) {
+        if (typeof newRow[colIndex] === "string") {
+          newRow[colIndex] = sanitizeHtml(newRow[colIndex]);
+        }
+      }
+      return newRow;
+    });
+    return {
+      data: [data[0], ...sanitizedRows],
+      hasHtmlTooltips: true
+    };
+  }, [data]);
   const options = _react.useMemo.call(void 0, () => ({
     ...region !== "world" && {
       region
@@ -4353,11 +4423,11 @@ var GeoChartInternal = ({
     defaultColor: defaultFillColorHex,
     tooltip: {
       trigger: "focus",
-      isHtml: hasHtmlTooltips
+      isHtml: sanitizedData.hasHtmlTooltips
     },
     legend: "none",
     keepAspectRatio: true
-  }), [region, resolution, lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, hasHtmlTooltips]);
+  }), [region, resolution, lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, sanitizedData.hasHtmlTooltips]);
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
     className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
     style: {
@@ -4369,7 +4439,7 @@ var GeoChartInternal = ({
       chartType: "GeoChart",
       width,
       height,
-      data,
+      data: sanitizedData.data,
       options,
       loader: loadingPlaceholder
     })
