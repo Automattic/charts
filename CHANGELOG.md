@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Bump minimum Node version to 20.11.
+- Update package dependencies.
 
 ## [1.0.0] - 2026-03-24
 ### Changed
