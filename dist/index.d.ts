@@ -1055,20 +1055,22 @@ declare const parseHslString: (hslString: string) => [number, number, number] | 
 /**
  * Parse an RGB string like 'rgb(255, 0, 0)' into a hex color.
  *
- * @param rgbString - RGB color string
- * @return hex color string or null if invalid
+ * @deprecated    Use normalizeColorToHex() instead, which handles all color formats including rgb() and rgba().
+ * @param      rgbString - RGB color string (not RGBA)
+ * @return        hex color string or null if invalid
  */
 declare const parseRgbString: (rgbString: string) => string | null;
 /**
  * Normalize any CSS color value to a hex color string.
- * Handles hex colors, HSL strings, RGB strings, and CSS variables.
+ * Handles hex, HSL, HSLA, RGB, RGBA, named CSS colors, and CSS variables.
  *
  * @param color      - Any CSS color value
  * @param element    - Optional DOM element for resolving CSS variables
  * @param resolveCss - Function to resolve CSS variables (injected for testability)
+ * @param _depth     - Internal recursion depth counter to prevent infinite loops
  * @return hex color string, or the original value if conversion fails
  */
-declare const normalizeColorToHex: (color: string, element?: HTMLElement | null, resolveCss?: (value: string, el?: HTMLElement | null) => string | null) => string;
+declare const normalizeColorToHex: (color: string, element?: HTMLElement | null, resolveCss?: (value: string, el?: HTMLElement | null) => string | null, _depth?: number) => string;
 /**
  * Lighten a hex color by blending it with white.
  * Useful for creating color gradients or lighter variants.

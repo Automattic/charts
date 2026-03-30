@@ -993,7 +993,7 @@ var parseRgbString = (rgbString) => {
   }
   return parsed.formatHex();
 };
-var normalizeColorToHex = (color, element, resolveCss) => {
+var normalizeColorToHex = (color, element, resolveCss, _depth = 0) => {
   if (!color || typeof color !== "string") {
     return "";
   }
@@ -1010,21 +1010,22 @@ var normalizeColorToHex = (color, element, resolveCss) => {
   if (trimmed.startsWith("--") || trimmed.startsWith("var(")) {
     if (resolveCss) {
       const resolved = resolveCss(color, element);
-      if (resolved) {
-        return normalizeColorToHex(resolved, element, resolveCss);
+      if (resolved && resolved !== color && _depth < 10) {
+        return normalizeColorToHex(resolved, element, resolveCss, _depth + 1);
       }
     }
     return color;
   }
-  if (trimmed.startsWith("hsl(") || trimmed.startsWith("rgb(")) {
-    if (trimmed.startsWith("rgba(")) {
-      return color;
-    }
-    const parsed = d3Color(trimmed);
-    if (parsed) {
-      return parsed.formatHex();
+  if (trimmed.startsWith("hsl(") || trimmed.startsWith("hsla(") || trimmed.startsWith("rgb(") || trimmed.startsWith("rgba(")) {
+    const parsed2 = d3Color(trimmed);
+    if (parsed2) {
+      return parsed2.formatHex();
     }
     return color;
+  }
+  const parsed = d3Color(trimmed);
+  if (parsed) {
+    return parsed.formatHex();
   }
   return color;
 };
@@ -1274,17 +1275,10 @@ var GlobalChartsProvider = ({
     if (Array.isArray(colors)) {
       for (const color of colors) {
         if (color && typeof color === "string") {
-          let colorValue = color;
-          if (color.startsWith("--") || color.startsWith("var(")) {
-            const resolved = resolveCssVariable(color, wrapperRef.current);
-            if (resolved === null || resolved === "") {
-              continue;
-            }
-            colorValue = resolved;
-          }
-          if (colorValue.startsWith("#")) {
-            resolvedColors.push(colorValue);
-            const hslColor = d3Hsl3(colorValue);
+          const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
+          if (normalizedColor.startsWith("#")) {
+            resolvedColors.push(normalizedColor);
+            const hslColor = d3Hsl3(normalizedColor);
             if (!isNaN(hslColor.h)) {
               const hslTuple = [hslColor.h, hslColor.s * 100, hslColor.l * 100];
               hues.push(hslTuple[0]);
