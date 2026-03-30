@@ -17,6 +17,9 @@ This is an alpha version! The changes listed here are not final.
 - Support all CSS color formats (HSL, HSLA, RGB, RGBA, named colors) in theme colors.
 - Update package dependencies.
 
+### Fixed
+- ChartLayout: Display svg as block to avoid unexpected resizing in certain browser environments.
+
 ## [1.0.0] - 2026-03-24
 ### Changed
 - Internal updates. [#43811]

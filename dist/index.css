@@ -108,6 +108,9 @@
   min-height: 0;
   min-width: 0;
 }
+.a8ccharts-gXtQZk svg {
+  display: block;
+}
 
 /* esbuild-sass-plugin:css-chunk:src/charts/private/svg-empty-state/svg-empty-state.module.scss */
 .a8ccharts-tGXBHV {
