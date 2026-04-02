@@ -3900,21 +3900,19 @@ var _tooltip = require('@visx/tooltip');
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
   "conversion-funnel-chart": "a8ccharts-B0ct23",
-  "loading": "a8ccharts-DbHKK5",
+  "conversion-funnel-chart--loading": "a8ccharts-Qicx1p",
   "main-metric": "a8ccharts-61WPYr",
   "main-rate": "a8ccharts-RRRI6x",
   "change-indicator": "a8ccharts-661iwx",
   "funnel-container": "a8ccharts-Z7EGnW",
   "funnel-step": "a8ccharts-VqFY0l",
   "funnel-step--animated": "a8ccharts-fk-hCl",
-  "blurred": "a8ccharts-7dTRBs",
+  "funnel-step--blurred": "a8ccharts-1zOc9c",
   "step-header": "a8ccharts-2JsQiV",
   "step-label": "a8ccharts-6OabC4",
   "step-rate": "a8ccharts-9wSZ6n",
   "bar-container": "a8ccharts-sSmCTi",
-  "disabled": "a8ccharts-PLWVAW",
   "funnel-bar": "a8ccharts-EzczI-",
-  "selected": "a8ccharts-wNpZEu",
   "funnel-bar--animated": "a8ccharts-68HQJl",
   "stretch": "a8ccharts-CmtieZ",
   "tooltip-wrapper": "a8ccharts-2TeoCn",
@@ -4176,7 +4174,7 @@ var ConversionFunnelChartInternal = ({
   if (!isDataValid) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
       direction: "column",
-      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default.loading, className),
+      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
       style: {
         ...style,
         height: resolvedHeight
@@ -4195,7 +4193,7 @@ var ConversionFunnelChartInternal = ({
         portalContainerRef(node2);
         chartRef.current = node2;
       },
-      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default.loading, className),
+      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
       style: {
         ...style,
         height: resolvedHeight
@@ -4216,7 +4214,7 @@ var ConversionFunnelChartInternal = ({
             isBlurred
           } = getStepState(step.id);
           return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
-            className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default.blurred),
+            className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
             children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
               className: conversion_funnel_chart_module_default["step-header"],
               children: [renderStepLabel ? renderStepLabel({
@@ -4235,7 +4233,7 @@ var ConversionFunnelChartInternal = ({
                 children: formatPercentage(step.rate)
               })]
             }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-              className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["bar-container"], isBlurred && conversion_funnel_chart_module_default.disabled),
+              className: conversion_funnel_chart_module_default["bar-container"],
               onClick: _optionalChain([stepHandlers, 'access', _160 => _160.get, 'call', _161 => _161(step.id), 'optionalAccess', _162 => _162.onClick]),
               onKeyDown: _optionalChain([stepHandlers, 'access', _163 => _163.get, 'call', _164 => _164(step.id), 'optionalAccess', _165 => _165.onKeyDown]),
               role: "button",

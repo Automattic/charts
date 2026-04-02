@@ -158,7 +158,7 @@
 .a8ccharts-B0ct23 {
   font-family: var(--funnel-font-family, "SF Pro Text");
 }
-.a8ccharts-B0ct23.a8ccharts-DbHKK5 {
+.a8ccharts-Qicx1p {
   opacity: 0.6;
   pointer-events: none;
 }
@@ -208,7 +208,7 @@
 .a8ccharts-fk-hCl {
   transition: opacity 0.3s ease;
 }
-.a8ccharts-VqFY0l.a8ccharts-7dTRBs {
+.a8ccharts-1zOc9c {
   opacity: 0.3;
 }
 .a8ccharts-2JsQiV {
@@ -244,17 +244,10 @@
   position: relative;
   cursor: pointer;
 }
-.a8ccharts-sSmCTi.a8ccharts-PLWVAW {
-  cursor: pointer;
-}
 .a8ccharts-EzczI- {
   width: 100%;
   min-height: 4px;
   border-radius: 4px 4px 0 0;
-}
-.a8ccharts-EzczI-.a8ccharts-wNpZEu {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  filter: brightness(1.1);
 }
 .a8ccharts-68HQJl {
   transform-origin: bottom;
