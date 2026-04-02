@@ -1581,6 +1581,7 @@ interface GlobalChartsContextValue {
     toggleSeriesVisibility: (chartId: string, seriesLabel: string) => void;
     isSeriesVisible: (chartId: string, seriesLabel: string) => boolean;
     getHiddenSeries: (chartId: string) => Set<string>;
+    isColorPaletteResolved: boolean;
 }
 
 declare const GlobalChartsContext: react.Context<GlobalChartsContextValue>;

@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Fix conversion funnel chart color flicker on initial render by deferring CSS transitions until the color palette is resolved.
+
 ## [1.0.1] - 2026-03-30
 ### Security
 - Sanitize GeoChart HTML tooltip content with DOMPurify. [#47789]

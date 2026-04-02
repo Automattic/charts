@@ -155,10 +155,10 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss */
-.a8ccharts-lK-YNK {
+.a8ccharts-B0ct23 {
   font-family: var(--funnel-font-family, "SF Pro Text");
 }
-.a8ccharts-lK-YNK.a8ccharts-DbHKK5 {
+.a8ccharts-B0ct23.a8ccharts-DbHKK5 {
   opacity: 0.6;
   pointer-events: none;
 }
@@ -204,7 +204,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: all 0.3s ease;
+}
+.a8ccharts-fk-hCl {
+  transition: opacity 0.3s ease;
 }
 .a8ccharts-VqFY0l.a8ccharts-7dTRBs {
   opacity: 0.3;
@@ -241,7 +243,6 @@
   border-radius: 4px;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 .a8ccharts-sSmCTi.a8ccharts-PLWVAW {
   cursor: pointer;
@@ -250,7 +251,6 @@
   width: 100%;
   min-height: 4px;
   border-radius: 4px 4px 0 0;
-  transition: all 0.3s ease;
 }
 .a8ccharts-EzczI-.a8ccharts-wNpZEu {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);

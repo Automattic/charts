@@ -1263,7 +1263,9 @@ var GlobalChartsProvider = ({
     minHue: 360,
     maxHue: 0
   }));
+  const [isColorPaletteResolved, setIsColorPaletteResolved] = _react.useState.call(void 0, false);
   _react.useLayoutEffect.call(void 0, () => {
+    setIsColorPaletteResolved(false);
     const {
       colors
     } = providerTheme;
@@ -1298,6 +1300,11 @@ var GlobalChartsProvider = ({
       maxHue
     });
   }, [providerTheme]);
+  _react.useEffect.call(void 0, () => {
+    if (colorCache.colors.length > 0) {
+      setIsColorPaletteResolved(true);
+    }
+  }, [colorCache]);
   const [groupToColorMap, setGroupToColorMap] = _react.useState.call(void 0, () => /* @__PURE__ */ new Map());
   _react.useEffect.call(void 0, () => {
     setGroupToColorMap(/* @__PURE__ */ new Map());
@@ -1389,8 +1396,9 @@ var GlobalChartsProvider = ({
     getElementStyles,
     toggleSeriesVisibility,
     isSeriesVisible,
-    getHiddenSeries
-  }), [charts, registerChart, unregisterChart, getChartData, providerTheme, getElementStyles, toggleSeriesVisibility, isSeriesVisible, getHiddenSeries]);
+    getHiddenSeries,
+    isColorPaletteResolved
+  }), [charts, registerChart, unregisterChart, getChartData, providerTheme, getElementStyles, toggleSeriesVisibility, isSeriesVisible, getHiddenSeries, isColorPaletteResolved]);
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, GlobalChartsContext.Provider, {
     value,
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
@@ -3891,13 +3899,14 @@ var _tooltip = require('@visx/tooltip');
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
-  "conversionFunnelChart": "a8ccharts-lK-YNK",
+  "conversion-funnel-chart": "a8ccharts-B0ct23",
   "loading": "a8ccharts-DbHKK5",
   "main-metric": "a8ccharts-61WPYr",
   "main-rate": "a8ccharts-RRRI6x",
   "change-indicator": "a8ccharts-661iwx",
   "funnel-container": "a8ccharts-Z7EGnW",
   "funnel-step": "a8ccharts-VqFY0l",
+  "funnel-step--animated": "a8ccharts-fk-hCl",
   "blurred": "a8ccharts-7dTRBs",
   "step-header": "a8ccharts-2JsQiV",
   "step-label": "a8ccharts-6OabC4",
@@ -3989,7 +3998,8 @@ var ConversionFunnelChartInternal = ({
     conversionFunnelChart: conversionFunnelChartSettings
   } = useGlobalChartsTheme();
   const {
-    getElementStyles
+    getElementStyles,
+    isColorPaletteResolved
   } = useGlobalChartsContext();
   const chartRef = _react.useRef.call(void 0, null);
   const selectedBarRef = _react.useRef.call(void 0, null);
@@ -4166,7 +4176,7 @@ var ConversionFunnelChartInternal = ({
   if (!isDataValid) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
       direction: "column",
-      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
+      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default.loading, className),
       style: {
         ...style,
         height: resolvedHeight
@@ -4185,7 +4195,7 @@ var ConversionFunnelChartInternal = ({
         portalContainerRef(node2);
         chartRef.current = node2;
       },
-      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default.conversionFunnelChart, loading && conversion_funnel_chart_module_default.loading, className),
+      className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default.loading, className),
       style: {
         ...style,
         height: resolvedHeight
@@ -4206,7 +4216,7 @@ var ConversionFunnelChartInternal = ({
             isBlurred
           } = getStepState(step.id);
           return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
-            className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isBlurred && conversion_funnel_chart_module_default.blurred),
+            className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default.blurred),
             children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
               className: conversion_funnel_chart_module_default["step-header"],
               children: [renderStepLabel ? renderStepLabel({
