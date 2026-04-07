@@ -4,159 +4,158 @@ var _chunk7OZEQ5HEcjs = require('./chunk-7OZEQ5HE.cjs');
 
 
 
-
-var _chunkEMMSS5I5cjs = require('./chunk-EMMSS5I5.cjs');
+var _chunkDZUJEN5Ncjs = require('./chunk-DZUJEN5N.cjs');
 
 // ../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/index.js
-var require_fast_deep_equal = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_fast_deep_equal = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/index.js"(exports, module) {
     "use strict";
-    module.exports = function equal(a2, b2) {
-      if (a2 === b2) return true;
-      if (a2 && b2 && typeof a2 == "object" && typeof b2 == "object") {
-        if (a2.constructor !== b2.constructor) return false;
-        var length2, i2, keys;
-        if (Array.isArray(a2)) {
-          length2 = a2.length;
-          if (length2 != b2.length) return false;
-          for (i2 = length2; i2-- !== 0; )
-            if (!equal(a2[i2], b2[i2])) return false;
+    module.exports = function equal(a, b) {
+      if (a === b) return true;
+      if (a && b && typeof a == "object" && typeof b == "object") {
+        if (a.constructor !== b.constructor) return false;
+        var length2, i, keys;
+        if (Array.isArray(a)) {
+          length2 = a.length;
+          if (length2 != b.length) return false;
+          for (i = length2; i-- !== 0; )
+            if (!equal(a[i], b[i])) return false;
           return true;
         }
-        if (a2.constructor === RegExp) return a2.source === b2.source && a2.flags === b2.flags;
-        if (a2.valueOf !== Object.prototype.valueOf) return a2.valueOf() === b2.valueOf();
-        if (a2.toString !== Object.prototype.toString) return a2.toString() === b2.toString();
-        keys = Object.keys(a2);
+        if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+        if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+        if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+        keys = Object.keys(a);
         length2 = keys.length;
-        if (length2 !== Object.keys(b2).length) return false;
-        for (i2 = length2; i2-- !== 0; )
-          if (!Object.prototype.hasOwnProperty.call(b2, keys[i2])) return false;
-        for (i2 = length2; i2-- !== 0; ) {
-          var key = keys[i2];
-          if (!equal(a2[key], b2[key])) return false;
+        if (length2 !== Object.keys(b).length) return false;
+        for (i = length2; i-- !== 0; )
+          if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+        for (i = length2; i-- !== 0; ) {
+          var key = keys[i];
+          if (!equal(a[key], b[key])) return false;
         }
         return true;
       }
-      return a2 !== a2 && b2 !== b2;
+      return a !== a && b !== b;
     };
   }
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js
-var require_react_is_production_min = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is_production_min = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js"(exports) {
     "use strict";
-    var b2 = "function" === typeof Symbol && Symbol.for;
-    var c2 = b2 ? /* @__PURE__ */ Symbol.for("react.element") : 60103;
-    var d2 = b2 ? /* @__PURE__ */ Symbol.for("react.portal") : 60106;
-    var e2 = b2 ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107;
-    var f2 = b2 ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108;
-    var g2 = b2 ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114;
-    var h2 = b2 ? /* @__PURE__ */ Symbol.for("react.provider") : 60109;
-    var k2 = b2 ? /* @__PURE__ */ Symbol.for("react.context") : 60110;
-    var l2 = b2 ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111;
-    var m2 = b2 ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111;
-    var n2 = b2 ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112;
-    var p2 = b2 ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113;
-    var q = b2 ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120;
-    var r2 = b2 ? /* @__PURE__ */ Symbol.for("react.memo") : 60115;
-    var t2 = b2 ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116;
-    var v2 = b2 ? /* @__PURE__ */ Symbol.for("react.block") : 60121;
-    var w2 = b2 ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117;
-    var x2 = b2 ? /* @__PURE__ */ Symbol.for("react.responder") : 60118;
-    var y2 = b2 ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
-    function z(a2) {
-      if ("object" === typeof a2 && null !== a2) {
-        var u2 = a2.$$typeof;
-        switch (u2) {
-          case c2:
-            switch (a2 = a2.type, a2) {
-              case l2:
-              case m2:
-              case e2:
-              case g2:
-              case f2:
-              case p2:
-                return a2;
+    var b = "function" === typeof Symbol && Symbol.for;
+    var c = b ? /* @__PURE__ */ Symbol.for("react.element") : 60103;
+    var d = b ? /* @__PURE__ */ Symbol.for("react.portal") : 60106;
+    var e = b ? /* @__PURE__ */ Symbol.for("react.fragment") : 60107;
+    var f = b ? /* @__PURE__ */ Symbol.for("react.strict_mode") : 60108;
+    var g = b ? /* @__PURE__ */ Symbol.for("react.profiler") : 60114;
+    var h = b ? /* @__PURE__ */ Symbol.for("react.provider") : 60109;
+    var k = b ? /* @__PURE__ */ Symbol.for("react.context") : 60110;
+    var l = b ? /* @__PURE__ */ Symbol.for("react.async_mode") : 60111;
+    var m = b ? /* @__PURE__ */ Symbol.for("react.concurrent_mode") : 60111;
+    var n = b ? /* @__PURE__ */ Symbol.for("react.forward_ref") : 60112;
+    var p = b ? /* @__PURE__ */ Symbol.for("react.suspense") : 60113;
+    var q = b ? /* @__PURE__ */ Symbol.for("react.suspense_list") : 60120;
+    var r = b ? /* @__PURE__ */ Symbol.for("react.memo") : 60115;
+    var t = b ? /* @__PURE__ */ Symbol.for("react.lazy") : 60116;
+    var v = b ? /* @__PURE__ */ Symbol.for("react.block") : 60121;
+    var w = b ? /* @__PURE__ */ Symbol.for("react.fundamental") : 60117;
+    var x = b ? /* @__PURE__ */ Symbol.for("react.responder") : 60118;
+    var y = b ? /* @__PURE__ */ Symbol.for("react.scope") : 60119;
+    function z(a) {
+      if ("object" === typeof a && null !== a) {
+        var u = a.$$typeof;
+        switch (u) {
+          case c:
+            switch (a = a.type, a) {
+              case l:
+              case m:
+              case e:
+              case g:
+              case f:
+              case p:
+                return a;
               default:
-                switch (a2 = a2 && a2.$$typeof, a2) {
-                  case k2:
-                  case n2:
-                  case t2:
-                  case r2:
-                  case h2:
-                    return a2;
+                switch (a = a && a.$$typeof, a) {
+                  case k:
+                  case n:
+                  case t:
+                  case r:
+                  case h:
+                    return a;
                   default:
-                    return u2;
+                    return u;
                 }
             }
-          case d2:
-            return u2;
+          case d:
+            return u;
         }
       }
     }
-    function A(a2) {
-      return z(a2) === m2;
+    function A(a) {
+      return z(a) === m;
     }
-    exports.AsyncMode = l2;
-    exports.ConcurrentMode = m2;
-    exports.ContextConsumer = k2;
-    exports.ContextProvider = h2;
-    exports.Element = c2;
-    exports.ForwardRef = n2;
-    exports.Fragment = e2;
-    exports.Lazy = t2;
-    exports.Memo = r2;
-    exports.Portal = d2;
-    exports.Profiler = g2;
-    exports.StrictMode = f2;
-    exports.Suspense = p2;
-    exports.isAsyncMode = function(a2) {
-      return A(a2) || z(a2) === l2;
+    exports.AsyncMode = l;
+    exports.ConcurrentMode = m;
+    exports.ContextConsumer = k;
+    exports.ContextProvider = h;
+    exports.Element = c;
+    exports.ForwardRef = n;
+    exports.Fragment = e;
+    exports.Lazy = t;
+    exports.Memo = r;
+    exports.Portal = d;
+    exports.Profiler = g;
+    exports.StrictMode = f;
+    exports.Suspense = p;
+    exports.isAsyncMode = function(a) {
+      return A(a) || z(a) === l;
     };
     exports.isConcurrentMode = A;
-    exports.isContextConsumer = function(a2) {
-      return z(a2) === k2;
+    exports.isContextConsumer = function(a) {
+      return z(a) === k;
     };
-    exports.isContextProvider = function(a2) {
-      return z(a2) === h2;
+    exports.isContextProvider = function(a) {
+      return z(a) === h;
     };
-    exports.isElement = function(a2) {
-      return "object" === typeof a2 && null !== a2 && a2.$$typeof === c2;
+    exports.isElement = function(a) {
+      return "object" === typeof a && null !== a && a.$$typeof === c;
     };
-    exports.isForwardRef = function(a2) {
-      return z(a2) === n2;
+    exports.isForwardRef = function(a) {
+      return z(a) === n;
     };
-    exports.isFragment = function(a2) {
-      return z(a2) === e2;
+    exports.isFragment = function(a) {
+      return z(a) === e;
     };
-    exports.isLazy = function(a2) {
-      return z(a2) === t2;
+    exports.isLazy = function(a) {
+      return z(a) === t;
     };
-    exports.isMemo = function(a2) {
-      return z(a2) === r2;
+    exports.isMemo = function(a) {
+      return z(a) === r;
     };
-    exports.isPortal = function(a2) {
-      return z(a2) === d2;
+    exports.isPortal = function(a) {
+      return z(a) === d;
     };
-    exports.isProfiler = function(a2) {
-      return z(a2) === g2;
+    exports.isProfiler = function(a) {
+      return z(a) === g;
     };
-    exports.isStrictMode = function(a2) {
-      return z(a2) === f2;
+    exports.isStrictMode = function(a) {
+      return z(a) === f;
     };
-    exports.isSuspense = function(a2) {
-      return z(a2) === p2;
+    exports.isSuspense = function(a) {
+      return z(a) === p;
     };
-    exports.isValidElementType = function(a2) {
-      return "string" === typeof a2 || "function" === typeof a2 || a2 === e2 || a2 === m2 || a2 === g2 || a2 === f2 || a2 === p2 || a2 === q || "object" === typeof a2 && null !== a2 && (a2.$$typeof === t2 || a2.$$typeof === r2 || a2.$$typeof === h2 || a2.$$typeof === k2 || a2.$$typeof === n2 || a2.$$typeof === w2 || a2.$$typeof === x2 || a2.$$typeof === y2 || a2.$$typeof === v2);
+    exports.isValidElementType = function(a) {
+      return "string" === typeof a || "function" === typeof a || a === e || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t || a.$$typeof === r || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n || a.$$typeof === w || a.$$typeof === x || a.$$typeof === y || a.$$typeof === v);
     };
     exports.typeOf = z;
   }
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js
-var require_react_is_development = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is_development = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js"(exports) {
     "use strict";
     if (process.env.NODE_ENV !== "production") {
@@ -311,7 +310,7 @@ var require_react_is_development = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
 });
 
 // ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js
-var require_react_is = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_react_is = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js"(exports, module) {
     "use strict";
     if (process.env.NODE_ENV === "production") {
@@ -323,7 +322,7 @@ var require_react_is = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
 });
 
 // ../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_hoist_non_react_statics_cjs = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js"(exports, module) {
     "use strict";
     var reactIs = require_react_is();
@@ -393,13 +392,13 @@ var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void
         }
         var targetStatics = getStatics(targetComponent);
         var sourceStatics = getStatics(sourceComponent);
-        for (var i2 = 0; i2 < keys.length; ++i2) {
-          var key = keys[i2];
+        for (var i = 0; i < keys.length; ++i) {
+          var key = keys[i];
           if (!KNOWN_STATICS[key] && !(blacklist && blacklist[key]) && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
             var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
             try {
               defineProperty(targetComponent, key, descriptor);
-            } catch (e2) {
+            } catch (e) {
             }
           }
         }
@@ -411,228 +410,58 @@ var require_hoist_non_react_statics_cjs = _chunkEMMSS5I5cjs.__commonJS.call(void
 });
 
 // ../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/es6/index.js
-var require_es6 = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
+var require_es6 = _chunkDZUJEN5Ncjs.__commonJS.call(void 0, {
   "../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/es6/index.js"(exports, module) {
     "use strict";
-    module.exports = function equal(a2, b2) {
-      if (a2 === b2) return true;
-      if (a2 && b2 && typeof a2 == "object" && typeof b2 == "object") {
-        if (a2.constructor !== b2.constructor) return false;
-        var length2, i2, keys;
-        if (Array.isArray(a2)) {
-          length2 = a2.length;
-          if (length2 != b2.length) return false;
-          for (i2 = length2; i2-- !== 0; )
-            if (!equal(a2[i2], b2[i2])) return false;
+    module.exports = function equal(a, b) {
+      if (a === b) return true;
+      if (a && b && typeof a == "object" && typeof b == "object") {
+        if (a.constructor !== b.constructor) return false;
+        var length2, i, keys;
+        if (Array.isArray(a)) {
+          length2 = a.length;
+          if (length2 != b.length) return false;
+          for (i = length2; i-- !== 0; )
+            if (!equal(a[i], b[i])) return false;
           return true;
         }
-        if (a2 instanceof Map && b2 instanceof Map) {
-          if (a2.size !== b2.size) return false;
-          for (i2 of a2.entries())
-            if (!b2.has(i2[0])) return false;
-          for (i2 of a2.entries())
-            if (!equal(i2[1], b2.get(i2[0]))) return false;
+        if (a instanceof Map && b instanceof Map) {
+          if (a.size !== b.size) return false;
+          for (i of a.entries())
+            if (!b.has(i[0])) return false;
+          for (i of a.entries())
+            if (!equal(i[1], b.get(i[0]))) return false;
           return true;
         }
-        if (a2 instanceof Set && b2 instanceof Set) {
-          if (a2.size !== b2.size) return false;
-          for (i2 of a2.entries())
-            if (!b2.has(i2[0])) return false;
+        if (a instanceof Set && b instanceof Set) {
+          if (a.size !== b.size) return false;
+          for (i of a.entries())
+            if (!b.has(i[0])) return false;
           return true;
         }
-        if (ArrayBuffer.isView(a2) && ArrayBuffer.isView(b2)) {
-          length2 = a2.length;
-          if (length2 != b2.length) return false;
-          for (i2 = length2; i2-- !== 0; )
-            if (a2[i2] !== b2[i2]) return false;
+        if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
+          length2 = a.length;
+          if (length2 != b.length) return false;
+          for (i = length2; i-- !== 0; )
+            if (a[i] !== b[i]) return false;
           return true;
         }
-        if (a2.constructor === RegExp) return a2.source === b2.source && a2.flags === b2.flags;
-        if (a2.valueOf !== Object.prototype.valueOf) return a2.valueOf() === b2.valueOf();
-        if (a2.toString !== Object.prototype.toString) return a2.toString() === b2.toString();
-        keys = Object.keys(a2);
+        if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+        if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+        if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+        keys = Object.keys(a);
         length2 = keys.length;
-        if (length2 !== Object.keys(b2).length) return false;
-        for (i2 = length2; i2-- !== 0; )
-          if (!Object.prototype.hasOwnProperty.call(b2, keys[i2])) return false;
-        for (i2 = length2; i2-- !== 0; ) {
-          var key = keys[i2];
-          if (!equal(a2[key], b2[key])) return false;
+        if (length2 !== Object.keys(b).length) return false;
+        for (i = length2; i-- !== 0; )
+          if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+        for (i = length2; i-- !== 0; ) {
+          var key = keys[i];
+          if (!equal(a[key], b[key])) return false;
         }
         return true;
       }
-      return a2 !== a2 && b2 !== b2;
+      return a !== a && b !== b;
     };
-  }
-});
-
-// ../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js
-var require_dist = _chunkEMMSS5I5cjs.__commonJS.call(void 0, {
-  "../../../node_modules/.pnpm/highlight-words-core@1.2.3/node_modules/highlight-words-core/dist/index.js"(exports, module) {
-    module.exports = /******/
-    (function(modules) {
-      var installedModules = {};
-      function __webpack_require__(moduleId) {
-        if (installedModules[moduleId])
-          return installedModules[moduleId].exports;
-        var module2 = installedModules[moduleId] = {
-          /******/
-          exports: {},
-          /******/
-          id: moduleId,
-          /******/
-          loaded: false
-          /******/
-        };
-        modules[moduleId].call(module2.exports, module2, module2.exports, __webpack_require__);
-        module2.loaded = true;
-        return module2.exports;
-      }
-      __webpack_require__.m = modules;
-      __webpack_require__.c = installedModules;
-      __webpack_require__.p = "";
-      return __webpack_require__(0);
-    })([
-      /* 0 */
-      /***/
-      (function(module2, exports2, __webpack_require__) {
-        module2.exports = __webpack_require__(1);
-      }),
-      /* 1 */
-      /***/
-      (function(module2, exports2, __webpack_require__) {
-        "use strict";
-        Object.defineProperty(exports2, "__esModule", {
-          value: true
-        });
-        var _utils = __webpack_require__(2);
-        Object.defineProperty(exports2, "combineChunks", {
-          enumerable: true,
-          get: function get() {
-            return _utils.combineChunks;
-          }
-        });
-        Object.defineProperty(exports2, "fillInChunks", {
-          enumerable: true,
-          get: function get() {
-            return _utils.fillInChunks;
-          }
-        });
-        Object.defineProperty(exports2, "findAll", {
-          enumerable: true,
-          get: function get() {
-            return _utils.findAll;
-          }
-        });
-        Object.defineProperty(exports2, "findChunks", {
-          enumerable: true,
-          get: function get() {
-            return _utils.findChunks;
-          }
-        });
-      }),
-      /* 2 */
-      /***/
-      (function(module2, exports2) {
-        "use strict";
-        Object.defineProperty(exports2, "__esModule", {
-          value: true
-        });
-        var findAll2 = exports2.findAll = function findAll3(_ref2) {
-          var autoEscape = _ref2.autoEscape, _ref$caseSensitive = _ref2.caseSensitive, caseSensitive = _ref$caseSensitive === void 0 ? false : _ref$caseSensitive, _ref$findChunks = _ref2.findChunks, findChunks = _ref$findChunks === void 0 ? defaultFindChunks : _ref$findChunks, sanitize = _ref2.sanitize, searchWords = _ref2.searchWords, textToHighlight = _ref2.textToHighlight;
-          return fillInChunks({
-            chunksToHighlight: combineChunks({
-              chunks: findChunks({
-                autoEscape,
-                caseSensitive,
-                sanitize,
-                searchWords,
-                textToHighlight
-              })
-            }),
-            totalLength: textToHighlight ? textToHighlight.length : 0
-          });
-        };
-        var combineChunks = exports2.combineChunks = function combineChunks2(_ref2) {
-          var chunks = _ref2.chunks;
-          chunks = chunks.sort(function(first, second) {
-            return first.start - second.start;
-          }).reduce(function(processedChunks, nextChunk) {
-            if (processedChunks.length === 0) {
-              return [nextChunk];
-            } else {
-              var prevChunk = processedChunks.pop();
-              if (nextChunk.start < prevChunk.end) {
-                var endIndex = Math.max(prevChunk.end, nextChunk.end);
-                processedChunks.push({ highlight: false, start: prevChunk.start, end: endIndex });
-              } else {
-                processedChunks.push(prevChunk, nextChunk);
-              }
-              return processedChunks;
-            }
-          }, []);
-          return chunks;
-        };
-        var defaultFindChunks = function defaultFindChunks2(_ref3) {
-          var autoEscape = _ref3.autoEscape, caseSensitive = _ref3.caseSensitive, _ref3$sanitize = _ref3.sanitize, sanitize = _ref3$sanitize === void 0 ? defaultSanitize : _ref3$sanitize, searchWords = _ref3.searchWords, textToHighlight = _ref3.textToHighlight;
-          textToHighlight = sanitize(textToHighlight);
-          return searchWords.filter(function(searchWord) {
-            return searchWord;
-          }).reduce(function(chunks, searchWord) {
-            searchWord = sanitize(searchWord);
-            if (autoEscape) {
-              searchWord = escapeRegExpFn(searchWord);
-            }
-            var regex = new RegExp(searchWord, caseSensitive ? "g" : "gi");
-            var match2 = void 0;
-            while (match2 = regex.exec(textToHighlight)) {
-              var _start = match2.index;
-              var _end = regex.lastIndex;
-              if (_end > _start) {
-                chunks.push({ highlight: false, start: _start, end: _end });
-              }
-              if (match2.index === regex.lastIndex) {
-                regex.lastIndex++;
-              }
-            }
-            return chunks;
-          }, []);
-        };
-        exports2.findChunks = defaultFindChunks;
-        var fillInChunks = exports2.fillInChunks = function fillInChunks2(_ref4) {
-          var chunksToHighlight = _ref4.chunksToHighlight, totalLength = _ref4.totalLength;
-          var allChunks = [];
-          var append2 = function append3(start, end, highlight) {
-            if (end - start > 0) {
-              allChunks.push({
-                start,
-                end,
-                highlight
-              });
-            }
-          };
-          if (chunksToHighlight.length === 0) {
-            append2(0, totalLength, false);
-          } else {
-            var lastIndex = 0;
-            chunksToHighlight.forEach(function(chunk) {
-              append2(lastIndex, chunk.start, false);
-              append2(chunk.start, chunk.end, true);
-              lastIndex = chunk.end;
-            });
-            append2(lastIndex, totalLength, false);
-          }
-          return allChunks;
-        };
-        function defaultSanitize(string) {
-          return string;
-        }
-        function escapeRegExpFn(string) {
-          return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-        }
-      })
-      /******/
-    ]);
   }
 });
 
@@ -979,8 +808,8 @@ var parseHslString = (hslString) => {
   if (isNaN(parsed.h) && isNaN(parsed.s) && isNaN(parsed.l)) {
     return null;
   }
-  const h2 = isNaN(parsed.h) ? 0 : (parsed.h % 360 + 360) % 360;
-  return [h2, parsed.s * 100, parsed.l * 100];
+  const h = isNaN(parsed.h) ? 0 : (parsed.h % 360 + 360) % 360;
+  return [h, parsed.s * 100, parsed.l * 100];
 };
 var parseRgbString = (rgbString) => {
   const lower = rgbString.toLowerCase().trim();
@@ -1002,10 +831,10 @@ var normalizeColorToHex = (color, element, resolveCss, _depth = 0) => {
   }
   const trimmed = color.trim().toLowerCase();
   if (/^#[0-9a-f]{3}$/i.test(trimmed)) {
-    const r2 = trimmed[1];
-    const g2 = trimmed[2];
-    const b2 = trimmed[3];
-    return `#${r2}${r2}${g2}${g2}${b2}${b2}`;
+    const r = trimmed[1];
+    const g = trimmed[2];
+    const b = trimmed[3];
+    return `#${r}${r}${g}${g}${b}${b}`;
   }
   if (trimmed.startsWith("--") || trimmed.startsWith("var(")) {
     if (resolveCss) {
@@ -1031,12 +860,12 @@ var normalizeColorToHex = (color, element, resolveCss, _depth = 0) => {
 };
 var lightenHexColor = (hex, blend) => {
   validateHexColor(hex);
-  const r2 = parseInt(hex.slice(1, 3), 16);
-  const g2 = parseInt(hex.slice(3, 5), 16);
-  const b2 = parseInt(hex.slice(5, 7), 16);
-  const newR = Math.round(r2 + (255 - r2) * blend);
-  const newG = Math.round(g2 + (255 - g2) * blend);
-  const newB = Math.round(b2 + (255 - b2) * blend);
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const newR = Math.round(r + (255 - r) * blend);
+  const newG = Math.round(g + (255 - g) * blend);
+  const newB = Math.round(b + (255 - b) * blend);
   return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
 };
 
@@ -1086,7 +915,7 @@ function resolveVariableName(varName, element) {
     const targetElement = element || document.documentElement;
     const computedValue = getComputedStyle(targetElement).getPropertyValue(varName).trim();
     return computedValue || null;
-  } catch (e3) {
+  } catch (e2) {
     return null;
   }
 }
@@ -1128,8 +957,8 @@ var getChartColor = (index, colorCache) => {
       if (hues.length === 1) {
         hueRange = FULL_HUE_ROTATION_DEGREES * SINGLE_COLOR_HUE_RANGE_FACTOR;
       } else if (hueRange > HUE_WRAP_THRESHOLD_DEGREES) {
-        const altMinHue = Math.min(...hues.filter((h2) => h2 > HUE_WRAP_THRESHOLD_DEGREES));
-        const altMaxHue = Math.max(...hues.filter((h2) => h2 < HUE_WRAP_THRESHOLD_DEGREES)) + FULL_HUE_ROTATION_DEGREES;
+        const altMinHue = Math.min(...hues.filter((h) => h > HUE_WRAP_THRESHOLD_DEGREES));
+        const altMaxHue = Math.max(...hues.filter((h) => h < HUE_WRAP_THRESHOLD_DEGREES)) + FULL_HUE_ROTATION_DEGREES;
         const altRange = altMaxHue - altMinHue;
         if (altRange < hueRange) {
           minHue = altMinHue;
@@ -1432,7 +1261,7 @@ var useChartId = (providedId) => {
 
 
 // src/hooks/use-deep-memo.ts
-var import_fast_deep_equal = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_fast_deep_equal(), 1);
+var import_fast_deep_equal = _chunkDZUJEN5Ncjs.__toESM.call(void 0, require_fast_deep_equal(), 1);
 
 var useDeepMemo = (value) => {
   const ref = _react.useRef.call(void 0, value);
@@ -1478,9 +1307,9 @@ var useChartDataTransform = (data) => {
           ...point,
           date
         };
-      }).sort((a2, b2) => {
-        if (!a2.date || !b2.date) return 0;
-        return a2.date.getTime() - b2.date.getTime();
+      }).sort((a, b) => {
+        if (!a.date || !b.date) return 0;
+        return a.date.getTime() - b.date.getTime();
       })
     }));
   }, [data]);
@@ -1520,10 +1349,10 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
   const yTicks = _react.useMemo.call(void 0, () => {
     const allDataPoints = data.flatMap((series) => series.data);
     if (horizontal) {
-      return allDataPoints.map((d2) => d2.label || _optionalChain([options, 'access', _42 => _42.axis, 'optionalAccess', _43 => _43.y, 'optionalAccess', _44 => _44.tickFormat, 'call', _45 => _45(d2.date.getTime(), 0, [])]));
+      return allDataPoints.map((d) => d.label || _optionalChain([options, 'access', _42 => _42.axis, 'optionalAccess', _43 => _43.y, 'optionalAccess', _44 => _44.tickFormat, 'call', _45 => _45(d.date.getTime(), 0, [])]));
     }
-    const minY = Math.min(...allDataPoints.map((d2) => d2.value));
-    const maxY = Math.max(...allDataPoints.map((d2) => d2.value));
+    const minY = Math.min(...allDataPoints.map((d) => d.value));
+    const maxY = Math.max(...allDataPoints.map((d) => d.value));
     const yScale = _scale.createScale.call(void 0, {
       ...options.yScale,
       domain: [minY, maxY],
@@ -1712,7 +1541,7 @@ var useInteractiveLegendData = ({
     if (!legendInteractive || !chartId) {
       return data;
     }
-    const visibleDataMap = new Map(visibleData.map((d2) => [d2.label, d2]));
+    const visibleDataMap = new Map(visibleData.map((d) => [d.label, d]));
     return data.map((segment) => {
       const isVisible = isSeriesVisible(chartId, segment.label);
       if (!isVisible) {
@@ -1806,11 +1635,11 @@ function labelTransformFactory({
   scale,
   labelFormat
 }) {
-  return (d2, i2) => ({
-    datum: d2,
-    index: i2,
-    text: `${labelFormat(d2, i2)}`,
-    value: scale(d2)
+  return (d, i) => ({
+    datum: d,
+    index: i,
+    text: `${labelFormat(d, i)}`,
+    value: scale(d)
   });
 }
 
@@ -1942,11 +1771,11 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
         flexDirection: orientationToFlexDirection[orientation],
         ..._optionalChain([theme, 'access', _62 => _62.legend, 'optionalAccess', _63 => _63.containerStyles])
       },
-      children: labels.map((label, i2) => {
+      children: labels.map((label, i) => {
         const visible = isSeriesVisible(label.text);
         const handleClick = createClickHandler(label.text);
         const handleKeyDown = createKeyDownHandler(label.text);
-        const matchedItem = items[i2];
+        const matchedItem = items[i];
         return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _legend.LegendItem, {
           className: _clsx2.default.call(void 0, "visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
           margin: itemMargin,
@@ -1957,18 +1786,18 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           tabIndex: interactive ? 0 : void 0,
           "aria-pressed": interactive ? visible : void 0,
           "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
-          children: [_optionalChain([items, 'access', _64 => _64[i2], 'optionalAccess', _65 => _65.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
-            width: _optionalChain([items, 'access', _66 => _66[i2], 'optionalAccess', _67 => _67.glyphSize]) * 2,
-            height: _optionalChain([items, 'access', _68 => _68[i2], 'optionalAccess', _69 => _69.glyphSize]) * 2,
+          children: [_optionalChain([items, 'access', _64 => _64[i], 'optionalAccess', _65 => _65.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
+            width: _optionalChain([items, 'access', _66 => _66[i], 'optionalAccess', _67 => _67.glyphSize]) * 2,
+            height: _optionalChain([items, 'access', _68 => _68[i], 'optionalAccess', _69 => _69.glyphSize]) * 2,
             children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, {
-              children: _optionalChain([items, 'access', _70 => _70[i2], 'optionalAccess', _71 => _71.renderGlyph, 'call', _72 => _72({
+              children: _optionalChain([items, 'access', _70 => _70[i], 'optionalAccess', _71 => _71.renderGlyph, 'call', _72 => _72({
                 key: `legend-glyph-${label.text}`,
                 datum: {},
-                index: i2,
+                index: i,
                 color: fill(label),
-                size: _optionalChain([items, 'access', _73 => _73[i2], 'optionalAccess', _74 => _74.glyphSize]),
-                x: _optionalChain([items, 'access', _75 => _75[i2], 'optionalAccess', _76 => _76.glyphSize]),
-                y: _optionalChain([items, 'access', _77 => _77[i2], 'optionalAccess', _78 => _78.glyphSize])
+                size: _optionalChain([items, 'access', _73 => _73[i], 'optionalAccess', _74 => _74.glyphSize]),
+                x: _optionalChain([items, 'access', _75 => _75[i], 'optionalAccess', _76 => _76.glyphSize]),
+                y: _optionalChain([items, 'access', _77 => _77[i], 'optionalAccess', _78 => _78.glyphSize])
               })])
             })
           }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendShape, {
@@ -1976,8 +1805,8 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
             height: shapeHeight,
             width: shapeWidth,
             margin: shapeMargin,
-            item: domain[i2],
-            itemIndex: i2,
+            item: domain[i],
+            itemIndex: i,
             label,
             fill,
             size,
@@ -1999,7 +1828,7 @@ var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
               children: ["\xA0", matchedItem.value]
             })]
           })]
-        }, `legend-${label.text}-${i2}`);
+        }, `legend-${label.text}-${i}`);
       })
     })
   });
@@ -2217,7 +2046,7 @@ var AccessibleTooltip = ({
   const tooltipData = _react.useMemo.call(void 0, () => {
     if (mode !== "individual") return [];
     if (series.length === 0) return [];
-    const maxDataPoints = Math.max(...series.map((s2) => s2.data.length));
+    const maxDataPoints = Math.max(...series.map((s) => s.data.length));
     const flattened = [];
     for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
       for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
@@ -2240,12 +2069,12 @@ var AccessibleTooltip = ({
       return;
     }
     if (mode === "group") {
-      series.forEach((s2, index) => {
-        if (selectedIndex < s2.data.length) {
-          const datum = s2.data[selectedIndex];
+      series.forEach((s, index) => {
+        if (selectedIndex < s.data.length) {
+          const datum = s.data[selectedIndex];
           _optionalChain([tooltipContext, 'optionalAccess', _94 => _94.showTooltip, 'call', _95 => _95({
             datum,
-            key: s2.label,
+            key: s.label,
             index
           })]);
         }
@@ -2369,8 +2198,8 @@ ChartHTML.displayName = "Chart.HTML";
 // src/charts/private/chart-composition/render-legend-slot.ts
 
 function renderLegendSlot(legendChildren, position2) {
-  return legendChildren.filter((l2) => l2.position === position2).map(
-    (l2, i2) => _react.createElement.call(void 0, _react.Fragment, { key: `legend-${position2}-${i2}` }, l2.element)
+  return legendChildren.filter((l) => l.position === position2).map(
+    (l, i) => _react.createElement.call(void 0, _react.Fragment, { key: `legend-${position2}-${i}` }, l.element)
   );
 }
 
@@ -2466,10 +2295,10 @@ var formatErrorMessage_default = formatErrorMessage;
 
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.6_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
-function useMergedRefs(a2, b2, c2, d2) {
+function useMergedRefs(a, b, c, d) {
   const forkRef = useRefWithInit(createForkRef).current;
-  if (didChange(forkRef, a2, b2, c2, d2)) {
-    update(forkRef, [a2, b2, c2, d2]);
+  if (didChange(forkRef, a, b, c, d)) {
+    update(forkRef, [a, b, c, d]);
   }
   return forkRef.callback;
 }
@@ -2487,8 +2316,8 @@ function createForkRef() {
     refs: []
   };
 }
-function didChange(forkRef, a2, b2, c2, d2) {
-  return forkRef.refs[0] !== a2 || forkRef.refs[1] !== b2 || forkRef.refs[2] !== c2 || forkRef.refs[3] !== d2;
+function didChange(forkRef, a, b, c, d) {
+  return forkRef.refs[0] !== a || forkRef.refs[1] !== b || forkRef.refs[2] !== c || forkRef.refs[3] !== d;
 }
 function didChangeN(forkRef, newRefs) {
   return forkRef.refs.length !== newRefs.length || forkRef.refs.some((ref, index) => ref !== newRefs[index]);
@@ -2506,8 +2335,8 @@ function update(forkRef, refs) {
     }
     if (instance != null) {
       const cleanupCallbacks = Array(refs.length).fill(null);
-      for (let i2 = 0; i2 < refs.length; i2 += 1) {
-        const ref = refs[i2];
+      for (let i = 0; i < refs.length; i += 1) {
+        const ref = refs[i];
         if (ref == null) {
           continue;
         }
@@ -2515,7 +2344,7 @@ function update(forkRef, refs) {
           case "function": {
             const refCleanup = ref(instance);
             if (typeof refCleanup === "function") {
-              cleanupCallbacks[i2] = refCleanup;
+              cleanupCallbacks[i] = refCleanup;
             }
             break;
           }
@@ -2527,14 +2356,14 @@ function update(forkRef, refs) {
         }
       }
       forkRef.cleanup = () => {
-        for (let i2 = 0; i2 < refs.length; i2 += 1) {
-          const ref = refs[i2];
+        for (let i = 0; i < refs.length; i += 1) {
+          const ref = refs[i];
           if (ref == null) {
             continue;
           }
           switch (typeof ref) {
             case "function": {
-              const cleanupCallback = cleanupCallbacks[i2];
+              const cleanupCallback = cleanupCallbacks[i];
               if (typeof cleanupCallback === "function") {
                 cleanupCallback();
               } else {
@@ -2575,17 +2404,17 @@ function getReactElementRef(element) {
 }
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.6_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
-function mergeObjects(a2, b2) {
-  if (a2 && !b2) {
-    return a2;
+function mergeObjects(a, b) {
+  if (a && !b) {
+    return a;
   }
-  if (!a2 && b2) {
-    return b2;
+  if (!a && b) {
+    return b;
   }
-  if (a2 || b2) {
+  if (a || b) {
     return {
-      ...a2,
-      ...b2
+      ...a,
+      ...b
     };
   }
   return void 0;
@@ -2624,21 +2453,21 @@ function resolveStyle(style, state) {
 
 // ../../../node_modules/.pnpm/@base-ui+react@1.3.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
 var EMPTY_PROPS = {};
-function mergeProps(a2, b2, c2, d2, e2) {
+function mergeProps(a, b, c, d, e) {
   let merged = {
-    ...resolvePropsGetter(a2, EMPTY_PROPS)
+    ...resolvePropsGetter(a, EMPTY_PROPS)
   };
-  if (b2) {
-    merged = mergeOne(merged, b2);
+  if (b) {
+    merged = mergeOne(merged, b);
   }
-  if (c2) {
-    merged = mergeOne(merged, c2);
+  if (c) {
+    merged = mergeOne(merged, c);
   }
-  if (d2) {
-    merged = mergeOne(merged, d2);
+  if (d) {
+    merged = mergeOne(merged, d);
   }
-  if (e2) {
-    merged = mergeOne(merged, e2);
+  if (e) {
+    merged = mergeOne(merged, e);
   }
   return merged;
 }
@@ -2652,8 +2481,8 @@ function mergePropsN(props) {
   let merged = {
     ...resolvePropsGetter(props[0], EMPTY_PROPS)
   };
-  for (let i2 = 1; i2 < props.length; i2 += 1) {
-    merged = mergeOne(merged, props[i2]);
+  for (let i = 1; i < props.length; i += 1) {
+    merged = mergeOne(merged, props[i]);
   }
   return merged;
 }
@@ -2902,13 +2731,13 @@ function useRender(params) {
 
 
 // ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
-function isObject(o2) {
-  return Object.prototype.toString.call(o2) === "[object Object]";
+function isObject(o) {
+  return Object.prototype.toString.call(o) === "[object Object]";
 }
-function isPlainObject(o2) {
+function isPlainObject(o) {
   var ctor, prot;
-  if (isObject(o2) === false) return false;
-  ctor = o2.constructor;
+  if (isObject(o) === false) return false;
+  ctor = o.constructor;
   if (ctor === void 0) return true;
   prot = ctor.prototype;
   if (isObject(prot) === false) return false;
@@ -2999,6 +2828,27 @@ var Stack = _react.forwardRef.call(void 0, function Stack2({ direction, gap, ali
   return element;
 });
 
+// ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.5.0/node_modules/@wordpress/ui/build-module/text/text.mjs
+
+if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='893fb81f3c']")) {
+  const style = document.createElement("style");
+  style.setAttribute("data-wp-hash", "893fb81f3c");
+  style.appendChild(document.createTextNode('@layer wp-ui-utilities, wp-ui-components, wp-ui-compositions, wp-ui-overrides;@layer wp-ui-components{._14437cfb77831647__heading-2xl{font-size:var(--wpds-font-size-2xl,32px);line-height:var(--wpds-font-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{font-size:var(--wpds-font-size-xl,20px);line-height:var(--wpds-font-line-height-md,24px)}.aa58f227716bcde2__heading-lg{font-size:var(--wpds-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-medium,499);line-height:var(--wpds-font-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{font-size:var(--wpds-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-font-size-xs,11px);font-weight:var(--wpds-font-weight-medium,499);line-height:var(--wpds-font-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{font-size:var(--wpds-font-size-xl,20px);line-height:var(--wpds-font-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{font-size:var(--wpds-font-size-lg,15px);line-height:var(--wpds-font-line-height-md,24px)}._131101940be12424__body-md{font-size:var(--wpds-font-size-md,13px);line-height:var(--wpds-font-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{font-size:var(--wpds-font-size-sm,12px);line-height:var(--wpds-font-line-height-xs,16px)}}'));
+  document.head.appendChild(style);
+}
+var style_default2 = { "heading-2xl": "_14437cfb77831647__heading-2xl", "heading-xl": "_3c78b7fa9b4072dd__heading-xl", "heading-lg": "aa58f227716bcde2__heading-lg", "heading-md": "fc4da56d8dfe52c4__heading-md", "heading-sm": "a9b78c7c82e8dff7__heading-sm", "body-xl": "_305ff559e52180d5__body-xl", "body-lg": "ca1aa3fc2029e958__body-lg", "body-md": "_131101940be12424__body-md", "body-sm": "_0e8d87a42c1f75fa__body-sm" };
+var Text = _react.forwardRef.call(void 0, function Text2({ variant = "body-md", render, className, ...props }, ref) {
+  const element = useRender({
+    render,
+    defaultTagName: "span",
+    ref,
+    props: mergeProps(props, {
+      className: _clsx2.default.call(void 0, style_default2[variant], className)
+    })
+  });
+  return element;
+});
+
 // src/charts/private/chart-layout/chart-layout.tsx
 
 
@@ -3063,15 +2913,15 @@ var svg_empty_state_module_default = {
 // src/charts/private/svg-empty-state/svg-empty-state.tsx
 
 var SvgEmptyState = ({
-  x: x2,
-  y: y2,
+  x,
+  y,
   width,
   height,
   children
 }) => {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "foreignObject", {
-    x: x2 - width / 2,
-    y: y2 - height / 2,
+    x: x - width / 2,
+    y: y - height / 2,
     width,
     height,
     children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
@@ -3182,8 +3032,8 @@ var getScaleBandwidth = (scale) => {
 };
 var MIN_TICK_LABEL_WIDTH = 20;
 var TruncatedTickComponent = ({
-  x: x2,
-  y: y2,
+  x,
+  y,
   formattedValue,
   axis,
   textAnchor,
@@ -3251,8 +3101,8 @@ var TruncatedTickComponent = ({
     pointerEvents: "auto"
   };
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "foreignObject", {
-    x: x2 + xOffset,
-    y: y2,
+    x: x + xOffset,
+    y,
     width: maxWidth,
     height: 0,
     overflow: "visible",
@@ -3297,10 +3147,10 @@ function useBarChartOptions(data, horizontal, options = {}) {
     };
     const labelFormatter = _optionalChain([data, 'optionalAccess', _120 => _120[0], 'optionalAccess', _121 => _121.data, 'optionalAccess', _122 => _122[0], 'optionalAccess', _123 => _123.label]) ? (label) => label : formatDateTick;
     const valueFormatter = _numberformatters.formatNumberCompact;
-    const labelAccessor = (d2) => _optionalChain([d2, 'optionalAccess', _124 => _124.label]) || _optionalChain([d2, 'optionalAccess', _125 => _125.date]);
-    const valueAccessor = (d2) => {
-      const enhancedPoint = d2;
-      return _optionalChain([enhancedPoint, 'optionalAccess', _126 => _126.visualValue]) !== void 0 ? enhancedPoint.visualValue : _optionalChain([d2, 'optionalAccess', _127 => _127.value]);
+    const labelAccessor = (d) => _optionalChain([d, 'optionalAccess', _124 => _124.label]) || _optionalChain([d, 'optionalAccess', _125 => _125.date]);
+    const valueAccessor = (d) => {
+      const enhancedPoint = d;
+      return _optionalChain([enhancedPoint, 'optionalAccess', _126 => _126.visualValue]) !== void 0 ? enhancedPoint.visualValue : _optionalChain([d, 'optionalAccess', _127 => _127.value]);
     };
     return {
       vertical: {
@@ -3542,7 +3392,7 @@ var BarChartInternal = ({
   }, [chartId]);
   const createKeyboardHighlightStyle = _react.useCallback.call(void 0, () => {
     if (selectedIndex === void 0) return "";
-    const maxDataPoints = Math.max(...data.map((s2) => s2.data.length));
+    const maxDataPoints = Math.max(...data.map((s) => s.data.length));
     const dataPointIndex = Math.floor(selectedIndex / data.length);
     const seriesIndex = selectedIndex % data.length;
     if (dataPointIndex >= maxDataPoints || seriesIndex >= data.length) {
@@ -3736,36 +3586,36 @@ var BarChartResponsive = attachSubComponents(withResponsive(BarChartWithProvider
 
 
 var getScaleBandwidth2 = (scale) => {
-  const s2 = scale;
-  return s2 && "bandwidth" in s2 ? _nullishCoalesce(_optionalChain([s2, 'optionalAccess', _147 => _147.bandwidth, 'call', _148 => _148()]), () => ( 0)) : 0;
+  const s = scale;
+  return s && "bandwidth" in s ? _nullishCoalesce(_optionalChain([s, 'optionalAccess', _147 => _147.bandwidth, 'call', _148 => _148()]), () => ( 0)) : 0;
 };
 var DefaultLabelComponent = ({
   textProps,
-  x: x2,
-  y: y2,
+  x,
+  y,
   label,
   formatter
 }) => {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
     ...textProps,
     textAnchor: "start",
-    x: x2,
-    y: y2,
+    x,
+    y,
     children: formatter(label)
   });
 };
 var DefaultValueComponent = ({
   textProps,
-  x: x2,
-  y: y2,
+  x,
+  y,
   value,
   formatter
 }) => {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, {
     ...textProps,
     textAnchor: "end",
-    x: x2,
-    y: y2,
+    x,
+    y,
     fontWeight: 500,
     children: formatter(value)
   });
@@ -3799,18 +3649,18 @@ var AxisRenderer = ({
     const sum = data.reduce((acc, {
       data: seriesData
     }) => acc + (_nullishCoalesce(_optionalChain([seriesData, 'access', _149 => _149[index], 'optionalAccess', _150 => _150.value]), () => ( 0))), 0);
-    const y2 = from2.y + yOffset;
+    const y = from2.y + yOffset;
     return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, {
       children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, LabelComponent, {
         textProps,
         x: labelPosition,
-        y: y2,
+        y,
         label: formattedValue,
         formatter: labelFormatter
       }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ValueComponent, {
         textProps,
         x: valuePosition,
-        y: y2,
+        y,
         value: sum,
         formatter: valueFormatter,
         data,
@@ -4069,11 +3919,11 @@ var ConversionFunnelChartInternal = ({
     selectedBarRef.current = null;
     hideTooltip();
   }, [clearSelection, hideTooltip]);
-  const showTooltipAt = _react.useCallback.call(void 0, (step, x2, y2) => {
+  const showTooltipAt = _react.useCallback.call(void 0, (step, x, y) => {
     showTooltip({
       tooltipData: step,
-      tooltipLeft: x2,
-      tooltipTop: y2 - 10
+      tooltipLeft: x,
+      tooltipTop: y - 10
     });
   }, [showTooltip]);
   const getMouseTooltipCoords = _react.useCallback.call(void 0, (event) => {
@@ -4090,11 +3940,11 @@ var ConversionFunnelChartInternal = ({
       return null;
     }
     const rect = event.currentTarget.getBoundingClientRect();
-    const x2 = rect.left + rect.width / 2 - containerBounds.left;
-    const y2 = rect.top - containerBounds.top;
+    const x = rect.left + rect.width / 2 - containerBounds.left;
+    const y = rect.top - containerBounds.top;
     return {
-      x: x2,
-      y: y2
+      x,
+      y
     };
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]);
   const handleStepInteraction = _react.useCallback.call(void 0, (step, event, interactionType) => {
@@ -4297,7 +4147,7 @@ var ConversionFunnelChartInternal = ({
     }), tooltipOpen && tooltipData && (() => {
       const tooltipContent = renderTooltip ? renderTooltip({
         step: tooltipData,
-        index: steps.findIndex((s2) => s2.id === tooltipData.id),
+        index: steps.findIndex((s) => s.id === tooltipData.id),
         top: tooltipTop,
         left: tooltipLeft,
         className: conversion_funnel_chart_module_default["tooltip-wrapper"]
@@ -4423,10 +4273,10 @@ var GeoChartInternal = ({
       };
     }
     const htmlTooltipIndices = [];
-    for (let i2 = 0; i2 < data[0].length; i2++) {
-      const col = data[0][i2];
+    for (let i = 0; i < data[0].length; i++) {
+      const col = data[0][i];
       if (typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true) {
-        htmlTooltipIndices.push(i2);
+        htmlTooltipIndices.push(i);
       }
     }
     if (htmlTooltipIndices.length === 0) {
@@ -4502,11 +4352,6 @@ var GeoChartWithProvider = (props) => {
 GeoChartWithProvider.displayName = "GeoChart";
 var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/values.mjs
-function isValueDefined(value) {
-  return value !== void 0 && value !== null;
-}
-
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
   const mountedRef = _react.useRef.call(void 0, false);
@@ -4533,9 +4378,9 @@ function sheetForTag(tag) {
   if (tag.sheet) {
     return tag.sheet;
   }
-  for (var i2 = 0; i2 < document.styleSheets.length; i2++) {
-    if (document.styleSheets[i2].ownerNode === tag) {
-      return document.styleSheets[i2];
+  for (var i = 0; i < document.styleSheets.length; i++) {
+    if (document.styleSheets[i].ownerNode === tag) {
+      return document.styleSheets[i];
     }
   }
   return void 0;
@@ -4592,7 +4437,7 @@ var StyleSheet = /* @__PURE__ */ (function() {
       var sheet2 = sheetForTag(tag);
       try {
         sheet2.insertRule(rule, sheet2.cssRules.length);
-      } catch (e2) {
+      } catch (e) {
       }
     } else {
       tag.appendChild(document.createTextNode(rule));
@@ -4931,10 +4776,10 @@ function ruleset(value, root, parent, index, offset, rules, points, type, props,
   var post = offset - 1;
   var rule = offset === 0 ? rules : [""];
   var size = sizeof(rule);
-  for (var i2 = 0, j2 = 0, k2 = 0; i2 < index; ++i2)
-    for (var x2 = 0, y2 = substr(value, post + 1, post = abs(j2 = points[i2])), z = value; x2 < size; ++x2)
-      if (z = trim(j2 > 0 ? rule[x2] + " " + y2 : replace2(y2, /&\f/g, rule[x2])))
-        props[k2++] = z;
+  for (var i = 0, j = 0, k = 0; i < index; ++i)
+    for (var x = 0, y = substr(value, post + 1, post = abs(j = points[i])), z = value; x < size; ++x)
+      if (z = trim(j > 0 ? rule[x] + " " + y : replace2(y, /&\f/g, rule[x])))
+        props[k++] = z;
   return node(value, root, parent, offset === 0 ? RULESET : type, props, children, length2);
 }
 function comment(value, root, parent) {
@@ -4948,8 +4793,8 @@ function declaration(value, root, parent, length2) {
 function serialize(children, callback) {
   var output = "";
   var length2 = sizeof(children);
-  for (var i2 = 0; i2 < length2; i2++)
-    output += callback(children[i2], i2, children, callback) || "";
+  for (var i = 0; i < length2; i++)
+    output += callback(children[i], i, children, callback) || "";
   return output;
 }
 function stringify(element, index, children, callback) {
@@ -4974,8 +4819,8 @@ function middleware(collection) {
   var length2 = sizeof(collection);
   return function(element, index, children, callback) {
     var output = "";
-    for (var i2 = 0; i2 < length2; i2++)
-      output += collection[i2](element, index, children, callback) || "";
+    for (var i = 0; i < length2; i++)
+      output += collection[i](element, index, children, callback) || "";
     return output;
   };
 }
@@ -5082,9 +4927,9 @@ var compat = function compat2(element) {
   var points = [];
   var rules = getRules(value, points);
   var parentRules = parent.props;
-  for (var i2 = 0, k2 = 0; i2 < rules.length; i2++) {
-    for (var j2 = 0; j2 < parentRules.length; j2++, k2++) {
-      element.props[k2] = points[i2] ? rules[i2].replace(/&\f/g, parentRules[j2]) : parentRules[j2] + " " + rules[i2];
+  for (var i = 0, k = 0; i < rules.length; i++) {
+    for (var j = 0; j < parentRules.length; j++, k++) {
+      element.props[k] = points[i] ? rules[i].replace(/&\f/g, parentRules[j]) : parentRules[j] + " " + rules[i];
     }
   }
 };
@@ -5308,8 +5153,8 @@ var createCache = function createCache2(options) {
       document.querySelectorAll('style[data-emotion^="' + key + ' "]'),
       function(node2) {
         var attrib = node2.getAttribute("data-emotion").split(" ");
-        for (var i2 = 1; i2 < attrib.length; i2++) {
-          inserted[attrib[i2]] = true;
+        for (var i = 1; i < attrib.length; i++) {
+          inserted[attrib[i]] = true;
         }
         nodesToHydrate.push(node2);
       }
@@ -5437,32 +5282,32 @@ var insertStyles = function insertStyles2(cache2, serialized, isStringTag) {
 
 // ../../../node_modules/.pnpm/@emotion+hash@0.9.2/node_modules/@emotion/hash/dist/emotion-hash.esm.js
 function murmur2(str) {
-  var h2 = 0;
-  var k2, i2 = 0, len = str.length;
-  for (; len >= 4; ++i2, len -= 4) {
-    k2 = str.charCodeAt(i2) & 255 | (str.charCodeAt(++i2) & 255) << 8 | (str.charCodeAt(++i2) & 255) << 16 | (str.charCodeAt(++i2) & 255) << 24;
-    k2 = /* Math.imul(k, m): */
-    (k2 & 65535) * 1540483477 + ((k2 >>> 16) * 59797 << 16);
-    k2 ^= /* k >>> r: */
-    k2 >>> 24;
-    h2 = /* Math.imul(k, m): */
-    (k2 & 65535) * 1540483477 + ((k2 >>> 16) * 59797 << 16) ^ /* Math.imul(h, m): */
-    (h2 & 65535) * 1540483477 + ((h2 >>> 16) * 59797 << 16);
+  var h = 0;
+  var k, i = 0, len = str.length;
+  for (; len >= 4; ++i, len -= 4) {
+    k = str.charCodeAt(i) & 255 | (str.charCodeAt(++i) & 255) << 8 | (str.charCodeAt(++i) & 255) << 16 | (str.charCodeAt(++i) & 255) << 24;
+    k = /* Math.imul(k, m): */
+    (k & 65535) * 1540483477 + ((k >>> 16) * 59797 << 16);
+    k ^= /* k >>> r: */
+    k >>> 24;
+    h = /* Math.imul(k, m): */
+    (k & 65535) * 1540483477 + ((k >>> 16) * 59797 << 16) ^ /* Math.imul(h, m): */
+    (h & 65535) * 1540483477 + ((h >>> 16) * 59797 << 16);
   }
   switch (len) {
     case 3:
-      h2 ^= (str.charCodeAt(i2 + 2) & 255) << 16;
+      h ^= (str.charCodeAt(i + 2) & 255) << 16;
     case 2:
-      h2 ^= (str.charCodeAt(i2 + 1) & 255) << 8;
+      h ^= (str.charCodeAt(i + 1) & 255) << 8;
     case 1:
-      h2 ^= str.charCodeAt(i2) & 255;
-      h2 = /* Math.imul(h, m): */
-      (h2 & 65535) * 1540483477 + ((h2 >>> 16) * 59797 << 16);
+      h ^= str.charCodeAt(i) & 255;
+      h = /* Math.imul(h, m): */
+      (h & 65535) * 1540483477 + ((h >>> 16) * 59797 << 16);
   }
-  h2 ^= h2 >>> 13;
-  h2 = /* Math.imul(h, m): */
-  (h2 & 65535) * 1540483477 + ((h2 >>> 16) * 59797 << 16);
-  return ((h2 ^ h2 >>> 15) >>> 0).toString(36);
+  h ^= h >>> 13;
+  h = /* Math.imul(h, m): */
+  (h & 65535) * 1540483477 + ((h >>> 16) * 59797 << 16);
+  return ((h ^ h >>> 15) >>> 0).toString(36);
 }
 
 // ../../../node_modules/.pnpm/@emotion+unitless@0.10.0/node_modules/@emotion/unitless/dist/emotion-unitless.esm.js
@@ -5612,8 +5457,8 @@ function handleInterpolation(mergedProps, registered, interpolation) {
 function createStringFromObject(mergedProps, registered, obj) {
   var string = "";
   if (Array.isArray(obj)) {
-    for (var i2 = 0; i2 < obj.length; i2++) {
-      string += handleInterpolation(mergedProps, registered, obj[i2]) + ";";
+    for (var i = 0; i < obj.length; i++) {
+      string += handleInterpolation(mergedProps, registered, obj[i]) + ";";
     }
   } else {
     for (var key in obj) {
@@ -5670,11 +5515,11 @@ function serializeStyles(args, registered, mergedProps) {
     var asTemplateStringsArr = strings;
     styles += asTemplateStringsArr[0];
   }
-  for (var i2 = 1; i2 < args.length; i2++) {
-    styles += handleInterpolation(mergedProps, registered, args[i2]);
+  for (var i = 1; i < args.length; i++) {
+    styles += handleInterpolation(mergedProps, registered, args[i]);
     if (stringMode) {
       var templateStringsArr = strings;
-      styles += templateStringsArr[i2];
+      styles += templateStringsArr[i];
     }
   }
   labelPattern.lastIndex = 0;
@@ -5754,23 +5599,23 @@ var createEmotionProps = function createEmotionProps2(type, props) {
   newProps[typePropName] = type;
   return newProps;
 };
-var Insertion = function Insertion2(_ref2) {
-  var cache2 = _ref2.cache, serialized = _ref2.serialized, isStringTag = _ref2.isStringTag;
+var Insertion = function Insertion2(_ref) {
+  var cache2 = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
   registerStyles(cache2, serialized, isStringTag);
   var rules = useInsertionEffectAlwaysWithSyncFallback(function() {
     return insertStyles(cache2, serialized, isStringTag);
   });
   if (!isBrowser4 && rules !== void 0) {
-    var _ref22;
+    var _ref2;
     var serializedNames = serialized.name;
     var next2 = serialized.next;
     while (next2 !== void 0) {
       serializedNames += " " + next2.name;
       next2 = next2.next;
     }
-    return /* @__PURE__ */ React6.createElement("style", (_ref22 = {}, _ref22["data-emotion"] = cache2.key + " " + serializedNames, _ref22.dangerouslySetInnerHTML = {
+    return /* @__PURE__ */ React6.createElement("style", (_ref2 = {}, _ref2["data-emotion"] = cache2.key + " " + serializedNames, _ref2.dangerouslySetInnerHTML = {
       __html: rules
-    }, _ref22.nonce = cache2.sheet.nonce, _ref22));
+    }, _ref2.nonce = cache2.sheet.nonce, _ref2));
   }
   return null;
 };
@@ -5810,7 +5655,7 @@ var Emotion$1 = Emotion;
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-react.esm.js
 
 require('@babel/runtime/helpers/extends');
-var import_hoist_non_react_statics = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_hoist_non_react_statics_cjs());
+var import_hoist_non_react_statics = _chunkDZUJEN5Ncjs.__toESM.call(void 0, require_hoist_non_react_statics_cjs());
 var jsx = function jsx2(type, props) {
   var args = arguments;
   if (props == null || !hasOwn.call(props, "css")) {
@@ -5820,15 +5665,15 @@ var jsx = function jsx2(type, props) {
   var createElementArgArray = new Array(argsLength);
   createElementArgArray[0] = Emotion$1;
   createElementArgArray[1] = createEmotionProps(type, props);
-  for (var i2 = 2; i2 < argsLength; i2++) {
-    createElementArgArray[i2] = args[i2];
+  for (var i = 2; i < argsLength; i++) {
+    createElementArgArray[i] = args[i];
   }
   return React7.createElement.apply(null, createElementArgArray);
 };
-(function(_jsx31) {
+(function(_jsx30) {
   var JSX;
   /* @__PURE__ */ (function(_JSX) {
-  })(JSX || (JSX = _jsx31.JSX || (_jsx31.JSX = {})));
+  })(JSX || (JSX = _jsx30.JSX || (_jsx30.JSX = {})));
 })(jsx || (jsx = {}));
 function css() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -5913,8 +5758,8 @@ var createEmotion = function createEmotion2(options) {
 };
 var classnames = function classnames2(args) {
   var cls = "";
-  for (var i2 = 0; i2 < args.length; i2++) {
-    var arg = args[i2];
+  for (var i = 0; i < args.length; i++) {
+    var arg = args[i];
     if (arg == null) continue;
     var toAdd = void 0;
     switch (typeof arg) {
@@ -5925,10 +5770,10 @@ var classnames = function classnames2(args) {
           toAdd = classnames2(arg);
         } else {
           toAdd = "";
-          for (var k2 in arg) {
-            if (arg[k2] && k2) {
+          for (var k in arg) {
+            if (arg[k] && k) {
               toAdd && (toAdd += " ");
-              toAdd += k2;
+              toAdd += k;
             }
           }
         }
@@ -5962,7 +5807,7 @@ var sheet = _createEmotion.sheet;
 var cache = _createEmotion.cache;
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
-var isSerializedStyles = (o2) => typeof o2 !== "undefined" && o2 !== null && ["name", "styles"].every((p2) => typeof o2[p2] !== "undefined");
+var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
   const cx2 = _react.useCallback.call(void 0, (...classNames) => {
@@ -5987,14 +5832,14 @@ function memize(fn, options) {
   var tail;
   options = options || {};
   function memoized() {
-    var node2 = head, len = arguments.length, args, i2;
+    var node2 = head, len = arguments.length, args, i;
     searchCache: while (node2) {
       if (node2.args.length !== arguments.length) {
         node2 = node2.next;
         continue;
       }
-      for (i2 = 0; i2 < len; i2++) {
-        if (node2.args[i2] !== arguments[i2]) {
+      for (i = 0; i < len; i++) {
+        if (node2.args[i] !== arguments[i]) {
           node2 = node2.next;
           continue searchCache;
         }
@@ -6015,8 +5860,8 @@ function memize(fn, options) {
       return node2.val;
     }
     args = new Array(len);
-    for (i2 = 0; i2 < len; i2++) {
-      args[i2] = arguments[i2];
+    for (i = 0; i < len; i++) {
+      args[i] = arguments[i];
     }
     node2 = {
       args,
@@ -6046,249 +5891,6 @@ function memize(fn, options) {
     size = 0;
   };
   return memoized;
-}
-
-// ../../../node_modules/.pnpm/colord@2.9.3/node_modules/colord/index.mjs
-var r = { grad: 0.9, turn: 360, rad: 360 / (2 * Math.PI) };
-var t = function(r2) {
-  return "string" == typeof r2 ? r2.length > 0 : "number" == typeof r2;
-};
-var n = function(r2, t2, n2) {
-  return void 0 === t2 && (t2 = 0), void 0 === n2 && (n2 = Math.pow(10, t2)), Math.round(n2 * r2) / n2 + 0;
-};
-var e = function(r2, t2, n2) {
-  return void 0 === t2 && (t2 = 0), void 0 === n2 && (n2 = 1), r2 > n2 ? n2 : r2 > t2 ? r2 : t2;
-};
-var u = function(r2) {
-  return (r2 = isFinite(r2) ? r2 % 360 : 0) > 0 ? r2 : r2 + 360;
-};
-var a = function(r2) {
-  return { r: e(r2.r, 0, 255), g: e(r2.g, 0, 255), b: e(r2.b, 0, 255), a: e(r2.a) };
-};
-var o = function(r2) {
-  return { r: n(r2.r), g: n(r2.g), b: n(r2.b), a: n(r2.a, 3) };
-};
-var i = /^#([0-9a-f]{3,8})$/i;
-var s = function(r2) {
-  var t2 = r2.toString(16);
-  return t2.length < 2 ? "0" + t2 : t2;
-};
-var h = function(r2) {
-  var t2 = r2.r, n2 = r2.g, e2 = r2.b, u2 = r2.a, a2 = Math.max(t2, n2, e2), o2 = a2 - Math.min(t2, n2, e2), i2 = o2 ? a2 === t2 ? (n2 - e2) / o2 : a2 === n2 ? 2 + (e2 - t2) / o2 : 4 + (t2 - n2) / o2 : 0;
-  return { h: 60 * (i2 < 0 ? i2 + 6 : i2), s: a2 ? o2 / a2 * 100 : 0, v: a2 / 255 * 100, a: u2 };
-};
-var b = function(r2) {
-  var t2 = r2.h, n2 = r2.s, e2 = r2.v, u2 = r2.a;
-  t2 = t2 / 360 * 6, n2 /= 100, e2 /= 100;
-  var a2 = Math.floor(t2), o2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - a2) * n2), s2 = e2 * (1 - (1 - t2 + a2) * n2), h2 = a2 % 6;
-  return { r: 255 * [e2, i2, o2, o2, s2, e2][h2], g: 255 * [s2, e2, e2, i2, o2, o2][h2], b: 255 * [o2, o2, s2, e2, e2, i2][h2], a: u2 };
-};
-var g = function(r2) {
-  return { h: u(r2.h), s: e(r2.s, 0, 100), l: e(r2.l, 0, 100), a: e(r2.a) };
-};
-var d = function(r2) {
-  return { h: n(r2.h), s: n(r2.s), l: n(r2.l), a: n(r2.a, 3) };
-};
-var f = function(r2) {
-  return b((n2 = (t2 = r2).s, { h: t2.h, s: (n2 *= ((e2 = t2.l) < 50 ? e2 : 100 - e2) / 100) > 0 ? 2 * n2 / (e2 + n2) * 100 : 0, v: e2 + n2, a: t2.a }));
-  var t2, n2, e2;
-};
-var c = function(r2) {
-  return { h: (t2 = h(r2)).h, s: (u2 = (200 - (n2 = t2.s)) * (e2 = t2.v) / 100) > 0 && u2 < 200 ? n2 * e2 / 100 / (u2 <= 100 ? u2 : 200 - u2) * 100 : 0, l: u2 / 2, a: t2.a };
-  var t2, n2, e2, u2;
-};
-var l = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s*,\s*([+-]?\d*\.?\d+)%\s*,\s*([+-]?\d*\.?\d+)%\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
-var p = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s+([+-]?\d*\.?\d+)%\s+([+-]?\d*\.?\d+)%\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
-var v = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
-var m = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
-var y = { string: [[function(r2) {
-  var t2 = i.exec(r2);
-  return t2 ? (r2 = t2[1]).length <= 4 ? { r: parseInt(r2[0] + r2[0], 16), g: parseInt(r2[1] + r2[1], 16), b: parseInt(r2[2] + r2[2], 16), a: 4 === r2.length ? n(parseInt(r2[3] + r2[3], 16) / 255, 2) : 1 } : 6 === r2.length || 8 === r2.length ? { r: parseInt(r2.substr(0, 2), 16), g: parseInt(r2.substr(2, 2), 16), b: parseInt(r2.substr(4, 2), 16), a: 8 === r2.length ? n(parseInt(r2.substr(6, 2), 16) / 255, 2) : 1 } : null : null;
-}, "hex"], [function(r2) {
-  var t2 = v.exec(r2) || m.exec(r2);
-  return t2 ? t2[2] !== t2[4] || t2[4] !== t2[6] ? null : a({ r: Number(t2[1]) / (t2[2] ? 100 / 255 : 1), g: Number(t2[3]) / (t2[4] ? 100 / 255 : 1), b: Number(t2[5]) / (t2[6] ? 100 / 255 : 1), a: void 0 === t2[7] ? 1 : Number(t2[7]) / (t2[8] ? 100 : 1) }) : null;
-}, "rgb"], [function(t2) {
-  var n2 = l.exec(t2) || p.exec(t2);
-  if (!n2) return null;
-  var e2, u2, a2 = g({ h: (e2 = n2[1], u2 = n2[2], void 0 === u2 && (u2 = "deg"), Number(e2) * (r[u2] || 1)), s: Number(n2[3]), l: Number(n2[4]), a: void 0 === n2[5] ? 1 : Number(n2[5]) / (n2[6] ? 100 : 1) });
-  return f(a2);
-}, "hsl"]], object: [[function(r2) {
-  var n2 = r2.r, e2 = r2.g, u2 = r2.b, o2 = r2.a, i2 = void 0 === o2 ? 1 : o2;
-  return t(n2) && t(e2) && t(u2) ? a({ r: Number(n2), g: Number(e2), b: Number(u2), a: Number(i2) }) : null;
-}, "rgb"], [function(r2) {
-  var n2 = r2.h, e2 = r2.s, u2 = r2.l, a2 = r2.a, o2 = void 0 === a2 ? 1 : a2;
-  if (!t(n2) || !t(e2) || !t(u2)) return null;
-  var i2 = g({ h: Number(n2), s: Number(e2), l: Number(u2), a: Number(o2) });
-  return f(i2);
-}, "hsl"], [function(r2) {
-  var n2 = r2.h, a2 = r2.s, o2 = r2.v, i2 = r2.a, s2 = void 0 === i2 ? 1 : i2;
-  if (!t(n2) || !t(a2) || !t(o2)) return null;
-  var h2 = (function(r3) {
-    return { h: u(r3.h), s: e(r3.s, 0, 100), v: e(r3.v, 0, 100), a: e(r3.a) };
-  })({ h: Number(n2), s: Number(a2), v: Number(o2), a: Number(s2) });
-  return b(h2);
-}, "hsv"]] };
-var N = function(r2, t2) {
-  for (var n2 = 0; n2 < t2.length; n2++) {
-    var e2 = t2[n2][0](r2);
-    if (e2) return [e2, t2[n2][1]];
-  }
-  return [null, void 0];
-};
-var x = function(r2) {
-  return "string" == typeof r2 ? N(r2.trim(), y.string) : "object" == typeof r2 && null !== r2 ? N(r2, y.object) : [null, void 0];
-};
-var M = function(r2, t2) {
-  var n2 = c(r2);
-  return { h: n2.h, s: e(n2.s + 100 * t2, 0, 100), l: n2.l, a: n2.a };
-};
-var H = function(r2) {
-  return (299 * r2.r + 587 * r2.g + 114 * r2.b) / 1e3 / 255;
-};
-var $ = function(r2, t2) {
-  var n2 = c(r2);
-  return { h: n2.h, s: n2.s, l: e(n2.l + 100 * t2, 0, 100), a: n2.a };
-};
-var j = (function() {
-  function r2(r3) {
-    this.parsed = x(r3)[0], this.rgba = this.parsed || { r: 0, g: 0, b: 0, a: 1 };
-  }
-  return r2.prototype.isValid = function() {
-    return null !== this.parsed;
-  }, r2.prototype.brightness = function() {
-    return n(H(this.rgba), 2);
-  }, r2.prototype.isDark = function() {
-    return H(this.rgba) < 0.5;
-  }, r2.prototype.isLight = function() {
-    return H(this.rgba) >= 0.5;
-  }, r2.prototype.toHex = function() {
-    return r3 = o(this.rgba), t2 = r3.r, e2 = r3.g, u2 = r3.b, i2 = (a2 = r3.a) < 1 ? s(n(255 * a2)) : "", "#" + s(t2) + s(e2) + s(u2) + i2;
-    var r3, t2, e2, u2, a2, i2;
-  }, r2.prototype.toRgb = function() {
-    return o(this.rgba);
-  }, r2.prototype.toRgbString = function() {
-    return r3 = o(this.rgba), t2 = r3.r, n2 = r3.g, e2 = r3.b, (u2 = r3.a) < 1 ? "rgba(" + t2 + ", " + n2 + ", " + e2 + ", " + u2 + ")" : "rgb(" + t2 + ", " + n2 + ", " + e2 + ")";
-    var r3, t2, n2, e2, u2;
-  }, r2.prototype.toHsl = function() {
-    return d(c(this.rgba));
-  }, r2.prototype.toHslString = function() {
-    return r3 = d(c(this.rgba)), t2 = r3.h, n2 = r3.s, e2 = r3.l, (u2 = r3.a) < 1 ? "hsla(" + t2 + ", " + n2 + "%, " + e2 + "%, " + u2 + ")" : "hsl(" + t2 + ", " + n2 + "%, " + e2 + "%)";
-    var r3, t2, n2, e2, u2;
-  }, r2.prototype.toHsv = function() {
-    return r3 = h(this.rgba), { h: n(r3.h), s: n(r3.s), v: n(r3.v), a: n(r3.a, 3) };
-    var r3;
-  }, r2.prototype.invert = function() {
-    return w({ r: 255 - (r3 = this.rgba).r, g: 255 - r3.g, b: 255 - r3.b, a: r3.a });
-    var r3;
-  }, r2.prototype.saturate = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w(M(this.rgba, r3));
-  }, r2.prototype.desaturate = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w(M(this.rgba, -r3));
-  }, r2.prototype.grayscale = function() {
-    return w(M(this.rgba, -1));
-  }, r2.prototype.lighten = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w($(this.rgba, r3));
-  }, r2.prototype.darken = function(r3) {
-    return void 0 === r3 && (r3 = 0.1), w($(this.rgba, -r3));
-  }, r2.prototype.rotate = function(r3) {
-    return void 0 === r3 && (r3 = 15), this.hue(this.hue() + r3);
-  }, r2.prototype.alpha = function(r3) {
-    return "number" == typeof r3 ? w({ r: (t2 = this.rgba).r, g: t2.g, b: t2.b, a: r3 }) : n(this.rgba.a, 3);
-    var t2;
-  }, r2.prototype.hue = function(r3) {
-    var t2 = c(this.rgba);
-    return "number" == typeof r3 ? w({ h: r3, s: t2.s, l: t2.l, a: t2.a }) : n(t2.h);
-  }, r2.prototype.isEqual = function(r3) {
-    return this.toHex() === w(r3).toHex();
-  }, r2;
-})();
-var w = function(r2) {
-  return r2 instanceof j ? r2 : new j(r2);
-};
-var S = [];
-var k = function(r2) {
-  r2.forEach(function(r3) {
-    S.indexOf(r3) < 0 && (r3(j, y), S.push(r3));
-  });
-};
-
-// ../../../node_modules/.pnpm/colord@2.9.3/node_modules/colord/plugins/names.mjs
-function names_default(e2, f2) {
-  var a2 = { white: "#ffffff", bisque: "#ffe4c4", blue: "#0000ff", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", antiquewhite: "#faebd7", aqua: "#00ffff", azure: "#f0ffff", whitesmoke: "#f5f5f5", papayawhip: "#ffefd5", plum: "#dda0dd", blanchedalmond: "#ffebcd", black: "#000000", gold: "#ffd700", goldenrod: "#daa520", gainsboro: "#dcdcdc", cornsilk: "#fff8dc", cornflowerblue: "#6495ed", burlywood: "#deb887", aquamarine: "#7fffd4", beige: "#f5f5dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkkhaki: "#bdb76b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", peachpuff: "#ffdab9", darkmagenta: "#8b008b", darkred: "#8b0000", darkorchid: "#9932cc", darkorange: "#ff8c00", darkslateblue: "#483d8b", gray: "#808080", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", deeppink: "#ff1493", deepskyblue: "#00bfff", wheat: "#f5deb3", firebrick: "#b22222", floralwhite: "#fffaf0", ghostwhite: "#f8f8ff", darkviolet: "#9400d3", magenta: "#ff00ff", green: "#008000", dodgerblue: "#1e90ff", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", blueviolet: "#8a2be2", forestgreen: "#228b22", lawngreen: "#7cfc00", indianred: "#cd5c5c", indigo: "#4b0082", fuchsia: "#ff00ff", brown: "#a52a2a", maroon: "#800000", mediumblue: "#0000cd", lightcoral: "#f08080", darkturquoise: "#00ced1", lightcyan: "#e0ffff", ivory: "#fffff0", lightyellow: "#ffffe0", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", linen: "#faf0e6", mediumaquamarine: "#66cdaa", lemonchiffon: "#fffacd", lime: "#00ff00", khaki: "#f0e68c", mediumseagreen: "#3cb371", limegreen: "#32cd32", mediumspringgreen: "#00fa9a", lightskyblue: "#87cefa", lightblue: "#add8e6", midnightblue: "#191970", lightpink: "#ffb6c1", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", mintcream: "#f5fffa", lightslategray: "#778899", lightslategrey: "#778899", navajowhite: "#ffdead", navy: "#000080", mediumvioletred: "#c71585", powderblue: "#b0e0e6", palegoldenrod: "#eee8aa", oldlace: "#fdf5e6", paleturquoise: "#afeeee", mediumturquoise: "#48d1cc", mediumorchid: "#ba55d3", rebeccapurple: "#663399", lightsteelblue: "#b0c4de", mediumslateblue: "#7b68ee", thistle: "#d8bfd8", tan: "#d2b48c", orchid: "#da70d6", mediumpurple: "#9370db", purple: "#800080", pink: "#ffc0cb", skyblue: "#87ceeb", springgreen: "#00ff7f", palegreen: "#98fb98", red: "#ff0000", yellow: "#ffff00", slateblue: "#6a5acd", lavenderblush: "#fff0f5", peru: "#cd853f", palevioletred: "#db7093", violet: "#ee82ee", teal: "#008080", slategray: "#708090", slategrey: "#708090", aliceblue: "#f0f8ff", darkseagreen: "#8fbc8f", darkolivegreen: "#556b2f", greenyellow: "#adff2f", seagreen: "#2e8b57", seashell: "#fff5ee", tomato: "#ff6347", silver: "#c0c0c0", sienna: "#a0522d", lavender: "#e6e6fa", lightgreen: "#90ee90", orange: "#ffa500", orangered: "#ff4500", steelblue: "#4682b4", royalblue: "#4169e1", turquoise: "#40e0d0", yellowgreen: "#9acd32", salmon: "#fa8072", saddlebrown: "#8b4513", sandybrown: "#f4a460", rosybrown: "#bc8f8f", darksalmon: "#e9967a", lightgoldenrodyellow: "#fafad2", snow: "#fffafa", lightgrey: "#d3d3d3", lightgray: "#d3d3d3", dimgray: "#696969", dimgrey: "#696969", olivedrab: "#6b8e23", olive: "#808000" }, r2 = {};
-  for (var d2 in a2) r2[a2[d2]] = d2;
-  var l2 = {};
-  e2.prototype.toName = function(f3) {
-    if (!(this.rgba.a || this.rgba.r || this.rgba.g || this.rgba.b)) return "transparent";
-    var d3, i2, n2 = r2[this.toHex()];
-    if (n2) return n2;
-    if (null == f3 ? void 0 : f3.closest) {
-      var o2 = this.toRgb(), t2 = 1 / 0, b2 = "black";
-      if (!l2.length) for (var c2 in a2) l2[c2] = new e2(a2[c2]).toRgb();
-      for (var g2 in a2) {
-        var u2 = (d3 = o2, i2 = l2[g2], Math.pow(d3.r - i2.r, 2) + Math.pow(d3.g - i2.g, 2) + Math.pow(d3.b - i2.b, 2));
-        u2 < t2 && (t2 = u2, b2 = g2);
-      }
-      return b2;
-    }
-  };
-  f2.string.push([function(f3) {
-    var r3 = f3.toLowerCase(), d3 = "transparent" === r3 ? "#0000" : a2[r3];
-    return d3 ? new e2(d3).toRgb() : null;
-  }, "name"]);
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors.mjs
-var colorComputationNode;
-k([names_default]);
-function getColorComputationNode() {
-  if (typeof document === "undefined") {
-    return;
-  }
-  if (!colorComputationNode) {
-    const el = document.createElement("div");
-    el.setAttribute("data-g2-color-computation-node", "");
-    document.body.appendChild(el);
-    colorComputationNode = el;
-  }
-  return colorComputationNode;
-}
-function isColor(value) {
-  if (typeof value !== "string") {
-    return false;
-  }
-  const test = w(value);
-  return test.isValid();
-}
-function _getComputedBackgroundColor(backgroundColor) {
-  if (typeof backgroundColor !== "string") {
-    return "";
-  }
-  if (isColor(backgroundColor)) {
-    return backgroundColor;
-  }
-  if (!backgroundColor.includes("var(")) {
-    return "";
-  }
-  if (typeof document === "undefined") {
-    return "";
-  }
-  const el = getColorComputationNode();
-  if (!el) {
-    return "";
-  }
-  el.style.background = backgroundColor;
-  const computedColor = _optionalChain([window, 'optionalAccess', _166 => _166.getComputedStyle, 'call', _167 => _167(el), 'access', _168 => _168.background]);
-  el.style.background = "";
-  return computedColor || "";
-}
-var getComputedBackgroundColor = memize(_getComputedBackgroundColor);
-function getOptimalTextColor(backgroundColor) {
-  const background = getComputedBackgroundColor(backgroundColor);
-  return w(background).isLight() ? "#000000" : "#ffffff";
-}
-function getOptimalTextShade(backgroundColor) {
-  const result = getOptimalTextColor(backgroundColor);
-  return result === "#000000" ? "dark" : "light";
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
@@ -6441,7 +6043,7 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 });
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-var import_es6 = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_es6(), 1);
+var import_es6 = _chunkDZUJEN5Ncjs.__toESM.call(void 0, require_es6(), 1);
 
 
 // ../../../node_modules/.pnpm/@wordpress+warning@3.43.0/node_modules/@wordpress/warning/build-module/utils.mjs
@@ -6461,7 +6063,7 @@ function warning(message) {
   console.warn(message);
   try {
     throw Error(message);
-  } catch (x2) {
+  } catch (x) {
   }
   logged.add(message);
 }
@@ -6528,7 +6130,7 @@ function contextConnect(Component2, namespace) {
   });
 }
 function _contextConnect(Component2, namespace, options) {
-  const WrappedComponent = _optionalChain([options, 'optionalAccess', _169 => _169.forwardsRef]) ? _react.forwardRef.call(void 0, Component2) : Component2;
+  const WrappedComponent = _optionalChain([options, 'optionalAccess', _166 => _166.forwardsRef]) ? _react.forwardRef.call(void 0, Component2) : Component2;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -6544,31 +6146,6 @@ function _contextConnect(Component2, namespace, options) {
     displayName: namespace,
     selector: `.${getStyledClassNameFromKey(namespace)}`
   });
-}
-function getConnectNamespace(Component2) {
-  if (!Component2) {
-    return [];
-  }
-  let namespaces = [];
-  if (Component2[CONNECT_STATIC_NAMESPACE]) {
-    namespaces = Component2[CONNECT_STATIC_NAMESPACE];
-  }
-  if (Component2.type && Component2.type[CONNECT_STATIC_NAMESPACE]) {
-    namespaces = Component2.type[CONNECT_STATIC_NAMESPACE];
-  }
-  return namespaces;
-}
-function hasConnectNamespace(Component2, match2) {
-  if (!Component2) {
-    return false;
-  }
-  if (typeof match2 === "string") {
-    return getConnectNamespace(Component2).includes(match2);
-  }
-  if (Array.isArray(match2)) {
-    return match2.some((result) => getConnectNamespace(Component2).includes(result));
-  }
-  return false;
 }
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
@@ -6589,7 +6166,7 @@ function useContextSystem(props, namespace) {
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("useContextSystem: Please provide a namespace") : void 0;
   }
-  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _170 => _170[namespace]]) || {};
+  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _167 => _167[namespace]]) || {};
   const finalComponentProps = {
     ...getConnectedNamespace(),
     ...getNamespace(namespace)
@@ -6654,23 +6231,23 @@ var composeShouldForwardProps = function composeShouldForwardProps2(tag, options
   }
   return shouldForwardProp;
 };
-var Insertion3 = function Insertion4(_ref2) {
-  var cache2 = _ref2.cache, serialized = _ref2.serialized, isStringTag = _ref2.isStringTag;
+var Insertion3 = function Insertion4(_ref) {
+  var cache2 = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
   registerStyles(cache2, serialized, isStringTag);
   var rules = useInsertionEffectAlwaysWithSyncFallback(function() {
     return insertStyles(cache2, serialized, isStringTag);
   });
   if (!isBrowser5 && rules !== void 0) {
-    var _ref22;
+    var _ref2;
     var serializedNames = serialized.name;
     var next2 = serialized.next;
     while (next2 !== void 0) {
       serializedNames += " " + next2.name;
       next2 = next2.next;
     }
-    return /* @__PURE__ */ React8.createElement("style", (_ref22 = {}, _ref22["data-emotion"] = cache2.key + " " + serializedNames, _ref22.dangerouslySetInnerHTML = {
+    return /* @__PURE__ */ React8.createElement("style", (_ref2 = {}, _ref2["data-emotion"] = cache2.key + " " + serializedNames, _ref2.dangerouslySetInnerHTML = {
       __html: rules
-    }, _ref22.nonce = cache2.sheet.nonce, _ref22));
+    }, _ref2.nonce = cache2.sheet.nonce, _ref2));
   }
   return null;
 };
@@ -6698,9 +6275,9 @@ var createStyled = function createStyled2(tag, options) {
       var templateStringsArr = args[0];
       styles.push(templateStringsArr[0]);
       var len = args.length;
-      var i2 = 1;
-      for (; i2 < len; i2++) {
-        styles.push(args[i2], templateStringsArr[i2]);
+      var i = 1;
+      for (; i < len; i++) {
+        styles.push(args[i], templateStringsArr[i]);
       }
     }
     var Styled = withEmotionCache(function(props, cache2, ref) {
@@ -6833,428 +6410,6 @@ function useResponsiveValue(values, options = {}) {
   return array[index >= array.length ? array.length - 1 : index];
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/space.mjs
-var GRID_BASE = "4px";
-function space(value) {
-  if (typeof value === "undefined") {
-    return void 0;
-  }
-  if (!value) {
-    return "0";
-  }
-  const asInt = typeof value === "number" ? value : Number(value);
-  if (typeof window !== "undefined" && _optionalChain([window, 'access', _171 => _171.CSS, 'optionalAccess', _172 => _172.supports, 'optionalCall', _173 => _173("margin", value.toString())]) || Number.isNaN(asInt)) {
-    return value.toString();
-  }
-  return `calc(${GRID_BASE} * ${value})`;
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/truncate/styles.mjs
-function _EMOTION_STRINGIFIED_CSS_ERROR__() {
-  return "You have tried to stringify object returned from `css` function. It isn't supposed to be used directly (e.g. as value of the `className` prop), but rather handed to emotion so it can handle it (e.g. as value of `css` prop).";
-}
-var Truncate = process.env.NODE_ENV === "production" ? {
-  name: "hdknak",
-  styles: "display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-} : {
-  name: "abxxyf-Truncate",
-  styles: "display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;label:Truncate;/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFLMkIiLCJmaWxlIjoic3R5bGVzLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG5leHBvcnQgY29uc3QgVHJ1bmNhdGUgPSBjc3NgXG5cdGRpc3BsYXk6IGJsb2NrO1xuXHRvdmVyZmxvdzogaGlkZGVuO1xuXHR0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcblx0d2hpdGUtc3BhY2U6IG5vd3JhcDtcbmA7XG4iXX0= */",
-  toString: _EMOTION_STRINGIFIED_CSS_ERROR__
-};
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/truncate/utils.mjs
-var TRUNCATE_ELLIPSIS = "\u2026";
-var TRUNCATE_TYPE = {
-  auto: "auto",
-  head: "head",
-  middle: "middle",
-  tail: "tail",
-  none: "none"
-};
-var TRUNCATE_DEFAULT_PROPS = {
-  ellipsis: TRUNCATE_ELLIPSIS,
-  ellipsizeMode: TRUNCATE_TYPE.auto,
-  limit: 0,
-  numberOfLines: 0
-};
-function truncateMiddle(word, headLength, tailLength, ellipsis) {
-  if (typeof word !== "string") {
-    return "";
-  }
-  const wordLength = word.length;
-  const frontLength = ~~headLength;
-  const backLength = ~~tailLength;
-  const truncateStr = isValueDefined(ellipsis) ? ellipsis : TRUNCATE_ELLIPSIS;
-  if (frontLength === 0 && backLength === 0 || frontLength >= wordLength || backLength >= wordLength || frontLength + backLength >= wordLength) {
-    return word;
-  } else if (backLength === 0) {
-    return word.slice(0, frontLength) + truncateStr;
-  }
-  return word.slice(0, frontLength) + truncateStr + word.slice(wordLength - backLength);
-}
-function truncateContent(words = "", props) {
-  const mergedProps = {
-    ...TRUNCATE_DEFAULT_PROPS,
-    ...props
-  };
-  const {
-    ellipsis,
-    ellipsizeMode,
-    limit
-  } = mergedProps;
-  if (ellipsizeMode === TRUNCATE_TYPE.none) {
-    return words;
-  }
-  let truncateHead;
-  let truncateTail;
-  switch (ellipsizeMode) {
-    case TRUNCATE_TYPE.head:
-      truncateHead = 0;
-      truncateTail = limit;
-      break;
-    case TRUNCATE_TYPE.middle:
-      truncateHead = Math.floor(limit / 2);
-      truncateTail = Math.floor(limit / 2);
-      break;
-    default:
-      truncateHead = limit;
-      truncateTail = 0;
-  }
-  const truncatedContent = ellipsizeMode !== TRUNCATE_TYPE.auto ? truncateMiddle(words, truncateHead, truncateTail, ellipsis) : words;
-  return truncatedContent;
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/truncate/hook.mjs
-function useTruncate(props) {
-  const {
-    className,
-    children,
-    ellipsis = TRUNCATE_ELLIPSIS,
-    ellipsizeMode = TRUNCATE_TYPE.auto,
-    limit = 0,
-    numberOfLines = 0,
-    ...otherProps
-  } = useContextSystem(props, "Truncate");
-  const cx2 = useCx();
-  let childrenAsText;
-  if (typeof children === "string") {
-    childrenAsText = children;
-  } else if (typeof children === "number") {
-    childrenAsText = children.toString();
-  }
-  const truncatedContent = childrenAsText ? truncateContent(childrenAsText, {
-    ellipsis,
-    ellipsizeMode,
-    limit,
-    numberOfLines
-  }) : children;
-  const shouldTruncate = !!childrenAsText && ellipsizeMode === TRUNCATE_TYPE.auto;
-  const classes = _react.useMemo.call(void 0, () => {
-    const truncateLines = /* @__PURE__ */ css(numberOfLines === 1 ? "word-break: break-all;" : "", " -webkit-box-orient:vertical;-webkit-line-clamp:", numberOfLines, ";display:-webkit-box;overflow:hidden;" + (process.env.NODE_ENV === "production" ? "" : ";label:truncateLines;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBMEQyQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBUUlVOQ0FURV9FTExJUFNJUywgVFJVTkNBVEVfVFlQRSwgdHJ1bmNhdGVDb250ZW50IH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyB1c2VDeCB9IGZyb20gJy4uL3V0aWxzL2hvb2tzL3VzZS1jeCc7XG5pbXBvcnQgdHlwZSB7IFRydW5jYXRlUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlVHJ1bmNhdGUoXG5cdHByb3BzOiBXb3JkUHJlc3NDb21wb25lbnRQcm9wczwgVHJ1bmNhdGVQcm9wcywgJ3NwYW4nID5cbikge1xuXHRjb25zdCB7XG5cdFx0Y2xhc3NOYW1lLFxuXHRcdGNoaWxkcmVuLFxuXHRcdGVsbGlwc2lzID0gVFJVTkNBVEVfRUxMSVBTSVMsXG5cdFx0ZWxsaXBzaXplTW9kZSA9IFRSVU5DQVRFX1RZUEUuYXV0byxcblx0XHRsaW1pdCA9IDAsXG5cdFx0bnVtYmVyT2ZMaW5lcyA9IDAsXG5cdFx0Li4ub3RoZXJQcm9wc1xuXHR9ID0gdXNlQ29udGV4dFN5c3RlbSggcHJvcHMsICdUcnVuY2F0ZScgKTtcblxuXHRjb25zdCBjeCA9IHVzZUN4KCk7XG5cblx0bGV0IGNoaWxkcmVuQXNUZXh0O1xuXHRpZiAoIHR5cGVvZiBjaGlsZHJlbiA9PT0gJ3N0cmluZycgKSB7XG5cdFx0Y2hpbGRyZW5Bc1RleHQgPSBjaGlsZHJlbjtcblx0fSBlbHNlIGlmICggdHlwZW9mIGNoaWxkcmVuID09PSAnbnVtYmVyJyApIHtcblx0XHRjaGlsZHJlbkFzVGV4dCA9IGNoaWxkcmVuLnRvU3RyaW5nKCk7XG5cdH1cblxuXHRjb25zdCB0cnVuY2F0ZWRDb250ZW50ID0gY2hpbGRyZW5Bc1RleHRcblx0XHQ/IHRydW5jYXRlQ29udGVudCggY2hpbGRyZW5Bc1RleHQsIHtcblx0XHRcdFx0ZWxsaXBzaXMsXG5cdFx0XHRcdGVsbGlwc2l6ZU1vZGUsXG5cdFx0XHRcdGxpbWl0LFxuXHRcdFx0XHRudW1iZXJPZkxpbmVzLFxuXHRcdCAgfSApXG5cdFx0OiBjaGlsZHJlbjtcblxuXHRjb25zdCBzaG91bGRUcnVuY2F0ZSA9XG5cdFx0ISEgY2hpbGRyZW5Bc1RleHQgJiYgZWxsaXBzaXplTW9kZSA9PT0gVFJVTkNBVEVfVFlQRS5hdXRvO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Ly8gVGhlIGB3b3JkLWJyZWFrOiBicmVhay1hbGxgIHByb3BlcnR5IGZpcnN0IG1ha2VzIHN1cmUgYSB0ZXh0IGxpbmVcblx0XHQvLyBicmVha3MgZXZlbiB3aGVuIGl0IGNvbnRhaW5zICd1bmJyZWFrYWJsZScgY29udGVudCBzdWNoIGFzIGxvbmcgVVJMcy5cblx0XHQvLyBTZWUgaHR0cHM6Ly9naXRodWIuY29tL1dvcmRQcmVzcy9ndXRlbmJlcmcvaXNzdWVzLzYwODYwLlxuXHRcdGNvbnN0IHRydW5jYXRlTGluZXMgPSBjc3NgXG5cdFx0XHQkeyBudW1iZXJPZkxpbmVzID09PSAxID8gJ3dvcmQtYnJlYWs6IGJyZWFrLWFsbDsnIDogJycgfVxuXHRcdFx0LXdlYmtpdC1ib3gtb3JpZW50OiB2ZXJ0aWNhbDtcblx0XHRcdC13ZWJraXQtbGluZS1jbGFtcDogJHsgbnVtYmVyT2ZMaW5lcyB9O1xuXHRcdFx0ZGlzcGxheTogLXdlYmtpdC1ib3g7XG5cdFx0XHRvdmVyZmxvdzogaGlkZGVuO1xuXHRcdGA7XG5cblx0XHRyZXR1cm4gY3goXG5cdFx0XHRzaG91bGRUcnVuY2F0ZSAmJiAhIG51bWJlck9mTGluZXMgJiYgc3R5bGVzLlRydW5jYXRlLFxuXHRcdFx0c2hvdWxkVHJ1bmNhdGUgJiYgISEgbnVtYmVyT2ZMaW5lcyAmJiB0cnVuY2F0ZUxpbmVzLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgWyBjbGFzc05hbWUsIGN4LCBudW1iZXJPZkxpbmVzLCBzaG91bGRUcnVuY2F0ZSBdICk7XG5cblx0cmV0dXJuIHsgLi4ub3RoZXJQcm9wcywgY2xhc3NOYW1lOiBjbGFzc2VzLCBjaGlsZHJlbjogdHJ1bmNhdGVkQ29udGVudCB9O1xufVxuIl19 */");
-    return cx2(shouldTruncate && !numberOfLines && Truncate, shouldTruncate && !!numberOfLines && truncateLines, className);
-  }, [className, cx2, numberOfLines, shouldTruncate]);
-  return {
-    ...otherProps,
-    className: classes,
-    children: truncatedContent
-  };
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/styles.mjs
-var styles_exports2 = {};
-_chunkEMMSS5I5cjs.__export.call(void 0, styles_exports2, {
-  Text: () => Text2,
-  block: () => block,
-  destructive: () => destructive,
-  highlighterText: () => highlighterText,
-  muted: () => muted,
-  positive: () => positive,
-  upperCase: () => upperCase
-});
-function _EMOTION_STRINGIFIED_CSS_ERROR__2() {
-  return "You have tried to stringify object returned from `css` function. It isn't supposed to be used directly (e.g. as value of the `className` prop), but rather handed to emotion so it can handle it (e.g. as value of `css` prop).";
-}
-var Text2 = /* @__PURE__ */ css("color:", COLORS.theme.foreground, ";line-height:", config_values_default.fontLineHeightBase, ";margin:0;text-wrap:pretty;" + (process.env.NODE_ENV === "production" ? "" : ";label:Text;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFVdUIiLCJmaWxlIjoic3R5bGVzLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIEludGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyBDT0xPUlMsIENPTkZJRyB9IGZyb20gJy4uL3V0aWxzJztcblxuZXhwb3J0IGNvbnN0IFRleHQgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMudGhlbWUuZm9yZWdyb3VuZCB9O1xuXHRsaW5lLWhlaWdodDogJHsgQ09ORklHLmZvbnRMaW5lSGVpZ2h0QmFzZSB9O1xuXHRtYXJnaW46IDA7XG5cdHRleHQtd3JhcDogcHJldHR5O1xuYDtcblxuZXhwb3J0IGNvbnN0IGJsb2NrID0gY3NzYFxuXHRkaXNwbGF5OiBibG9jaztcbmA7XG5cbmV4cG9ydCBjb25zdCBwb3NpdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5ncmVlbiB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGRlc3RydWN0aXZlID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLmFsZXJ0LnJlZCB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IG11dGVkID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLmdyYXlbIDcwMCBdIH07XG5gO1xuXG5leHBvcnQgY29uc3QgaGlnaGxpZ2h0ZXJUZXh0ID0gY3NzYFxuXHRtYXJrIHtcblx0XHRiYWNrZ3JvdW5kOiAkeyBDT0xPUlMuYWxlcnQueWVsbG93IH07XG5cdFx0Ym9yZGVyLXJhZGl1czogJHsgQ09ORklHLnJhZGl1c1NtYWxsIH07XG5cdFx0Ym94LXNoYWRvdzpcblx0XHRcdDAgMCAwIDFweCByZ2JhKCAwLCAwLCAwLCAwLjA1ICkgaW5zZXQsXG5cdFx0XHQwIC0xcHggMCByZ2JhKCAwLCAwLCAwLCAwLjEgKSBpbnNldDtcblx0fVxuYDtcblxuZXhwb3J0IGNvbnN0IHVwcGVyQ2FzZSA9IGNzc2Bcblx0dGV4dC10cmFuc2Zvcm06IHVwcGVyY2FzZTtcbmA7XG4iXX0= */");
-var block = process.env.NODE_ENV === "production" ? {
-  name: "4zleql",
-  styles: "display:block"
-} : {
-  name: "14aceuy-block",
-  styles: "display:block;label:block;/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFpQndCIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */",
-  toString: _EMOTION_STRINGIFIED_CSS_ERROR__2
-};
-var positive = /* @__PURE__ */ css("color:", COLORS.alert.green, ";" + (process.env.NODE_ENV === "production" ? "" : ";label:positive;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFxQjJCIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */");
-var destructive = /* @__PURE__ */ css("color:", COLORS.alert.red, ";" + (process.env.NODE_ENV === "production" ? "" : ";label:destructive;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUF5QjhCIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */");
-var muted = /* @__PURE__ */ css("color:", COLORS.gray[700], ";" + (process.env.NODE_ENV === "production" ? "" : ";label:muted;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUE2QndCIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */");
-var highlighterText = /* @__PURE__ */ css("mark{background:", COLORS.alert.yellow, ";border-radius:", config_values_default.radiusSmall, ";box-shadow:0 0 0 1px rgba( 0, 0, 0, 0.05 ) inset,0 -1px 0 rgba( 0, 0, 0, 0.1 ) inset;}" + (process.env.NODE_ENV === "production" ? "" : ";label:highlighterText;"), process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFpQ2tDIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */");
-var upperCase = process.env.NODE_ENV === "production" ? {
-  name: "50zrmy",
-  styles: "text-transform:uppercase"
-} : {
-  name: "1mrt3zt-upperCase",
-  styles: "text-transform:uppercase;label:upperCase;/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUEyQzRCIiwiZmlsZSI6InN0eWxlcy50cyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogRXh0ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB7IGNzcyB9IGZyb20gJ0BlbW90aW9uL3JlYWN0JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgQ09MT1JTLCBDT05GSUcgfSBmcm9tICcuLi91dGlscyc7XG5cbmV4cG9ydCBjb25zdCBUZXh0ID0gY3NzYFxuXHRjb2xvcjogJHsgQ09MT1JTLnRoZW1lLmZvcmVncm91bmQgfTtcblx0bGluZS1oZWlnaHQ6ICR7IENPTkZJRy5mb250TGluZUhlaWdodEJhc2UgfTtcblx0bWFyZ2luOiAwO1xuXHR0ZXh0LXdyYXA6IHByZXR0eTtcbmA7XG5cbmV4cG9ydCBjb25zdCBibG9jayA9IGNzc2Bcblx0ZGlzcGxheTogYmxvY2s7XG5gO1xuXG5leHBvcnQgY29uc3QgcG9zaXRpdmUgPSBjc3NgXG5cdGNvbG9yOiAkeyBDT0xPUlMuYWxlcnQuZ3JlZW4gfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBkZXN0cnVjdGl2ZSA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5hbGVydC5yZWQgfTtcbmA7XG5cbmV4cG9ydCBjb25zdCBtdXRlZCA9IGNzc2Bcblx0Y29sb3I6ICR7IENPTE9SUy5ncmF5WyA3MDAgXSB9O1xuYDtcblxuZXhwb3J0IGNvbnN0IGhpZ2hsaWdodGVyVGV4dCA9IGNzc2Bcblx0bWFyayB7XG5cdFx0YmFja2dyb3VuZDogJHsgQ09MT1JTLmFsZXJ0LnllbGxvdyB9O1xuXHRcdGJvcmRlci1yYWRpdXM6ICR7IENPTkZJRy5yYWRpdXNTbWFsbCB9O1xuXHRcdGJveC1zaGFkb3c6XG5cdFx0XHQwIDAgMCAxcHggcmdiYSggMCwgMCwgMCwgMC4wNSApIGluc2V0LFxuXHRcdFx0MCAtMXB4IDAgcmdiYSggMCwgMCwgMCwgMC4xICkgaW5zZXQ7XG5cdH1cbmA7XG5cbmV4cG9ydCBjb25zdCB1cHBlckNhc2UgPSBjc3NgXG5cdHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7XG5gO1xuIl19 */",
-  toString: _EMOTION_STRINGIFIED_CSS_ERROR__2
-};
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/utils.mjs
-var import_highlight_words_core = _chunkEMMSS5I5cjs.__toESM.call(void 0, require_dist(), 1);
-var lowercaseProps = (object) => {
-  const mapped = {};
-  for (const key in object) {
-    mapped[key.toLowerCase()] = object[key];
-  }
-  return mapped;
-};
-var memoizedLowercaseProps = memize(lowercaseProps);
-function createHighlighterText({
-  activeClassName = "",
-  activeIndex = -1,
-  activeStyle,
-  autoEscape,
-  caseSensitive = false,
-  children,
-  findChunks,
-  highlightClassName = "",
-  highlightStyle = {},
-  highlightTag = "mark",
-  sanitize,
-  searchWords = [],
-  unhighlightClassName = "",
-  unhighlightStyle
-}) {
-  if (!children) {
-    return null;
-  }
-  if (typeof children !== "string") {
-    return children;
-  }
-  const textToHighlight = children;
-  const chunks = (0, import_highlight_words_core.findAll)({
-    autoEscape,
-    caseSensitive,
-    findChunks,
-    sanitize,
-    searchWords,
-    textToHighlight
-  });
-  const HighlightTag = highlightTag;
-  let highlightIndex = -1;
-  let highlightClassNames = "";
-  let highlightStyles;
-  const textContent = chunks.map((chunk, index) => {
-    const text = textToHighlight.substr(chunk.start, chunk.end - chunk.start);
-    if (chunk.highlight) {
-      highlightIndex++;
-      let highlightClass;
-      if (typeof highlightClassName === "object") {
-        if (!caseSensitive) {
-          highlightClassName = memoizedLowercaseProps(highlightClassName);
-          highlightClass = highlightClassName[text.toLowerCase()];
-        } else {
-          highlightClass = highlightClassName[text];
-        }
-      } else {
-        highlightClass = highlightClassName;
-      }
-      const isActive = highlightIndex === +activeIndex;
-      highlightClassNames = `${highlightClass} ${isActive ? activeClassName : ""}`;
-      highlightStyles = isActive === true && activeStyle !== null ? Object.assign({}, highlightStyle, activeStyle) : highlightStyle;
-      const props = {
-        children: text,
-        className: highlightClassNames,
-        key: index,
-        style: highlightStyles
-      };
-      if (typeof HighlightTag !== "string") {
-        props.highlightIndex = highlightIndex;
-      }
-      return _react.createElement.call(void 0, HighlightTag, props);
-    }
-    return _react.createElement.call(void 0, "span", {
-      children: text,
-      className: unhighlightClassName,
-      key: index,
-      style: unhighlightStyle
-    });
-  });
-  return textContent;
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/font-size.mjs
-var BASE_FONT_SIZE = 13;
-var PRESET_FONT_SIZES = {
-  body: BASE_FONT_SIZE,
-  caption: 10,
-  footnote: 11,
-  largeTitle: 28,
-  subheadline: 12,
-  title: 20
-};
-var HEADING_FONT_SIZES = [1, 2, 3, 4, 5, 6].flatMap((n2) => [n2, n2.toString()]);
-function getFontSize(size = BASE_FONT_SIZE) {
-  if (size in PRESET_FONT_SIZES) {
-    return getFontSize(PRESET_FONT_SIZES[size]);
-  }
-  if (typeof size !== "number") {
-    const parsed = parseFloat(size);
-    if (Number.isNaN(parsed)) {
-      return size;
-    }
-    size = parsed;
-  }
-  const ratio = `(${size} / ${BASE_FONT_SIZE})`;
-  return `calc(${ratio} * ${config_values_default.fontSize})`;
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/get-line-height.mjs
-function getLineHeight(adjustLineHeightForInnerControls, lineHeight) {
-  if (lineHeight) {
-    return lineHeight;
-  }
-  if (!adjustLineHeightForInnerControls) {
-    return;
-  }
-  let value = `calc(${config_values_default.controlHeight} + ${space(2)})`;
-  switch (adjustLineHeightForInnerControls) {
-    case "large":
-      value = `calc(${config_values_default.controlHeightLarge} + ${space(2)})`;
-      break;
-    case "small":
-      value = `calc(${config_values_default.controlHeightSmall} + ${space(2)})`;
-      break;
-    case "xSmall":
-      value = `calc(${config_values_default.controlHeightXSmall} + ${space(2)})`;
-      break;
-    default:
-      break;
-  }
-  return value;
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/hook.mjs
-function _EMOTION_STRINGIFIED_CSS_ERROR__3() {
-  return "You have tried to stringify object returned from `css` function. It isn't supposed to be used directly (e.g. as value of the `className` prop), but rather handed to emotion so it can handle it (e.g. as value of `css` prop).";
-}
-var _ref = process.env.NODE_ENV === "production" ? {
-  name: "50zrmy",
-  styles: "text-transform:uppercase"
-} : {
-  name: "18bqwxz-sx-upperCase",
-  styles: "text-transform:uppercase;label:sx-upperCase;/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBa0dpQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBTZXJpYWxpemVkU3R5bGVzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbywgQ2hpbGRyZW4sIGNsb25lRWxlbWVudCB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IGhhc0Nvbm5lY3ROYW1lc3BhY2UsIHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZVRydW5jYXRlIH0gZnJvbSAnLi4vdHJ1bmNhdGUnO1xuaW1wb3J0IHsgZ2V0T3B0aW1hbFRleHRTaGFkZSB9IGZyb20gJy4uL3V0aWxzL2NvbG9ycyc7XG5pbXBvcnQgKiBhcyBzdHlsZXMgZnJvbSAnLi9zdHlsZXMnO1xuaW1wb3J0IHsgY3JlYXRlSGlnaGxpZ2h0ZXJUZXh0IH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyBnZXRGb250U2l6ZSB9IGZyb20gJy4uL3V0aWxzL2ZvbnQtc2l6ZSc7XG5pbXBvcnQgeyBDT05GSUcsIENPTE9SUyB9IGZyb20gJy4uL3V0aWxzJztcbmltcG9ydCB7IGdldExpbmVIZWlnaHQgfSBmcm9tICcuL2dldC1saW5lLWhlaWdodCc7XG5pbXBvcnQgeyB1c2VDeCB9IGZyb20gJy4uL3V0aWxzL2hvb2tzL3VzZS1jeCc7XG5pbXBvcnQgdHlwZSB7IFByb3BzIH0gZnJvbSAnLi90eXBlcyc7XG5pbXBvcnQgdHlwZSBSZWFjdCBmcm9tICdyZWFjdCc7XG5cbi8qKlxuICogQHBhcmFtIHtpbXBvcnQoJy4uL2NvbnRleHQnKS5Xb3JkUHJlc3NDb21wb25lbnRQcm9wczxpbXBvcnQoJy4vdHlwZXMnKS5Qcm9wcywgJ3NwYW4nPn0gcHJvcHNcbiAqL1xuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlVGV4dChcblx0cHJvcHM6IFdvcmRQcmVzc0NvbXBvbmVudFByb3BzPCBQcm9wcywgJ3NwYW4nID5cbikge1xuXHRjb25zdCB7XG5cdFx0YWRqdXN0TGluZUhlaWdodEZvcklubmVyQ29udHJvbHMsXG5cdFx0YWxpZ24sXG5cdFx0Y2hpbGRyZW4sXG5cdFx0Y2xhc3NOYW1lLFxuXHRcdGNvbG9yLFxuXHRcdGVsbGlwc2l6ZU1vZGUsXG5cdFx0aXNEZXN0cnVjdGl2ZSA9IGZhbHNlLFxuXHRcdGRpc3BsYXksXG5cdFx0aGlnaGxpZ2h0RXNjYXBlID0gZmFsc2UsXG5cdFx0aGlnaGxpZ2h0Q2FzZVNlbnNpdGl2ZSA9IGZhbHNlLFxuXHRcdGhpZ2hsaWdodFdvcmRzLFxuXHRcdGhpZ2hsaWdodFNhbml0aXplLFxuXHRcdGlzQmxvY2sgPSBmYWxzZSxcblx0XHRsZXR0ZXJTcGFjaW5nLFxuXHRcdGxpbmVIZWlnaHQ6IGxpbmVIZWlnaHRQcm9wLFxuXHRcdG9wdGltaXplUmVhZGFiaWxpdHlGb3IsXG5cdFx0c2l6ZSxcblx0XHR0cnVuY2F0ZSA9IGZhbHNlLFxuXHRcdHVwcGVyQ2FzZSA9IGZhbHNlLFxuXHRcdHZhcmlhbnQsXG5cdFx0d2VpZ2h0ID0gQ09ORklHLmZvbnRXZWlnaHQsXG5cdFx0Li4ub3RoZXJQcm9wc1xuXHR9ID0gdXNlQ29udGV4dFN5c3RlbSggcHJvcHMsICdUZXh0JyApO1xuXG5cdGxldCBjb250ZW50OiBSZWFjdC5SZWFjdE5vZGUgPSBjaGlsZHJlbjtcblx0Y29uc3QgaXNIaWdobGlnaHRlciA9IEFycmF5LmlzQXJyYXkoIGhpZ2hsaWdodFdvcmRzICk7XG5cdGNvbnN0IGlzQ2FwdGlvbiA9IHNpemUgPT09ICdjYXB0aW9uJztcblxuXHRpZiAoIGlzSGlnaGxpZ2h0ZXIgKSB7XG5cdFx0aWYgKCB0eXBlb2YgY2hpbGRyZW4gIT09ICdzdHJpbmcnICkge1xuXHRcdFx0dGhyb3cgbmV3IFR5cGVFcnJvcihcblx0XHRcdFx0J2BjaGlsZHJlbmAgb2YgYFRleHRgIG11c3Qgb25seSBiZSBgc3RyaW5nYCB0eXBlcyB3aGVuIGBoaWdobGlnaHRXb3Jkc2AgaXMgZGVmaW5lZCdcblx0XHRcdCk7XG5cdFx0fVxuXG5cdFx0Y29udGVudCA9IGNyZWF0ZUhpZ2hsaWdodGVyVGV4dCgge1xuXHRcdFx0YXV0b0VzY2FwZTogaGlnaGxpZ2h0RXNjYXBlLFxuXHRcdFx0Y2hpbGRyZW4sXG5cdFx0XHRjYXNlU2Vuc2l0aXZlOiBoaWdobGlnaHRDYXNlU2Vuc2l0aXZlLFxuXHRcdFx0c2VhcmNoV29yZHM6IGhpZ2hsaWdodFdvcmRzLFxuXHRcdFx0c2FuaXRpemU6IGhpZ2hsaWdodFNhbml0aXplLFxuXHRcdH0gKTtcblx0fVxuXG5cdGNvbnN0IGN4ID0gdXNlQ3goKTtcblxuXHRjb25zdCBjbGFzc2VzID0gdXNlTWVtbyggKCkgPT4ge1xuXHRcdGNvbnN0IHN4OiBSZWNvcmQ8IHN0cmluZywgU2VyaWFsaXplZFN0eWxlcyB8IG51bGwgPiA9IHt9O1xuXG5cdFx0Y29uc3QgbGluZUhlaWdodCA9IGdldExpbmVIZWlnaHQoXG5cdFx0XHRhZGp1c3RMaW5lSGVpZ2h0Rm9ySW5uZXJDb250cm9scyxcblx0XHRcdGxpbmVIZWlnaHRQcm9wXG5cdFx0KTtcblxuXHRcdHN4LkJhc2UgPSBjc3MoIHtcblx0XHRcdGNvbG9yLFxuXHRcdFx0ZGlzcGxheSxcblx0XHRcdGZvbnRTaXplOiBnZXRGb250U2l6ZSggc2l6ZSApLFxuXHRcdFx0Zm9udFdlaWdodDogd2VpZ2h0LFxuXHRcdFx0bGluZUhlaWdodCxcblx0XHRcdGxldHRlclNwYWNpbmcsXG5cdFx0XHR0ZXh0QWxpZ246IGFsaWduLFxuXHRcdH0gKTtcblxuXHRcdHN4LnVwcGVyQ2FzZSA9IGNzcyggeyB0ZXh0VHJhbnNmb3JtOiAndXBwZXJjYXNlJyB9ICk7XG5cblx0XHRzeC5vcHRpbWFsVGV4dENvbG9yID0gbnVsbDtcblxuXHRcdGlmICggb3B0aW1pemVSZWFkYWJpbGl0eUZvciApIHtcblx0XHRcdGNvbnN0IGlzT3B0aW1hbFRleHRDb2xvckRhcmsgPVxuXHRcdFx0XHRnZXRPcHRpbWFsVGV4dFNoYWRlKCBvcHRpbWl6ZVJlYWRhYmlsaXR5Rm9yICkgPT09ICdkYXJrJztcblxuXHRcdFx0Ly8gU2hvdWxkIG5vdCB1c2UgdGhlbWUgY29sb3JzXG5cdFx0XHRzeC5vcHRpbWFsVGV4dENvbG9yID0gaXNPcHRpbWFsVGV4dENvbG9yRGFya1xuXHRcdFx0XHQ/IGNzcyggeyBjb2xvcjogQ09MT1JTLmdyYXlbIDkwMCBdIH0gKVxuXHRcdFx0XHQ6IGNzcyggeyBjb2xvcjogQ09MT1JTLndoaXRlIH0gKTtcblx0XHR9XG5cblx0XHRyZXR1cm4gY3goXG5cdFx0XHRzdHlsZXMuVGV4dCxcblx0XHRcdHN4LkJhc2UsXG5cdFx0XHRzeC5vcHRpbWFsVGV4dENvbG9yLFxuXHRcdFx0aXNEZXN0cnVjdGl2ZSAmJiBzdHlsZXMuZGVzdHJ1Y3RpdmUsXG5cdFx0XHQhISBpc0hpZ2hsaWdodGVyICYmIHN0eWxlcy5oaWdobGlnaHRlclRleHQsXG5cdFx0XHRpc0Jsb2NrICYmIHN0eWxlcy5ibG9jayxcblx0XHRcdGlzQ2FwdGlvbiAmJiBzdHlsZXMubXV0ZWQsXG5cdFx0XHR2YXJpYW50ICYmIHN0eWxlc1sgdmFyaWFudCBdLFxuXHRcdFx0dXBwZXJDYXNlICYmIHN4LnVwcGVyQ2FzZSxcblx0XHRcdGNsYXNzTmFtZVxuXHRcdCk7XG5cdH0sIFtcblx0XHRhZGp1c3RMaW5lSGVpZ2h0Rm9ySW5uZXJDb250cm9scyxcblx0XHRhbGlnbixcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sb3IsXG5cdFx0Y3gsXG5cdFx0ZGlzcGxheSxcblx0XHRpc0Jsb2NrLFxuXHRcdGlzQ2FwdGlvbixcblx0XHRpc0Rlc3RydWN0aXZlLFxuXHRcdGlzSGlnaGxpZ2h0ZXIsXG5cdFx0bGV0dGVyU3BhY2luZyxcblx0XHRsaW5lSGVpZ2h0UHJvcCxcblx0XHRvcHRpbWl6ZVJlYWRhYmlsaXR5Rm9yLFxuXHRcdHNpemUsXG5cdFx0dXBwZXJDYXNlLFxuXHRcdHZhcmlhbnQsXG5cdFx0d2VpZ2h0LFxuXHRdICk7XG5cblx0bGV0IGZpbmFsRWxsaXBzaXplTW9kZTogdW5kZWZpbmVkIHwgJ2F1dG8nIHwgJ25vbmUnO1xuXHRpZiAoIHRydW5jYXRlID09PSB0cnVlICkge1xuXHRcdGZpbmFsRWxsaXBzaXplTW9kZSA9ICdhdXRvJztcblx0fVxuXHRpZiAoIHRydW5jYXRlID09PSBmYWxzZSApIHtcblx0XHRmaW5hbEVsbGlwc2l6ZU1vZGUgPSAnbm9uZSc7XG5cdH1cblxuXHRjb25zdCBmaW5hbENvbXBvbmVudFByb3BzID0ge1xuXHRcdC4uLm90aGVyUHJvcHMsXG5cdFx0Y2xhc3NOYW1lOiBjbGFzc2VzLFxuXHRcdGNoaWxkcmVuLFxuXHRcdGVsbGlwc2l6ZU1vZGU6IGVsbGlwc2l6ZU1vZGUgfHwgZmluYWxFbGxpcHNpemVNb2RlLFxuXHR9O1xuXG5cdGNvbnN0IHRydW5jYXRlUHJvcHMgPSB1c2VUcnVuY2F0ZSggZmluYWxDb21wb25lbnRQcm9wcyApO1xuXG5cdC8qKlxuXHQgKiBFbmhhbmNlIGNoaWxkIGA8TGluayAvPmAgY29tcG9uZW50cyB0byBpbmhlcml0IGZvbnQgc2l6ZS5cblx0ICovXG5cdGlmICggISB0cnVuY2F0ZSAmJiBBcnJheS5pc0FycmF5KCBjaGlsZHJlbiApICkge1xuXHRcdGNvbnRlbnQgPSBDaGlsZHJlbi5tYXAoIGNoaWxkcmVuLCAoIGNoaWxkICkgPT4ge1xuXHRcdFx0aWYgKFxuXHRcdFx0XHR0eXBlb2YgY2hpbGQgIT09ICdvYmplY3QnIHx8XG5cdFx0XHRcdGNoaWxkID09PSBudWxsIHx8XG5cdFx0XHRcdCEgKCAncHJvcHMnIGluIGNoaWxkIClcblx0XHRcdCkge1xuXHRcdFx0XHRyZXR1cm4gY2hpbGQ7XG5cdFx0XHR9XG5cblx0XHRcdGNvbnN0IGlzTGluayA9IGhhc0Nvbm5lY3ROYW1lc3BhY2UoIGNoaWxkLCBbICdMaW5rJyBdICk7XG5cdFx0XHRpZiAoIGlzTGluayApIHtcblx0XHRcdFx0cmV0dXJuIGNsb25lRWxlbWVudCggY2hpbGQsIHtcblx0XHRcdFx0XHRzaXplOiBjaGlsZC5wcm9wcy5zaXplIHx8ICdpbmhlcml0Jyxcblx0XHRcdFx0fSApO1xuXHRcdFx0fVxuXG5cdFx0XHRyZXR1cm4gY2hpbGQ7XG5cdFx0fSApO1xuXHR9XG5cblx0cmV0dXJuIHtcblx0XHQuLi50cnVuY2F0ZVByb3BzLFxuXHRcdGNoaWxkcmVuOiB0cnVuY2F0ZSA/IHRydW5jYXRlUHJvcHMuY2hpbGRyZW4gOiBjb250ZW50LFxuXHR9O1xufVxuIl19 */",
-  toString: _EMOTION_STRINGIFIED_CSS_ERROR__3
-};
-function useText(props) {
-  const {
-    adjustLineHeightForInnerControls,
-    align,
-    children,
-    className,
-    color,
-    ellipsizeMode,
-    isDestructive = false,
-    display,
-    highlightEscape = false,
-    highlightCaseSensitive = false,
-    highlightWords,
-    highlightSanitize,
-    isBlock = false,
-    letterSpacing,
-    lineHeight: lineHeightProp,
-    optimizeReadabilityFor,
-    size,
-    truncate = false,
-    upperCase: upperCase2 = false,
-    variant,
-    weight = config_values_default.fontWeight,
-    ...otherProps
-  } = useContextSystem(props, "Text");
-  let content = children;
-  const isHighlighter = Array.isArray(highlightWords);
-  const isCaption = size === "caption";
-  if (isHighlighter) {
-    if (typeof children !== "string") {
-      throw new TypeError("`children` of `Text` must only be `string` types when `highlightWords` is defined");
-    }
-    content = createHighlighterText({
-      autoEscape: highlightEscape,
-      children,
-      caseSensitive: highlightCaseSensitive,
-      searchWords: highlightWords,
-      sanitize: highlightSanitize
-    });
-  }
-  const cx2 = useCx();
-  const classes = _react.useMemo.call(void 0, () => {
-    const sx = {};
-    const lineHeight = getLineHeight(adjustLineHeightForInnerControls, lineHeightProp);
-    sx.Base = /* @__PURE__ */ css({
-      color,
-      display,
-      fontSize: getFontSize(size),
-      fontWeight: weight,
-      lineHeight,
-      letterSpacing,
-      textAlign: align
-    }, process.env.NODE_ENV === "production" ? "" : ";label:sx-Base;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBd0ZZIiwiZmlsZSI6Imhvb2sudHMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgdHlwZSB7IFNlcmlhbGl6ZWRTdHlsZXMgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5pbXBvcnQgeyBjc3MgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyB1c2VNZW1vLCBDaGlsZHJlbiwgY2xvbmVFbGVtZW50IH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgaGFzQ29ubmVjdE5hbWVzcGFjZSwgdXNlQ29udGV4dFN5c3RlbSB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgdXNlVHJ1bmNhdGUgfSBmcm9tICcuLi90cnVuY2F0ZSc7XG5pbXBvcnQgeyBnZXRPcHRpbWFsVGV4dFNoYWRlIH0gZnJvbSAnLi4vdXRpbHMvY29sb3JzJztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBjcmVhdGVIaWdobGlnaHRlclRleHQgfSBmcm9tICcuL3V0aWxzJztcbmltcG9ydCB7IGdldEZvbnRTaXplIH0gZnJvbSAnLi4vdXRpbHMvZm9udC1zaXplJztcbmltcG9ydCB7IENPTkZJRywgQ09MT1JTIH0gZnJvbSAnLi4vdXRpbHMnO1xuaW1wb3J0IHsgZ2V0TGluZUhlaWdodCB9IGZyb20gJy4vZ2V0LWxpbmUtaGVpZ2h0JztcbmltcG9ydCB7IHVzZUN4IH0gZnJvbSAnLi4vdXRpbHMvaG9va3MvdXNlLWN4JztcbmltcG9ydCB0eXBlIHsgUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcbmltcG9ydCB0eXBlIFJlYWN0IGZyb20gJ3JlYWN0JztcblxuLyoqXG4gKiBAcGFyYW0ge2ltcG9ydCgnLi4vY29udGV4dCcpLldvcmRQcmVzc0NvbXBvbmVudFByb3BzPGltcG9ydCgnLi90eXBlcycpLlByb3BzLCAnc3Bhbic+fSBwcm9wc1xuICovXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiB1c2VUZXh0KFxuXHRwcm9wczogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IFByb3BzLCAnc3BhbicgPlxuKSB7XG5cdGNvbnN0IHtcblx0XHRhZGp1c3RMaW5lSGVpZ2h0Rm9ySW5uZXJDb250cm9scyxcblx0XHRhbGlnbixcblx0XHRjaGlsZHJlbixcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sb3IsXG5cdFx0ZWxsaXBzaXplTW9kZSxcblx0XHRpc0Rlc3RydWN0aXZlID0gZmFsc2UsXG5cdFx0ZGlzcGxheSxcblx0XHRoaWdobGlnaHRFc2NhcGUgPSBmYWxzZSxcblx0XHRoaWdobGlnaHRDYXNlU2Vuc2l0aXZlID0gZmFsc2UsXG5cdFx0aGlnaGxpZ2h0V29yZHMsXG5cdFx0aGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0aXNCbG9jayA9IGZhbHNlLFxuXHRcdGxldHRlclNwYWNpbmcsXG5cdFx0bGluZUhlaWdodDogbGluZUhlaWdodFByb3AsXG5cdFx0b3B0aW1pemVSZWFkYWJpbGl0eUZvcixcblx0XHRzaXplLFxuXHRcdHRydW5jYXRlID0gZmFsc2UsXG5cdFx0dXBwZXJDYXNlID0gZmFsc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQgPSBDT05GSUcuZm9udFdlaWdodCxcblx0XHQuLi5vdGhlclByb3BzXG5cdH0gPSB1c2VDb250ZXh0U3lzdGVtKCBwcm9wcywgJ1RleHQnICk7XG5cblx0bGV0IGNvbnRlbnQ6IFJlYWN0LlJlYWN0Tm9kZSA9IGNoaWxkcmVuO1xuXHRjb25zdCBpc0hpZ2hsaWdodGVyID0gQXJyYXkuaXNBcnJheSggaGlnaGxpZ2h0V29yZHMgKTtcblx0Y29uc3QgaXNDYXB0aW9uID0gc2l6ZSA9PT0gJ2NhcHRpb24nO1xuXG5cdGlmICggaXNIaWdobGlnaHRlciApIHtcblx0XHRpZiAoIHR5cGVvZiBjaGlsZHJlbiAhPT0gJ3N0cmluZycgKSB7XG5cdFx0XHR0aHJvdyBuZXcgVHlwZUVycm9yKFxuXHRcdFx0XHQnYGNoaWxkcmVuYCBvZiBgVGV4dGAgbXVzdCBvbmx5IGJlIGBzdHJpbmdgIHR5cGVzIHdoZW4gYGhpZ2hsaWdodFdvcmRzYCBpcyBkZWZpbmVkJ1xuXHRcdFx0KTtcblx0XHR9XG5cblx0XHRjb250ZW50ID0gY3JlYXRlSGlnaGxpZ2h0ZXJUZXh0KCB7XG5cdFx0XHRhdXRvRXNjYXBlOiBoaWdobGlnaHRFc2NhcGUsXG5cdFx0XHRjaGlsZHJlbixcblx0XHRcdGNhc2VTZW5zaXRpdmU6IGhpZ2hsaWdodENhc2VTZW5zaXRpdmUsXG5cdFx0XHRzZWFyY2hXb3JkczogaGlnaGxpZ2h0V29yZHMsXG5cdFx0XHRzYW5pdGl6ZTogaGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0fSApO1xuXHR9XG5cblx0Y29uc3QgY3ggPSB1c2VDeCgpO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Y29uc3Qgc3g6IFJlY29yZDwgc3RyaW5nLCBTZXJpYWxpemVkU3R5bGVzIHwgbnVsbCA+ID0ge307XG5cblx0XHRjb25zdCBsaW5lSGVpZ2h0ID0gZ2V0TGluZUhlaWdodChcblx0XHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdFx0bGluZUhlaWdodFByb3Bcblx0XHQpO1xuXG5cdFx0c3guQmFzZSA9IGNzcygge1xuXHRcdFx0Y29sb3IsXG5cdFx0XHRkaXNwbGF5LFxuXHRcdFx0Zm9udFNpemU6IGdldEZvbnRTaXplKCBzaXplICksXG5cdFx0XHRmb250V2VpZ2h0OiB3ZWlnaHQsXG5cdFx0XHRsaW5lSGVpZ2h0LFxuXHRcdFx0bGV0dGVyU3BhY2luZyxcblx0XHRcdHRleHRBbGlnbjogYWxpZ24sXG5cdFx0fSApO1xuXG5cdFx0c3gudXBwZXJDYXNlID0gY3NzKCB7IHRleHRUcmFuc2Zvcm06ICd1cHBlcmNhc2UnIH0gKTtcblxuXHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBudWxsO1xuXG5cdFx0aWYgKCBvcHRpbWl6ZVJlYWRhYmlsaXR5Rm9yICkge1xuXHRcdFx0Y29uc3QgaXNPcHRpbWFsVGV4dENvbG9yRGFyayA9XG5cdFx0XHRcdGdldE9wdGltYWxUZXh0U2hhZGUoIG9wdGltaXplUmVhZGFiaWxpdHlGb3IgKSA9PT0gJ2RhcmsnO1xuXG5cdFx0XHQvLyBTaG91bGQgbm90IHVzZSB0aGVtZSBjb2xvcnNcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBpc09wdGltYWxUZXh0Q29sb3JEYXJrXG5cdFx0XHRcdD8gY3NzKCB7IGNvbG9yOiBDT0xPUlMuZ3JheVsgOTAwIF0gfSApXG5cdFx0XHRcdDogY3NzKCB7IGNvbG9yOiBDT0xPUlMud2hpdGUgfSApO1xuXHRcdH1cblxuXHRcdHJldHVybiBjeChcblx0XHRcdHN0eWxlcy5UZXh0LFxuXHRcdFx0c3guQmFzZSxcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IsXG5cdFx0XHRpc0Rlc3RydWN0aXZlICYmIHN0eWxlcy5kZXN0cnVjdGl2ZSxcblx0XHRcdCEhIGlzSGlnaGxpZ2h0ZXIgJiYgc3R5bGVzLmhpZ2hsaWdodGVyVGV4dCxcblx0XHRcdGlzQmxvY2sgJiYgc3R5bGVzLmJsb2NrLFxuXHRcdFx0aXNDYXB0aW9uICYmIHN0eWxlcy5tdXRlZCxcblx0XHRcdHZhcmlhbnQgJiYgc3R5bGVzWyB2YXJpYW50IF0sXG5cdFx0XHR1cHBlckNhc2UgJiYgc3gudXBwZXJDYXNlLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgW1xuXHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdGFsaWduLFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2xvcixcblx0XHRjeCxcblx0XHRkaXNwbGF5LFxuXHRcdGlzQmxvY2ssXG5cdFx0aXNDYXB0aW9uLFxuXHRcdGlzRGVzdHJ1Y3RpdmUsXG5cdFx0aXNIaWdobGlnaHRlcixcblx0XHRsZXR0ZXJTcGFjaW5nLFxuXHRcdGxpbmVIZWlnaHRQcm9wLFxuXHRcdG9wdGltaXplUmVhZGFiaWxpdHlGb3IsXG5cdFx0c2l6ZSxcblx0XHR1cHBlckNhc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQsXG5cdF0gKTtcblxuXHRsZXQgZmluYWxFbGxpcHNpemVNb2RlOiB1bmRlZmluZWQgfCAnYXV0bycgfCAnbm9uZSc7XG5cdGlmICggdHJ1bmNhdGUgPT09IHRydWUgKSB7XG5cdFx0ZmluYWxFbGxpcHNpemVNb2RlID0gJ2F1dG8nO1xuXHR9XG5cdGlmICggdHJ1bmNhdGUgPT09IGZhbHNlICkge1xuXHRcdGZpbmFsRWxsaXBzaXplTW9kZSA9ICdub25lJztcblx0fVxuXG5cdGNvbnN0IGZpbmFsQ29tcG9uZW50UHJvcHMgPSB7XG5cdFx0Li4ub3RoZXJQcm9wcyxcblx0XHRjbGFzc05hbWU6IGNsYXNzZXMsXG5cdFx0Y2hpbGRyZW4sXG5cdFx0ZWxsaXBzaXplTW9kZTogZWxsaXBzaXplTW9kZSB8fCBmaW5hbEVsbGlwc2l6ZU1vZGUsXG5cdH07XG5cblx0Y29uc3QgdHJ1bmNhdGVQcm9wcyA9IHVzZVRydW5jYXRlKCBmaW5hbENvbXBvbmVudFByb3BzICk7XG5cblx0LyoqXG5cdCAqIEVuaGFuY2UgY2hpbGQgYDxMaW5rIC8+YCBjb21wb25lbnRzIHRvIGluaGVyaXQgZm9udCBzaXplLlxuXHQgKi9cblx0aWYgKCAhIHRydW5jYXRlICYmIEFycmF5LmlzQXJyYXkoIGNoaWxkcmVuICkgKSB7XG5cdFx0Y29udGVudCA9IENoaWxkcmVuLm1hcCggY2hpbGRyZW4sICggY2hpbGQgKSA9PiB7XG5cdFx0XHRpZiAoXG5cdFx0XHRcdHR5cGVvZiBjaGlsZCAhPT0gJ29iamVjdCcgfHxcblx0XHRcdFx0Y2hpbGQgPT09IG51bGwgfHxcblx0XHRcdFx0ISAoICdwcm9wcycgaW4gY2hpbGQgKVxuXHRcdFx0KSB7XG5cdFx0XHRcdHJldHVybiBjaGlsZDtcblx0XHRcdH1cblxuXHRcdFx0Y29uc3QgaXNMaW5rID0gaGFzQ29ubmVjdE5hbWVzcGFjZSggY2hpbGQsIFsgJ0xpbmsnIF0gKTtcblx0XHRcdGlmICggaXNMaW5rICkge1xuXHRcdFx0XHRyZXR1cm4gY2xvbmVFbGVtZW50KCBjaGlsZCwge1xuXHRcdFx0XHRcdHNpemU6IGNoaWxkLnByb3BzLnNpemUgfHwgJ2luaGVyaXQnLFxuXHRcdFx0XHR9ICk7XG5cdFx0XHR9XG5cblx0XHRcdHJldHVybiBjaGlsZDtcblx0XHR9ICk7XG5cdH1cblxuXHRyZXR1cm4ge1xuXHRcdC4uLnRydW5jYXRlUHJvcHMsXG5cdFx0Y2hpbGRyZW46IHRydW5jYXRlID8gdHJ1bmNhdGVQcm9wcy5jaGlsZHJlbiA6IGNvbnRlbnQsXG5cdH07XG59XG4iXX0= */");
-    sx.upperCase = _ref;
-    sx.optimalTextColor = null;
-    if (optimizeReadabilityFor) {
-      const isOptimalTextColorDark = getOptimalTextShade(optimizeReadabilityFor) === "dark";
-      sx.optimalTextColor = isOptimalTextColorDark ? /* @__PURE__ */ css({
-        color: COLORS.gray[900]
-      }, process.env.NODE_ENV === "production" ? "" : ";label:sx-optimalTextColor;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBNEdNIiwiZmlsZSI6Imhvb2sudHMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgdHlwZSB7IFNlcmlhbGl6ZWRTdHlsZXMgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5pbXBvcnQgeyBjc3MgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyB1c2VNZW1vLCBDaGlsZHJlbiwgY2xvbmVFbGVtZW50IH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgaGFzQ29ubmVjdE5hbWVzcGFjZSwgdXNlQ29udGV4dFN5c3RlbSB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgdXNlVHJ1bmNhdGUgfSBmcm9tICcuLi90cnVuY2F0ZSc7XG5pbXBvcnQgeyBnZXRPcHRpbWFsVGV4dFNoYWRlIH0gZnJvbSAnLi4vdXRpbHMvY29sb3JzJztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBjcmVhdGVIaWdobGlnaHRlclRleHQgfSBmcm9tICcuL3V0aWxzJztcbmltcG9ydCB7IGdldEZvbnRTaXplIH0gZnJvbSAnLi4vdXRpbHMvZm9udC1zaXplJztcbmltcG9ydCB7IENPTkZJRywgQ09MT1JTIH0gZnJvbSAnLi4vdXRpbHMnO1xuaW1wb3J0IHsgZ2V0TGluZUhlaWdodCB9IGZyb20gJy4vZ2V0LWxpbmUtaGVpZ2h0JztcbmltcG9ydCB7IHVzZUN4IH0gZnJvbSAnLi4vdXRpbHMvaG9va3MvdXNlLWN4JztcbmltcG9ydCB0eXBlIHsgUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcbmltcG9ydCB0eXBlIFJlYWN0IGZyb20gJ3JlYWN0JztcblxuLyoqXG4gKiBAcGFyYW0ge2ltcG9ydCgnLi4vY29udGV4dCcpLldvcmRQcmVzc0NvbXBvbmVudFByb3BzPGltcG9ydCgnLi90eXBlcycpLlByb3BzLCAnc3Bhbic+fSBwcm9wc1xuICovXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiB1c2VUZXh0KFxuXHRwcm9wczogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IFByb3BzLCAnc3BhbicgPlxuKSB7XG5cdGNvbnN0IHtcblx0XHRhZGp1c3RMaW5lSGVpZ2h0Rm9ySW5uZXJDb250cm9scyxcblx0XHRhbGlnbixcblx0XHRjaGlsZHJlbixcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sb3IsXG5cdFx0ZWxsaXBzaXplTW9kZSxcblx0XHRpc0Rlc3RydWN0aXZlID0gZmFsc2UsXG5cdFx0ZGlzcGxheSxcblx0XHRoaWdobGlnaHRFc2NhcGUgPSBmYWxzZSxcblx0XHRoaWdobGlnaHRDYXNlU2Vuc2l0aXZlID0gZmFsc2UsXG5cdFx0aGlnaGxpZ2h0V29yZHMsXG5cdFx0aGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0aXNCbG9jayA9IGZhbHNlLFxuXHRcdGxldHRlclNwYWNpbmcsXG5cdFx0bGluZUhlaWdodDogbGluZUhlaWdodFByb3AsXG5cdFx0b3B0aW1pemVSZWFkYWJpbGl0eUZvcixcblx0XHRzaXplLFxuXHRcdHRydW5jYXRlID0gZmFsc2UsXG5cdFx0dXBwZXJDYXNlID0gZmFsc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQgPSBDT05GSUcuZm9udFdlaWdodCxcblx0XHQuLi5vdGhlclByb3BzXG5cdH0gPSB1c2VDb250ZXh0U3lzdGVtKCBwcm9wcywgJ1RleHQnICk7XG5cblx0bGV0IGNvbnRlbnQ6IFJlYWN0LlJlYWN0Tm9kZSA9IGNoaWxkcmVuO1xuXHRjb25zdCBpc0hpZ2hsaWdodGVyID0gQXJyYXkuaXNBcnJheSggaGlnaGxpZ2h0V29yZHMgKTtcblx0Y29uc3QgaXNDYXB0aW9uID0gc2l6ZSA9PT0gJ2NhcHRpb24nO1xuXG5cdGlmICggaXNIaWdobGlnaHRlciApIHtcblx0XHRpZiAoIHR5cGVvZiBjaGlsZHJlbiAhPT0gJ3N0cmluZycgKSB7XG5cdFx0XHR0aHJvdyBuZXcgVHlwZUVycm9yKFxuXHRcdFx0XHQnYGNoaWxkcmVuYCBvZiBgVGV4dGAgbXVzdCBvbmx5IGJlIGBzdHJpbmdgIHR5cGVzIHdoZW4gYGhpZ2hsaWdodFdvcmRzYCBpcyBkZWZpbmVkJ1xuXHRcdFx0KTtcblx0XHR9XG5cblx0XHRjb250ZW50ID0gY3JlYXRlSGlnaGxpZ2h0ZXJUZXh0KCB7XG5cdFx0XHRhdXRvRXNjYXBlOiBoaWdobGlnaHRFc2NhcGUsXG5cdFx0XHRjaGlsZHJlbixcblx0XHRcdGNhc2VTZW5zaXRpdmU6IGhpZ2hsaWdodENhc2VTZW5zaXRpdmUsXG5cdFx0XHRzZWFyY2hXb3JkczogaGlnaGxpZ2h0V29yZHMsXG5cdFx0XHRzYW5pdGl6ZTogaGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0fSApO1xuXHR9XG5cblx0Y29uc3QgY3ggPSB1c2VDeCgpO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Y29uc3Qgc3g6IFJlY29yZDwgc3RyaW5nLCBTZXJpYWxpemVkU3R5bGVzIHwgbnVsbCA+ID0ge307XG5cblx0XHRjb25zdCBsaW5lSGVpZ2h0ID0gZ2V0TGluZUhlaWdodChcblx0XHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdFx0bGluZUhlaWdodFByb3Bcblx0XHQpO1xuXG5cdFx0c3guQmFzZSA9IGNzcygge1xuXHRcdFx0Y29sb3IsXG5cdFx0XHRkaXNwbGF5LFxuXHRcdFx0Zm9udFNpemU6IGdldEZvbnRTaXplKCBzaXplICksXG5cdFx0XHRmb250V2VpZ2h0OiB3ZWlnaHQsXG5cdFx0XHRsaW5lSGVpZ2h0LFxuXHRcdFx0bGV0dGVyU3BhY2luZyxcblx0XHRcdHRleHRBbGlnbjogYWxpZ24sXG5cdFx0fSApO1xuXG5cdFx0c3gudXBwZXJDYXNlID0gY3NzKCB7IHRleHRUcmFuc2Zvcm06ICd1cHBlcmNhc2UnIH0gKTtcblxuXHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBudWxsO1xuXG5cdFx0aWYgKCBvcHRpbWl6ZVJlYWRhYmlsaXR5Rm9yICkge1xuXHRcdFx0Y29uc3QgaXNPcHRpbWFsVGV4dENvbG9yRGFyayA9XG5cdFx0XHRcdGdldE9wdGltYWxUZXh0U2hhZGUoIG9wdGltaXplUmVhZGFiaWxpdHlGb3IgKSA9PT0gJ2RhcmsnO1xuXG5cdFx0XHQvLyBTaG91bGQgbm90IHVzZSB0aGVtZSBjb2xvcnNcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBpc09wdGltYWxUZXh0Q29sb3JEYXJrXG5cdFx0XHRcdD8gY3NzKCB7IGNvbG9yOiBDT0xPUlMuZ3JheVsgOTAwIF0gfSApXG5cdFx0XHRcdDogY3NzKCB7IGNvbG9yOiBDT0xPUlMud2hpdGUgfSApO1xuXHRcdH1cblxuXHRcdHJldHVybiBjeChcblx0XHRcdHN0eWxlcy5UZXh0LFxuXHRcdFx0c3guQmFzZSxcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IsXG5cdFx0XHRpc0Rlc3RydWN0aXZlICYmIHN0eWxlcy5kZXN0cnVjdGl2ZSxcblx0XHRcdCEhIGlzSGlnaGxpZ2h0ZXIgJiYgc3R5bGVzLmhpZ2hsaWdodGVyVGV4dCxcblx0XHRcdGlzQmxvY2sgJiYgc3R5bGVzLmJsb2NrLFxuXHRcdFx0aXNDYXB0aW9uICYmIHN0eWxlcy5tdXRlZCxcblx0XHRcdHZhcmlhbnQgJiYgc3R5bGVzWyB2YXJpYW50IF0sXG5cdFx0XHR1cHBlckNhc2UgJiYgc3gudXBwZXJDYXNlLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgW1xuXHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdGFsaWduLFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2xvcixcblx0XHRjeCxcblx0XHRkaXNwbGF5LFxuXHRcdGlzQmxvY2ssXG5cdFx0aXNDYXB0aW9uLFxuXHRcdGlzRGVzdHJ1Y3RpdmUsXG5cdFx0aXNIaWdobGlnaHRlcixcblx0XHRsZXR0ZXJTcGFjaW5nLFxuXHRcdGxpbmVIZWlnaHRQcm9wLFxuXHRcdG9wdGltaXplUmVhZGFiaWxpdHlGb3IsXG5cdFx0c2l6ZSxcblx0XHR1cHBlckNhc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQsXG5cdF0gKTtcblxuXHRsZXQgZmluYWxFbGxpcHNpemVNb2RlOiB1bmRlZmluZWQgfCAnYXV0bycgfCAnbm9uZSc7XG5cdGlmICggdHJ1bmNhdGUgPT09IHRydWUgKSB7XG5cdFx0ZmluYWxFbGxpcHNpemVNb2RlID0gJ2F1dG8nO1xuXHR9XG5cdGlmICggdHJ1bmNhdGUgPT09IGZhbHNlICkge1xuXHRcdGZpbmFsRWxsaXBzaXplTW9kZSA9ICdub25lJztcblx0fVxuXG5cdGNvbnN0IGZpbmFsQ29tcG9uZW50UHJvcHMgPSB7XG5cdFx0Li4ub3RoZXJQcm9wcyxcblx0XHRjbGFzc05hbWU6IGNsYXNzZXMsXG5cdFx0Y2hpbGRyZW4sXG5cdFx0ZWxsaXBzaXplTW9kZTogZWxsaXBzaXplTW9kZSB8fCBmaW5hbEVsbGlwc2l6ZU1vZGUsXG5cdH07XG5cblx0Y29uc3QgdHJ1bmNhdGVQcm9wcyA9IHVzZVRydW5jYXRlKCBmaW5hbENvbXBvbmVudFByb3BzICk7XG5cblx0LyoqXG5cdCAqIEVuaGFuY2UgY2hpbGQgYDxMaW5rIC8+YCBjb21wb25lbnRzIHRvIGluaGVyaXQgZm9udCBzaXplLlxuXHQgKi9cblx0aWYgKCAhIHRydW5jYXRlICYmIEFycmF5LmlzQXJyYXkoIGNoaWxkcmVuICkgKSB7XG5cdFx0Y29udGVudCA9IENoaWxkcmVuLm1hcCggY2hpbGRyZW4sICggY2hpbGQgKSA9PiB7XG5cdFx0XHRpZiAoXG5cdFx0XHRcdHR5cGVvZiBjaGlsZCAhPT0gJ29iamVjdCcgfHxcblx0XHRcdFx0Y2hpbGQgPT09IG51bGwgfHxcblx0XHRcdFx0ISAoICdwcm9wcycgaW4gY2hpbGQgKVxuXHRcdFx0KSB7XG5cdFx0XHRcdHJldHVybiBjaGlsZDtcblx0XHRcdH1cblxuXHRcdFx0Y29uc3QgaXNMaW5rID0gaGFzQ29ubmVjdE5hbWVzcGFjZSggY2hpbGQsIFsgJ0xpbmsnIF0gKTtcblx0XHRcdGlmICggaXNMaW5rICkge1xuXHRcdFx0XHRyZXR1cm4gY2xvbmVFbGVtZW50KCBjaGlsZCwge1xuXHRcdFx0XHRcdHNpemU6IGNoaWxkLnByb3BzLnNpemUgfHwgJ2luaGVyaXQnLFxuXHRcdFx0XHR9ICk7XG5cdFx0XHR9XG5cblx0XHRcdHJldHVybiBjaGlsZDtcblx0XHR9ICk7XG5cdH1cblxuXHRyZXR1cm4ge1xuXHRcdC4uLnRydW5jYXRlUHJvcHMsXG5cdFx0Y2hpbGRyZW46IHRydW5jYXRlID8gdHJ1bmNhdGVQcm9wcy5jaGlsZHJlbiA6IGNvbnRlbnQsXG5cdH07XG59XG4iXX0= */") : /* @__PURE__ */ css({
-        color: COLORS.white
-      }, process.env.NODE_ENV === "production" ? "" : ";label:sx-optimalTextColor;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBNkdNIiwiZmlsZSI6Imhvb2sudHMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgdHlwZSB7IFNlcmlhbGl6ZWRTdHlsZXMgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5pbXBvcnQgeyBjc3MgfSBmcm9tICdAZW1vdGlvbi9yZWFjdCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyB1c2VNZW1vLCBDaGlsZHJlbiwgY2xvbmVFbGVtZW50IH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgaGFzQ29ubmVjdE5hbWVzcGFjZSwgdXNlQ29udGV4dFN5c3RlbSB9IGZyb20gJy4uL2NvbnRleHQnO1xuaW1wb3J0IHsgdXNlVHJ1bmNhdGUgfSBmcm9tICcuLi90cnVuY2F0ZSc7XG5pbXBvcnQgeyBnZXRPcHRpbWFsVGV4dFNoYWRlIH0gZnJvbSAnLi4vdXRpbHMvY29sb3JzJztcbmltcG9ydCAqIGFzIHN0eWxlcyBmcm9tICcuL3N0eWxlcyc7XG5pbXBvcnQgeyBjcmVhdGVIaWdobGlnaHRlclRleHQgfSBmcm9tICcuL3V0aWxzJztcbmltcG9ydCB7IGdldEZvbnRTaXplIH0gZnJvbSAnLi4vdXRpbHMvZm9udC1zaXplJztcbmltcG9ydCB7IENPTkZJRywgQ09MT1JTIH0gZnJvbSAnLi4vdXRpbHMnO1xuaW1wb3J0IHsgZ2V0TGluZUhlaWdodCB9IGZyb20gJy4vZ2V0LWxpbmUtaGVpZ2h0JztcbmltcG9ydCB7IHVzZUN4IH0gZnJvbSAnLi4vdXRpbHMvaG9va3MvdXNlLWN4JztcbmltcG9ydCB0eXBlIHsgUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcbmltcG9ydCB0eXBlIFJlYWN0IGZyb20gJ3JlYWN0JztcblxuLyoqXG4gKiBAcGFyYW0ge2ltcG9ydCgnLi4vY29udGV4dCcpLldvcmRQcmVzc0NvbXBvbmVudFByb3BzPGltcG9ydCgnLi90eXBlcycpLlByb3BzLCAnc3Bhbic+fSBwcm9wc1xuICovXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiB1c2VUZXh0KFxuXHRwcm9wczogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IFByb3BzLCAnc3BhbicgPlxuKSB7XG5cdGNvbnN0IHtcblx0XHRhZGp1c3RMaW5lSGVpZ2h0Rm9ySW5uZXJDb250cm9scyxcblx0XHRhbGlnbixcblx0XHRjaGlsZHJlbixcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sb3IsXG5cdFx0ZWxsaXBzaXplTW9kZSxcblx0XHRpc0Rlc3RydWN0aXZlID0gZmFsc2UsXG5cdFx0ZGlzcGxheSxcblx0XHRoaWdobGlnaHRFc2NhcGUgPSBmYWxzZSxcblx0XHRoaWdobGlnaHRDYXNlU2Vuc2l0aXZlID0gZmFsc2UsXG5cdFx0aGlnaGxpZ2h0V29yZHMsXG5cdFx0aGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0aXNCbG9jayA9IGZhbHNlLFxuXHRcdGxldHRlclNwYWNpbmcsXG5cdFx0bGluZUhlaWdodDogbGluZUhlaWdodFByb3AsXG5cdFx0b3B0aW1pemVSZWFkYWJpbGl0eUZvcixcblx0XHRzaXplLFxuXHRcdHRydW5jYXRlID0gZmFsc2UsXG5cdFx0dXBwZXJDYXNlID0gZmFsc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQgPSBDT05GSUcuZm9udFdlaWdodCxcblx0XHQuLi5vdGhlclByb3BzXG5cdH0gPSB1c2VDb250ZXh0U3lzdGVtKCBwcm9wcywgJ1RleHQnICk7XG5cblx0bGV0IGNvbnRlbnQ6IFJlYWN0LlJlYWN0Tm9kZSA9IGNoaWxkcmVuO1xuXHRjb25zdCBpc0hpZ2hsaWdodGVyID0gQXJyYXkuaXNBcnJheSggaGlnaGxpZ2h0V29yZHMgKTtcblx0Y29uc3QgaXNDYXB0aW9uID0gc2l6ZSA9PT0gJ2NhcHRpb24nO1xuXG5cdGlmICggaXNIaWdobGlnaHRlciApIHtcblx0XHRpZiAoIHR5cGVvZiBjaGlsZHJlbiAhPT0gJ3N0cmluZycgKSB7XG5cdFx0XHR0aHJvdyBuZXcgVHlwZUVycm9yKFxuXHRcdFx0XHQnYGNoaWxkcmVuYCBvZiBgVGV4dGAgbXVzdCBvbmx5IGJlIGBzdHJpbmdgIHR5cGVzIHdoZW4gYGhpZ2hsaWdodFdvcmRzYCBpcyBkZWZpbmVkJ1xuXHRcdFx0KTtcblx0XHR9XG5cblx0XHRjb250ZW50ID0gY3JlYXRlSGlnaGxpZ2h0ZXJUZXh0KCB7XG5cdFx0XHRhdXRvRXNjYXBlOiBoaWdobGlnaHRFc2NhcGUsXG5cdFx0XHRjaGlsZHJlbixcblx0XHRcdGNhc2VTZW5zaXRpdmU6IGhpZ2hsaWdodENhc2VTZW5zaXRpdmUsXG5cdFx0XHRzZWFyY2hXb3JkczogaGlnaGxpZ2h0V29yZHMsXG5cdFx0XHRzYW5pdGl6ZTogaGlnaGxpZ2h0U2FuaXRpemUsXG5cdFx0fSApO1xuXHR9XG5cblx0Y29uc3QgY3ggPSB1c2VDeCgpO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Y29uc3Qgc3g6IFJlY29yZDwgc3RyaW5nLCBTZXJpYWxpemVkU3R5bGVzIHwgbnVsbCA+ID0ge307XG5cblx0XHRjb25zdCBsaW5lSGVpZ2h0ID0gZ2V0TGluZUhlaWdodChcblx0XHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdFx0bGluZUhlaWdodFByb3Bcblx0XHQpO1xuXG5cdFx0c3guQmFzZSA9IGNzcygge1xuXHRcdFx0Y29sb3IsXG5cdFx0XHRkaXNwbGF5LFxuXHRcdFx0Zm9udFNpemU6IGdldEZvbnRTaXplKCBzaXplICksXG5cdFx0XHRmb250V2VpZ2h0OiB3ZWlnaHQsXG5cdFx0XHRsaW5lSGVpZ2h0LFxuXHRcdFx0bGV0dGVyU3BhY2luZyxcblx0XHRcdHRleHRBbGlnbjogYWxpZ24sXG5cdFx0fSApO1xuXG5cdFx0c3gudXBwZXJDYXNlID0gY3NzKCB7IHRleHRUcmFuc2Zvcm06ICd1cHBlcmNhc2UnIH0gKTtcblxuXHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBudWxsO1xuXG5cdFx0aWYgKCBvcHRpbWl6ZVJlYWRhYmlsaXR5Rm9yICkge1xuXHRcdFx0Y29uc3QgaXNPcHRpbWFsVGV4dENvbG9yRGFyayA9XG5cdFx0XHRcdGdldE9wdGltYWxUZXh0U2hhZGUoIG9wdGltaXplUmVhZGFiaWxpdHlGb3IgKSA9PT0gJ2RhcmsnO1xuXG5cdFx0XHQvLyBTaG91bGQgbm90IHVzZSB0aGVtZSBjb2xvcnNcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IgPSBpc09wdGltYWxUZXh0Q29sb3JEYXJrXG5cdFx0XHRcdD8gY3NzKCB7IGNvbG9yOiBDT0xPUlMuZ3JheVsgOTAwIF0gfSApXG5cdFx0XHRcdDogY3NzKCB7IGNvbG9yOiBDT0xPUlMud2hpdGUgfSApO1xuXHRcdH1cblxuXHRcdHJldHVybiBjeChcblx0XHRcdHN0eWxlcy5UZXh0LFxuXHRcdFx0c3guQmFzZSxcblx0XHRcdHN4Lm9wdGltYWxUZXh0Q29sb3IsXG5cdFx0XHRpc0Rlc3RydWN0aXZlICYmIHN0eWxlcy5kZXN0cnVjdGl2ZSxcblx0XHRcdCEhIGlzSGlnaGxpZ2h0ZXIgJiYgc3R5bGVzLmhpZ2hsaWdodGVyVGV4dCxcblx0XHRcdGlzQmxvY2sgJiYgc3R5bGVzLmJsb2NrLFxuXHRcdFx0aXNDYXB0aW9uICYmIHN0eWxlcy5tdXRlZCxcblx0XHRcdHZhcmlhbnQgJiYgc3R5bGVzWyB2YXJpYW50IF0sXG5cdFx0XHR1cHBlckNhc2UgJiYgc3gudXBwZXJDYXNlLFxuXHRcdFx0Y2xhc3NOYW1lXG5cdFx0KTtcblx0fSwgW1xuXHRcdGFkanVzdExpbmVIZWlnaHRGb3JJbm5lckNvbnRyb2xzLFxuXHRcdGFsaWduLFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2xvcixcblx0XHRjeCxcblx0XHRkaXNwbGF5LFxuXHRcdGlzQmxvY2ssXG5cdFx0aXNDYXB0aW9uLFxuXHRcdGlzRGVzdHJ1Y3RpdmUsXG5cdFx0aXNIaWdobGlnaHRlcixcblx0XHRsZXR0ZXJTcGFjaW5nLFxuXHRcdGxpbmVIZWlnaHRQcm9wLFxuXHRcdG9wdGltaXplUmVhZGFiaWxpdHlGb3IsXG5cdFx0c2l6ZSxcblx0XHR1cHBlckNhc2UsXG5cdFx0dmFyaWFudCxcblx0XHR3ZWlnaHQsXG5cdF0gKTtcblxuXHRsZXQgZmluYWxFbGxpcHNpemVNb2RlOiB1bmRlZmluZWQgfCAnYXV0bycgfCAnbm9uZSc7XG5cdGlmICggdHJ1bmNhdGUgPT09IHRydWUgKSB7XG5cdFx0ZmluYWxFbGxpcHNpemVNb2RlID0gJ2F1dG8nO1xuXHR9XG5cdGlmICggdHJ1bmNhdGUgPT09IGZhbHNlICkge1xuXHRcdGZpbmFsRWxsaXBzaXplTW9kZSA9ICdub25lJztcblx0fVxuXG5cdGNvbnN0IGZpbmFsQ29tcG9uZW50UHJvcHMgPSB7XG5cdFx0Li4ub3RoZXJQcm9wcyxcblx0XHRjbGFzc05hbWU6IGNsYXNzZXMsXG5cdFx0Y2hpbGRyZW4sXG5cdFx0ZWxsaXBzaXplTW9kZTogZWxsaXBzaXplTW9kZSB8fCBmaW5hbEVsbGlwc2l6ZU1vZGUsXG5cdH07XG5cblx0Y29uc3QgdHJ1bmNhdGVQcm9wcyA9IHVzZVRydW5jYXRlKCBmaW5hbENvbXBvbmVudFByb3BzICk7XG5cblx0LyoqXG5cdCAqIEVuaGFuY2UgY2hpbGQgYDxMaW5rIC8+YCBjb21wb25lbnRzIHRvIGluaGVyaXQgZm9udCBzaXplLlxuXHQgKi9cblx0aWYgKCAhIHRydW5jYXRlICYmIEFycmF5LmlzQXJyYXkoIGNoaWxkcmVuICkgKSB7XG5cdFx0Y29udGVudCA9IENoaWxkcmVuLm1hcCggY2hpbGRyZW4sICggY2hpbGQgKSA9PiB7XG5cdFx0XHRpZiAoXG5cdFx0XHRcdHR5cGVvZiBjaGlsZCAhPT0gJ29iamVjdCcgfHxcblx0XHRcdFx0Y2hpbGQgPT09IG51bGwgfHxcblx0XHRcdFx0ISAoICdwcm9wcycgaW4gY2hpbGQgKVxuXHRcdFx0KSB7XG5cdFx0XHRcdHJldHVybiBjaGlsZDtcblx0XHRcdH1cblxuXHRcdFx0Y29uc3QgaXNMaW5rID0gaGFzQ29ubmVjdE5hbWVzcGFjZSggY2hpbGQsIFsgJ0xpbmsnIF0gKTtcblx0XHRcdGlmICggaXNMaW5rICkge1xuXHRcdFx0XHRyZXR1cm4gY2xvbmVFbGVtZW50KCBjaGlsZCwge1xuXHRcdFx0XHRcdHNpemU6IGNoaWxkLnByb3BzLnNpemUgfHwgJ2luaGVyaXQnLFxuXHRcdFx0XHR9ICk7XG5cdFx0XHR9XG5cblx0XHRcdHJldHVybiBjaGlsZDtcblx0XHR9ICk7XG5cdH1cblxuXHRyZXR1cm4ge1xuXHRcdC4uLnRydW5jYXRlUHJvcHMsXG5cdFx0Y2hpbGRyZW46IHRydW5jYXRlID8gdHJ1bmNhdGVQcm9wcy5jaGlsZHJlbiA6IGNvbnRlbnQsXG5cdH07XG59XG4iXX0= */");
-    }
-    return cx2(Text2, sx.Base, sx.optimalTextColor, isDestructive && destructive, !!isHighlighter && highlighterText, isBlock && block, isCaption && muted, variant && styles_exports2[variant], upperCase2 && sx.upperCase, className);
-  }, [adjustLineHeightForInnerControls, align, className, color, cx2, display, isBlock, isCaption, isDestructive, isHighlighter, letterSpacing, lineHeightProp, optimizeReadabilityFor, size, upperCase2, variant, weight]);
-  let finalEllipsizeMode;
-  if (truncate === true) {
-    finalEllipsizeMode = "auto";
-  }
-  if (truncate === false) {
-    finalEllipsizeMode = "none";
-  }
-  const finalComponentProps = {
-    ...otherProps,
-    className: classes,
-    children,
-    ellipsizeMode: ellipsizeMode || finalEllipsizeMode
-  };
-  const truncateProps = useTruncate(finalComponentProps);
-  if (!truncate && Array.isArray(children)) {
-    content = _react.Children.map(children, (child) => {
-      if (typeof child !== "object" || child === null || !("props" in child)) {
-        return child;
-      }
-      const isLink = hasConnectNamespace(child, ["Link"]);
-      if (isLink) {
-        return _react.cloneElement.call(void 0, child, {
-          size: child.props.size || "inherit"
-        });
-      }
-      return child;
-    });
-  }
-  return {
-    ...truncateProps,
-    children: truncate ? truncateProps.children : content
-  };
-}
-
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/text/component.mjs
-
-function UnconnectedText(props, forwardedRef) {
-  const textProps = useText(props);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default, {
-    as: "span",
-    ...textProps,
-    ref: forwardedRef
-  });
-}
-var Text3 = contextConnect(UnconnectedText, "Text");
-var component_default2 = Text3;
-
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
   bottom: {
@@ -7362,7 +6517,7 @@ function UnconnectedGrid(props, forwardedRef) {
   });
 }
 var Grid2 = contextConnect(UnconnectedGrid, "Grid");
-var component_default3 = Grid2;
+var component_default2 = Grid2;
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
 
@@ -7392,7 +6547,7 @@ function useLeaderboardLegendItems({
       overrideColor: primaryColor || leaderboardChartSettings.primaryColor
     });
     items.push({
-      label: _optionalChain([legendLabels, 'optionalAccess', _174 => _174.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
+      label: _optionalChain([legendLabels, 'optionalAccess', _168 => _168.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
       color: resolvedPrimaryColor
     });
     if (withComparison && !withOverlayLabel) {
@@ -7401,7 +6556,7 @@ function useLeaderboardLegendItems({
         overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
       });
       items.push({
-        label: _optionalChain([legendLabels, 'optionalAccess', _175 => _175.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
+        label: _optionalChain([legendLabels, 'optionalAccess', _169 => _169.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
         color: resolvedSecondaryColor
       });
     }
@@ -7452,7 +6607,7 @@ var defaultDeltaFormatter = (value) => {
 var BarLabel = ({
   label
 }) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
-  children: typeof label === "string" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+  children: typeof label === "string" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Text, {
     className: leaderboard_chart_module_default.label,
     children: label
   }) : label
@@ -7653,7 +6808,7 @@ var LeaderboardChartInternal = ({
         children: allSeriesHidden ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
           className: leaderboard_chart_module_default.emptyState,
           children: _i18n.__.call(void 0, "All series are hidden. Click legend items to show data.", "jetpack-charts")
-        }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default3, {
+        }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
           templateColumns: "minmax(0, 1fr) auto",
           rowGap,
           columnGap,
@@ -7680,9 +6835,9 @@ var LeaderboardChartInternal = ({
                 className: _clsx2.default.call(void 0, leaderboard_chart_module_default.valueContainer, {
                   [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel
                 }),
-                children: [isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+                children: [isPrimaryVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Text, {
                   children: valueFormatter(entry.currentValue)
-                }), withComparison && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, component_default2, {
+                }), withComparison && isComparisonVisible && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Text, {
                   style: {
                     color: deltaColor
                   },
@@ -7742,7 +6897,7 @@ var DefaultGlyph = (props) => {
     cy: props.y,
     r: props.size,
     fill: props.color,
-    stroke: _optionalChain([theme, 'optionalAccess', _176 => _176.backgroundColor]),
+    stroke: _optionalChain([theme, 'optionalAccess', _170 => _170.backgroundColor]),
     strokeWidth: 1.5,
     paintOrder: "fill",
     ...props.glyphStyle
@@ -7799,8 +6954,8 @@ var LineChartAnnotationLabelWithPopover = ({
       }
       setIsPositioned(true);
     };
-    popover.addEventListener("toggle", (e2) => {
-      if (e2.newState === "open") {
+    popover.addEventListener("toggle", (e) => {
+      if (e.newState === "open") {
         positionPopover();
       }
     });
@@ -7808,7 +6963,7 @@ var LineChartAnnotationLabelWithPopover = ({
       if (popover.matches(":popover-open")) {
         positionPopover();
       }
-    } catch (e4) {
+    } catch (e3) {
     }
   }, [isBrowserSafari]);
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
@@ -7878,7 +7033,7 @@ var LineChartAnnotationsOverlay = ({
     return `${xDomain.join(",")}-${yDomain.join(",")}-${xRange.join(",")}-${yRange.join(",")}`;
   }, []);
   const getScalesData = _react.useCallback.call(void 0, () => {
-    if (_optionalChain([chartRef, 'optionalAccess', _177 => _177.current])) {
+    if (_optionalChain([chartRef, 'optionalAccess', _171 => _171.current])) {
       const scaleData = chartRef.current.getScales();
       if (scaleData) {
         const scaleInfo = {
@@ -7963,9 +7118,9 @@ var ANNOTATION_MAX_WIDTH = 125;
 var ANNOTATION_INIT_HEIGHT = 100;
 var getLabelPosition = ({
   subjectType,
-  x: x2,
+  x,
   xMax,
-  y: y2,
+  y,
   yMin,
   yMax,
   maxWidth,
@@ -7985,7 +7140,7 @@ var getLabelPosition = ({
     dx = 20;
     dy = 0;
   }
-  const effectiveX = x2 + dx;
+  const effectiveX = x + dx;
   if (effectiveX + annotationMaxWidth > xMax) {
     isFlippedHorizontally = true;
     if (subjectType === "circle") {
@@ -7995,18 +7150,18 @@ var getLabelPosition = ({
     }
   }
   if (subjectType === "circle") {
-    if (y2 + dy + annotationHeight > yMin) {
+    if (y + dy + annotationHeight > yMin) {
       isFlippedVertically = true;
       dy = -Math.abs(dy);
     }
-  } else if (y2 - annotationHeight < yMax) {
+  } else if (y - annotationHeight < yMax) {
     if (subjectType === "line-horizontal") {
       isFlippedVertically = true;
       dy = Math.abs(dy);
     } else if (subjectType === "line-vertical") {
       isFlippedVertically = true;
     }
-  } else if (y2 + annotationHeight > yMin) {
+  } else if (y + annotationHeight > yMin) {
     if (subjectType === "line-horizontal") {
       isFlippedVertically = true;
       dy = -Math.abs(dy);
@@ -8027,10 +7182,10 @@ var getHorizontalAnchor = (subjectType, isFlippedHorizontally) => {
   }
   return void 0;
 };
-var getVerticalAnchor = (subjectType, isFlippedVertically, y2, yMax, height) => {
+var getVerticalAnchor = (subjectType, isFlippedVertically, y, yMax, height) => {
   if (subjectType === "line-vertical") {
     if (isFlippedVertically) {
-      return y2 - height < yMax ? "start" : "end";
+      return y - height < yMax ? "start" : "end";
     }
     return "start";
   }
@@ -8055,23 +7210,23 @@ var LineChartAnnotation = ({
   const [height, setHeight] = _react.useState.call(void 0, null);
   const styles = _deepmerge2.default.call(void 0, _nullishCoalesce(providerTheme.annotationStyles, () => ( {})), _nullishCoalesce(datumStyles, () => ( {})));
   _react.useEffect.call(void 0, () => {
-    if (_optionalChain([labelRef, 'access', _178 => _178.current, 'optionalAccess', _179 => _179.getBBox])) {
+    if (_optionalChain([labelRef, 'access', _172 => _172.current, 'optionalAccess', _173 => _173.getBBox])) {
       const bbox = labelRef.current.getBBox();
       setHeight(bbox.height);
     }
   }, []);
   const positionData = _react.useMemo.call(void 0, () => {
     if (!datum || !datum.date || datum.value == null || !xScale || !yScale) return null;
-    const x3 = xScale(datum.date);
-    const y3 = yScale(datum.value);
-    if (typeof x3 !== "number" || typeof y3 !== "number") return null;
+    const x2 = xScale(datum.date);
+    const y2 = yScale(datum.value);
+    if (typeof x2 !== "number" || typeof y2 !== "number") return null;
     const [yMin2, yMax2] = yScale.range().map(Number);
     const [xMin2, xMax2] = xScale.range().map(Number);
     if (renderLabel) {
       return {
-        x: x3,
+        x: x2,
         dx: 0,
-        y: y3,
+        y: y2,
         dy: 0,
         yMin: yMin2,
         yMax: yMax2,
@@ -8083,28 +7238,28 @@ var LineChartAnnotation = ({
     }
     const position2 = getLabelPosition({
       subjectType,
-      x: x3,
+      x: x2,
       xMax: xMax2,
-      y: y3,
+      y: y2,
       yMin: yMin2,
       yMax: yMax2,
-      maxWidth: _optionalChain([styles, 'optionalAccess', _180 => _180.label, 'optionalAccess', _181 => _181.maxWidth]),
+      maxWidth: _optionalChain([styles, 'optionalAccess', _174 => _174.label, 'optionalAccess', _175 => _175.maxWidth]),
       height
     });
     return {
-      x: x3,
-      y: y3,
+      x: x2,
+      y: y2,
       yMin: yMin2,
       yMax: yMax2,
       xMin: xMin2,
       xMax: xMax2,
       ...position2
     };
-  }, [datum, xScale, yScale, subjectType, _optionalChain([styles, 'optionalAccess', _182 => _182.label, 'optionalAccess', _183 => _183.maxWidth]), height, renderLabel]);
+  }, [datum, xScale, yScale, subjectType, _optionalChain([styles, 'optionalAccess', _176 => _176.label, 'optionalAccess', _177 => _177.maxWidth]), height, renderLabel]);
   if (!positionData) return null;
   const {
-    x: x2,
-    y: y2,
+    x,
+    y,
     yMin,
     yMax,
     xMin,
@@ -8115,13 +7270,13 @@ var LineChartAnnotation = ({
     isFlippedVertically
   } = positionData;
   const getLabelY = () => {
-    const labelY = _optionalChain([styles, 'optionalAccess', _184 => _184.label, 'optionalAccess', _185 => _185.y]);
+    const labelY = _optionalChain([styles, 'optionalAccess', _178 => _178.label, 'optionalAccess', _179 => _179.y]);
     if (labelY === "start") return yMax;
     if (labelY === "end") return yMin;
     return labelY;
   };
   const getLabelX = () => {
-    const labelX = _optionalChain([styles, 'optionalAccess', _186 => _186.label, 'optionalAccess', _187 => _187.x]);
+    const labelX = _optionalChain([styles, 'optionalAccess', _180 => _180.label, 'optionalAccess', _181 => _181.x]);
     if (labelX === "start") return xMin;
     if (labelX === "end") return xMax;
     return labelX;
@@ -8134,33 +7289,33 @@ var LineChartAnnotation = ({
     const labelWidth = POPOVER_BUTTON_SIZE;
     const labelHeight = POPOVER_BUTTON_SIZE;
     return isSafari() ? {
-      transform: `translate(${x2 + (dx || 0) + (typeof labelPosition.x === "number" ? labelPosition.x - x2 : 0) - labelWidth}px, ${y2 + (dy || 0) + (typeof labelPosition.y === "number" ? labelPosition.y - y2 : 0) - labelHeight}px)`,
+      transform: `translate(${x + (dx || 0) + (typeof labelPosition.x === "number" ? labelPosition.x - x : 0) - labelWidth}px, ${y + (dy || 0) + (typeof labelPosition.y === "number" ? labelPosition.y - y : 0) - labelHeight}px)`,
       width: labelWidth,
       height: labelHeight
     } : void 0;
   };
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "g", {
     children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _annotation.Annotation, {
-      x: x2,
-      y: y2,
+      x,
+      y,
       dx,
       dy,
       children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Connector, {
-        ..._optionalChain([styles, 'optionalAccess', _188 => _188.connector])
+        ..._optionalChain([styles, 'optionalAccess', _182 => _182.connector])
       }), subjectType === "circle" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.CircleSubject, {
-        ..._optionalChain([styles, 'optionalAccess', _189 => _189.circleSubject])
+        ..._optionalChain([styles, 'optionalAccess', _183 => _183.circleSubject])
       }), subjectType === "line-vertical" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
         min: yMax,
         max: yMin,
-        ..._optionalChain([styles, 'optionalAccess', _190 => _190.lineSubject]),
+        ..._optionalChain([styles, 'optionalAccess', _184 => _184.lineSubject]),
         orientation: "vertical"
       }), subjectType === "line-horizontal" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
         min: xMin,
         max: xMax,
-        ..._optionalChain([styles, 'optionalAccess', _191 => _191.lineSubject]),
+        ..._optionalChain([styles, 'optionalAccess', _185 => _185.lineSubject]),
         orientation: "horizontal"
       }), renderLabel ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.HtmlLabel, {
-        ..._optionalChain([styles, 'optionalAccess', _192 => _192.label]),
+        ..._optionalChain([styles, 'optionalAccess', _186 => _186.label]),
         ...labelPosition,
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
           style: getSafariHTMLLabelPosition(),
@@ -8179,10 +7334,10 @@ var LineChartAnnotation = ({
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Label, {
           title,
           subtitle,
-          ..._optionalChain([styles, 'optionalAccess', _193 => _193.label]),
+          ..._optionalChain([styles, 'optionalAccess', _187 => _187.label]),
           ...labelPosition,
           horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally),
-          verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y2, yMax, _nullishCoalesce(height, () => ( ANNOTATION_INIT_HEIGHT)))
+          verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, _nullishCoalesce(height, () => ( ANNOTATION_INIT_HEIGHT)))
         })
       })]
     })
@@ -8213,18 +7368,18 @@ var LineChartGlyph = ({
   if (!xScale || !yScale) return null;
   if (data.data.length === 0) return null;
   const point = position2 === "start" ? data.data[0] : data.data[data.data.length - 1];
-  const x2 = xScale(accessors.xAccessor(point));
-  const y2 = yScale(accessors.yAccessor(point));
-  if (typeof x2 !== "number" || typeof y2 !== "number") return null;
-  const size = Math.max(0, _nullishCoalesce(toNumber(_optionalChain([glyphStyle, 'optionalAccess', _194 => _194.radius])), () => ( 4)));
+  const x = xScale(accessors.xAccessor(point));
+  const y = yScale(accessors.yAccessor(point));
+  if (typeof x !== "number" || typeof y !== "number") return null;
+  const size = Math.max(0, _nullishCoalesce(toNumber(_optionalChain([glyphStyle, 'optionalAccess', _188 => _188.radius])), () => ( 4)));
   return renderGlyph({
     key: `${position2}-glyph-${data.label}`,
     index,
     datum: point,
     color,
     size,
-    x: x2,
-    y: y2,
+    x,
+    y,
     glyphStyle,
     position: position2
   });
@@ -8263,19 +7418,19 @@ var renderDefaultTooltip = (params) => {
   const {
     tooltipData
   } = params;
-  const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _195 => _195.nearestDatum, 'optionalAccess', _196 => _196.datum]);
+  const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _189 => _189.nearestDatum, 'optionalAccess', _190 => _190.datum]);
   if (!nearestDatum) return null;
-  const tooltipPoints = Object.entries(_optionalChain([tooltipData, 'optionalAccess', _197 => _197.datumByKey]) || {}).map(([key, {
+  const tooltipPoints = Object.entries(_optionalChain([tooltipData, 'optionalAccess', _191 => _191.datumByKey]) || {}).map(([key, {
     datum
   }]) => ({
     key,
     value: datum.value
-  })).sort((a2, b2) => b2.value - a2.value);
+  })).sort((a, b) => b.value - a.value);
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
     className: line_chart_module_default["line-chart__tooltip"],
     children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: line_chart_module_default["line-chart__tooltip-date"],
-      children: _optionalChain([nearestDatum, 'access', _198 => _198.date, 'optionalAccess', _199 => _199.toLocaleDateString, 'call', _200 => _200()])
+      children: _optionalChain([nearestDatum, 'access', _192 => _192.date, 'optionalAccess', _193 => _193.toLocaleDateString, 'call', _194 => _194()])
     }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
       className: line_chart_module_default["line-chart__tooltip-row"],
       children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
@@ -8309,8 +7464,8 @@ var formatHourTick = (timestamp) => {
   });
 };
 var getFormatter = (sortedData) => {
-  const minX = Math.min(...sortedData.map((datom) => _optionalChain([datom, 'access', _201 => _201.data, 'access', _202 => _202.at, 'call', _203 => _203(0), 'optionalAccess', _204 => _204.date])));
-  const maxX = Math.max(...sortedData.map((datom) => _optionalChain([datom, 'access', _205 => _205.data, 'access', _206 => _206.at, 'call', _207 => _207(-1), 'optionalAccess', _208 => _208.date])));
+  const minX = Math.min(...sortedData.map((datom) => _optionalChain([datom, 'access', _195 => _195.data, 'access', _196 => _196.at, 'call', _197 => _197(0), 'optionalAccess', _198 => _198.date])));
+  const maxX = Math.max(...sortedData.map((datom) => _optionalChain([datom, 'access', _199 => _199.data, 'access', _200 => _200.at, 'call', _201 => _201(-1), 'optionalAccess', _202 => _202.date])));
   const diffInHours = Math.abs(_datefns.differenceInHours.call(void 0, maxX, minX));
   if (diffInHours <= 24) {
     return formatHourTick;
@@ -8322,19 +7477,19 @@ var getFormatter = (sortedData) => {
   return formatYearTick;
 };
 var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
-  const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _209 => _209.data, 'access', _210 => _210.at, 'call', _211 => _211(0), 'optionalAccess', _212 => _212.date])));
-  const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _213 => _213.data, 'access', _214 => _214.at, 'call', _215 => _215(-1), 'optionalAccess', _216 => _216.date])));
+  const minX = Math.min(...data.map((datom) => _optionalChain([datom, 'access', _203 => _203.data, 'access', _204 => _204.at, 'call', _205 => _205(0), 'optionalAccess', _206 => _206.date])));
+  const maxX = Math.max(...data.map((datom) => _optionalChain([datom, 'access', _207 => _207.data, 'access', _208 => _208.at, 'call', _209 => _209(-1), 'optionalAccess', _210 => _210.date])));
   const xScale = _scale.scaleTime.call(void 0, {
     domain: [minX, maxX]
   });
   const upperBound = Math.min(
-    _optionalChain([data, 'access', _217 => _217[0], 'optionalAccess', _218 => _218.data, 'access', _219 => _219.length]) || 3,
+    _optionalChain([data, 'access', _211 => _211[0], 'optionalAccess', _212 => _212.data, 'access', _213 => _213.length]) || 3,
     // A sane fallback to avoid NaN when no data is present
     Math.ceil(chartWidth / X_TICK_WIDTH)
   );
   let secondBestGuess = 1;
   for (let numTicks = upperBound; numTicks > 1; --numTicks) {
-    const ticks = xScale.ticks(numTicks).map((d2) => tickFormatter(d2.getTime()));
+    const ticks = xScale.ticks(numTicks).map((d) => tickFormatter(d.getTime()));
     if (ticks.length > upperBound) {
       continue;
     }
@@ -8352,7 +7507,7 @@ var guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
   return secondBestGuess;
 };
 var validateData2 = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _220 => _220.length])) return "No data available";
+  if (!_optionalChain([data, 'optionalAccess', _214 => _214.length])) return "No data available";
   const hasInvalidData = data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())));
   if (hasInvalidData) return "Invalid data";
   return null;
@@ -8366,7 +7521,7 @@ var LineChartScalesRef = ({
   const context = _react.useContext.call(void 0, _xychart.DataContext);
   _react.useImperativeHandle.call(void 0, chartRef, () => ({
     getScales: () => {
-      if (!_optionalChain([context, 'optionalAccess', _221 => _221.xScale]) || !_optionalChain([context, 'optionalAccess', _222 => _222.yScale])) {
+      if (!_optionalChain([context, 'optionalAccess', _215 => _215.xScale]) || !_optionalChain([context, 'optionalAccess', _216 => _216.yScale])) {
         return null;
       }
       return {
@@ -8432,8 +7587,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     setMeasuredChartHeight(chartHeight);
   }, [height]);
   _react.useImperativeHandle.call(void 0, ref, () => ({
-    getScales: () => _optionalChain([internalChartRef, 'access', _223 => _223.current, 'optionalAccess', _224 => _224.getScales, 'call', _225 => _225()]) || null,
-    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _226 => _226.current, 'optionalAccess', _227 => _227.getChartDimensions, 'call', _228 => _228()]) || {
+    getScales: () => _optionalChain([internalChartRef, 'access', _217 => _217.current, 'optionalAccess', _218 => _218.getScales, 'call', _219 => _219()]) || null,
+    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _220 => _220.current, 'optionalAccess', _221 => _221.getChartDimensions, 'call', _222 => _222()]) || {
       width: 0,
       height: 0,
       margin: {}
@@ -8474,10 +7629,10 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     isNavigating,
     setIsNavigating,
     chartRef,
-    totalPoints: _optionalChain([dataSorted, 'access', _229 => _229[0], 'optionalAccess', _230 => _230.data, 'access', _231 => _231.length]) || 0
+    totalPoints: _optionalChain([dataSorted, 'access', _223 => _223[0], 'optionalAccess', _224 => _224.data, 'access', _225 => _225.length]) || 0
   });
   const chartOptions = _react.useMemo.call(void 0, () => {
-    const formatter = _optionalChain([options, 'optionalAccess', _232 => _232.axis, 'optionalAccess', _233 => _233.x, 'optionalAccess', _234 => _234.tickFormat]) || getFormatter(dataSorted);
+    const formatter = _optionalChain([options, 'optionalAccess', _226 => _226.axis, 'optionalAccess', _227 => _227.x, 'optionalAccess', _228 => _228.tickFormat]) || getFormatter(dataSorted);
     return {
       axis: {
         x: {
@@ -8485,25 +7640,25 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
           tickFormat: formatter,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _235 => _235.axis, 'optionalAccess', _236 => _236.x])
+          ..._optionalChain([options, 'optionalAccess', _229 => _229.axis, 'optionalAccess', _230 => _230.x])
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: _numberformatters.formatNumberCompact,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _237 => _237.axis, 'optionalAccess', _238 => _238.y])
+          ..._optionalChain([options, 'optionalAccess', _231 => _231.axis, 'optionalAccess', _232 => _232.y])
         }
       },
       xScale: {
         type: "time",
-        ..._optionalChain([options, 'optionalAccess', _239 => _239.xScale])
+        ..._optionalChain([options, 'optionalAccess', _233 => _233.xScale])
       },
       yScale: {
         type: "linear",
         nice: true,
         zero: false,
-        ..._optionalChain([options, 'optionalAccess', _240 => _240.yScale])
+        ..._optionalChain([options, 'optionalAccess', _234 => _234.yScale])
       }
     };
   }, [options, dataSorted, width]);
@@ -8530,9 +7685,9 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const isDataValid = !error;
   const legendOptions = _react.useMemo.call(void 0, () => ({
     withGlyph: withLegendGlyph,
-    glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _241 => _241.radius])), () => ( 4))),
+    glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _235 => _235.radius])), () => ( 4))),
     renderGlyph
-  }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _242 => _242.radius]), renderGlyph]);
+  }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _236 => _236.radius]), renderGlyph]);
   const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     withGradientFill,
@@ -8551,8 +7706,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   });
   const prefersReducedMotion = usePrefersReducedMotion();
   const accessors = {
-    xAccessor: (d2) => _optionalChain([d2, 'optionalAccess', _243 => _243.date]),
-    yAccessor: (d2) => _optionalChain([d2, 'optionalAccess', _244 => _244.value])
+    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _237 => _237.date]),
+    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _238 => _238.value])
   };
   if (error) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
@@ -8662,21 +7817,21 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                     fromOpacity: 0.4,
                     toOpacity: 0.1,
                     to: providerTheme.backgroundColor,
-                    ..._optionalChain([seriesData, 'access', _245 => _245.options, 'optionalAccess', _246 => _246.gradient]),
-                    children: _optionalChain([seriesData, 'access', _247 => _247.options, 'optionalAccess', _248 => _248.gradient, 'optionalAccess', _249 => _249.stops, 'optionalAccess', _250 => _250.map, 'call', _251 => _251((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "stop", {
+                    ..._optionalChain([seriesData, 'access', _239 => _239.options, 'optionalAccess', _240 => _240.gradient]),
+                    children: _optionalChain([seriesData, 'access', _241 => _241.options, 'optionalAccess', _242 => _242.gradient, 'optionalAccess', _243 => _243.stops, 'optionalAccess', _244 => _244.map, 'call', _245 => _245((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "stop", {
                       offset: stop.offset,
                       stopColor: stop.color || color,
                       stopOpacity: _nullishCoalesce(stop.opacity, () => ( 1))
                     }, `${stop.offset}-${stop.color || color}`))])
                   }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.AreaSeries, {
-                    dataKey: _optionalChain([seriesData, 'optionalAccess', _252 => _252.label]),
+                    dataKey: _optionalChain([seriesData, 'optionalAccess', _246 => _246.label]),
                     data: seriesData.data,
                     ...accessors,
                     fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
                     renderLine: true,
                     curve: getCurveType(curveType, smoothing),
                     lineProps
-                  }, _optionalChain([seriesData, 'optionalAccess', _253 => _253.label])), withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
+                  }, _optionalChain([seriesData, 'optionalAccess', _247 => _247.label])), withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
                     index,
                     data: seriesData,
                     color,
@@ -8693,7 +7848,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                     glyphStyle,
                     position: "end"
                   })]
-                }, _optionalChain([seriesData, 'optionalAccess', _254 => _254.label]) || index);
+                }, _optionalChain([seriesData, 'optionalAccess', _248 => _248.label]) || index);
               }), withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, AccessibleTooltip, {
                 detectBounds: true,
                 snapTooltipToDatumX: true,
@@ -8702,8 +7857,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                 renderTooltip,
                 renderGlyph: tooltipRenderGlyph,
                 glyphStyle,
-                showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _255 => _255.showVertical]),
-                showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _256 => _256.showHorizontal]),
+                showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _249 => _249.showVertical]),
+                showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _250 => _250.showHorizontal]),
                 selectedIndex,
                 tooltipRef,
                 keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
@@ -8951,19 +8106,19 @@ var PieChartInternal = ({
     });
   }
   const padAngle = gapScale * (2 * Math.PI / data.length);
-  const dataWithIndex = visibleData.map((d2) => {
-    const originalIndex = data.findIndex((item) => item.label === d2.label);
+  const dataWithIndex = visibleData.map((d) => {
+    const originalIndex = data.findIndex((item) => item.label === d.label);
     return {
-      ...d2,
+      ...d,
       index: originalIndex >= 0 ? originalIndex : 0
     };
   });
   const accessors = {
-    value: (d2) => d2.value,
-    fill: (d2) => {
+    value: (d) => d.value,
+    fill: (d) => {
       return getElementStyles({
-        data: d2,
-        index: d2.index
+        data: d,
+        index: d.index
       }).color;
     }
   };
@@ -9293,11 +8448,11 @@ var PieSemiCircleChartInternal = ({
     isSeriesVisible
   });
   const accessors = _react.useMemo.call(void 0, () => ({
-    value: (d2) => d2.value,
-    sort: (a2, b2) => b2.value - a2.value,
-    fill: (d2) => getElementStyles({
-      data: d2,
-      index: d2.index
+    value: (d) => d.value,
+    sort: (a, b) => b.value - a.value,
+    fill: (d) => getElementStyles({
+      data: d,
+      index: d.index
     }).color
   }), [getElementStyles]);
   const legendOptions = _react.useMemo.call(void 0, () => ({
@@ -9342,10 +8497,10 @@ var PieSemiCircleChartInternal = ({
       })
     });
   }
-  const dataWithIndex = visibleData.map((d2) => {
-    const originalIndex = data.findIndex((item) => item.label === d2.label);
+  const dataWithIndex = visibleData.map((d) => {
+    const originalIndex = data.findIndex((item) => item.label === d.label);
     return {
-      ...d2,
+      ...d,
       index: originalIndex >= 0 ? originalIndex : 0
     };
   });
@@ -9542,7 +8697,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   animation
 }, ref) => {
   const theme = useGlobalChartsTheme();
-  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _257 => _257.sparkline, 'optionalAccess', _258 => _258.strokeWidth]), () => ( 1.5));
+  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _251 => _251.sparkline, 'optionalAccess', _252 => _252.strokeWidth]), () => ( 1.5));
   const strokeWidth = _nullishCoalesce(strokeWidthProp, () => ( themeStrokeWidth));
   const seriesData = _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
@@ -9551,7 +8706,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     return transformToSeriesData(data, color, strokeWidth);
   }, [data, color, strokeWidth]);
   const finalMargin = _react.useMemo.call(void 0, () => {
-    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _259 => _259.sparkline, 'optionalAccess', _260 => _260.margin]), () => ( {
+    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _253 => _253.sparkline, 'optionalAccess', _254 => _254.margin]), () => ( {
       top: 2,
       right: 2,
       bottom: 2,
@@ -9562,7 +8717,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       ...themeMargin,
       ...margin
     };
-  }, [marginProp, _optionalChain([theme, 'access', _261 => _261.sparkline, 'optionalAccess', _262 => _262.margin])]);
+  }, [marginProp, _optionalChain([theme, 'access', _255 => _255.sparkline, 'optionalAccess', _256 => _256.margin])]);
   const seriesWithGradient = _react.useMemo.call(void 0, () => {
     if (!gradient || seriesData.length === 0) {
       return seriesData;

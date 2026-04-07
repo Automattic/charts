@@ -1,4 +1,4 @@
-import "../../chunk-G3PMV62Z.js";
+import "../../chunk-5WRI5ZAA.js";
 
 // src/visx/legend/index.ts
 import { LineShape, CircleShape, RectShape } from "@visx/legend";

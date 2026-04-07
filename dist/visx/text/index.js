@@ -3,7 +3,7 @@ import {
   getStringWidth,
   useText
 } from "../../chunk-NFRB2POF.js";
-import "../../chunk-G3PMV62Z.js";
+import "../../chunk-5WRI5ZAA.js";
 export {
   Text,
   getStringWidth,
