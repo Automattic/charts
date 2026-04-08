@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Replace __experimentalText from @wordpress/components with stable Text from @wordpress/ui.
 - Update package dependencies.
 
+### Fixed
+- Storybook: Replace manual design-system token override with real WPDS ThemeProvider.
+
 ## [1.0.2] - 2026-04-06
 ### Changed
 - Conversion Funnel Chart: Rename non-BEM classnames to BEM modifiers. [#47854]
