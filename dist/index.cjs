@@ -6926,8 +6926,8 @@ var line_chart_module_default = {
 
 // src/charts/line-chart/private/line-chart-annotation-label-popover.tsx
 
+var _icons = require('@wordpress/icons');
 
-var _gridicons = require('gridicons'); var _gridicons2 = _interopRequireDefault(_gridicons);
 
 
 var POPOVER_BUTTON_SIZE = 44;
@@ -7000,8 +7000,8 @@ var LineChartAnnotationLabelWithPopover = ({
           popovertargetaction: "hide",
           className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
           "aria-label": _i18n.__.call(void 0, "Close", "jetpack-charts"),
-          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _gridicons2.default, {
-            icon: "cross",
+          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icons.Icon, {
+            icon: _icons.close,
             size: 16
           })
         })]
@@ -8822,7 +8822,7 @@ var DIRECTION_LABELS = {
   down: "Decrease",
   neutral: "No change"
 };
-var Icon = ({
+var Icon2 = ({
   direction
 }) => {
   if (direction === "neutral") {
@@ -8855,7 +8855,7 @@ function TrendIndicator({
     className: _clsx2.default.call(void 0, trend_indicator_module_default["trend-indicator"], trend_indicator_module_default[`trend-indicator--${direction}`], className),
     style,
     "aria-label": ariaLabel,
-    children: [showIcon && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Icon, {
+    children: [showIcon && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Icon2, {
       direction
     }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", {
       className: trend_indicator_module_default["trend-indicator__value"],

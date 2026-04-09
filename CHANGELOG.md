@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Fix Line Chart Annotations Custom and Alert story errors in Storybook by replacing the CJS-only gridicons dependency with @wordpress/icons.
 - Storybook: Replace manual design-system token override with real WPDS ThemeProvider.
 
 ## [1.0.2] - 2026-04-06
