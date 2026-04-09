@@ -920,6 +920,22 @@ function resolveVariableName(varName, element) {
   }
 }
 
+// src/utils/resolve-font-size.ts
+var resolveFontSize = (val) => {
+  if (typeof val === "number") {
+    return isNaN(val) ? void 0 : val;
+  }
+  if (typeof val === "string") {
+    const match2 = val.trim().match(/^(-?\d+\.?\d*|-?\.\d+)(px)?$/);
+    if (!match2) {
+      return void 0;
+    }
+    const parsed = parseFloat(match2[1]);
+    return isNaN(parsed) ? void 0 : parsed;
+  }
+  return void 0;
+};
+
 // src/providers/chart-context/private/get-chart-color.ts
 import { hsl as d3Hsl2 } from "@visx/vendor/d3-color";
 var GOLDEN_RATIO = 0.618033988749;
@@ -1026,7 +1042,13 @@ var defaultTheme = {
   },
   seriesLineStyles: [],
   glyphs: [],
-  svgLabelSmall: { fill: "var(--jp-gray-80, #2c3338)" },
+  // `fontFamily: 'inherit'` overrides visx's hardcoded default font stack
+  // (`-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif`)
+  // that `buildChartTheme` injects as an inline style on SVG `<text>`
+  // elements for axis labels and ticks. Setting `inherit` lets SVG text
+  // pick up the host application's font-family via normal CSS inheritance.
+  svgLabelSmall: { fill: "var(--jp-gray-80, #2c3338)", fontFamily: "inherit" },
+  svgLabelBig: { fontFamily: "inherit" },
   annotationStyles: {
     label: {
       anchorLineStroke: "var(--jp-gray-80, #2c3338)",
@@ -1326,16 +1348,6 @@ var DEFAULT_BOTTOM_FOR_TOP_AXIS = 10;
 var DEFAULT_FONT_SIZE = 12;
 var DEFAULT_TICK_LENGTH = 8;
 var DEFAULT_Y_TICK_WIDTH = 40;
-var resolveFontSize = (val) => {
-  if (typeof val === "number" && !isNaN(val)) {
-    return val;
-  }
-  if (typeof val === "string") {
-    const parsed = parseFloat(val);
-    return isNaN(parsed) ? void 0 : parsed;
-  }
-  return void 0;
-};
 var getXAxisLabelMetrics = (theme, orientation) => {
   const xAxisStyles = orientation === "top" ? theme.axisStyles?.x?.top : theme.axisStyles?.x?.bottom;
   const fontSize = resolveFontSize(xAxisStyles?.axisLabel?.fontSize) || resolveFontSize(theme.svgLabelSmall?.fontSize) || DEFAULT_FONT_SIZE;
@@ -3788,7 +3800,6 @@ import { useRef as useRef8, useMemo as useMemo17, useEffect as useEffect8, useCa
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
-  "conversion-funnel-chart": "a8ccharts-B0ct23",
   "conversion-funnel-chart--loading": "a8ccharts-Qicx1p",
   "main-metric": "a8ccharts-61WPYr",
   "main-rate": "a8ccharts-RRRI6x",
@@ -8245,9 +8256,12 @@ var PieChartInternal = ({
                       groupProps.onMouseMove = handleMouseMove;
                       groupProps.onMouseLeave = onMouseLeave;
                     }
-                    const fontSize = 12;
+                    const svgLabelSmall = providerTheme.svgLabelSmall;
+                    const fontSize = resolveFontSize(svgLabelSmall?.fontSize) ?? 12;
                     const estimatedTextWidth = getStringWidth(arc.data.label, {
-                      fontSize
+                      fontSize,
+                      fontFamily: svgLabelSmall?.fontFamily,
+                      fontWeight: svgLabelSmall?.fontWeight
                     });
                     const labelPadding = 6;
                     const backgroundWidth = estimatedTextWidth + labelPadding * 2;

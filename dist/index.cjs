@@ -920,6 +920,22 @@ function resolveVariableName(varName, element) {
   }
 }
 
+// src/utils/resolve-font-size.ts
+var resolveFontSize = (val) => {
+  if (typeof val === "number") {
+    return isNaN(val) ? void 0 : val;
+  }
+  if (typeof val === "string") {
+    const match2 = val.trim().match(/^(-?\d+\.?\d*|-?\.\d+)(px)?$/);
+    if (!match2) {
+      return void 0;
+    }
+    const parsed = parseFloat(match2[1]);
+    return isNaN(parsed) ? void 0 : parsed;
+  }
+  return void 0;
+};
+
 // src/providers/chart-context/private/get-chart-color.ts
 
 var GOLDEN_RATIO = 0.618033988749;
@@ -1026,7 +1042,13 @@ var defaultTheme = {
   },
   seriesLineStyles: [],
   glyphs: [],
-  svgLabelSmall: { fill: "var(--jp-gray-80, #2c3338)" },
+  // `fontFamily: 'inherit'` overrides visx's hardcoded default font stack
+  // (`-apple-system,BlinkMacSystemFont,Roboto,Helvetica Neue,sans-serif`)
+  // that `buildChartTheme` injects as an inline style on SVG `<text>`
+  // elements for axis labels and ticks. Setting `inherit` lets SVG text
+  // pick up the host application's font-family via normal CSS inheritance.
+  svgLabelSmall: { fill: "var(--jp-gray-80, #2c3338)", fontFamily: "inherit" },
+  svgLabelBig: { fontFamily: "inherit" },
   annotationStyles: {
     label: {
       anchorLineStroke: "var(--jp-gray-80, #2c3338)",
@@ -1326,16 +1348,6 @@ var DEFAULT_BOTTOM_FOR_TOP_AXIS = 10;
 var DEFAULT_FONT_SIZE = 12;
 var DEFAULT_TICK_LENGTH = 8;
 var DEFAULT_Y_TICK_WIDTH = 40;
-var resolveFontSize = (val) => {
-  if (typeof val === "number" && !isNaN(val)) {
-    return val;
-  }
-  if (typeof val === "string") {
-    const parsed = parseFloat(val);
-    return isNaN(parsed) ? void 0 : parsed;
-  }
-  return void 0;
-};
 var getXAxisLabelMetrics = (theme, orientation) => {
   const xAxisStyles = orientation === "top" ? _optionalChain([theme, 'access', _31 => _31.axisStyles, 'optionalAccess', _32 => _32.x, 'optionalAccess', _33 => _33.top]) : _optionalChain([theme, 'access', _34 => _34.axisStyles, 'optionalAccess', _35 => _35.x, 'optionalAccess', _36 => _36.bottom]);
   const fontSize = resolveFontSize(_optionalChain([xAxisStyles, 'optionalAccess', _37 => _37.axisLabel, 'optionalAccess', _38 => _38.fontSize])) || resolveFontSize(_optionalChain([theme, 'access', _39 => _39.svgLabelSmall, 'optionalAccess', _40 => _40.fontSize])) || DEFAULT_FONT_SIZE;
@@ -3788,7 +3800,6 @@ var _tooltip = require('@visx/tooltip');
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
-  "conversion-funnel-chart": "a8ccharts-B0ct23",
   "conversion-funnel-chart--loading": "a8ccharts-Qicx1p",
   "main-metric": "a8ccharts-61WPYr",
   "main-rate": "a8ccharts-RRRI6x",
@@ -8245,9 +8256,12 @@ var PieChartInternal = ({
                       groupProps.onMouseMove = handleMouseMove;
                       groupProps.onMouseLeave = onMouseLeave;
                     }
-                    const fontSize = 12;
+                    const svgLabelSmall = providerTheme.svgLabelSmall;
+                    const fontSize = _nullishCoalesce(resolveFontSize(_optionalChain([svgLabelSmall, 'optionalAccess', _251 => _251.fontSize])), () => ( 12));
                     const estimatedTextWidth = _chunk7OZEQ5HEcjs.getStringWidth.call(void 0, arc.data.label, {
-                      fontSize
+                      fontSize,
+                      fontFamily: _optionalChain([svgLabelSmall, 'optionalAccess', _252 => _252.fontFamily]),
+                      fontWeight: _optionalChain([svgLabelSmall, 'optionalAccess', _253 => _253.fontWeight])
                     });
                     const labelPadding = 6;
                     const backgroundWidth = estimatedTextWidth + labelPadding * 2;
@@ -8697,7 +8711,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   animation
 }, ref) => {
   const theme = useGlobalChartsTheme();
-  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _251 => _251.sparkline, 'optionalAccess', _252 => _252.strokeWidth]), () => ( 1.5));
+  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _254 => _254.sparkline, 'optionalAccess', _255 => _255.strokeWidth]), () => ( 1.5));
   const strokeWidth = _nullishCoalesce(strokeWidthProp, () => ( themeStrokeWidth));
   const seriesData = _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
@@ -8706,7 +8720,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     return transformToSeriesData(data, color, strokeWidth);
   }, [data, color, strokeWidth]);
   const finalMargin = _react.useMemo.call(void 0, () => {
-    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _253 => _253.sparkline, 'optionalAccess', _254 => _254.margin]), () => ( {
+    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _256 => _256.sparkline, 'optionalAccess', _257 => _257.margin]), () => ( {
       top: 2,
       right: 2,
       bottom: 2,
@@ -8717,7 +8731,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       ...themeMargin,
       ...margin
     };
-  }, [marginProp, _optionalChain([theme, 'access', _255 => _255.sparkline, 'optionalAccess', _256 => _256.margin])]);
+  }, [marginProp, _optionalChain([theme, 'access', _258 => _258.sparkline, 'optionalAccess', _259 => _259.margin])]);
   const seriesWithGradient = _react.useMemo.call(void 0, () => {
     if (!gradient || seriesData.length === 0) {
       return seriesData;

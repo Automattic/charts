@@ -43,7 +43,7 @@
 .a8ccharts-Vflwq8 {
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
+  font-size: var(--wpds-font-size-md, 13px);
 }
 .a8ccharts-qGsavM {
   cursor: pointer;
@@ -85,7 +85,7 @@
   min-width: 0;
 }
 .a8ccharts-DTZlT- {
-  font-weight: 500;
+  font-weight: var(--wpds-font-weight-medium, 499);
   flex-shrink: 0;
 }
 
@@ -95,7 +95,7 @@
   background-color: rgba(0, 0, 0, 0.85);
   color: #fff;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--wpds-font-size-md, 13px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: absolute;
   pointer-events: none;
@@ -155,9 +155,6 @@
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss */
-.a8ccharts-B0ct23 {
-  font-family: var(--funnel-font-family, "SF Pro Text");
-}
 .a8ccharts-Qicx1p {
   opacity: 0.6;
   pointer-events: none;
@@ -173,21 +170,19 @@
   overflow: hidden;
   color: #1e1e1e;
   text-overflow: ellipsis;
-  font-family: var(--funnel-font-family, "SF Pro Text");
-  font-size: 18px;
+  font-size: var(--wpds-font-size-xl, 18px);
   font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
+  font-weight: var(--wpds-font-weight-medium, 499);
+  line-height: var(--wpds-font-line-height-sm, 20px);
   margin: 0;
 }
 .a8ccharts-661iwx {
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: var(--funnel-font-family, "SF Pro Text");
-  font-size: 13px;
+  font-size: var(--wpds-font-size-md, 13px);
   font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
+  font-weight: var(--wpds-font-weight-medium, 499);
+  line-height: var(--wpds-font-line-height-sm, 20px);
   margin: 0;
 }
 .a8ccharts-Z7EGnW {
@@ -216,11 +211,10 @@
 }
 .a8ccharts-6OabC4 {
   color: #757575;
-  font-family: var(--step-font-family, "SF Pro");
-  font-size: 12px;
+  font-size: var(--wpds-font-size-sm, 12px);
   font-style: normal;
-  font-weight: 400;
-  line-height: 16px;
+  font-weight: var(--wpds-font-weight-regular, 400);
+  line-height: var(--wpds-font-line-height-xs, 16px);
   margin: 0 0 2px 0;
   display: block;
   overflow: hidden;
@@ -228,11 +222,10 @@
 }
 .a8ccharts-9wSZ6n {
   color: #1e1e1e;
-  font-family: var(--step-font-family, "SF Pro");
-  font-size: 13px;
+  font-size: var(--wpds-font-size-md, 13px);
   font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
+  font-weight: var(--wpds-font-weight-medium, 499);
+  line-height: var(--wpds-font-line-height-sm, 20px);
   margin: 0;
   display: block;
 }
@@ -274,25 +267,23 @@
 }
 .a8ccharts-jkRitH {
   color: #1e1e1e;
-  font-family: "SF Pro", sans-serif;
-  font-size: 12px;
+  font-size: var(--wpds-font-size-sm, 12px);
   font-style: normal;
-  font-weight: 400;
-  line-height: 16px;
+  font-weight: var(--wpds-font-weight-regular, 400);
+  line-height: var(--wpds-font-line-height-xs, 16px);
 }
 .a8ccharts-8jgT-3 {
   color: #1e1e1e;
-  font-family: "SF Pro", sans-serif;
-  font-size: 13px;
+  font-size: var(--wpds-font-size-md, 13px);
   font-style: normal;
-  font-weight: 500;
-  line-height: 20px;
+  font-weight: var(--wpds-font-weight-medium, 499);
+  line-height: var(--wpds-font-line-height-sm, 20px);
 }
 .a8ccharts-Ml6MMr {
   text-align: center;
   padding: 48px 24px;
   color: #6b7280;
-  font-size: 16px;
+  font-size: var(--wpds-font-size-lg, 16px);
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/geo-chart/geo-chart.module.scss */
@@ -362,7 +353,7 @@
   padding: 32px 16px;
   text-align: center;
   color: #666;
-  font-size: 14px;
+  font-size: var(--wpds-font-size-md, 13px);
   font-style: italic;
 }
 
@@ -384,7 +375,7 @@
   padding: 0.5rem;
 }
 .a8ccharts-Q-b5A1 {
-  font-weight: 700;
+  font-weight: var(--wpds-font-weight-medium, 499);
   padding-bottom: 10px;
 }
 .a8ccharts-19N7T9 {
@@ -394,7 +385,7 @@
   justify-content: space-between;
 }
 .a8ccharts-HOAXrD {
-  font-weight: 500;
+  font-weight: var(--wpds-font-weight-medium, 499);
   padding-right: 1rem;
 }
 .a8ccharts-rQiY8O {
@@ -422,7 +413,7 @@
   background: #fff;
   border: none;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: var(--wpds-font-size-md, 13px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: fixed;
   margin: 0.5rem;
@@ -488,11 +479,11 @@
   height: 100%;
 }
 .a8ccharts-8tyaQj .a8ccharts-EKZS3j {
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: var(--wpds-font-weight-medium, 499);
+  font-size: var(--wpds-font-size-lg, 16px);
 }
 .a8ccharts-8tyaQj .a8ccharts-v85A8- {
-  font-size: 14px;
+  font-size: var(--wpds-font-size-md, 13px);
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/sparkline/sparkline.module.scss */
@@ -517,8 +508,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.125em;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--wpds-font-size-md, 13px);
+  font-weight: var(--wpds-font-weight-medium, 499);
   line-height: 1;
 }
 .a8ccharts-Fn-D1W {
