@@ -2807,7 +2807,7 @@ function paramCase(input, options) {
   return dotCase(input, __assign2({ delimiter: "-" }, options));
 }
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.5.0/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='71d20935c2']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "71d20935c2");
@@ -2840,7 +2840,7 @@ var Stack = forwardRef3(function Stack2({ direction, gap, align, justify, wrap, 
   return element;
 });
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.5.0/node_modules/@wordpress/ui/build-module/text/text.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/text/text.mjs
 import clsx2 from "clsx";
 if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='893fb81f3c']")) {
   const style = document.createElement("style");
