@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: Document WordPress UI + Theme integration defaults.
+- Charts: Replace ad-hoc flexbox layouts with @wordpress/ui Stack across legend, conversion funnel, line chart, geo chart, conversion funnel tooltip, and donut story.
 
 ## [1.1.0] - 2026-04-10
 ### Changed

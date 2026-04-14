@@ -1630,641 +1630,6 @@ var _group = require('@visx/group');
 var _legend = require('@visx/legend');
 
 
-
-
-// src/components/legend/utils/value-or-identity.ts
-function valueOrIdentity(_) {
-  if (_ && typeof _ === "object" && "value" in _ && typeof _.value !== "undefined")
-    return _.value;
-  return _;
-}
-function valueOrIdentityString(_) {
-  return String(valueOrIdentity(_));
-}
-
-// src/components/legend/utils/label-transform-factory.ts
-function labelTransformFactory({
-  scale,
-  labelFormat
-}) {
-  return (d, i) => ({
-    datum: d,
-    index: i,
-    text: `${labelFormat(d, i)}`,
-    value: scale(d)
-  });
-}
-
-// src/components/legend/private/base-legend.module.scss
-var base_legend_module_default = {
-  "legend": "a8ccharts-89ApsU",
-  "legend--horizontal": "a8ccharts-AELBvX",
-  "legend--vertical": "a8ccharts-fX8uQe",
-  "legend--alignment-start": "a8ccharts-DEe0wg",
-  "legend--alignment-center": "a8ccharts-WBKF9I",
-  "legend--alignment-end": "a8ccharts-JfwMng",
-  "legend-item": "a8ccharts-Vflwq8",
-  "legend-item--interactive": "a8ccharts-qGsavM",
-  "legend-item--inactive": "a8ccharts-ZtDY-Q",
-  "legend-item-label": "a8ccharts-2H65Kr",
-  "legend-item-text--wrap": "a8ccharts-faSDBI",
-  "legend-item-text--ellipsis": "a8ccharts-FISUIO",
-  "legend-item-value": "a8ccharts-DTZlT-"
-};
-
-// src/components/legend/private/base-legend.tsx
-
-var orientationToFlexDirection = {
-  horizontal: "row",
-  vertical: "column"
-};
-var LegendText = ({
-  text,
-  textOverflow,
-  maxWidth
-}) => {
-  const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
-  const [textRef, isTruncated] = useTextTruncation(Boolean(isEllipsis));
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", {
-    ref: textRef,
-    className: _clsx2.default.call(void 0, base_legend_module_default["legend-item-text"], maxWidth != null && base_legend_module_default[`legend-item-text--${textOverflow}`]),
-    style: {
-      ...maxWidth != null && {
-        maxWidth,
-        minWidth: 0
-      }
-    },
-    title: isEllipsis && isTruncated ? text : void 0,
-    children: text
-  });
-};
-var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
-  items,
-  className,
-  orientation = "horizontal",
-  alignment = "center",
-  shape = "rect",
-  fill = valueOrIdentityString,
-  size = valueOrIdentityString,
-  labelFormat = valueOrIdentity,
-  labelTransform = labelTransformFactory,
-  itemStyles,
-  itemClassName,
-  labelStyles,
-  labelClassName,
-  shapeStyles,
-  render,
-  interactive = false,
-  chartId
-}, ref) => {
-  const {
-    margin: itemMargin = "0",
-    flexDirection: itemDirection = "row"
-  } = _nullishCoalesce(itemStyles, () => ( {}));
-  const {
-    justifyContent: labelJustifyContent = "flex-start",
-    flex: labelFlex = "0 0 auto",
-    margin: labelMargin = "0 4px",
-    maxWidth,
-    textOverflow = "wrap"
-  } = _nullishCoalesce(labelStyles, () => ( {}));
-  const {
-    width: shapeWidth = 16,
-    height: shapeHeight = 16,
-    margin: shapeMargin = "2px 4px 2px 0"
-  } = _nullishCoalesce(shapeStyles, () => ( {}));
-  const theme = useGlobalChartsTheme();
-  const context = _react.useContext.call(void 0, GlobalChartsContext);
-  const legendScale = _scale.scaleOrdinal.call(void 0, {
-    domain: items.map((item) => item.label),
-    range: items.map((item) => item.color)
-  });
-  const domain = legendScale.domain();
-  const getShapeStyle = _react.useCallback.call(void 0, ({
-    index
-  }) => _optionalChain([items, 'access', _60 => _60[index], 'optionalAccess', _61 => _61.shapeStyle]), [items]);
-  const handleLegendClick = _react.useCallback.call(void 0, (seriesLabel) => {
-    if (interactive && chartId && context) {
-      context.toggleSeriesVisibility(chartId, seriesLabel);
-    }
-  }, [interactive, chartId, context]);
-  const isSeriesVisible = _react.useCallback.call(void 0, (seriesLabel) => {
-    if (!interactive || !chartId || !context) {
-      return true;
-    }
-    return context.isSeriesVisible(chartId, seriesLabel);
-  }, [interactive, chartId, context]);
-  const createClickHandler = _react.useCallback.call(void 0, (labelText) => {
-    if (!interactive) {
-      return void 0;
-    }
-    return () => handleLegendClick(labelText);
-  }, [interactive, handleLegendClick]);
-  const createKeyDownHandler = _react.useCallback.call(void 0, (labelText) => {
-    if (!interactive) {
-      return void 0;
-    }
-    return (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        handleLegendClick(labelText);
-      }
-    };
-  }, [interactive, handleLegendClick]);
-  return render ? render(items) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendOrdinal, {
-    scale: legendScale,
-    labelFormat,
-    labelTransform,
-    children: (labels) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-      ref,
-      role: "list",
-      className: _clsx2.default.call(void 0, base_legend_module_default.legend, base_legend_module_default[`legend--${orientation}`], base_legend_module_default[`legend--alignment-${alignment}`], className),
-      style: {
-        flexDirection: orientationToFlexDirection[orientation],
-        ..._optionalChain([theme, 'access', _62 => _62.legend, 'optionalAccess', _63 => _63.containerStyles])
-      },
-      children: labels.map((label, i) => {
-        const visible = isSeriesVisible(label.text);
-        const handleClick = createClickHandler(label.text);
-        const handleKeyDown = createKeyDownHandler(label.text);
-        const matchedItem = items[i];
-        return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _legend.LegendItem, {
-          className: _clsx2.default.call(void 0, "visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
-          margin: itemMargin,
-          flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
-          onClick: handleClick,
-          onKeyDown: handleKeyDown,
-          role: interactive ? "button" : void 0,
-          tabIndex: interactive ? 0 : void 0,
-          "aria-pressed": interactive ? visible : void 0,
-          "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
-          children: [_optionalChain([items, 'access', _64 => _64[i], 'optionalAccess', _65 => _65.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
-            width: _optionalChain([items, 'access', _66 => _66[i], 'optionalAccess', _67 => _67.glyphSize]) * 2,
-            height: _optionalChain([items, 'access', _68 => _68[i], 'optionalAccess', _69 => _69.glyphSize]) * 2,
-            children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, {
-              children: _optionalChain([items, 'access', _70 => _70[i], 'optionalAccess', _71 => _71.renderGlyph, 'call', _72 => _72({
-                key: `legend-glyph-${label.text}`,
-                datum: {},
-                index: i,
-                color: fill(label),
-                size: _optionalChain([items, 'access', _73 => _73[i], 'optionalAccess', _74 => _74.glyphSize]),
-                x: _optionalChain([items, 'access', _75 => _75[i], 'optionalAccess', _76 => _76.glyphSize]),
-                y: _optionalChain([items, 'access', _77 => _77[i], 'optionalAccess', _78 => _78.glyphSize])
-              })])
-            })
-          }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendShape, {
-            shape,
-            height: shapeHeight,
-            width: shapeWidth,
-            margin: shapeMargin,
-            item: domain[i],
-            itemIndex: i,
-            label,
-            fill,
-            size,
-            shapeStyle: getShapeStyle
-          }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _legend.LegendLabel, {
-            className: _clsx2.default.call(void 0, "visx-legend-label", base_legend_module_default["legend-item-label"], labelClassName),
-            style: {
-              justifyContent: labelJustifyContent,
-              flex: labelFlex,
-              margin: labelMargin,
-              ..._optionalChain([theme, 'access', _79 => _79.legend, 'optionalAccess', _80 => _80.labelStyles])
-            },
-            children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, LegendText, {
-              text: label.text,
-              textOverflow,
-              maxWidth
-            }), _optionalChain([matchedItem, 'optionalAccess', _81 => _81.value]) != null && matchedItem.value !== "" && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
-              className: base_legend_module_default["legend-item-value"],
-              children: ["\xA0", matchedItem.value]
-            })]
-          })]
-        }, `legend-${label.text}-${i}`);
-      })
-    })
-  });
-});
-
-// src/components/legend/legend.tsx
-
-var defaultShapeByChartType = {
-  line: "line",
-  bar: "rect",
-  pie: "circle",
-  "pie-semi-circle": "circle",
-  leaderboard: "circle"
-};
-var Legend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
-  chartId,
-  items,
-  shape,
-  ...props
-}, ref) => {
-  const context = _react.useContext.call(void 0, GlobalChartsContext);
-  const singleChartContext = _react.useContext.call(void 0, SingleChartContext);
-  const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _82 => _82.chartId])));
-  const chartData = _react.useMemo.call(void 0, () => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
-  const contextItems = _optionalChain([chartData, 'optionalAccess', _83 => _83.legendItems]);
-  const resolvedShape = _nullishCoalesce(shape, () => ( (_optionalChain([chartData, 'optionalAccess', _84 => _84.chartType]) ? defaultShapeByChartType[chartData.chartType] : void 0)));
-  const legendItems = items || contextItems;
-  if (!legendItems) {
-    return null;
-  }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BaseLegend, {
-    ref,
-    items: legendItems,
-    shape: resolvedShape,
-    ...props,
-    chartId: contextChartId
-  });
-});
-
-// src/components/legend/hooks/use-chart-legend-items.ts
-
-
-function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
-  if (!showValues || legendValueDisplay === "none") {
-    return "";
-  }
-  if ("percentage" in point) {
-    switch (legendValueDisplay) {
-      case "percentage":
-        return formatPercentage(point.percentage);
-      case "value":
-        return _numberformatters.formatNumber.call(void 0, point.value);
-      case "valueDisplay":
-        return point.valueDisplay || _numberformatters.formatNumber.call(void 0, point.value);
-      default:
-        return "";
-    }
-  }
-  if ("value" in point) {
-    return point.value !== null ? _numberformatters.formatNumber.call(void 0, point.value) : "";
-  }
-  return "";
-}
-function applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize) {
-  if (withGlyph) {
-    const glyphToUse = glyph || renderGlyph;
-    if (glyphToUse) {
-      return {
-        ...baseItem,
-        glyphSize,
-        renderGlyph: glyphToUse
-      };
-    }
-  }
-  return baseItem;
-}
-function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
-  const mapper = (series, index) => {
-    const { color, glyph, shapeStyles } = getElementStyles({
-      data: series,
-      index,
-      legendShape
-    });
-    const baseItem = {
-      label: series.label,
-      value: showValues ? _optionalChain([series, 'access', _85 => _85.data, 'optionalAccess', _86 => _86.length, 'optionalAccess', _87 => _87.toString, 'call', _88 => _88()]) || "0" : "",
-      color,
-      shapeStyle: shapeStyles
-    };
-    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
-  };
-  return seriesData.map(mapper);
-}
-function processPointData(pointData, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape) {
-  const mapper = (point, index) => {
-    const { color, glyph, shapeStyles } = getElementStyles({
-      data: point,
-      index,
-      legendShape
-    });
-    const baseItem = {
-      label: point.label,
-      value: formatPointValue(point, showValues, legendValueDisplay),
-      color,
-      shapeStyle: shapeStyles
-    };
-    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
-  };
-  return pointData.map(mapper);
-}
-function useChartLegendItems(data, options = {}, legendShape) {
-  const {
-    showValues = false,
-    legendValueDisplay = "percentage",
-    withGlyph = false,
-    glyphSize = 8,
-    renderGlyph
-  } = options;
-  const { getElementStyles } = useGlobalChartsContext();
-  return _react.useMemo.call(void 0, () => {
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      return [];
-    }
-    if ("data" in data[0]) {
-      return processSeriesData(
-        data,
-        getElementStyles,
-        showValues,
-        withGlyph,
-        glyphSize,
-        renderGlyph,
-        legendShape
-      );
-    }
-    return processPointData(
-      data,
-      getElementStyles,
-      showValues,
-      legendValueDisplay,
-      withGlyph,
-      glyphSize,
-      renderGlyph,
-      legendShape
-    );
-  }, [
-    data,
-    getElementStyles,
-    showValues,
-    legendValueDisplay,
-    withGlyph,
-    glyphSize,
-    renderGlyph,
-    legendShape
-  ]);
-}
-
-// src/components/tooltip/base-tooltip.tsx
-
-
-// src/components/tooltip/base-tooltip.module.scss
-var base_tooltip_module_default = {
-  "tooltip": "a8ccharts-OfX6nd"
-};
-
-// src/components/tooltip/base-tooltip.tsx
-
-var DefaultTooltipContent = ({
-  data
-}) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
-  children: [_optionalChain([data, 'optionalAccess', _89 => _89.label]), ": ", _optionalChain([data, 'optionalAccess', _90 => _90.valueDisplay]) || _numberformatters.formatNumber.call(void 0, _optionalChain([data, 'optionalAccess', _91 => _91.value]))]
-});
-var BaseTooltip = ({
-  data,
-  top,
-  left,
-  component: Component2 = DefaultTooltipContent,
-  children,
-  className,
-  style,
-  renderContainer = true
-}) => {
-  const content = children || data && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Component2, {
-    data,
-    className
-  });
-  if (!renderContainer) {
-    return content;
-  }
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-    className: base_tooltip_module_default.tooltip,
-    style: {
-      top,
-      left,
-      ...style
-    },
-    role: "tooltip",
-    children: content
-  });
-};
-
-// src/components/tooltip/accessible-tooltip.tsx
-
-
-
-var AccessibleTooltip = ({
-  renderTooltip,
-  selectedIndex,
-  tooltipRef,
-  keyboardFocusedClassName,
-  series = [],
-  mode = "group",
-  ...props
-}) => {
-  const tooltipContext = _react.useContext.call(void 0, _xychart.TooltipContext);
-  const tooltipData = _react.useMemo.call(void 0, () => {
-    if (mode !== "individual") return [];
-    if (series.length === 0) return [];
-    const maxDataPoints = Math.max(...series.map((s) => s.data.length));
-    const flattened = [];
-    for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
-      for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
-        const seriesData = series[seriesIndex];
-        if (dataPointIndex < seriesData.data.length) {
-          flattened.push({
-            datum: seriesData.data[dataPointIndex],
-            seriesLabel: seriesData.label,
-            seriesIndex,
-            dataPointIndex
-          });
-        }
-      }
-    }
-    return flattened;
-  }, [series, mode]);
-  _react.useEffect.call(void 0, () => {
-    if (selectedIndex === void 0) {
-      _optionalChain([tooltipContext, 'optionalAccess', _92 => _92.hideTooltip, 'call', _93 => _93()]);
-      return;
-    }
-    if (mode === "group") {
-      series.forEach((s, index) => {
-        if (selectedIndex < s.data.length) {
-          const datum = s.data[selectedIndex];
-          _optionalChain([tooltipContext, 'optionalAccess', _94 => _94.showTooltip, 'call', _95 => _95({
-            datum,
-            key: s.label,
-            index
-          })]);
-        }
-      });
-    } else if (mode === "individual") {
-      if (selectedIndex < tooltipData.length) {
-        const tooltipItem = tooltipData[selectedIndex];
-        _optionalChain([tooltipContext, 'optionalAccess', _96 => _96.showTooltip, 'call', _97 => _97({
-          datum: tooltipItem.datum,
-          key: tooltipItem.seriesLabel,
-          index: tooltipItem.seriesIndex
-        })]);
-      }
-    }
-  }, [selectedIndex, tooltipData, series]);
-  const focusableRenderTooltip = _react.useMemo.call(void 0, () => {
-    if (!renderTooltip) return void 0;
-    return (params) => {
-      const tooltipContent = renderTooltip(params);
-      if (selectedIndex !== void 0) {
-        return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-          ref: tooltipRef,
-          tabIndex: -1,
-          role: "tooltip",
-          "aria-atomic": "true",
-          className: keyboardFocusedClassName,
-          children: tooltipContent
-        }, `chart-tooltip-${selectedIndex}`);
-      }
-      return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
-        role: "tooltip",
-        "aria-live": "polite",
-        children: tooltipContent
-      });
-    };
-  }, [renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName]);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Tooltip, {
-    ...props,
-    renderTooltip: focusableRenderTooltip
-  });
-};
-var useKeyboardNavigation = ({
-  selectedIndex,
-  setSelectedIndex,
-  isNavigating,
-  setIsNavigating,
-  chartRef,
-  totalPoints
-}) => {
-  const tooltipRef = _react.useCallback.call(void 0, (element) => {
-    if (element && selectedIndex !== void 0) {
-      element.focus();
-    }
-  }, [selectedIndex]);
-  const onChartFocus = _react.useCallback.call(void 0, () => {
-    if (!isNavigating && selectedIndex !== void 0) {
-      setSelectedIndex(0);
-    }
-  }, [isNavigating, selectedIndex, setSelectedIndex]);
-  const onChartBlur = _react.useCallback.call(void 0, () => {
-    setIsNavigating(false);
-  }, [setIsNavigating]);
-  const onChartKeyDown = _react.useCallback.call(void 0, (event) => {
-    if (totalPoints === 0) return;
-    if (event.key === "Tab") {
-      _optionalChain([chartRef, 'access', _98 => _98.current, 'optionalAccess', _99 => _99.focus, 'call', _100 => _100()]);
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      return;
-    }
-    const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
-    if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
-      _optionalChain([chartRef, 'access', _101 => _101.current, 'optionalAccess', _102 => _102.focus, 'call', _103 => _103()]);
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      return;
-    }
-    event.preventDefault();
-    if (["ArrowRight"].includes(event.key)) {
-      setIsNavigating(true);
-      setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
-    } else if (["ArrowLeft"].includes(event.key)) {
-      setIsNavigating(true);
-      setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
-    } else if (event.key === "Escape") {
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      _optionalChain([chartRef, 'access', _104 => _104.current, 'optionalAccess', _105 => _105.focus, 'call', _106 => _106()]);
-    }
-  }, [totalPoints, selectedIndex, setSelectedIndex, setIsNavigating, chartRef]);
-  return {
-    tooltipRef,
-    onChartFocus,
-    onChartBlur,
-    onChartKeyDown
-  };
-};
-
-// src/charts/private/chart-composition/chart-svg.tsx
-
-var ChartSVG = ({
-  children
-}) => {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
-    children
-  });
-};
-ChartSVG.displayName = "Chart.SVG";
-
-// src/charts/private/chart-composition/chart-html.tsx
-
-var ChartHTML = ({
-  children
-}) => {
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
-    children
-  });
-};
-ChartHTML.displayName = "Chart.HTML";
-
-// src/charts/private/chart-composition/render-legend-slot.ts
-
-function renderLegendSlot(legendChildren, position2) {
-  return legendChildren.filter((l) => l.position === position2).map(
-    (l, i) => _react.createElement.call(void 0, _react.Fragment, { key: `legend-${position2}-${i}` }, l.element)
-  );
-}
-
-// src/charts/private/chart-composition/use-chart-children.ts
-
-
-function useChartChildren(children, chartType) {
-  return _react.useMemo.call(void 0, () => {
-    const svg = [];
-    const html = [];
-    const legend = [];
-    const other = [];
-    const nonLegend = [];
-    _react.Children.forEach(children, (child) => {
-      if (_react.isValidElement.call(void 0, child)) {
-        if (child.type === Legend) {
-          const rawPosition = _optionalChain([child, 'access', _107 => _107.props, 'optionalAccess', _108 => _108.position]);
-          const position2 = rawPosition === "top" || rawPosition === "bottom" ? rawPosition : "bottom";
-          legend.push({ element: child, position: position2 });
-          return;
-        }
-        const childType = child.type;
-        const displayName = _optionalChain([childType, 'optionalAccess', _109 => _109.displayName]);
-        if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
-          if (_optionalChain([child, 'access', _110 => _110.props, 'optionalAccess', _111 => _111.children])) {
-            _react.Children.forEach(child.props.children, (svgChild) => {
-              svg.push(svgChild);
-            });
-          }
-        } else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
-          if (_optionalChain([child, 'access', _112 => _112.props, 'optionalAccess', _113 => _113.children])) {
-            _react.Children.forEach(child.props.children, (htmlChild) => {
-              html.push(htmlChild);
-            });
-          }
-        } else if (child.type === _group.Group) {
-          svg.push(child);
-        } else {
-          other.push(child);
-        }
-      }
-      nonLegend.push(child);
-    });
-    return {
-      svgChildren: svg,
-      htmlChildren: html,
-      legendChildren: legend,
-      otherChildren: other,
-      nonLegendChildren: nonLegend
-    };
-  }, [children, chartType]);
-}
-
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.6_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 
 var UNINITIALIZED = {};
@@ -2412,7 +1777,7 @@ function getReactElementRef(element) {
   }
   const reactElement = element;
   const propsWithRef = reactElement.props;
-  return _nullishCoalesce((isReactVersionAtLeast(19) ? _optionalChain([propsWithRef, 'optionalAccess', _114 => _114.ref]) : reactElement.ref), () => ( null));
+  return _nullishCoalesce((isReactVersionAtLeast(19) ? _optionalChain([propsWithRef, 'optionalAccess', _60 => _60.ref]) : reactElement.ref), () => ( null));
 }
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.6_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
@@ -2437,7 +1802,7 @@ function getStateAttributesProps(state, customMapping) {
   const props = {};
   for (const key in state) {
     const value = state[key];
-    if (_optionalChain([customMapping, 'optionalAccess', _115 => _115.hasOwnProperty, 'call', _116 => _116(key)])) {
+    if (_optionalChain([customMapping, 'optionalAccess', _61 => _61.hasOwnProperty, 'call', _62 => _62(key)])) {
       const customProps = customMapping[key](value);
       if (customProps != null) {
         Object.assign(props, customProps);
@@ -2558,12 +1923,12 @@ function mergeEventHandlers(ourHandler, theirHandler) {
       makeEventPreventable(baseUIEvent);
       const result2 = theirHandler(baseUIEvent);
       if (!baseUIEvent.baseUIHandlerPrevented) {
-        _optionalChain([ourHandler, 'optionalCall', _117 => _117(baseUIEvent)]);
+        _optionalChain([ourHandler, 'optionalCall', _63 => _63(baseUIEvent)]);
       }
       return result2;
     }
     const result = theirHandler(event);
-    _optionalChain([ourHandler, 'optionalCall', _118 => _118(event)]);
+    _optionalChain([ourHandler, 'optionalCall', _64 => _64(event)]);
     return result;
   };
 }
@@ -2656,7 +2021,7 @@ function evaluateRenderProp(element, render, props, state) {
     const mergedProps = mergeProps(props, render.props);
     mergedProps.ref = props.ref;
     let newElement = render;
-    if (_optionalChain([newElement, 'optionalAccess', _119 => _119.$$typeof]) === REACT_LAZY_TYPE) {
+    if (_optionalChain([newElement, 'optionalAccess', _65 => _65.$$typeof]) === REACT_LAZY_TYPE) {
       const children = React4.Children.toArray(render);
       newElement = children[0];
     }
@@ -2860,6 +2225,646 @@ var Text = _react.forwardRef.call(void 0, function Text2({ variant = "body-md", 
   });
   return element;
 });
+
+// src/components/legend/private/base-legend.tsx
+
+
+
+// src/components/legend/utils/value-or-identity.ts
+function valueOrIdentity(_) {
+  if (_ && typeof _ === "object" && "value" in _ && typeof _.value !== "undefined")
+    return _.value;
+  return _;
+}
+function valueOrIdentityString(_) {
+  return String(valueOrIdentity(_));
+}
+
+// src/components/legend/utils/label-transform-factory.ts
+function labelTransformFactory({
+  scale,
+  labelFormat
+}) {
+  return (d, i) => ({
+    datum: d,
+    index: i,
+    text: `${labelFormat(d, i)}`,
+    value: scale(d)
+  });
+}
+
+// src/components/legend/private/base-legend.module.scss
+var base_legend_module_default = {
+  "legend": "a8ccharts-89ApsU",
+  "legend-item": "a8ccharts-Vflwq8",
+  "legend-item--interactive": "a8ccharts-qGsavM",
+  "legend-item--inactive": "a8ccharts-ZtDY-Q",
+  "legend-item-label": "a8ccharts-2H65Kr",
+  "legend-item-text--wrap": "a8ccharts-faSDBI",
+  "legend-item-text--ellipsis": "a8ccharts-FISUIO",
+  "legend-item-value": "a8ccharts-DTZlT-"
+};
+
+// src/components/legend/private/base-legend.tsx
+
+var ALIGNMENT_TO_FLEX = {
+  start: "flex-start",
+  center: "center",
+  end: "flex-end"
+};
+var LegendText = ({
+  text,
+  textOverflow,
+  maxWidth
+}) => {
+  const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
+  const [textRef, isTruncated] = useTextTruncation(Boolean(isEllipsis));
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", {
+    ref: textRef,
+    className: _clsx2.default.call(void 0, base_legend_module_default["legend-item-text"], maxWidth != null && base_legend_module_default[`legend-item-text--${textOverflow}`]),
+    style: {
+      ...maxWidth != null && {
+        maxWidth,
+        minWidth: 0
+      }
+    },
+    title: isEllipsis && isTruncated ? text : void 0,
+    children: text
+  });
+};
+var BaseLegend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
+  items,
+  className,
+  orientation = "horizontal",
+  alignment = "center",
+  shape = "rect",
+  fill = valueOrIdentityString,
+  size = valueOrIdentityString,
+  labelFormat = valueOrIdentity,
+  labelTransform = labelTransformFactory,
+  itemStyles,
+  itemClassName,
+  labelStyles,
+  labelClassName,
+  shapeStyles,
+  render,
+  interactive = false,
+  chartId
+}, ref) => {
+  const {
+    margin: itemMargin = "0",
+    flexDirection: itemDirection = "row"
+  } = _nullishCoalesce(itemStyles, () => ( {}));
+  const {
+    justifyContent: labelJustifyContent = "flex-start",
+    flex: labelFlex = "0 0 auto",
+    margin: labelMargin = "0 4px",
+    maxWidth,
+    textOverflow = "wrap"
+  } = _nullishCoalesce(labelStyles, () => ( {}));
+  const {
+    width: shapeWidth = 16,
+    height: shapeHeight = 16,
+    margin: shapeMargin = "2px 4px 2px 0"
+  } = _nullishCoalesce(shapeStyles, () => ( {}));
+  const theme = useGlobalChartsTheme();
+  const context = _react.useContext.call(void 0, GlobalChartsContext);
+  const legendScale = _scale.scaleOrdinal.call(void 0, {
+    domain: items.map((item) => item.label),
+    range: items.map((item) => item.color)
+  });
+  const domain = legendScale.domain();
+  const getShapeStyle = _react.useCallback.call(void 0, ({
+    index
+  }) => _optionalChain([items, 'access', _66 => _66[index], 'optionalAccess', _67 => _67.shapeStyle]), [items]);
+  const handleLegendClick = _react.useCallback.call(void 0, (seriesLabel) => {
+    if (interactive && chartId && context) {
+      context.toggleSeriesVisibility(chartId, seriesLabel);
+    }
+  }, [interactive, chartId, context]);
+  const isSeriesVisible = _react.useCallback.call(void 0, (seriesLabel) => {
+    if (!interactive || !chartId || !context) {
+      return true;
+    }
+    return context.isSeriesVisible(chartId, seriesLabel);
+  }, [interactive, chartId, context]);
+  const createClickHandler = _react.useCallback.call(void 0, (labelText) => {
+    if (!interactive) {
+      return void 0;
+    }
+    return () => handleLegendClick(labelText);
+  }, [interactive, handleLegendClick]);
+  const createKeyDownHandler = _react.useCallback.call(void 0, (labelText) => {
+    if (!interactive) {
+      return void 0;
+    }
+    return (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        handleLegendClick(labelText);
+      }
+    };
+  }, [interactive, handleLegendClick]);
+  const flexAlignment = _nullishCoalesce(ALIGNMENT_TO_FLEX[alignment], () => ( "center"));
+  return render ? render(items) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendOrdinal, {
+    scale: legendScale,
+    labelFormat,
+    labelTransform,
+    children: (labels) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+      ref,
+      direction: orientation === "vertical" ? "column" : "row",
+      gap: orientation === "vertical" ? "sm" : "lg",
+      align: orientation === "vertical" ? flexAlignment : void 0,
+      justify: orientation === "horizontal" ? flexAlignment : void 0,
+      wrap: orientation === "horizontal" ? "wrap" : void 0,
+      role: "list",
+      className: _clsx2.default.call(void 0, base_legend_module_default.legend, className),
+      style: _optionalChain([theme, 'access', _68 => _68.legend, 'optionalAccess', _69 => _69.containerStyles]),
+      children: labels.map((label, i) => {
+        const visible = isSeriesVisible(label.text);
+        const handleClick = createClickHandler(label.text);
+        const handleKeyDown = createKeyDownHandler(label.text);
+        const matchedItem = items[i];
+        return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _legend.LegendItem, {
+          className: _clsx2.default.call(void 0, "visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
+          margin: itemMargin,
+          flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
+          onClick: handleClick,
+          onKeyDown: handleKeyDown,
+          role: interactive ? "button" : void 0,
+          tabIndex: interactive ? 0 : void 0,
+          "aria-pressed": interactive ? visible : void 0,
+          "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
+          children: [_optionalChain([items, 'access', _70 => _70[i], 'optionalAccess', _71 => _71.renderGlyph]) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
+            width: _optionalChain([items, 'access', _72 => _72[i], 'optionalAccess', _73 => _73.glyphSize]) * 2,
+            height: _optionalChain([items, 'access', _74 => _74[i], 'optionalAccess', _75 => _75.glyphSize]) * 2,
+            children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _group.Group, {
+              children: _optionalChain([items, 'access', _76 => _76[i], 'optionalAccess', _77 => _77.renderGlyph, 'call', _78 => _78({
+                key: `legend-glyph-${label.text}`,
+                datum: {},
+                index: i,
+                color: fill(label),
+                size: _optionalChain([items, 'access', _79 => _79[i], 'optionalAccess', _80 => _80.glyphSize]),
+                x: _optionalChain([items, 'access', _81 => _81[i], 'optionalAccess', _82 => _82.glyphSize]),
+                y: _optionalChain([items, 'access', _83 => _83[i], 'optionalAccess', _84 => _84.glyphSize])
+              })])
+            })
+          }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendShape, {
+            shape,
+            height: shapeHeight,
+            width: shapeWidth,
+            margin: shapeMargin,
+            item: domain[i],
+            itemIndex: i,
+            label,
+            fill,
+            size,
+            shapeStyle: getShapeStyle
+          }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _legend.LegendLabel, {
+            className: _clsx2.default.call(void 0, "visx-legend-label", base_legend_module_default["legend-item-label"], labelClassName),
+            style: {
+              flex: labelFlex,
+              margin: labelMargin,
+              ..._optionalChain([theme, 'access', _85 => _85.legend, 'optionalAccess', _86 => _86.labelStyles])
+            },
+            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
+              align: "center",
+              gap: "sm",
+              justify: labelJustifyContent,
+              children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, LegendText, {
+                text: label.text,
+                textOverflow,
+                maxWidth
+              }), _optionalChain([matchedItem, 'optionalAccess', _87 => _87.value]) != null && matchedItem.value !== "" && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
+                className: base_legend_module_default["legend-item-value"],
+                children: ["\xA0", matchedItem.value]
+              })]
+            })
+          })]
+        }, `legend-${label.text}-${i}`);
+      })
+    })
+  });
+});
+
+// src/components/legend/legend.tsx
+
+var defaultShapeByChartType = {
+  line: "line",
+  bar: "rect",
+  pie: "circle",
+  "pie-semi-circle": "circle",
+  leaderboard: "circle"
+};
+var Legend = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
+  chartId,
+  items,
+  shape,
+  ...props
+}, ref) => {
+  const context = _react.useContext.call(void 0, GlobalChartsContext);
+  const singleChartContext = _react.useContext.call(void 0, SingleChartContext);
+  const contextChartId = _nullishCoalesce(chartId, () => ( _optionalChain([singleChartContext, 'optionalAccess', _88 => _88.chartId])));
+  const chartData = _react.useMemo.call(void 0, () => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
+  const contextItems = _optionalChain([chartData, 'optionalAccess', _89 => _89.legendItems]);
+  const resolvedShape = _nullishCoalesce(shape, () => ( (_optionalChain([chartData, 'optionalAccess', _90 => _90.chartType]) ? defaultShapeByChartType[chartData.chartType] : void 0)));
+  const legendItems = items || contextItems;
+  if (!legendItems) {
+    return null;
+  }
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BaseLegend, {
+    ref,
+    items: legendItems,
+    shape: resolvedShape,
+    ...props,
+    chartId: contextChartId
+  });
+});
+
+// src/components/legend/hooks/use-chart-legend-items.ts
+
+
+function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
+  if (!showValues || legendValueDisplay === "none") {
+    return "";
+  }
+  if ("percentage" in point) {
+    switch (legendValueDisplay) {
+      case "percentage":
+        return formatPercentage(point.percentage);
+      case "value":
+        return _numberformatters.formatNumber.call(void 0, point.value);
+      case "valueDisplay":
+        return point.valueDisplay || _numberformatters.formatNumber.call(void 0, point.value);
+      default:
+        return "";
+    }
+  }
+  if ("value" in point) {
+    return point.value !== null ? _numberformatters.formatNumber.call(void 0, point.value) : "";
+  }
+  return "";
+}
+function applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize) {
+  if (withGlyph) {
+    const glyphToUse = glyph || renderGlyph;
+    if (glyphToUse) {
+      return {
+        ...baseItem,
+        glyphSize,
+        renderGlyph: glyphToUse
+      };
+    }
+  }
+  return baseItem;
+}
+function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
+  const mapper = (series, index) => {
+    const { color, glyph, shapeStyles } = getElementStyles({
+      data: series,
+      index,
+      legendShape
+    });
+    const baseItem = {
+      label: series.label,
+      value: showValues ? _optionalChain([series, 'access', _91 => _91.data, 'optionalAccess', _92 => _92.length, 'optionalAccess', _93 => _93.toString, 'call', _94 => _94()]) || "0" : "",
+      color,
+      shapeStyle: shapeStyles
+    };
+    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
+  };
+  return seriesData.map(mapper);
+}
+function processPointData(pointData, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape) {
+  const mapper = (point, index) => {
+    const { color, glyph, shapeStyles } = getElementStyles({
+      data: point,
+      index,
+      legendShape
+    });
+    const baseItem = {
+      label: point.label,
+      value: formatPointValue(point, showValues, legendValueDisplay),
+      color,
+      shapeStyle: shapeStyles
+    };
+    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
+  };
+  return pointData.map(mapper);
+}
+function useChartLegendItems(data, options = {}, legendShape) {
+  const {
+    showValues = false,
+    legendValueDisplay = "percentage",
+    withGlyph = false,
+    glyphSize = 8,
+    renderGlyph
+  } = options;
+  const { getElementStyles } = useGlobalChartsContext();
+  return _react.useMemo.call(void 0, () => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+    if ("data" in data[0]) {
+      return processSeriesData(
+        data,
+        getElementStyles,
+        showValues,
+        withGlyph,
+        glyphSize,
+        renderGlyph,
+        legendShape
+      );
+    }
+    return processPointData(
+      data,
+      getElementStyles,
+      showValues,
+      legendValueDisplay,
+      withGlyph,
+      glyphSize,
+      renderGlyph,
+      legendShape
+    );
+  }, [
+    data,
+    getElementStyles,
+    showValues,
+    legendValueDisplay,
+    withGlyph,
+    glyphSize,
+    renderGlyph,
+    legendShape
+  ]);
+}
+
+// src/components/tooltip/base-tooltip.tsx
+
+
+// src/components/tooltip/base-tooltip.module.scss
+var base_tooltip_module_default = {
+  "tooltip": "a8ccharts-OfX6nd"
+};
+
+// src/components/tooltip/base-tooltip.tsx
+
+var DefaultTooltipContent = ({
+  data
+}) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
+  children: [_optionalChain([data, 'optionalAccess', _95 => _95.label]), ": ", _optionalChain([data, 'optionalAccess', _96 => _96.valueDisplay]) || _numberformatters.formatNumber.call(void 0, _optionalChain([data, 'optionalAccess', _97 => _97.value]))]
+});
+var BaseTooltip = ({
+  data,
+  top,
+  left,
+  component: Component2 = DefaultTooltipContent,
+  children,
+  className,
+  style,
+  renderContainer = true
+}) => {
+  const content = children || data && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Component2, {
+    data,
+    className
+  });
+  if (!renderContainer) {
+    return content;
+  }
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+    className: base_tooltip_module_default.tooltip,
+    style: {
+      top,
+      left,
+      ...style
+    },
+    role: "tooltip",
+    children: content
+  });
+};
+
+// src/components/tooltip/accessible-tooltip.tsx
+
+
+
+var AccessibleTooltip = ({
+  renderTooltip,
+  selectedIndex,
+  tooltipRef,
+  keyboardFocusedClassName,
+  series = [],
+  mode = "group",
+  ...props
+}) => {
+  const tooltipContext = _react.useContext.call(void 0, _xychart.TooltipContext);
+  const tooltipData = _react.useMemo.call(void 0, () => {
+    if (mode !== "individual") return [];
+    if (series.length === 0) return [];
+    const maxDataPoints = Math.max(...series.map((s) => s.data.length));
+    const flattened = [];
+    for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
+      for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
+        const seriesData = series[seriesIndex];
+        if (dataPointIndex < seriesData.data.length) {
+          flattened.push({
+            datum: seriesData.data[dataPointIndex],
+            seriesLabel: seriesData.label,
+            seriesIndex,
+            dataPointIndex
+          });
+        }
+      }
+    }
+    return flattened;
+  }, [series, mode]);
+  _react.useEffect.call(void 0, () => {
+    if (selectedIndex === void 0) {
+      _optionalChain([tooltipContext, 'optionalAccess', _98 => _98.hideTooltip, 'call', _99 => _99()]);
+      return;
+    }
+    if (mode === "group") {
+      series.forEach((s, index) => {
+        if (selectedIndex < s.data.length) {
+          const datum = s.data[selectedIndex];
+          _optionalChain([tooltipContext, 'optionalAccess', _100 => _100.showTooltip, 'call', _101 => _101({
+            datum,
+            key: s.label,
+            index
+          })]);
+        }
+      });
+    } else if (mode === "individual") {
+      if (selectedIndex < tooltipData.length) {
+        const tooltipItem = tooltipData[selectedIndex];
+        _optionalChain([tooltipContext, 'optionalAccess', _102 => _102.showTooltip, 'call', _103 => _103({
+          datum: tooltipItem.datum,
+          key: tooltipItem.seriesLabel,
+          index: tooltipItem.seriesIndex
+        })]);
+      }
+    }
+  }, [selectedIndex, tooltipData, series]);
+  const focusableRenderTooltip = _react.useMemo.call(void 0, () => {
+    if (!renderTooltip) return void 0;
+    return (params) => {
+      const tooltipContent = renderTooltip(params);
+      if (selectedIndex !== void 0) {
+        return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+          ref: tooltipRef,
+          tabIndex: -1,
+          role: "tooltip",
+          "aria-atomic": "true",
+          className: keyboardFocusedClassName,
+          children: tooltipContent
+        }, `chart-tooltip-${selectedIndex}`);
+      }
+      return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+        role: "tooltip",
+        "aria-live": "polite",
+        children: tooltipContent
+      });
+    };
+  }, [renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName]);
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Tooltip, {
+    ...props,
+    renderTooltip: focusableRenderTooltip
+  });
+};
+var useKeyboardNavigation = ({
+  selectedIndex,
+  setSelectedIndex,
+  isNavigating,
+  setIsNavigating,
+  chartRef,
+  totalPoints
+}) => {
+  const tooltipRef = _react.useCallback.call(void 0, (element) => {
+    if (element && selectedIndex !== void 0) {
+      element.focus();
+    }
+  }, [selectedIndex]);
+  const onChartFocus = _react.useCallback.call(void 0, () => {
+    if (!isNavigating && selectedIndex !== void 0) {
+      setSelectedIndex(0);
+    }
+  }, [isNavigating, selectedIndex, setSelectedIndex]);
+  const onChartBlur = _react.useCallback.call(void 0, () => {
+    setIsNavigating(false);
+  }, [setIsNavigating]);
+  const onChartKeyDown = _react.useCallback.call(void 0, (event) => {
+    if (totalPoints === 0) return;
+    if (event.key === "Tab") {
+      _optionalChain([chartRef, 'access', _104 => _104.current, 'optionalAccess', _105 => _105.focus, 'call', _106 => _106()]);
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      return;
+    }
+    const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
+    if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
+      _optionalChain([chartRef, 'access', _107 => _107.current, 'optionalAccess', _108 => _108.focus, 'call', _109 => _109()]);
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      return;
+    }
+    event.preventDefault();
+    if (["ArrowRight"].includes(event.key)) {
+      setIsNavigating(true);
+      setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
+    } else if (["ArrowLeft"].includes(event.key)) {
+      setIsNavigating(true);
+      setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
+    } else if (event.key === "Escape") {
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      _optionalChain([chartRef, 'access', _110 => _110.current, 'optionalAccess', _111 => _111.focus, 'call', _112 => _112()]);
+    }
+  }, [totalPoints, selectedIndex, setSelectedIndex, setIsNavigating, chartRef]);
+  return {
+    tooltipRef,
+    onChartFocus,
+    onChartBlur,
+    onChartKeyDown
+  };
+};
+
+// src/charts/private/chart-composition/chart-svg.tsx
+
+var ChartSVG = ({
+  children
+}) => {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
+    children
+  });
+};
+ChartSVG.displayName = "Chart.SVG";
+
+// src/charts/private/chart-composition/chart-html.tsx
+
+var ChartHTML = ({
+  children
+}) => {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, {
+    children
+  });
+};
+ChartHTML.displayName = "Chart.HTML";
+
+// src/charts/private/chart-composition/render-legend-slot.ts
+
+function renderLegendSlot(legendChildren, position2) {
+  return legendChildren.filter((l) => l.position === position2).map(
+    (l, i) => _react.createElement.call(void 0, _react.Fragment, { key: `legend-${position2}-${i}` }, l.element)
+  );
+}
+
+// src/charts/private/chart-composition/use-chart-children.ts
+
+
+function useChartChildren(children, chartType) {
+  return _react.useMemo.call(void 0, () => {
+    const svg = [];
+    const html = [];
+    const legend = [];
+    const other = [];
+    const nonLegend = [];
+    _react.Children.forEach(children, (child) => {
+      if (_react.isValidElement.call(void 0, child)) {
+        if (child.type === Legend) {
+          const rawPosition = _optionalChain([child, 'access', _113 => _113.props, 'optionalAccess', _114 => _114.position]);
+          const position2 = rawPosition === "top" || rawPosition === "bottom" ? rawPosition : "bottom";
+          legend.push({ element: child, position: position2 });
+          return;
+        }
+        const childType = child.type;
+        const displayName = _optionalChain([childType, 'optionalAccess', _115 => _115.displayName]);
+        if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
+          if (_optionalChain([child, 'access', _116 => _116.props, 'optionalAccess', _117 => _117.children])) {
+            _react.Children.forEach(child.props.children, (svgChild) => {
+              svg.push(svgChild);
+            });
+          }
+        } else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
+          if (_optionalChain([child, 'access', _118 => _118.props, 'optionalAccess', _119 => _119.children])) {
+            _react.Children.forEach(child.props.children, (htmlChild) => {
+              html.push(htmlChild);
+            });
+          }
+        } else if (child.type === _group.Group) {
+          svg.push(child);
+        } else {
+          other.push(child);
+        }
+      }
+      nonLegend.push(child);
+    });
+    return {
+      svgChildren: svg,
+      htmlChildren: html,
+      legendChildren: legend,
+      otherChildren: other,
+      nonLegendChildren: nonLegend
+    };
+  }, [children, chartType]);
+}
 
 // src/charts/private/chart-layout/chart-layout.tsx
 
@@ -3808,7 +3813,6 @@ var conversion_funnel_chart_module_default = {
   "funnel-step": "a8ccharts-VqFY0l",
   "funnel-step--animated": "a8ccharts-fk-hCl",
   "funnel-step--blurred": "a8ccharts-1zOc9c",
-  "step-header": "a8ccharts-2JsQiV",
   "step-label": "a8ccharts-6OabC4",
   "step-rate": "a8ccharts-9wSZ6n",
   "bar-container": "a8ccharts-sSmCTi",
@@ -4048,7 +4052,10 @@ var ConversionFunnelChartInternal = ({
       children: changeIndicator
     })]
   });
-  const renderDefaultTooltip2 = (step) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
+  const renderDefaultTooltip2 = (step) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
+    direction: "column",
+    align: "flex-start",
+    gap: "xs",
     children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: conversion_funnel_chart_module_default["tooltip-title"],
       children: step.label
@@ -4089,6 +4096,7 @@ var ConversionFunnelChartInternal = ({
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
     children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
       direction: "column",
+      gap: "xl",
       ref: (node2) => {
         portalContainerRef(node2);
         chartRef.current = node2;
@@ -4103,20 +4111,27 @@ var ConversionFunnelChartInternal = ({
         changeIndicator,
         className: conversion_funnel_chart_module_default["main-metric"],
         changeColor
-      }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+      }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+        direction: "row",
+        align: "baseline",
+        gap: "sm",
         className: conversion_funnel_chart_module_default["main-metric"],
         children: renderDefaultMainMetric()
-      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+        direction: "row",
+        align: "flex-end",
+        gap: "lg",
         className: conversion_funnel_chart_module_default["funnel-container"],
         children: steps.map((step, index) => {
           const barHeight = step.rate / maxRate * 100;
           const {
             isBlurred
           } = getStepState(step.id);
-          return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+          return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
+            direction: "column",
             className: _clsx2.default.call(void 0, conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
+            gap: "xl",
             children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
-              className: conversion_funnel_chart_module_default["step-header"],
               children: [renderStepLabel ? renderStepLabel({
                 step,
                 index,
@@ -4132,7 +4147,9 @@ var ConversionFunnelChartInternal = ({
                 className: conversion_funnel_chart_module_default["step-rate"],
                 children: formatPercentage(step.rate)
               })]
-            }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+            }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+              direction: "column",
+              justify: "flex-end",
               className: conversion_funnel_chart_module_default["bar-container"],
               onClick: _optionalChain([stepHandlers, 'access', _160 => _160.get, 'call', _161 => _161(step.id), 'optionalAccess', _162 => _162.onClick]),
               onKeyDown: _optionalChain([stepHandlers, 'access', _163 => _163.get, 'call', _164 => _164(step.id), 'optionalAccess', _165 => _165.onKeyDown]),
@@ -4262,7 +4279,9 @@ var GeoChartInternal = ({
       backgroundColor
     }
   } = useGlobalChartsContext();
-  const loadingPlaceholder = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+  const loadingPlaceholder = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+    align: "center",
+    justify: "center",
     className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
     style: {
       width,
@@ -4330,7 +4349,9 @@ var GeoChartInternal = ({
     legend: "none",
     keepAspectRatio: true
   }), [region, resolution, lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, sanitizedData.hasHtmlTooltips]);
-  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, Stack, {
+    align: "center",
+    justify: "center",
     className: _clsx2.default.call(void 0, "geo-chart", geo_chart_module_default.container, className),
     style: {
       width,
@@ -6930,7 +6951,6 @@ var line_chart_module_default = {
   "line-chart__annotation-label-trigger-button": "a8ccharts-7mh3Cl",
   "line-chart__annotation-label-popover--visible": "a8ccharts-VAeVuJ",
   "line-chart__annotation-label-popover--safari": "a8ccharts-TEe-iV",
-  "line-chart__annotation-label-popover-header": "a8ccharts-LAUpx7",
   "line-chart__annotation-label-popover-content": "a8ccharts-b76gEu",
   "line-chart__annotation-label-popover-close-button": "a8ccharts-LIpFoS"
 };
@@ -6998,8 +7018,10 @@ var LineChartAnnotationLabelWithPopover = ({
       id: popoverId,
       popover: "auto",
       className: _clsx2.default.call(void 0, line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
-      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
-        className: line_chart_module_default["line-chart__annotation-label-popover-header"],
+      children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
+        direction: "row",
+        align: "flex-start",
+        justify: "space-between",
         children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
           className: line_chart_module_default["line-chart__annotation-label-popover-content"],
           children: renderLabelPopover({
@@ -7442,7 +7464,10 @@ var renderDefaultTooltip = (params) => {
     children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: line_chart_module_default["line-chart__tooltip-date"],
       children: _optionalChain([nearestDatum, 'access', _192 => _192.date, 'optionalAccess', _193 => _193.toLocaleDateString, 'call', _194 => _194()])
-    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
+    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
+      direction: "row",
+      align: "center",
+      justify: "space-between",
       className: line_chart_module_default["line-chart__tooltip-row"],
       children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
         className: line_chart_module_default["line-chart__tooltip-label"],

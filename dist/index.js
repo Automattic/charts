@@ -474,7 +474,7 @@ import clsx3 from "clsx";
 import { useCallback as useCallback7, useContext as useContext9, useState as useState6, useRef as useRef7, useMemo as useMemo15 } from "react";
 
 // src/components/legend/legend.tsx
-import { useContext as useContext5, useMemo as useMemo9, forwardRef as forwardRef2 } from "react";
+import { useContext as useContext6, useMemo as useMemo10, forwardRef as forwardRef3 } from "react";
 
 // src/charts/private/single-chart-context/single-chart-context.tsx
 import { createContext } from "react";
@@ -1629,641 +1629,6 @@ var useGlobalChartsTheme = () => {
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
-import clsx from "clsx";
-import { forwardRef, useCallback as useCallback4, useContext as useContext4 } from "react";
-
-// src/components/legend/utils/value-or-identity.ts
-function valueOrIdentity(_) {
-  if (_ && typeof _ === "object" && "value" in _ && typeof _.value !== "undefined")
-    return _.value;
-  return _;
-}
-function valueOrIdentityString(_) {
-  return String(valueOrIdentity(_));
-}
-
-// src/components/legend/utils/label-transform-factory.ts
-function labelTransformFactory({
-  scale,
-  labelFormat
-}) {
-  return (d, i) => ({
-    datum: d,
-    index: i,
-    text: `${labelFormat(d, i)}`,
-    value: scale(d)
-  });
-}
-
-// src/components/legend/private/base-legend.module.scss
-var base_legend_module_default = {
-  "legend": "a8ccharts-89ApsU",
-  "legend--horizontal": "a8ccharts-AELBvX",
-  "legend--vertical": "a8ccharts-fX8uQe",
-  "legend--alignment-start": "a8ccharts-DEe0wg",
-  "legend--alignment-center": "a8ccharts-WBKF9I",
-  "legend--alignment-end": "a8ccharts-JfwMng",
-  "legend-item": "a8ccharts-Vflwq8",
-  "legend-item--interactive": "a8ccharts-qGsavM",
-  "legend-item--inactive": "a8ccharts-ZtDY-Q",
-  "legend-item-label": "a8ccharts-2H65Kr",
-  "legend-item-text--wrap": "a8ccharts-faSDBI",
-  "legend-item-text--ellipsis": "a8ccharts-FISUIO",
-  "legend-item-value": "a8ccharts-DTZlT-"
-};
-
-// src/components/legend/private/base-legend.tsx
-import { jsx as _jsx2, jsxs as _jsxs } from "react/jsx-runtime";
-var orientationToFlexDirection = {
-  horizontal: "row",
-  vertical: "column"
-};
-var LegendText = ({
-  text,
-  textOverflow,
-  maxWidth
-}) => {
-  const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
-  const [textRef, isTruncated] = useTextTruncation(Boolean(isEllipsis));
-  return /* @__PURE__ */ _jsx2("span", {
-    ref: textRef,
-    className: clsx(base_legend_module_default["legend-item-text"], maxWidth != null && base_legend_module_default[`legend-item-text--${textOverflow}`]),
-    style: {
-      ...maxWidth != null && {
-        maxWidth,
-        minWidth: 0
-      }
-    },
-    title: isEllipsis && isTruncated ? text : void 0,
-    children: text
-  });
-};
-var BaseLegend = /* @__PURE__ */ forwardRef(({
-  items,
-  className,
-  orientation = "horizontal",
-  alignment = "center",
-  shape = "rect",
-  fill = valueOrIdentityString,
-  size = valueOrIdentityString,
-  labelFormat = valueOrIdentity,
-  labelTransform = labelTransformFactory,
-  itemStyles,
-  itemClassName,
-  labelStyles,
-  labelClassName,
-  shapeStyles,
-  render,
-  interactive = false,
-  chartId
-}, ref) => {
-  const {
-    margin: itemMargin = "0",
-    flexDirection: itemDirection = "row"
-  } = itemStyles ?? {};
-  const {
-    justifyContent: labelJustifyContent = "flex-start",
-    flex: labelFlex = "0 0 auto",
-    margin: labelMargin = "0 4px",
-    maxWidth,
-    textOverflow = "wrap"
-  } = labelStyles ?? {};
-  const {
-    width: shapeWidth = 16,
-    height: shapeHeight = 16,
-    margin: shapeMargin = "2px 4px 2px 0"
-  } = shapeStyles ?? {};
-  const theme = useGlobalChartsTheme();
-  const context = useContext4(GlobalChartsContext);
-  const legendScale = scaleOrdinal({
-    domain: items.map((item) => item.label),
-    range: items.map((item) => item.color)
-  });
-  const domain = legendScale.domain();
-  const getShapeStyle = useCallback4(({
-    index
-  }) => items[index]?.shapeStyle, [items]);
-  const handleLegendClick = useCallback4((seriesLabel) => {
-    if (interactive && chartId && context) {
-      context.toggleSeriesVisibility(chartId, seriesLabel);
-    }
-  }, [interactive, chartId, context]);
-  const isSeriesVisible = useCallback4((seriesLabel) => {
-    if (!interactive || !chartId || !context) {
-      return true;
-    }
-    return context.isSeriesVisible(chartId, seriesLabel);
-  }, [interactive, chartId, context]);
-  const createClickHandler = useCallback4((labelText) => {
-    if (!interactive) {
-      return void 0;
-    }
-    return () => handleLegendClick(labelText);
-  }, [interactive, handleLegendClick]);
-  const createKeyDownHandler = useCallback4((labelText) => {
-    if (!interactive) {
-      return void 0;
-    }
-    return (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        handleLegendClick(labelText);
-      }
-    };
-  }, [interactive, handleLegendClick]);
-  return render ? render(items) : /* @__PURE__ */ _jsx2(LegendOrdinal, {
-    scale: legendScale,
-    labelFormat,
-    labelTransform,
-    children: (labels) => /* @__PURE__ */ _jsx2("div", {
-      ref,
-      role: "list",
-      className: clsx(base_legend_module_default.legend, base_legend_module_default[`legend--${orientation}`], base_legend_module_default[`legend--alignment-${alignment}`], className),
-      style: {
-        flexDirection: orientationToFlexDirection[orientation],
-        ...theme.legend?.containerStyles
-      },
-      children: labels.map((label, i) => {
-        const visible = isSeriesVisible(label.text);
-        const handleClick = createClickHandler(label.text);
-        const handleKeyDown = createKeyDownHandler(label.text);
-        const matchedItem = items[i];
-        return /* @__PURE__ */ _jsxs(LegendItem, {
-          className: clsx("visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
-          margin: itemMargin,
-          flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
-          onClick: handleClick,
-          onKeyDown: handleKeyDown,
-          role: interactive ? "button" : void 0,
-          tabIndex: interactive ? 0 : void 0,
-          "aria-pressed": interactive ? visible : void 0,
-          "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
-          children: [items[i]?.renderGlyph ? /* @__PURE__ */ _jsx2("svg", {
-            width: items[i]?.glyphSize * 2,
-            height: items[i]?.glyphSize * 2,
-            children: /* @__PURE__ */ _jsx2(Group, {
-              children: items[i]?.renderGlyph({
-                key: `legend-glyph-${label.text}`,
-                datum: {},
-                index: i,
-                color: fill(label),
-                size: items[i]?.glyphSize,
-                x: items[i]?.glyphSize,
-                y: items[i]?.glyphSize
-              })
-            })
-          }) : /* @__PURE__ */ _jsx2(LegendShape, {
-            shape,
-            height: shapeHeight,
-            width: shapeWidth,
-            margin: shapeMargin,
-            item: domain[i],
-            itemIndex: i,
-            label,
-            fill,
-            size,
-            shapeStyle: getShapeStyle
-          }), /* @__PURE__ */ _jsxs(LegendLabel, {
-            className: clsx("visx-legend-label", base_legend_module_default["legend-item-label"], labelClassName),
-            style: {
-              justifyContent: labelJustifyContent,
-              flex: labelFlex,
-              margin: labelMargin,
-              ...theme.legend?.labelStyles
-            },
-            children: [/* @__PURE__ */ _jsx2(LegendText, {
-              text: label.text,
-              textOverflow,
-              maxWidth
-            }), matchedItem?.value != null && matchedItem.value !== "" && /* @__PURE__ */ _jsxs("span", {
-              className: base_legend_module_default["legend-item-value"],
-              children: ["\xA0", matchedItem.value]
-            })]
-          })]
-        }, `legend-${label.text}-${i}`);
-      })
-    })
-  });
-});
-
-// src/components/legend/legend.tsx
-import { jsx as _jsx3 } from "react/jsx-runtime";
-var defaultShapeByChartType = {
-  line: "line",
-  bar: "rect",
-  pie: "circle",
-  "pie-semi-circle": "circle",
-  leaderboard: "circle"
-};
-var Legend = /* @__PURE__ */ forwardRef2(({
-  chartId,
-  items,
-  shape,
-  ...props
-}, ref) => {
-  const context = useContext5(GlobalChartsContext);
-  const singleChartContext = useContext5(SingleChartContext);
-  const contextChartId = chartId ?? singleChartContext?.chartId;
-  const chartData = useMemo9(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
-  const contextItems = chartData?.legendItems;
-  const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
-  const legendItems = items || contextItems;
-  if (!legendItems) {
-    return null;
-  }
-  return /* @__PURE__ */ _jsx3(BaseLegend, {
-    ref,
-    items: legendItems,
-    shape: resolvedShape,
-    ...props,
-    chartId: contextChartId
-  });
-});
-
-// src/components/legend/hooks/use-chart-legend-items.ts
-import { formatNumber as formatNumber3 } from "@automattic/number-formatters";
-import { useMemo as useMemo10 } from "react";
-function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
-  if (!showValues || legendValueDisplay === "none") {
-    return "";
-  }
-  if ("percentage" in point) {
-    switch (legendValueDisplay) {
-      case "percentage":
-        return formatPercentage(point.percentage);
-      case "value":
-        return formatNumber3(point.value);
-      case "valueDisplay":
-        return point.valueDisplay || formatNumber3(point.value);
-      default:
-        return "";
-    }
-  }
-  if ("value" in point) {
-    return point.value !== null ? formatNumber3(point.value) : "";
-  }
-  return "";
-}
-function applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize) {
-  if (withGlyph) {
-    const glyphToUse = glyph || renderGlyph;
-    if (glyphToUse) {
-      return {
-        ...baseItem,
-        glyphSize,
-        renderGlyph: glyphToUse
-      };
-    }
-  }
-  return baseItem;
-}
-function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
-  const mapper = (series, index) => {
-    const { color, glyph, shapeStyles } = getElementStyles({
-      data: series,
-      index,
-      legendShape
-    });
-    const baseItem = {
-      label: series.label,
-      value: showValues ? series.data?.length?.toString() || "0" : "",
-      color,
-      shapeStyle: shapeStyles
-    };
-    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
-  };
-  return seriesData.map(mapper);
-}
-function processPointData(pointData, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape) {
-  const mapper = (point, index) => {
-    const { color, glyph, shapeStyles } = getElementStyles({
-      data: point,
-      index,
-      legendShape
-    });
-    const baseItem = {
-      label: point.label,
-      value: formatPointValue(point, showValues, legendValueDisplay),
-      color,
-      shapeStyle: shapeStyles
-    };
-    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
-  };
-  return pointData.map(mapper);
-}
-function useChartLegendItems(data, options = {}, legendShape) {
-  const {
-    showValues = false,
-    legendValueDisplay = "percentage",
-    withGlyph = false,
-    glyphSize = 8,
-    renderGlyph
-  } = options;
-  const { getElementStyles } = useGlobalChartsContext();
-  return useMemo10(() => {
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      return [];
-    }
-    if ("data" in data[0]) {
-      return processSeriesData(
-        data,
-        getElementStyles,
-        showValues,
-        withGlyph,
-        glyphSize,
-        renderGlyph,
-        legendShape
-      );
-    }
-    return processPointData(
-      data,
-      getElementStyles,
-      showValues,
-      legendValueDisplay,
-      withGlyph,
-      glyphSize,
-      renderGlyph,
-      legendShape
-    );
-  }, [
-    data,
-    getElementStyles,
-    showValues,
-    legendValueDisplay,
-    withGlyph,
-    glyphSize,
-    renderGlyph,
-    legendShape
-  ]);
-}
-
-// src/components/tooltip/base-tooltip.tsx
-import { formatNumber as formatNumber4 } from "@automattic/number-formatters";
-
-// src/components/tooltip/base-tooltip.module.scss
-var base_tooltip_module_default = {
-  "tooltip": "a8ccharts-OfX6nd"
-};
-
-// src/components/tooltip/base-tooltip.tsx
-import { Fragment as _Fragment, jsxs as _jsxs2, jsx as _jsx4 } from "react/jsx-runtime";
-var DefaultTooltipContent = ({
-  data
-}) => /* @__PURE__ */ _jsxs2(_Fragment, {
-  children: [data?.label, ": ", data?.valueDisplay || formatNumber4(data?.value)]
-});
-var BaseTooltip = ({
-  data,
-  top,
-  left,
-  component: Component2 = DefaultTooltipContent,
-  children,
-  className,
-  style,
-  renderContainer = true
-}) => {
-  const content = children || data && /* @__PURE__ */ _jsx4(Component2, {
-    data,
-    className
-  });
-  if (!renderContainer) {
-    return content;
-  }
-  return /* @__PURE__ */ _jsx4("div", {
-    className: base_tooltip_module_default.tooltip,
-    style: {
-      top,
-      left,
-      ...style
-    },
-    role: "tooltip",
-    children: content
-  });
-};
-
-// src/components/tooltip/accessible-tooltip.tsx
-import { Tooltip, TooltipContext } from "@visx/xychart";
-import { useContext as useContext6, useEffect as useEffect5, useCallback as useCallback5, useMemo as useMemo11 } from "react";
-import { jsx as _jsx5 } from "react/jsx-runtime";
-var AccessibleTooltip = ({
-  renderTooltip,
-  selectedIndex,
-  tooltipRef,
-  keyboardFocusedClassName,
-  series = [],
-  mode = "group",
-  ...props
-}) => {
-  const tooltipContext = useContext6(TooltipContext);
-  const tooltipData = useMemo11(() => {
-    if (mode !== "individual") return [];
-    if (series.length === 0) return [];
-    const maxDataPoints = Math.max(...series.map((s) => s.data.length));
-    const flattened = [];
-    for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
-      for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
-        const seriesData = series[seriesIndex];
-        if (dataPointIndex < seriesData.data.length) {
-          flattened.push({
-            datum: seriesData.data[dataPointIndex],
-            seriesLabel: seriesData.label,
-            seriesIndex,
-            dataPointIndex
-          });
-        }
-      }
-    }
-    return flattened;
-  }, [series, mode]);
-  useEffect5(() => {
-    if (selectedIndex === void 0) {
-      tooltipContext?.hideTooltip();
-      return;
-    }
-    if (mode === "group") {
-      series.forEach((s, index) => {
-        if (selectedIndex < s.data.length) {
-          const datum = s.data[selectedIndex];
-          tooltipContext?.showTooltip({
-            datum,
-            key: s.label,
-            index
-          });
-        }
-      });
-    } else if (mode === "individual") {
-      if (selectedIndex < tooltipData.length) {
-        const tooltipItem = tooltipData[selectedIndex];
-        tooltipContext?.showTooltip({
-          datum: tooltipItem.datum,
-          key: tooltipItem.seriesLabel,
-          index: tooltipItem.seriesIndex
-        });
-      }
-    }
-  }, [selectedIndex, tooltipData, series]);
-  const focusableRenderTooltip = useMemo11(() => {
-    if (!renderTooltip) return void 0;
-    return (params) => {
-      const tooltipContent = renderTooltip(params);
-      if (selectedIndex !== void 0) {
-        return /* @__PURE__ */ _jsx5("div", {
-          ref: tooltipRef,
-          tabIndex: -1,
-          role: "tooltip",
-          "aria-atomic": "true",
-          className: keyboardFocusedClassName,
-          children: tooltipContent
-        }, `chart-tooltip-${selectedIndex}`);
-      }
-      return /* @__PURE__ */ _jsx5("div", {
-        role: "tooltip",
-        "aria-live": "polite",
-        children: tooltipContent
-      });
-    };
-  }, [renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName]);
-  return /* @__PURE__ */ _jsx5(Tooltip, {
-    ...props,
-    renderTooltip: focusableRenderTooltip
-  });
-};
-var useKeyboardNavigation = ({
-  selectedIndex,
-  setSelectedIndex,
-  isNavigating,
-  setIsNavigating,
-  chartRef,
-  totalPoints
-}) => {
-  const tooltipRef = useCallback5((element) => {
-    if (element && selectedIndex !== void 0) {
-      element.focus();
-    }
-  }, [selectedIndex]);
-  const onChartFocus = useCallback5(() => {
-    if (!isNavigating && selectedIndex !== void 0) {
-      setSelectedIndex(0);
-    }
-  }, [isNavigating, selectedIndex, setSelectedIndex]);
-  const onChartBlur = useCallback5(() => {
-    setIsNavigating(false);
-  }, [setIsNavigating]);
-  const onChartKeyDown = useCallback5((event) => {
-    if (totalPoints === 0) return;
-    if (event.key === "Tab") {
-      chartRef.current?.focus();
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      return;
-    }
-    const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
-    if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
-      chartRef.current?.focus();
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      return;
-    }
-    event.preventDefault();
-    if (["ArrowRight"].includes(event.key)) {
-      setIsNavigating(true);
-      setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
-    } else if (["ArrowLeft"].includes(event.key)) {
-      setIsNavigating(true);
-      setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
-    } else if (event.key === "Escape") {
-      setSelectedIndex(void 0);
-      setIsNavigating(false);
-      chartRef.current?.focus();
-    }
-  }, [totalPoints, selectedIndex, setSelectedIndex, setIsNavigating, chartRef]);
-  return {
-    tooltipRef,
-    onChartFocus,
-    onChartBlur,
-    onChartKeyDown
-  };
-};
-
-// src/charts/private/chart-composition/chart-svg.tsx
-import { Fragment as _Fragment2, jsx as _jsx6 } from "react/jsx-runtime";
-var ChartSVG = ({
-  children
-}) => {
-  return /* @__PURE__ */ _jsx6(_Fragment2, {
-    children
-  });
-};
-ChartSVG.displayName = "Chart.SVG";
-
-// src/charts/private/chart-composition/chart-html.tsx
-import { Fragment as _Fragment3, jsx as _jsx7 } from "react/jsx-runtime";
-var ChartHTML = ({
-  children
-}) => {
-  return /* @__PURE__ */ _jsx7(_Fragment3, {
-    children
-  });
-};
-ChartHTML.displayName = "Chart.HTML";
-
-// src/charts/private/chart-composition/render-legend-slot.ts
-import { createElement, Fragment } from "react";
-function renderLegendSlot(legendChildren, position2) {
-  return legendChildren.filter((l) => l.position === position2).map(
-    (l, i) => createElement(Fragment, { key: `legend-${position2}-${i}` }, l.element)
-  );
-}
-
-// src/charts/private/chart-composition/use-chart-children.ts
-import { Group as Group2 } from "@visx/group";
-import { useMemo as useMemo12, Children, isValidElement } from "react";
-function useChartChildren(children, chartType) {
-  return useMemo12(() => {
-    const svg = [];
-    const html = [];
-    const legend = [];
-    const other = [];
-    const nonLegend = [];
-    Children.forEach(children, (child) => {
-      if (isValidElement(child)) {
-        if (child.type === Legend) {
-          const rawPosition = child.props?.position;
-          const position2 = rawPosition === "top" || rawPosition === "bottom" ? rawPosition : "bottom";
-          legend.push({ element: child, position: position2 });
-          return;
-        }
-        const childType = child.type;
-        const displayName = childType?.displayName;
-        if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
-          if (child.props?.children) {
-            Children.forEach(child.props.children, (svgChild) => {
-              svg.push(svgChild);
-            });
-          }
-        } else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
-          if (child.props?.children) {
-            Children.forEach(child.props.children, (htmlChild) => {
-              html.push(htmlChild);
-            });
-          }
-        } else if (child.type === Group2) {
-          svg.push(child);
-        } else {
-          other.push(child);
-        }
-      }
-      nonLegend.push(child);
-    });
-    return {
-      svgChildren: svg,
-      htmlChildren: html,
-      legendChildren: legend,
-      otherChildren: other,
-      nonLegendChildren: nonLegend
-    };
-  }, [children, chartType]);
-}
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.6_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 import * as React from "react";
@@ -2710,25 +2075,25 @@ function useRender(params) {
 
 // ../../../node_modules/.pnpm/@wordpress+element@6.43.0/node_modules/@wordpress/element/build-module/react.mjs
 import {
-  Children as Children3,
+  Children as Children2,
   cloneElement as cloneElement2,
   Component,
   createContext as createContext3,
-  createElement as createElement3,
+  createElement as createElement2,
   createRef,
-  forwardRef as forwardRef3,
-  Fragment as Fragment2,
-  isValidElement as isValidElement4,
+  forwardRef,
+  Fragment,
+  isValidElement as isValidElement3,
   memo,
   PureComponent,
   StrictMode,
-  useCallback as useCallback6,
-  useContext as useContext7,
+  useCallback as useCallback4,
+  useContext as useContext4,
   useDebugValue,
   useDeferredValue,
-  useEffect as useEffect6,
+  useEffect as useEffect5,
   useId as useId2,
-  useMemo as useMemo13,
+  useMemo as useMemo9,
   useImperativeHandle,
   useInsertionEffect,
   useLayoutEffect as useLayoutEffect2,
@@ -2824,7 +2189,7 @@ var gapTokens = {
   "2xl": "var(--wpds-dimension-gap-2xl, 32px)",
   "3xl": "var(--wpds-dimension-gap-3xl, 40px)"
 };
-var Stack = forwardRef3(function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
+var Stack = forwardRef(function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
   const style = {
     gap: gap && gapTokens[gap],
     alignItems: align,
@@ -2841,7 +2206,7 @@ var Stack = forwardRef3(function Stack2({ direction, gap, align, justify, wrap, 
 });
 
 // ../../../node_modules/.pnpm/@wordpress+ui@0.9.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/text/text.mjs
-import clsx2 from "clsx";
+import clsx from "clsx";
 if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='893fb81f3c']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "893fb81f3c");
@@ -2849,17 +2214,657 @@ if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !docum
   document.head.appendChild(style);
 }
 var style_default2 = { "heading-2xl": "_14437cfb77831647__heading-2xl", "heading-xl": "_3c78b7fa9b4072dd__heading-xl", "heading-lg": "aa58f227716bcde2__heading-lg", "heading-md": "fc4da56d8dfe52c4__heading-md", "heading-sm": "a9b78c7c82e8dff7__heading-sm", "body-xl": "_305ff559e52180d5__body-xl", "body-lg": "ca1aa3fc2029e958__body-lg", "body-md": "_131101940be12424__body-md", "body-sm": "_0e8d87a42c1f75fa__body-sm" };
-var Text = forwardRef3(function Text2({ variant = "body-md", render, className, ...props }, ref) {
+var Text = forwardRef(function Text2({ variant = "body-md", render, className, ...props }, ref) {
   const element = useRender({
     render,
     defaultTagName: "span",
     ref,
     props: mergeProps(props, {
-      className: clsx2(style_default2[variant], className)
+      className: clsx(style_default2[variant], className)
     })
   });
   return element;
 });
+
+// src/components/legend/private/base-legend.tsx
+import clsx2 from "clsx";
+import { forwardRef as forwardRef2, useCallback as useCallback5, useContext as useContext5 } from "react";
+
+// src/components/legend/utils/value-or-identity.ts
+function valueOrIdentity(_) {
+  if (_ && typeof _ === "object" && "value" in _ && typeof _.value !== "undefined")
+    return _.value;
+  return _;
+}
+function valueOrIdentityString(_) {
+  return String(valueOrIdentity(_));
+}
+
+// src/components/legend/utils/label-transform-factory.ts
+function labelTransformFactory({
+  scale,
+  labelFormat
+}) {
+  return (d, i) => ({
+    datum: d,
+    index: i,
+    text: `${labelFormat(d, i)}`,
+    value: scale(d)
+  });
+}
+
+// src/components/legend/private/base-legend.module.scss
+var base_legend_module_default = {
+  "legend": "a8ccharts-89ApsU",
+  "legend-item": "a8ccharts-Vflwq8",
+  "legend-item--interactive": "a8ccharts-qGsavM",
+  "legend-item--inactive": "a8ccharts-ZtDY-Q",
+  "legend-item-label": "a8ccharts-2H65Kr",
+  "legend-item-text--wrap": "a8ccharts-faSDBI",
+  "legend-item-text--ellipsis": "a8ccharts-FISUIO",
+  "legend-item-value": "a8ccharts-DTZlT-"
+};
+
+// src/components/legend/private/base-legend.tsx
+import { jsx as _jsx2, jsxs as _jsxs } from "react/jsx-runtime";
+var ALIGNMENT_TO_FLEX = {
+  start: "flex-start",
+  center: "center",
+  end: "flex-end"
+};
+var LegendText = ({
+  text,
+  textOverflow,
+  maxWidth
+}) => {
+  const isEllipsis = maxWidth != null && textOverflow === "ellipsis";
+  const [textRef, isTruncated] = useTextTruncation(Boolean(isEllipsis));
+  return /* @__PURE__ */ _jsx2("span", {
+    ref: textRef,
+    className: clsx2(base_legend_module_default["legend-item-text"], maxWidth != null && base_legend_module_default[`legend-item-text--${textOverflow}`]),
+    style: {
+      ...maxWidth != null && {
+        maxWidth,
+        minWidth: 0
+      }
+    },
+    title: isEllipsis && isTruncated ? text : void 0,
+    children: text
+  });
+};
+var BaseLegend = /* @__PURE__ */ forwardRef2(({
+  items,
+  className,
+  orientation = "horizontal",
+  alignment = "center",
+  shape = "rect",
+  fill = valueOrIdentityString,
+  size = valueOrIdentityString,
+  labelFormat = valueOrIdentity,
+  labelTransform = labelTransformFactory,
+  itemStyles,
+  itemClassName,
+  labelStyles,
+  labelClassName,
+  shapeStyles,
+  render,
+  interactive = false,
+  chartId
+}, ref) => {
+  const {
+    margin: itemMargin = "0",
+    flexDirection: itemDirection = "row"
+  } = itemStyles ?? {};
+  const {
+    justifyContent: labelJustifyContent = "flex-start",
+    flex: labelFlex = "0 0 auto",
+    margin: labelMargin = "0 4px",
+    maxWidth,
+    textOverflow = "wrap"
+  } = labelStyles ?? {};
+  const {
+    width: shapeWidth = 16,
+    height: shapeHeight = 16,
+    margin: shapeMargin = "2px 4px 2px 0"
+  } = shapeStyles ?? {};
+  const theme = useGlobalChartsTheme();
+  const context = useContext5(GlobalChartsContext);
+  const legendScale = scaleOrdinal({
+    domain: items.map((item) => item.label),
+    range: items.map((item) => item.color)
+  });
+  const domain = legendScale.domain();
+  const getShapeStyle = useCallback5(({
+    index
+  }) => items[index]?.shapeStyle, [items]);
+  const handleLegendClick = useCallback5((seriesLabel) => {
+    if (interactive && chartId && context) {
+      context.toggleSeriesVisibility(chartId, seriesLabel);
+    }
+  }, [interactive, chartId, context]);
+  const isSeriesVisible = useCallback5((seriesLabel) => {
+    if (!interactive || !chartId || !context) {
+      return true;
+    }
+    return context.isSeriesVisible(chartId, seriesLabel);
+  }, [interactive, chartId, context]);
+  const createClickHandler = useCallback5((labelText) => {
+    if (!interactive) {
+      return void 0;
+    }
+    return () => handleLegendClick(labelText);
+  }, [interactive, handleLegendClick]);
+  const createKeyDownHandler = useCallback5((labelText) => {
+    if (!interactive) {
+      return void 0;
+    }
+    return (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        handleLegendClick(labelText);
+      }
+    };
+  }, [interactive, handleLegendClick]);
+  const flexAlignment = ALIGNMENT_TO_FLEX[alignment] ?? "center";
+  return render ? render(items) : /* @__PURE__ */ _jsx2(LegendOrdinal, {
+    scale: legendScale,
+    labelFormat,
+    labelTransform,
+    children: (labels) => /* @__PURE__ */ _jsx2(Stack, {
+      ref,
+      direction: orientation === "vertical" ? "column" : "row",
+      gap: orientation === "vertical" ? "sm" : "lg",
+      align: orientation === "vertical" ? flexAlignment : void 0,
+      justify: orientation === "horizontal" ? flexAlignment : void 0,
+      wrap: orientation === "horizontal" ? "wrap" : void 0,
+      role: "list",
+      className: clsx2(base_legend_module_default.legend, className),
+      style: theme.legend?.containerStyles,
+      children: labels.map((label, i) => {
+        const visible = isSeriesVisible(label.text);
+        const handleClick = createClickHandler(label.text);
+        const handleKeyDown = createKeyDownHandler(label.text);
+        const matchedItem = items[i];
+        return /* @__PURE__ */ _jsxs(LegendItem, {
+          className: clsx2("visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
+          margin: itemMargin,
+          flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
+          onClick: handleClick,
+          onKeyDown: handleKeyDown,
+          role: interactive ? "button" : void 0,
+          tabIndex: interactive ? 0 : void 0,
+          "aria-pressed": interactive ? visible : void 0,
+          "aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
+          children: [items[i]?.renderGlyph ? /* @__PURE__ */ _jsx2("svg", {
+            width: items[i]?.glyphSize * 2,
+            height: items[i]?.glyphSize * 2,
+            children: /* @__PURE__ */ _jsx2(Group, {
+              children: items[i]?.renderGlyph({
+                key: `legend-glyph-${label.text}`,
+                datum: {},
+                index: i,
+                color: fill(label),
+                size: items[i]?.glyphSize,
+                x: items[i]?.glyphSize,
+                y: items[i]?.glyphSize
+              })
+            })
+          }) : /* @__PURE__ */ _jsx2(LegendShape, {
+            shape,
+            height: shapeHeight,
+            width: shapeWidth,
+            margin: shapeMargin,
+            item: domain[i],
+            itemIndex: i,
+            label,
+            fill,
+            size,
+            shapeStyle: getShapeStyle
+          }), /* @__PURE__ */ _jsx2(LegendLabel, {
+            className: clsx2("visx-legend-label", base_legend_module_default["legend-item-label"], labelClassName),
+            style: {
+              flex: labelFlex,
+              margin: labelMargin,
+              ...theme.legend?.labelStyles
+            },
+            children: /* @__PURE__ */ _jsxs(Stack, {
+              align: "center",
+              gap: "sm",
+              justify: labelJustifyContent,
+              children: [/* @__PURE__ */ _jsx2(LegendText, {
+                text: label.text,
+                textOverflow,
+                maxWidth
+              }), matchedItem?.value != null && matchedItem.value !== "" && /* @__PURE__ */ _jsxs("span", {
+                className: base_legend_module_default["legend-item-value"],
+                children: ["\xA0", matchedItem.value]
+              })]
+            })
+          })]
+        }, `legend-${label.text}-${i}`);
+      })
+    })
+  });
+});
+
+// src/components/legend/legend.tsx
+import { jsx as _jsx3 } from "react/jsx-runtime";
+var defaultShapeByChartType = {
+  line: "line",
+  bar: "rect",
+  pie: "circle",
+  "pie-semi-circle": "circle",
+  leaderboard: "circle"
+};
+var Legend = /* @__PURE__ */ forwardRef3(({
+  chartId,
+  items,
+  shape,
+  ...props
+}, ref) => {
+  const context = useContext6(GlobalChartsContext);
+  const singleChartContext = useContext6(SingleChartContext);
+  const contextChartId = chartId ?? singleChartContext?.chartId;
+  const chartData = useMemo10(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
+  const contextItems = chartData?.legendItems;
+  const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
+  const legendItems = items || contextItems;
+  if (!legendItems) {
+    return null;
+  }
+  return /* @__PURE__ */ _jsx3(BaseLegend, {
+    ref,
+    items: legendItems,
+    shape: resolvedShape,
+    ...props,
+    chartId: contextChartId
+  });
+});
+
+// src/components/legend/hooks/use-chart-legend-items.ts
+import { formatNumber as formatNumber3 } from "@automattic/number-formatters";
+import { useMemo as useMemo11 } from "react";
+function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
+  if (!showValues || legendValueDisplay === "none") {
+    return "";
+  }
+  if ("percentage" in point) {
+    switch (legendValueDisplay) {
+      case "percentage":
+        return formatPercentage(point.percentage);
+      case "value":
+        return formatNumber3(point.value);
+      case "valueDisplay":
+        return point.valueDisplay || formatNumber3(point.value);
+      default:
+        return "";
+    }
+  }
+  if ("value" in point) {
+    return point.value !== null ? formatNumber3(point.value) : "";
+  }
+  return "";
+}
+function applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize) {
+  if (withGlyph) {
+    const glyphToUse = glyph || renderGlyph;
+    if (glyphToUse) {
+      return {
+        ...baseItem,
+        glyphSize,
+        renderGlyph: glyphToUse
+      };
+    }
+  }
+  return baseItem;
+}
+function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
+  const mapper = (series, index) => {
+    const { color, glyph, shapeStyles } = getElementStyles({
+      data: series,
+      index,
+      legendShape
+    });
+    const baseItem = {
+      label: series.label,
+      value: showValues ? series.data?.length?.toString() || "0" : "",
+      color,
+      shapeStyle: shapeStyles
+    };
+    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
+  };
+  return seriesData.map(mapper);
+}
+function processPointData(pointData, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape) {
+  const mapper = (point, index) => {
+    const { color, glyph, shapeStyles } = getElementStyles({
+      data: point,
+      index,
+      legendShape
+    });
+    const baseItem = {
+      label: point.label,
+      value: formatPointValue(point, showValues, legendValueDisplay),
+      color,
+      shapeStyle: shapeStyles
+    };
+    return applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSize);
+  };
+  return pointData.map(mapper);
+}
+function useChartLegendItems(data, options = {}, legendShape) {
+  const {
+    showValues = false,
+    legendValueDisplay = "percentage",
+    withGlyph = false,
+    glyphSize = 8,
+    renderGlyph
+  } = options;
+  const { getElementStyles } = useGlobalChartsContext();
+  return useMemo11(() => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+    if ("data" in data[0]) {
+      return processSeriesData(
+        data,
+        getElementStyles,
+        showValues,
+        withGlyph,
+        glyphSize,
+        renderGlyph,
+        legendShape
+      );
+    }
+    return processPointData(
+      data,
+      getElementStyles,
+      showValues,
+      legendValueDisplay,
+      withGlyph,
+      glyphSize,
+      renderGlyph,
+      legendShape
+    );
+  }, [
+    data,
+    getElementStyles,
+    showValues,
+    legendValueDisplay,
+    withGlyph,
+    glyphSize,
+    renderGlyph,
+    legendShape
+  ]);
+}
+
+// src/components/tooltip/base-tooltip.tsx
+import { formatNumber as formatNumber4 } from "@automattic/number-formatters";
+
+// src/components/tooltip/base-tooltip.module.scss
+var base_tooltip_module_default = {
+  "tooltip": "a8ccharts-OfX6nd"
+};
+
+// src/components/tooltip/base-tooltip.tsx
+import { Fragment as _Fragment, jsxs as _jsxs2, jsx as _jsx4 } from "react/jsx-runtime";
+var DefaultTooltipContent = ({
+  data
+}) => /* @__PURE__ */ _jsxs2(_Fragment, {
+  children: [data?.label, ": ", data?.valueDisplay || formatNumber4(data?.value)]
+});
+var BaseTooltip = ({
+  data,
+  top,
+  left,
+  component: Component2 = DefaultTooltipContent,
+  children,
+  className,
+  style,
+  renderContainer = true
+}) => {
+  const content = children || data && /* @__PURE__ */ _jsx4(Component2, {
+    data,
+    className
+  });
+  if (!renderContainer) {
+    return content;
+  }
+  return /* @__PURE__ */ _jsx4("div", {
+    className: base_tooltip_module_default.tooltip,
+    style: {
+      top,
+      left,
+      ...style
+    },
+    role: "tooltip",
+    children: content
+  });
+};
+
+// src/components/tooltip/accessible-tooltip.tsx
+import { Tooltip, TooltipContext } from "@visx/xychart";
+import { useContext as useContext7, useEffect as useEffect6, useCallback as useCallback6, useMemo as useMemo12 } from "react";
+import { jsx as _jsx5 } from "react/jsx-runtime";
+var AccessibleTooltip = ({
+  renderTooltip,
+  selectedIndex,
+  tooltipRef,
+  keyboardFocusedClassName,
+  series = [],
+  mode = "group",
+  ...props
+}) => {
+  const tooltipContext = useContext7(TooltipContext);
+  const tooltipData = useMemo12(() => {
+    if (mode !== "individual") return [];
+    if (series.length === 0) return [];
+    const maxDataPoints = Math.max(...series.map((s) => s.data.length));
+    const flattened = [];
+    for (let dataPointIndex = 0; dataPointIndex < maxDataPoints; dataPointIndex++) {
+      for (let seriesIndex = 0; seriesIndex < series.length; seriesIndex++) {
+        const seriesData = series[seriesIndex];
+        if (dataPointIndex < seriesData.data.length) {
+          flattened.push({
+            datum: seriesData.data[dataPointIndex],
+            seriesLabel: seriesData.label,
+            seriesIndex,
+            dataPointIndex
+          });
+        }
+      }
+    }
+    return flattened;
+  }, [series, mode]);
+  useEffect6(() => {
+    if (selectedIndex === void 0) {
+      tooltipContext?.hideTooltip();
+      return;
+    }
+    if (mode === "group") {
+      series.forEach((s, index) => {
+        if (selectedIndex < s.data.length) {
+          const datum = s.data[selectedIndex];
+          tooltipContext?.showTooltip({
+            datum,
+            key: s.label,
+            index
+          });
+        }
+      });
+    } else if (mode === "individual") {
+      if (selectedIndex < tooltipData.length) {
+        const tooltipItem = tooltipData[selectedIndex];
+        tooltipContext?.showTooltip({
+          datum: tooltipItem.datum,
+          key: tooltipItem.seriesLabel,
+          index: tooltipItem.seriesIndex
+        });
+      }
+    }
+  }, [selectedIndex, tooltipData, series]);
+  const focusableRenderTooltip = useMemo12(() => {
+    if (!renderTooltip) return void 0;
+    return (params) => {
+      const tooltipContent = renderTooltip(params);
+      if (selectedIndex !== void 0) {
+        return /* @__PURE__ */ _jsx5("div", {
+          ref: tooltipRef,
+          tabIndex: -1,
+          role: "tooltip",
+          "aria-atomic": "true",
+          className: keyboardFocusedClassName,
+          children: tooltipContent
+        }, `chart-tooltip-${selectedIndex}`);
+      }
+      return /* @__PURE__ */ _jsx5("div", {
+        role: "tooltip",
+        "aria-live": "polite",
+        children: tooltipContent
+      });
+    };
+  }, [renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName]);
+  return /* @__PURE__ */ _jsx5(Tooltip, {
+    ...props,
+    renderTooltip: focusableRenderTooltip
+  });
+};
+var useKeyboardNavigation = ({
+  selectedIndex,
+  setSelectedIndex,
+  isNavigating,
+  setIsNavigating,
+  chartRef,
+  totalPoints
+}) => {
+  const tooltipRef = useCallback6((element) => {
+    if (element && selectedIndex !== void 0) {
+      element.focus();
+    }
+  }, [selectedIndex]);
+  const onChartFocus = useCallback6(() => {
+    if (!isNavigating && selectedIndex !== void 0) {
+      setSelectedIndex(0);
+    }
+  }, [isNavigating, selectedIndex, setSelectedIndex]);
+  const onChartBlur = useCallback6(() => {
+    setIsNavigating(false);
+  }, [setIsNavigating]);
+  const onChartKeyDown = useCallback6((event) => {
+    if (totalPoints === 0) return;
+    if (event.key === "Tab") {
+      chartRef.current?.focus();
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      return;
+    }
+    const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
+    if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
+      chartRef.current?.focus();
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      return;
+    }
+    event.preventDefault();
+    if (["ArrowRight"].includes(event.key)) {
+      setIsNavigating(true);
+      setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
+    } else if (["ArrowLeft"].includes(event.key)) {
+      setIsNavigating(true);
+      setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
+    } else if (event.key === "Escape") {
+      setSelectedIndex(void 0);
+      setIsNavigating(false);
+      chartRef.current?.focus();
+    }
+  }, [totalPoints, selectedIndex, setSelectedIndex, setIsNavigating, chartRef]);
+  return {
+    tooltipRef,
+    onChartFocus,
+    onChartBlur,
+    onChartKeyDown
+  };
+};
+
+// src/charts/private/chart-composition/chart-svg.tsx
+import { Fragment as _Fragment2, jsx as _jsx6 } from "react/jsx-runtime";
+var ChartSVG = ({
+  children
+}) => {
+  return /* @__PURE__ */ _jsx6(_Fragment2, {
+    children
+  });
+};
+ChartSVG.displayName = "Chart.SVG";
+
+// src/charts/private/chart-composition/chart-html.tsx
+import { Fragment as _Fragment3, jsx as _jsx7 } from "react/jsx-runtime";
+var ChartHTML = ({
+  children
+}) => {
+  return /* @__PURE__ */ _jsx7(_Fragment3, {
+    children
+  });
+};
+ChartHTML.displayName = "Chart.HTML";
+
+// src/charts/private/chart-composition/render-legend-slot.ts
+import { createElement as createElement3, Fragment as Fragment2 } from "react";
+function renderLegendSlot(legendChildren, position2) {
+  return legendChildren.filter((l) => l.position === position2).map(
+    (l, i) => createElement3(Fragment2, { key: `legend-${position2}-${i}` }, l.element)
+  );
+}
+
+// src/charts/private/chart-composition/use-chart-children.ts
+import { Group as Group2 } from "@visx/group";
+import { useMemo as useMemo13, Children as Children3, isValidElement as isValidElement4 } from "react";
+function useChartChildren(children, chartType) {
+  return useMemo13(() => {
+    const svg = [];
+    const html = [];
+    const legend = [];
+    const other = [];
+    const nonLegend = [];
+    Children3.forEach(children, (child) => {
+      if (isValidElement4(child)) {
+        if (child.type === Legend) {
+          const rawPosition = child.props?.position;
+          const position2 = rawPosition === "top" || rawPosition === "bottom" ? rawPosition : "bottom";
+          legend.push({ element: child, position: position2 });
+          return;
+        }
+        const childType = child.type;
+        const displayName = childType?.displayName;
+        if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
+          if (child.props?.children) {
+            Children3.forEach(child.props.children, (svgChild) => {
+              svg.push(svgChild);
+            });
+          }
+        } else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
+          if (child.props?.children) {
+            Children3.forEach(child.props.children, (htmlChild) => {
+              html.push(htmlChild);
+            });
+          }
+        } else if (child.type === Group2) {
+          svg.push(child);
+        } else {
+          other.push(child);
+        }
+      }
+      nonLegend.push(child);
+    });
+    return {
+      svgChildren: svg,
+      htmlChildren: html,
+      legendChildren: legend,
+      otherChildren: other,
+      nonLegendChildren: nonLegend
+    };
+  }, [children, chartType]);
+}
 
 // src/charts/private/chart-layout/chart-layout.tsx
 import { useEffect as useEffect7 } from "react";
@@ -3808,7 +3813,6 @@ var conversion_funnel_chart_module_default = {
   "funnel-step": "a8ccharts-VqFY0l",
   "funnel-step--animated": "a8ccharts-fk-hCl",
   "funnel-step--blurred": "a8ccharts-1zOc9c",
-  "step-header": "a8ccharts-2JsQiV",
   "step-label": "a8ccharts-6OabC4",
   "step-rate": "a8ccharts-9wSZ6n",
   "bar-container": "a8ccharts-sSmCTi",
@@ -4048,7 +4052,10 @@ var ConversionFunnelChartInternal = ({
       children: changeIndicator
     })]
   });
-  const renderDefaultTooltip2 = (step) => /* @__PURE__ */ _jsxs6(_Fragment5, {
+  const renderDefaultTooltip2 = (step) => /* @__PURE__ */ _jsxs6(Stack, {
+    direction: "column",
+    align: "flex-start",
+    gap: "xs",
     children: [/* @__PURE__ */ _jsx14("div", {
       className: conversion_funnel_chart_module_default["tooltip-title"],
       children: step.label
@@ -4089,6 +4096,7 @@ var ConversionFunnelChartInternal = ({
   return /* @__PURE__ */ _jsxs6(_Fragment5, {
     children: [/* @__PURE__ */ _jsxs6(Stack, {
       direction: "column",
+      gap: "xl",
       ref: (node2) => {
         portalContainerRef(node2);
         chartRef.current = node2;
@@ -4103,20 +4111,27 @@ var ConversionFunnelChartInternal = ({
         changeIndicator,
         className: conversion_funnel_chart_module_default["main-metric"],
         changeColor
-      }) : /* @__PURE__ */ _jsx14("div", {
+      }) : /* @__PURE__ */ _jsx14(Stack, {
+        direction: "row",
+        align: "baseline",
+        gap: "sm",
         className: conversion_funnel_chart_module_default["main-metric"],
         children: renderDefaultMainMetric()
-      }), /* @__PURE__ */ _jsx14("div", {
+      }), /* @__PURE__ */ _jsx14(Stack, {
+        direction: "row",
+        align: "flex-end",
+        gap: "lg",
         className: conversion_funnel_chart_module_default["funnel-container"],
         children: steps.map((step, index) => {
           const barHeight = step.rate / maxRate * 100;
           const {
             isBlurred
           } = getStepState(step.id);
-          return /* @__PURE__ */ _jsxs6("div", {
+          return /* @__PURE__ */ _jsxs6(Stack, {
+            direction: "column",
             className: clsx4(conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
+            gap: "xl",
             children: [/* @__PURE__ */ _jsxs6("div", {
-              className: conversion_funnel_chart_module_default["step-header"],
               children: [renderStepLabel ? renderStepLabel({
                 step,
                 index,
@@ -4132,7 +4147,9 @@ var ConversionFunnelChartInternal = ({
                 className: conversion_funnel_chart_module_default["step-rate"],
                 children: formatPercentage(step.rate)
               })]
-            }), /* @__PURE__ */ _jsx14("div", {
+            }), /* @__PURE__ */ _jsx14(Stack, {
+              direction: "column",
+              justify: "flex-end",
               className: conversion_funnel_chart_module_default["bar-container"],
               onClick: stepHandlers.get(step.id)?.onClick,
               onKeyDown: stepHandlers.get(step.id)?.onKeyDown,
@@ -4262,7 +4279,9 @@ var GeoChartInternal = ({
       backgroundColor
     }
   } = useGlobalChartsContext();
-  const loadingPlaceholder = /* @__PURE__ */ _jsx15("div", {
+  const loadingPlaceholder = /* @__PURE__ */ _jsx15(Stack, {
+    align: "center",
+    justify: "center",
     className: clsx5("geo-chart", geo_chart_module_default.container, className),
     style: {
       width,
@@ -4330,7 +4349,9 @@ var GeoChartInternal = ({
     legend: "none",
     keepAspectRatio: true
   }), [region, resolution, lightColorHex, fullColorHex, backgroundColorHex, defaultFillColorHex, sanitizedData.hasHtmlTooltips]);
-  return /* @__PURE__ */ _jsx15("div", {
+  return /* @__PURE__ */ _jsx15(Stack, {
+    align: "center",
+    justify: "center",
     className: clsx5("geo-chart", geo_chart_module_default.container, className),
     style: {
       width,
@@ -4366,14 +4387,14 @@ var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 // ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
   const mountedRef = useRef6(false);
-  useEffect6(() => {
+  useEffect5(() => {
     if (mountedRef.current) {
       return effect();
     }
     mountedRef.current = true;
     return void 0;
   }, deps);
-  useEffect6(() => () => {
+  useEffect5(() => () => {
     mountedRef.current = false;
   }, []);
 }
@@ -5821,7 +5842,7 @@ var cache = _createEmotion.cache;
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
-  const cx2 = useCallback6((...classNames) => {
+  const cx2 = useCallback4((...classNames) => {
     if (cache2 === null) {
       throw new Error("The `useCx` hook should be only used within a valid Emotion Cache Context");
     }
@@ -6086,7 +6107,7 @@ var ComponentsContext = createContext3(
   {}
 );
 ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => useContext7(ComponentsContext);
+var useComponentsContext = () => useContext4(ComponentsContext);
 function useContextSystemBridge({
   value
 }) {
@@ -6101,7 +6122,7 @@ function useContextSystemBridge({
       globalThis.SCRIPT_DEBUG === true ? warning(`Please memoize your context: ${JSON.stringify(value)}`) : void 0;
     }
   }, [value]);
-  const config = useMemo13(() => {
+  const config = useMemo9(() => {
     return deepmerge2(parentContext ?? {}, value ?? {}, {
       isMergeableObject: isPlainObject
     });
@@ -6141,7 +6162,7 @@ function contextConnect(Component2, namespace) {
   });
 }
 function _contextConnect(Component2, namespace, options) {
-  const WrappedComponent = options?.forwardsRef ? forwardRef3(Component2) : Component2;
+  const WrappedComponent = options?.forwardsRef ? forwardRef(Component2) : Component2;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -6373,7 +6394,7 @@ function UnforwardedView({
     ...restProps
   });
 }
-var View = Object.assign(forwardRef3(UnforwardedView), {
+var View = Object.assign(forwardRef(UnforwardedView), {
   selector: ".components-view"
 });
 var component_default = View;
@@ -6390,7 +6411,7 @@ var useBreakpointIndex = (options = {}) => {
     throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
   }
   const [value, setValue] = useState5(defaultIndex);
-  useEffect6(() => {
+  useEffect5(() => {
     const getIndex = () => breakpoints.filter((bp) => {
       return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
     }).length;
@@ -6496,7 +6517,7 @@ function useGrid(props) {
   const gridTemplateColumns = templateColumns || !!columns && `repeat( ${column2}, 1fr )`;
   const gridTemplateRows = templateRows || !!rows && `repeat( ${row}, 1fr )`;
   const cx2 = useCx();
-  const classes = useMemo13(() => {
+  const classes = useMemo9(() => {
     const alignmentProps = getAlignmentProps(alignment);
     const gridClasses = /* @__PURE__ */ css({
       alignItems: align,
@@ -6826,7 +6847,7 @@ var LeaderboardChartInternal = ({
           children: data.map((entry) => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = deltaColors[colorIndex];
-            return /* @__PURE__ */ _jsxs7(Fragment2, {
+            return /* @__PURE__ */ _jsxs7(Fragment, {
               children: [/* @__PURE__ */ _jsx19(Stack, {
                 direction: "column",
                 gap: labelSpacing,
@@ -6930,7 +6951,6 @@ var line_chart_module_default = {
   "line-chart__annotation-label-trigger-button": "a8ccharts-7mh3Cl",
   "line-chart__annotation-label-popover--visible": "a8ccharts-VAeVuJ",
   "line-chart__annotation-label-popover--safari": "a8ccharts-TEe-iV",
-  "line-chart__annotation-label-popover-header": "a8ccharts-LAUpx7",
   "line-chart__annotation-label-popover-content": "a8ccharts-b76gEu",
   "line-chart__annotation-label-popover-close-button": "a8ccharts-LIpFoS"
 };
@@ -6998,8 +7018,10 @@ var LineChartAnnotationLabelWithPopover = ({
       id: popoverId,
       popover: "auto",
       className: clsx7(line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
-      children: /* @__PURE__ */ _jsxs8("div", {
-        className: line_chart_module_default["line-chart__annotation-label-popover-header"],
+      children: /* @__PURE__ */ _jsxs8(Stack, {
+        direction: "row",
+        align: "flex-start",
+        justify: "space-between",
         children: [/* @__PURE__ */ _jsx21("div", {
           className: line_chart_module_default["line-chart__annotation-label-popover-content"],
           children: renderLabelPopover({
@@ -7442,7 +7464,10 @@ var renderDefaultTooltip = (params) => {
     children: [/* @__PURE__ */ _jsx24("div", {
       className: line_chart_module_default["line-chart__tooltip-date"],
       children: nearestDatum.date?.toLocaleDateString()
-    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxs10("div", {
+    }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxs10(Stack, {
+      direction: "row",
+      align: "center",
+      justify: "space-between",
       className: line_chart_module_default["line-chart__tooltip-row"],
       children: [/* @__PURE__ */ _jsxs10("span", {
         className: line_chart_module_default["line-chart__tooltip-label"],

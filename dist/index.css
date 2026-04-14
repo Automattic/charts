@@ -11,38 +11,7 @@
 .a8ccharts-89ApsU {
   align-self: stretch;
 }
-.a8ccharts-AELBvX {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.a8ccharts-fX8uQe {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.a8ccharts-DEe0wg {
-  justify-content: flex-start;
-}
-.a8ccharts-WBKF9I {
-  justify-content: center;
-}
-.a8ccharts-JfwMng {
-  justify-content: flex-end;
-}
-.a8ccharts-fX8uQe.a8ccharts-DEe0wg {
-  align-items: flex-start;
-}
-.a8ccharts-fX8uQe.a8ccharts-WBKF9I {
-  align-items: center;
-}
-.a8ccharts-fX8uQe.a8ccharts-JfwMng {
-  align-items: flex-end;
-}
 .a8ccharts-Vflwq8 {
-  display: flex;
-  align-items: center;
   font-size: var(--wpds-font-size-md, 13px);
 }
 .a8ccharts-qGsavM {
@@ -66,11 +35,6 @@
 }
 .a8ccharts-ZtDY-Q .a8ccharts-2H65Kr {
   text-decoration: line-through;
-}
-.a8ccharts-2H65Kr {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 .a8ccharts-faSDBI {
   overflow-wrap: break-word;
@@ -160,10 +124,6 @@
   pointer-events: none;
 }
 .a8ccharts-61WPYr {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 24px;
   height: 20px;
 }
 .a8ccharts-RRRI6x {
@@ -186,9 +146,6 @@
   margin: 0;
 }
 .a8ccharts-Z7EGnW {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
   flex: 1;
   min-height: 200px;
   width: 100%;
@@ -196,8 +153,6 @@
 .a8ccharts-VqFY0l {
   flex: 1 1 0;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
   height: 100%;
 }
 .a8ccharts-fk-hCl {
@@ -205,9 +160,6 @@
 }
 .a8ccharts-1zOc9c {
   opacity: 0.3;
-}
-.a8ccharts-2JsQiV {
-  margin-bottom: 24px;
 }
 .a8ccharts-6OabC4 {
   color: #757575;
@@ -231,8 +183,6 @@
 }
 .a8ccharts-sSmCTi {
   flex: 1;
-  display: flex;
-  align-items: flex-end;
   border-radius: 4px;
   position: relative;
   cursor: pointer;
@@ -254,11 +204,6 @@
   }
 }
 .a8ccharts-2TeoCn {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 4px;
   border-bottom: 1px solid var(--Gray-Gray-5, #dcdcde);
   background: var(--black-white-white, #fff);
   border-radius: 4px !important;
@@ -289,9 +234,6 @@
 /* esbuild-sass-plugin:css-chunk:src/charts/geo-chart/geo-chart.module.scss */
 .a8ccharts-JvcqOz {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* esbuild-sass-plugin:css-chunk:src/charts/leaderboard-chart/leaderboard-chart.module.scss */
@@ -379,10 +321,7 @@
   padding-bottom: 10px;
 }
 .a8ccharts-19N7T9 {
-  display: flex;
-  align-items: center;
   padding: 4px 0;
-  justify-content: space-between;
 }
 .a8ccharts-HOAXrD {
   font-weight: var(--wpds-font-weight-medium, 499);
@@ -425,12 +364,6 @@
 .a8ccharts-TEe-iV {
   position: initial;
   margin: auto;
-}
-.a8ccharts-LAUpx7 {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: start;
 }
 .a8ccharts-b76gEu {
   padding: 0.5rem;
