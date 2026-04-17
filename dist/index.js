@@ -2073,7 +2073,7 @@ function useRender(params) {
   return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+element@6.43.0/node_modules/@wordpress/element/build-module/react.mjs
+// ../../../node_modules/.pnpm/@wordpress+element@6.44.0/node_modules/@wordpress/element/build-module/react.mjs
 import {
   Children as Children2,
   cloneElement as cloneElement2,
@@ -4388,7 +4388,7 @@ var GeoChartWithProvider = (props) => {
 GeoChartWithProvider.displayName = "GeoChart";
 var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
   const mountedRef = useRef6(false);
   useEffect5(() => {
@@ -5842,7 +5842,7 @@ var css2 = _createEmotion.css;
 var sheet = _createEmotion.sheet;
 var cache = _createEmotion.cache;
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
@@ -5929,7 +5929,7 @@ function memize(fn, options) {
   return memoized;
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
 var white = "#fff";
 var GRAY = {
   900: "#1e1e1e",
@@ -6010,7 +6010,7 @@ var COLORS = Object.freeze({
   ui: UI
 });
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
 var CONTROL_HEIGHT = "36px";
 var CONTROL_PROPS = {
   // These values should be shared with TextControl.
@@ -6078,14 +6078,14 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
   transitionTimingFunctionControl: "cubic-bezier(0.12, 0.8, 0.32, 1)"
 });
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = __toESM(require_es6(), 1);
 import deepmerge2 from "deepmerge";
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.43.0/node_modules/@wordpress/warning/build-module/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.44.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.43.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.44.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
   return globalThis.SCRIPT_DEBUG === true;
 }
@@ -6099,12 +6099,12 @@ function warning(message) {
   console.warn(message);
   try {
     throw Error(message);
-  } catch (x) {
+  } catch {
   }
   logged.add(message);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 import { jsx as _jsx16 } from "react/jsx-runtime";
 var ComponentsContext = createContext3(
   /** @type {Record<string, any>} */
@@ -6147,19 +6147,19 @@ var BaseContextSystemProvider = ({
 };
 var ContextSystemProvider = memo(BaseContextSystemProvider);
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 function getStyledClassName(namespace) {
   const kebab = paramCase(namespace);
   return `components-${kebab}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
 function contextConnect(Component2, namespace) {
   return _contextConnect(Component2, namespace, {
     forwardsRef: true
@@ -6184,7 +6184,7 @@ function _contextConnect(Component2, namespace, options) {
   });
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
   return {
     [COMPONENT_NAMESPACE]: componentName
@@ -6196,7 +6196,7 @@ function getConnectedNamespace() {
   };
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
   const contextSystemProps = useComponentsContext();
   if (typeof namespace === "undefined") {
@@ -6380,7 +6380,7 @@ var createStyled = function createStyled2(tag, options) {
   };
 };
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
 import { jsx as _jsx17 } from "react/jsx-runtime";
 var PolymorphicDiv = /* @__PURE__ */ createStyled("div", process.env.NODE_ENV === "production" ? {
   target: "e19lxcc00"
@@ -6403,7 +6403,7 @@ var View = Object.assign(forwardRef(UnforwardedView), {
 });
 var component_default = View;
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = ["40em", "52em", "64em"];
 var useBreakpointIndex = (options = {}) => {
   const {
@@ -6446,7 +6446,7 @@ function useResponsiveValue(values, options = {}) {
   return array[index >= array.length ? array.length - 1 : index];
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
   bottom: {
     alignItems: "flex-end",
@@ -6497,7 +6497,7 @@ function getAlignmentProps(alignment) {
   return alignmentProps;
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
 function useGrid(props) {
   const {
     align,
@@ -6543,7 +6543,7 @@ function useGrid(props) {
   };
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@32.5.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
 import { jsx as _jsx18 } from "react/jsx-runtime";
 function UnconnectedGrid(props, forwardedRef) {
   const gridProps = useGrid(props);
