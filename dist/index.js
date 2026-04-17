@@ -4081,6 +4081,8 @@ var ConversionFunnelChartInternal = ({
   if (!isDataValid) {
     return /* @__PURE__ */ _jsx14(Stack, {
       direction: "column",
+      align: "center",
+      justify: "center",
       className: clsx4(conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
       style: {
         ...style,
@@ -4131,7 +4133,9 @@ var ConversionFunnelChartInternal = ({
             direction: "column",
             className: clsx4(conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
             gap: "xl",
-            children: [/* @__PURE__ */ _jsxs6("div", {
+            children: [/* @__PURE__ */ _jsxs6(Stack, {
+              direction: "column",
+              gap: "xs",
               children: [renderStepLabel ? renderStepLabel({
                 step,
                 index,

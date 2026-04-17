@@ -25,7 +25,7 @@
 .a8ccharts-qGsavM:focus {
   outline: 2px solid currentColor;
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--wpds-border-radius-md, 4px);
 }
 .a8ccharts-qGsavM:focus:not(:focus-visible) {
   outline: none;
@@ -55,10 +55,10 @@
 
 /* esbuild-sass-plugin:css-chunk:src/components/tooltip/base-tooltip.module.scss */
 .a8ccharts-OfX6nd {
-  padding: 0.5rem;
+  padding: var(--wpds-dimension-padding-sm, 8px);
   background-color: rgba(0, 0, 0, 0.85);
   color: #fff;
-  border-radius: 4px;
+  border-radius: var(--wpds-border-radius-md, 4px);
   font-size: var(--wpds-font-size-md, 13px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: absolute;
@@ -164,33 +164,28 @@
 .a8ccharts-6OabC4 {
   color: #757575;
   font-size: var(--wpds-font-size-sm, 12px);
-  font-style: normal;
   font-weight: var(--wpds-font-weight-regular, 400);
   line-height: var(--wpds-font-line-height-xs, 16px);
-  margin: 0 0 2px 0;
-  display: block;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .a8ccharts-9wSZ6n {
   color: #1e1e1e;
   font-size: var(--wpds-font-size-md, 13px);
-  font-style: normal;
   font-weight: var(--wpds-font-weight-medium, 499);
-  line-height: var(--wpds-font-line-height-sm, 20px);
-  margin: 0;
-  display: block;
+  line-height: var(--wpds-font-line-height-xs, 16px);
 }
 .a8ccharts-sSmCTi {
   flex: 1;
-  border-radius: 4px;
+  border-radius: var(--wpds-border-radius-md, 4px);
   position: relative;
   cursor: pointer;
 }
 .a8ccharts-EzczI- {
   width: 100%;
   min-height: 4px;
-  border-radius: 4px 4px 0 0;
+  border-radius: var(--wpds-border-radius-md, 4px) var(--wpds-border-radius-md, 4px) 0 0;
 }
 .a8ccharts-68HQJl {
   transform-origin: bottom;
@@ -204,10 +199,10 @@
   }
 }
 .a8ccharts-2TeoCn {
-  border-bottom: 1px solid var(--Gray-Gray-5, #dcdcde);
+  border-bottom: var(--wpds-border-width-xs, 1px) solid var(--Gray-Gray-5, #dcdcde);
   background: var(--black-white-white, #fff);
-  border-radius: 4px !important;
-  padding: 12px !important;
+  border-radius: var(--wpds-border-radius-md, 4px) !important;
+  padding: var(--wpds-dimension-padding-md, 12px) !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15), 0 3px 9px 0 rgba(0, 0, 0, 0.12) !important;
 }
 .a8ccharts-jkRitH {
@@ -226,7 +221,6 @@
 }
 .a8ccharts-Ml6MMr {
   text-align: center;
-  padding: 48px 24px;
   color: #6b7280;
   font-size: var(--wpds-font-size-lg, 16px);
 }
@@ -266,7 +260,7 @@
   grid-area: overlap;
 }
 .a8ccharts-ETItHW.a8ccharts-oA4hdH .a8ccharts-UciQnF {
-  padding-left: 8px;
+  padding-left: var(--wpds-dimension-padding-sm, 8px);
 }
 .a8ccharts-ETItHW .a8ccharts-np8f0T {
   height: 100%;
@@ -292,7 +286,7 @@
   align-items: center;
 }
 .a8ccharts-E0K4Hr {
-  padding: 32px 16px;
+  padding: var(--wpds-dimension-padding-3xl, 32px) var(--wpds-dimension-padding-lg, 16px);
   text-align: center;
   color: #666;
   font-size: var(--wpds-font-size-md, 13px);
@@ -314,18 +308,18 @@
 .a8ccharts-Tu0rR-,
 .a8ccharts--RSWXi {
   background: #fff;
-  padding: 0.5rem;
+  padding: var(--wpds-dimension-padding-sm, 8px);
 }
 .a8ccharts-Q-b5A1 {
   font-weight: var(--wpds-font-weight-medium, 499);
-  padding-bottom: 10px;
+  padding-bottom: var(--wpds-dimension-padding-md, 12px);
 }
 .a8ccharts-19N7T9 {
-  padding: 4px 0;
+  padding: var(--wpds-dimension-padding-xs, 4px) 0;
 }
 .a8ccharts-HOAXrD {
   font-weight: var(--wpds-font-weight-medium, 499);
-  padding-right: 1rem;
+  padding-right: var(--wpds-dimension-padding-lg, 16px);
 }
 .a8ccharts-rQiY8O {
   position: absolute;
@@ -351,11 +345,11 @@
   min-width: 125px;
   background: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--wpds-border-radius-md, 4px);
   font-size: var(--wpds-font-size-md, 13px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: fixed;
-  margin: 0.5rem;
+  margin: var(--wpds-dimension-gap-sm, 8px);
   visibility: hidden;
 }
 .a8ccharts-VAeVuJ {
@@ -366,7 +360,7 @@
   margin: auto;
 }
 .a8ccharts-b76gEu {
-  padding: 0.5rem;
+  padding: var(--wpds-dimension-padding-sm, 8px);
 }
 .a8ccharts-LIpFoS {
   background: none;
