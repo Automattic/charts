@@ -1630,6 +1630,105 @@ import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 
+// ../../../node_modules/.pnpm/@wordpress+element@6.44.0/node_modules/@wordpress/element/build-module/react.mjs
+import {
+  Children,
+  cloneElement,
+  Component,
+  createContext as createContext3,
+  createElement,
+  createRef,
+  forwardRef,
+  Fragment,
+  isValidElement,
+  memo,
+  PureComponent,
+  StrictMode,
+  useCallback as useCallback4,
+  useContext as useContext4,
+  useDebugValue,
+  useDeferredValue,
+  useEffect as useEffect5,
+  useId as useId2,
+  useMemo as useMemo9,
+  useImperativeHandle,
+  useInsertionEffect,
+  useLayoutEffect as useLayoutEffect2,
+  useReducer,
+  useRef as useRef5,
+  useState as useState5,
+  useSyncExternalStore,
+  useTransition,
+  startTransition,
+  lazy,
+  Suspense
+} from "react";
+
+// ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
+function isObject(o) {
+  return Object.prototype.toString.call(o) === "[object Object]";
+}
+function isPlainObject(o) {
+  var ctor, prot;
+  if (isObject(o) === false) return false;
+  ctor = o.constructor;
+  if (ctor === void 0) return true;
+  prot = ctor.prototype;
+  if (isObject(prot) === false) return false;
+  if (prot.hasOwnProperty("isPrototypeOf") === false) {
+    return false;
+  }
+  return true;
+}
+
+// ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
+function lowerCase(str) {
+  return str.toLowerCase();
+}
+
+// ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
+var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
+var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
+function noCase(input, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter2 = _d === void 0 ? " " : _d;
+  var result = replace(replace(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
+  var start = 0;
+  var end = result.length;
+  while (result.charAt(start) === "\0")
+    start++;
+  while (result.charAt(end - 1) === "\0")
+    end--;
+  return result.slice(start, end).split("\0").map(transform).join(delimiter2);
+}
+function replace(input, re, value) {
+  if (re instanceof RegExp)
+    return input.replace(re, value);
+  return re.reduce(function(input2, re2) {
+    return input2.replace(re2, value);
+  }, input);
+}
+
+// ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
+import { __assign } from "tslib";
+function dotCase(input, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return noCase(input, __assign({ delimiter: "." }, options));
+}
+
+// ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
+import { __assign as __assign2 } from "tslib";
+function paramCase(input, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return dotCase(input, __assign2({ delimiter: "-" }, options));
+}
+
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 import * as React from "react";
 var UNINITIALIZED = {};
@@ -2114,127 +2213,41 @@ function useRender(params) {
   return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+element@6.44.0/node_modules/@wordpress/element/build-module/react.mjs
-import {
-  Children as Children2,
-  cloneElement as cloneElement2,
-  Component,
-  createContext as createContext3,
-  createElement as createElement2,
-  createRef,
-  forwardRef,
-  Fragment,
-  isValidElement as isValidElement3,
-  memo,
-  PureComponent,
-  StrictMode,
-  useCallback as useCallback4,
-  useContext as useContext4,
-  useDebugValue,
-  useDeferredValue,
-  useEffect as useEffect5,
-  useId as useId2,
-  useMemo as useMemo9,
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect as useLayoutEffect2,
-  useReducer,
-  useRef as useRef6,
-  useState as useState5,
-  useSyncExternalStore,
-  useTransition,
-  startTransition,
-  lazy,
-  Suspense
-} from "react";
-
-// ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
-function isObject(o) {
-  return Object.prototype.toString.call(o) === "[object Object]";
-}
-function isPlainObject(o) {
-  var ctor, prot;
-  if (isObject(o) === false) return false;
-  ctor = o.constructor;
-  if (ctor === void 0) return true;
-  prot = ctor.prototype;
-  if (isObject(prot) === false) return false;
-  if (prot.hasOwnProperty("isPrototypeOf") === false) {
-    return false;
-  }
-  return true;
-}
-
-// ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
-function lowerCase(str) {
-  return str.toLowerCase();
-}
-
-// ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
-var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
-var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
-function noCase(input, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter2 = _d === void 0 ? " " : _d;
-  var result = replace(replace(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
-  var start = 0;
-  var end = result.length;
-  while (result.charAt(start) === "\0")
-    start++;
-  while (result.charAt(end - 1) === "\0")
-    end--;
-  return result.slice(start, end).split("\0").map(transform).join(delimiter2);
-}
-function replace(input, re, value) {
-  if (re instanceof RegExp)
-    return input.replace(re, value);
-  return re.reduce(function(input2, re2) {
-    return input2.replace(re2, value);
-  }, input);
-}
-
-// ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
-import { __assign } from "tslib";
-function dotCase(input, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  return noCase(input, __assign({ delimiter: "." }, options));
-}
-
-// ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
-import { __assign as __assign2 } from "tslib";
-function paramCase(input, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  return dotCase(input, __assign2({ delimiter: "-" }, options));
-}
-
-// ../../../node_modules/.pnpm/@wordpress+ui@0.10.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/text/text.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.11.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/text/text.mjs
 import clsx from "clsx";
-if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='8bc43893d6']")) {
+if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='4130d64bea']")) {
   const style = document.createElement("style");
-  style.setAttribute("data-wp-hash", "8bc43893d6");
-  style.appendChild(document.createTextNode('@layer wp-ui-utilities, wp-ui-components, wp-ui-compositions, wp-ui-overrides;@layer wp-ui-components{._14437cfb77831647__heading-2xl{font-size:var(--wpds-font-size-2xl,32px);line-height:var(--wpds-font-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{font-size:var(--wpds-font-size-xl,20px);line-height:var(--wpds-font-line-height-md,24px)}.aa58f227716bcde2__heading-lg{font-size:var(--wpds-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-medium,499);line-height:var(--wpds-font-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{font-size:var(--wpds-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{font-family:var(--wpds-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-font-size-xs,11px);font-weight:var(--wpds-font-weight-medium,499);line-height:var(--wpds-font-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{font-size:var(--wpds-font-size-xl,20px);line-height:var(--wpds-font-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{font-size:var(--wpds-font-size-lg,15px);line-height:var(--wpds-font-line-height-md,24px)}._131101940be12424__body-md{font-size:var(--wpds-font-size-md,13px);line-height:var(--wpds-font-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{font-size:var(--wpds-font-size-sm,12px);line-height:var(--wpds-font-line-height-xs,16px)}}'));
+  style.setAttribute("data-wp-hash", "4130d64bea");
+  style.appendChild(document.createTextNode('@layer wp-ui-utilities, wp-ui-components, wp-ui-compositions, wp-ui-overrides;@layer wp-ui-components{._83ed8a8da5dd50ea__text{margin:0}._14437cfb77831647__heading-2xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-2xl,32px);font-size:var(--wpds-typography-font-size-2xl,32px);line-height:var(--wpds-typography-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-md,24px)}.aa58f227716bcde2__heading-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);font-size:var(--wpds-typography-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);font-size:var(--wpds-typography-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-xs,11px);font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-xl,32px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-lg,15px);line-height:var(--wpds-typography-line-height-md,24px)}._131101940be12424__body-md{--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px);line-height:var(--wpds-typography-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}'));
   document.head.appendChild(style);
 }
-var style_default = { "heading-2xl": "_14437cfb77831647__heading-2xl", "heading-xl": "_3c78b7fa9b4072dd__heading-xl", "heading-lg": "aa58f227716bcde2__heading-lg", "heading-md": "fc4da56d8dfe52c4__heading-md", "heading-sm": "a9b78c7c82e8dff7__heading-sm", "body-xl": "_305ff559e52180d5__body-xl", "body-lg": "ca1aa3fc2029e958__body-lg", "body-md": "_131101940be12424__body-md", "body-sm": "_0e8d87a42c1f75fa__body-sm" };
+var style_default = { "text": "_83ed8a8da5dd50ea__text", "heading-2xl": "_14437cfb77831647__heading-2xl", "heading-xl": "_3c78b7fa9b4072dd__heading-xl", "heading-lg": "aa58f227716bcde2__heading-lg", "heading-md": "fc4da56d8dfe52c4__heading-md", "heading-sm": "a9b78c7c82e8dff7__heading-sm", "body-xl": "_305ff559e52180d5__body-xl", "body-lg": "ca1aa3fc2029e958__body-lg", "body-md": "_131101940be12424__body-md", "body-sm": "_0e8d87a42c1f75fa__body-sm" };
+if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='1fb29d3a3c']")) {
+  const style = document.createElement("style");
+  style.setAttribute("data-wp-hash", "1fb29d3a3c");
+  style.appendChild(document.createTextNode("._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,#0000);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 #0000);color:var(--_gcd-input-color,var(--wpds-color-fg-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,#0000);border-color:var(--_gcd-input-border-color-disabled,#0000);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-fg-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-fg-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid #0000)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-fg-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid #0000);transition:var(--_gcd-a-transition,none)}"));
+  document.head.appendChild(style);
+}
+var global_css_defense_default = { "button": "_6defc79820e382c6__button", "input": "d2cff2e5dea83bd1__input", "textarea": "_547d86373d02e108__textarea", "div": "_8c15fd0ed9f28ba4__div", "p": "_43cec3e1eec1066d__p", "heading": "e97669c6d9a38497__heading", "a": "_2c0831b0499dbd6e__a" };
 var Text = forwardRef(function Text2({ variant = "body-md", render, className, ...props }, ref) {
   const element = useRender({
     render,
     defaultTagName: "span",
     ref,
     props: mergeProps(props, {
-      className: clsx(style_default[variant], className)
+      className: clsx(
+        style_default.text,
+        variant.startsWith("heading-") && global_css_defense_default.heading,
+        variant.startsWith("body-") && global_css_defense_default.p,
+        style_default[variant],
+        className
+      )
     })
   });
   return element;
 });
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.10.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.11.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1_stylelint@17.7.0/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 if (typeof document !== "undefined" && process.env.NODE_ENV !== "test" && !document.head.querySelector("style[data-wp-hash='b51ff41489']")) {
   const style = document.createElement("style");
   style.setAttribute("data-wp-hash", "b51ff41489");
@@ -4431,7 +4444,7 @@ var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 
 // ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
-  const mountedRef = useRef6(false);
+  const mountedRef = useRef5(false);
   useEffect5(() => {
     if (mountedRef.current) {
       return effect();
@@ -6157,7 +6170,7 @@ function useContextSystemBridge({
   value
 }) {
   const parentContext = useComponentsContext();
-  const valueRef = useRef6(value);
+  const valueRef = useRef5(value);
   use_update_effect_default(() => {
     if (
       // Objects are equivalent.
