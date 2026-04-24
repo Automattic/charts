@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Changed
+- Update package dependencies.
+
 ## [1.2.0] - 2026-04-20
 ### Changed
 - Charts: Replace hardcoded spacing and border values in module SCSS with WPDS dimension and border design tokens. [#48019]
