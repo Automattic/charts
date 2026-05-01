@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { CSSProperties, ReactNode, PointerEvent, ComponentProps, FC, ComponentType, SVGProps, PropsWithChildren } from 'react';
+import { CSSProperties, PointerEvent, ReactNode, ComponentProps, SVGProps, FC, ComponentType, PropsWithChildren } from 'react';
 import { LegendOrdinal } from '@visx/legend';
 import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubject';
 import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
@@ -7,7 +7,7 @@ import { LabelProps } from '@visx/annotation/lib/components/Label';
 import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
 import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
-import { ScaleInput, ScaleType } from '@visx/scale';
+import { ScaleType, ScaleInput } from '@visx/scale';
 import { TextProps } from '@visx/text/lib/Text';
 import { LineStyles, EventHandlerParams, GridStyles, GlyphProps } from '@visx/xychart';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
@@ -22,7 +22,7 @@ import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
-type ChartType = 'bar' | 'conversion-funnel' | 'leaderboard' | 'line' | 'pie' | 'pie-semi-circle';
+type ChartType = 'area' | 'bar' | 'conversion-funnel' | 'leaderboard' | 'line' | 'pie' | 'pie-semi-circle';
 type OrientationType = ValueOf<typeof Orientation>;
 type AnnotationStyles = {
     circleSubject?: Omit<CircleSubjectProps, 'x' | 'y'> & {
@@ -612,6 +612,113 @@ interface ChartLegendOptions {
  */
 declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentageCalculated[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 
+interface ChartInstanceRef {
+    getScales: () => {
+        xScale: unknown;
+        yScale: unknown;
+    } | null;
+    getChartDimensions: () => {
+        width: number;
+        height: number;
+        margin: {
+            top?: number;
+            right?: number;
+            bottom?: number;
+            left?: number;
+        };
+    };
+}
+type SingleChartRef = ChartInstanceRef;
+
+type LineChartAnnotationProps = {
+    datum: DataPointDate;
+    title: string;
+    subtitle?: string;
+    subjectType?: 'circle' | 'line-vertical' | 'line-horizontal';
+    styles?: AnnotationStyles;
+    testId?: string;
+    renderLabel?: FC<{
+        title: string;
+        subtitle?: string;
+    }>;
+    renderLabelPopover?: FC<{
+        title: string;
+        subtitle?: string;
+    }>;
+};
+type CurveType = 'smooth' | 'linear' | 'monotone';
+type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
+    glyphStyle?: SVGProps<SVGCircleElement>;
+    position?: 'start' | 'end';
+};
+interface LineChartProps extends BaseChartProps<SeriesData[]> {
+    withGradientFill: boolean;
+    smoothing?: boolean;
+    curveType?: CurveType;
+    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
+    withStartGlyphs?: boolean;
+    withEndGlyphs?: boolean;
+    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
+    glyphStyle?: SVGProps<SVGCircleElement>;
+    withLegendGlyph?: boolean;
+    withTooltipCrosshairs?: {
+        showVertical?: boolean;
+        showHorizontal?: boolean;
+    };
+    children?: ReactNode;
+}
+type TooltipDatum = {
+    key: string;
+    value: number;
+};
+
+interface AreaChartProps extends BaseChartProps<SeriesData[]> {
+    /**
+     * Whether series should be stacked on top of each other.
+     * When false, series are rendered as overlapping filled areas.
+     * @default true
+     */
+    stacked?: boolean;
+    /**
+     * Stack offset strategy when stacked is true. Mirrors d3-shape stack offsets.
+     * - 'none' (default): values stack at their natural magnitude
+     * - 'expand': values are normalized to the [0,1] range (percentage stacks)
+     * - 'wiggle': used for streamgraphs
+     * - 'silhouette': stack centered around zero
+     */
+    stackOffset?: 'none' | 'expand' | 'wiggle' | 'silhouette';
+    /**
+     * Smoothing using a Catmull-Rom curve. Ignored if `curveType` is set.
+     */
+    smoothing?: boolean;
+    /**
+     * Curve interpolation type. Takes precedence over `smoothing`.
+     */
+    curveType?: CurveType;
+    /**
+     * Custom tooltip renderer.
+     */
+    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
+    /**
+     * Whether to show crosshair lines in the tooltip.
+     */
+    withTooltipCrosshairs?: {
+        showVertical?: boolean;
+        showHorizontal?: boolean;
+    };
+    /**
+     * Fill opacity for the stacked areas. 0–1.
+     * @default 0.85 when stacked, 0.4 when overlapping
+     */
+    fillOpacity?: number;
+    /**
+     * Whether to render a stroke (line) on top of each area.
+     * @default false when stacked, true when overlapping
+     */
+    withStroke?: boolean;
+    children?: ReactNode;
+}
+
 type ResponsiveConfig = {
     /**
      * The maximum width of the chart. Defaults to 1200.
@@ -628,6 +735,15 @@ type ResponsiveConfig = {
      */
     resizeDebounceTime?: number;
 };
+
+type AreaChartSubComponents = {
+    Legend: typeof Legend;
+};
+type AreaChartBaseProps = Optional<AreaChartProps, 'width' | 'height' | 'size'>;
+type AreaChartComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & React.RefAttributes<SingleChartRef>> & AreaChartSubComponents;
+type AreaChartResponsiveComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & ResponsiveConfig & React.RefAttributes<SingleChartRef>> & AreaChartSubComponents;
+declare const AreaChart: AreaChartComponent;
+declare const AreaChartResponsive: AreaChartResponsiveComponent;
 
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
@@ -1109,70 +1225,10 @@ declare function useLeaderboardLegendItems({ data, primaryColor, secondaryColor,
     };
 }): BaseLegendItem[];
 
-interface ChartInstanceRef {
-    getScales: () => {
-        xScale: unknown;
-        yScale: unknown;
-    } | null;
-    getChartDimensions: () => {
-        width: number;
-        height: number;
-        margin: {
-            top?: number;
-            right?: number;
-            bottom?: number;
-            left?: number;
-        };
-    };
-}
-type SingleChartRef = ChartInstanceRef;
-
 interface LineChartAnnotationsProps {
     children?: ReactNode;
 }
 declare const LineChartAnnotationsOverlay: FC<LineChartAnnotationsProps>;
-
-type LineChartAnnotationProps = {
-    datum: DataPointDate;
-    title: string;
-    subtitle?: string;
-    subjectType?: 'circle' | 'line-vertical' | 'line-horizontal';
-    styles?: AnnotationStyles;
-    testId?: string;
-    renderLabel?: FC<{
-        title: string;
-        subtitle?: string;
-    }>;
-    renderLabelPopover?: FC<{
-        title: string;
-        subtitle?: string;
-    }>;
-};
-type CurveType = 'smooth' | 'linear' | 'monotone';
-type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
-    glyphStyle?: SVGProps<SVGCircleElement>;
-    position?: 'start' | 'end';
-};
-interface LineChartProps extends BaseChartProps<SeriesData[]> {
-    withGradientFill: boolean;
-    smoothing?: boolean;
-    curveType?: CurveType;
-    renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
-    withStartGlyphs?: boolean;
-    withEndGlyphs?: boolean;
-    renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
-    glyphStyle?: SVGProps<SVGCircleElement>;
-    withLegendGlyph?: boolean;
-    withTooltipCrosshairs?: {
-        showVertical?: boolean;
-        showHorizontal?: boolean;
-    };
-    children?: ReactNode;
-}
-type TooltipDatum = {
-    key: string;
-    value: number;
-};
 
 declare const LineChartAnnotation: FC<LineChartAnnotationProps>;
 
@@ -1616,4 +1672,4 @@ declare const useGlobalChartsTheme: () => CompleteChartTheme;
  */
 declare const defaultTheme: CompleteChartTheme;
 
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
