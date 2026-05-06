@@ -7613,10 +7613,10 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 var import_es6 = _chunkDZUJEN5Ncjs.__toESM.call(void 0, require_es6(), 1);
 
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.44.0/node_modules/@wordpress/warning/build-module/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.45.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.44.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.45.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
   return globalThis.SCRIPT_DEBUG === true;
 }
