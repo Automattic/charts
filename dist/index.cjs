@@ -1728,7 +1728,7 @@ function paramCase(input, options) {
   return dotCase(input, _tslib.__assign.call(void 0, { delimiter: "-" }, options));
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 
 var UNINITIALIZED = {};
 function useRefWithInit(init, initArg) {
@@ -1739,7 +1739,7 @@ function useRefWithInit(init, initArg) {
   return ref;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/warn.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/warn.js
 var set;
 if (process.env.NODE_ENV !== "production") {
   set = /* @__PURE__ */ new Set();
@@ -1754,7 +1754,7 @@ function warn(...messages) {
   }
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/formatErrorMessage.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/formatErrorMessage.js
 function createFormatErrorMessage(baseUrl, prefix2) {
   return function formatErrorMessage2(code, ...args) {
     const url = new URL(baseUrl);
@@ -1766,10 +1766,10 @@ function createFormatErrorMessage(baseUrl, prefix2) {
 var formatErrorMessage = createFormatErrorMessage("https://base-ui.com/production-error", "Base UI");
 var formatErrorMessage_default = formatErrorMessage;
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
 
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
 function useMergedRefs(a, b, c, d) {
   const forkRef = useRefWithInit(createForkRef).current;
   if (didChange(forkRef, a, b, c, d)) {
@@ -1858,17 +1858,17 @@ function update(forkRef, refs) {
   };
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
 
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
 
 var majorVersion = parseInt(React2.version, 10);
 function isReactVersionAtLeast(reactVersionToCheck) {
   return majorVersion >= reactVersionToCheck;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
 function getReactElementRef(element) {
   if (!/* @__PURE__ */ React3.isValidElement(element)) {
     return null;
@@ -1878,7 +1878,7 @@ function getReactElementRef(element) {
   return _nullishCoalesce((isReactVersionAtLeast(19) ? _optionalChain([propsWithRef, 'optionalAccess', _60 => _60.ref]) : reactElement.ref), () => ( null));
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
 function mergeObjects(a, b) {
   if (a && !b) {
     return a;
@@ -1895,7 +1895,11 @@ function mergeObjects(a, b) {
   return void 0;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/getStateAttributesProps.js
+// ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/empty.js
+var EMPTY_ARRAY = Object.freeze([]);
+var EMPTY_OBJECT = Object.freeze({});
+
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/getStateAttributesProps.js
 function getStateAttributesProps(state, customMapping) {
   const props = {};
   for (const key in state) {
@@ -1916,17 +1920,17 @@ function getStateAttributesProps(state, customMapping) {
   return props;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
 function resolveClassName(className, state) {
   return typeof className === "function" ? className(state) : className;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
 function resolveStyle(style, state) {
   return typeof style === "function" ? style(state) : style;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
 var EMPTY_PROPS = {};
 function mergeProps(a, b, c, d, e) {
   if (!c && !d && !e && !a) {
@@ -2034,18 +2038,19 @@ function mergeEventHandlers(ourHandler, theirHandler) {
   if (!ourHandler) {
     return wrapEventHandler(theirHandler);
   }
-  return (event) => {
+  return (...args) => {
+    const event = args[0];
     if (isSyntheticEvent(event)) {
       const baseUIEvent = event;
       makeEventPreventable(baseUIEvent);
-      const result2 = theirHandler(baseUIEvent);
+      const result2 = theirHandler(...args);
       if (!baseUIEvent.baseUIHandlerPrevented) {
-        _optionalChain([ourHandler, 'optionalCall', _63 => _63(baseUIEvent)]);
+        _optionalChain([ourHandler, 'optionalCall', _63 => _63(...args)]);
       }
       return result2;
     }
-    const result = theirHandler(event);
-    _optionalChain([ourHandler, 'optionalCall', _64 => _64(event)]);
+    const result = theirHandler(...args);
+    _optionalChain([ourHandler, 'optionalCall', _64 => _64(...args)]);
     return result;
   };
 }
@@ -2053,11 +2058,12 @@ function wrapEventHandler(handler) {
   if (!handler) {
     return handler;
   }
-  return (event) => {
+  return (...args) => {
+    const event = args[0];
     if (isSyntheticEvent(event)) {
       makeEventPreventable(event);
     }
-    return handler(event);
+    return handler(...args);
   };
 }
 function makeEventPreventable(event) {
@@ -2079,17 +2085,7 @@ function isSyntheticEvent(event) {
   return event != null && typeof event === "object" && "nativeEvent" in event;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+utils@0.2.7_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/empty.js
-var EMPTY_ARRAY = Object.freeze([]);
-var EMPTY_OBJECT = Object.freeze({});
-
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/constants.js
-var BASE_UI_SWIPE_IGNORE_ATTRIBUTE = "data-base-ui-swipe-ignore";
-var LEGACY_SWIPE_IGNORE_ATTRIBUTE = "data-swipe-ignore";
-var BASE_UI_SWIPE_IGNORE_SELECTOR = `[${BASE_UI_SWIPE_IGNORE_ATTRIBUTE}]`;
-var LEGACY_SWIPE_IGNORE_SELECTOR = `[${LEGACY_SWIPE_IGNORE_ATTRIBUTE}]`;
-
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
 
 function useRenderElement(element, componentProps, params = {}) {
   const renderProp = componentProps.render;
@@ -2207,7 +2203,7 @@ function renderTag(Tag, props) {
   return /* @__PURE__ */ React4.createElement(Tag, props);
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.0_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
 function useRender(params) {
   return useRenderElement(_nullishCoalesce(params.defaultTagName, () => ( "div")), params, params);
 }
