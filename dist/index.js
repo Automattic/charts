@@ -493,104 +493,7 @@ var useSingleChartContext = useChartInstanceContext;
 
 // src/providers/chart-context/global-charts-provider.tsx
 import { hsl as d3Hsl3 } from "@visx/vendor/d3-color";
-import { createContext as createContext2, useCallback, useMemo, useState, useEffect as useEffect2, useLayoutEffect, useRef } from "react";
-
-// src/hooks/use-tooltip-portal-relocator.ts
-import { useEffect } from "react";
-
-// src/hooks/use-tooltip-portal-relocator.module.scss
-var use_tooltip_portal_relocator_module_default = {
-  "relocatedPortal": "a8ccharts-jCw5dQ"
-};
-
-// src/hooks/use-tooltip-portal-relocator.ts
-function isVisxPortalNode(node2) {
-  return node2 instanceof HTMLDivElement && node2.parentElement === document.body && !node2.id && !node2.className && node2.querySelector(".visx-tooltip") !== null;
-}
-var patchRefCount = 0;
-var origRemoveChild = null;
-var patchedRemoveChild = null;
-var relocatedNodes = /* @__PURE__ */ new WeakSet();
-function installRemoveChildPatch() {
-  if (patchRefCount++ > 0) {
-    return;
-  }
-  origRemoveChild = document.body.removeChild;
-  patchedRemoveChild = function(child) {
-    if (relocatedNodes.has(child) && child.parentNode !== this) {
-      relocatedNodes.delete(child);
-      child.parentNode?.removeChild(child);
-      return child;
-    }
-    return origRemoveChild.call(this, child);
-  };
-  document.body.removeChild = patchedRemoveChild;
-}
-function uninstallRemoveChildPatch() {
-  if (--patchRefCount > 0) {
-    return;
-  }
-  if (document.body.removeChild === patchedRemoveChild) {
-    document.body.removeChild = origRemoveChild;
-  }
-  origRemoveChild = null;
-  patchedRemoveChild = null;
-}
-function useTooltipPortalRelocator(containerRef) {
-  useEffect(() => {
-    const container = containerRef?.current;
-    if (!container) {
-      return;
-    }
-    const instanceNodes = /* @__PURE__ */ new Set();
-    const relocateNode = (node2) => {
-      if (!isVisxPortalNode(node2)) {
-        return;
-      }
-      node2.style.opacity = "0";
-      node2.classList.add(use_tooltip_portal_relocator_module_default.relocatedPortal);
-      const { activeElement } = node2.ownerDocument;
-      const focusedElement = activeElement instanceof HTMLElement && node2.contains(activeElement) ? activeElement : null;
-      container.insertBefore(node2, container.firstChild);
-      relocatedNodes.add(node2);
-      instanceNodes.add(node2);
-      if (focusedElement) {
-        focusedElement.focus();
-      }
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          node2.style.opacity = "";
-        });
-      });
-    };
-    installRemoveChildPatch();
-    for (const child of Array.from(document.body.children)) {
-      relocateNode(child);
-    }
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node2 of mutation.addedNodes) {
-          relocateNode(node2);
-        }
-      }
-    });
-    observer.observe(document.body, { childList: true });
-    return () => {
-      observer.disconnect();
-      for (const node2 of instanceNodes) {
-        if (node2 instanceof HTMLElement) {
-          node2.classList.remove(use_tooltip_portal_relocator_module_default.relocatedPortal);
-        }
-        if (node2.parentNode === container) {
-          document.body.appendChild(node2);
-        }
-        relocatedNodes.delete(node2);
-      }
-      instanceNodes.clear();
-      uninstallRemoveChildPatch();
-    };
-  }, [containerRef]);
-}
+import { createContext as createContext2, useCallback, useMemo, useState, useEffect, useLayoutEffect, useRef } from "react";
 
 // src/utils/create-composition.ts
 function attachSubComponents(Chart2, subComponents) {
@@ -1096,13 +999,11 @@ import { jsx as _jsx } from "react/jsx-runtime";
 var GlobalChartsContext = /* @__PURE__ */ createContext2(null);
 var GlobalChartsProvider = ({
   children,
-  theme,
-  portalContainer
+  theme
 }) => {
   const [charts, setCharts] = useState(() => /* @__PURE__ */ new Map());
   const [hiddenSeries, setHiddenSeries] = useState(() => /* @__PURE__ */ new Map());
   const wrapperRef = useRef(null);
-  useTooltipPortalRelocator(portalContainer ?? wrapperRef);
   const providerTheme = useMemo(() => {
     return theme ? mergeThemes(defaultTheme, theme) : defaultTheme;
   }, [theme]);
@@ -1150,13 +1051,13 @@ var GlobalChartsProvider = ({
       maxHue
     });
   }, [providerTheme]);
-  useEffect2(() => {
+  useEffect(() => {
     if (colorCache.colors.length > 0) {
       setIsColorPaletteResolved(true);
     }
   }, [colorCache]);
   const [groupToColorMap, setGroupToColorMap] = useState(() => /* @__PURE__ */ new Map());
-  useEffect2(() => {
+  useEffect(() => {
     setGroupToColorMap(/* @__PURE__ */ new Map());
   }, [providerTheme.colors]);
   const registerChart = useCallback((id, data) => {
@@ -1279,7 +1180,7 @@ var useChartId = (providedId) => {
 };
 
 // src/providers/chart-context/hooks/use-chart-registration.ts
-import { useEffect as useEffect4, useMemo as useMemo8 } from "react";
+import { useEffect as useEffect3, useMemo as useMemo8 } from "react";
 
 // src/hooks/use-deep-memo.ts
 var import_fast_deep_equal = __toESM(require_fast_deep_equal(), 1);
@@ -1565,12 +1466,12 @@ var useInteractiveLegendData = ({
 };
 
 // src/hooks/use-prefers-reduced-motion.ts
-import { useState as useState4, useEffect as useEffect3 } from "react";
+import { useState as useState4, useEffect as useEffect2 } from "react";
 var QUERY = "(prefers-reduced-motion: no-preference)";
 var getInitialState = () => !window.matchMedia(QUERY).matches;
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState4(getInitialState);
-  useEffect3(() => {
+  useEffect2(() => {
     const mediaQueryList = window.matchMedia(QUERY);
     const listener = (event) => {
       setPrefersReducedMotion(!event.matches);
@@ -1594,7 +1495,7 @@ var useChartRegistration = ({
   const { registerChart, unregisterChart } = useGlobalChartsContext();
   const stableLegendItems = useDeepMemo(legendItems);
   const memoizedMetadata = useMemo8(() => metadata, [metadata]);
-  useEffect4(() => {
+  useEffect3(() => {
     if (isDataValid) {
       registerChart(chartId, {
         legendItems: stableLegendItems,
@@ -1647,7 +1548,7 @@ import {
   useContext as useContext4,
   useDebugValue,
   useDeferredValue,
-  useEffect as useEffect5,
+  useEffect as useEffect4,
   useId as useId2,
   useMemo as useMemo9,
   useImperativeHandle,
@@ -2694,7 +2595,7 @@ var BaseTooltip = ({
 
 // src/components/tooltip/accessible-tooltip.tsx
 import { Tooltip, TooltipContext } from "@visx/xychart";
-import { useContext as useContext7, useEffect as useEffect6, useCallback as useCallback6, useMemo as useMemo12 } from "react";
+import { useContext as useContext7, useEffect as useEffect5, useCallback as useCallback6, useMemo as useMemo12 } from "react";
 import { jsx as _jsx5 } from "react/jsx-runtime";
 var AccessibleTooltip = ({
   renderTooltip,
@@ -2726,7 +2627,7 @@ var AccessibleTooltip = ({
     }
     return flattened;
   }, [series, mode]);
-  useEffect6(() => {
+  useEffect5(() => {
     if (selectedIndex === void 0) {
       tooltipContext?.hideTooltip();
       return;
@@ -2925,7 +2826,7 @@ function useChartChildren(children, chartType) {
 }
 
 // src/charts/private/chart-layout/chart-layout.tsx
-import { useEffect as useEffect7 } from "react";
+import { useEffect as useEffect6 } from "react";
 
 // src/charts/private/chart-layout/chart-layout.module.scss
 var chart_layout_module_default = {
@@ -2953,7 +2854,7 @@ var ChartLayout = ({
   const visibilityStyle = isRenderProp && !isMeasured ? {
     visibility: "hidden"
   } : {};
-  useEffect7(() => {
+  useEffect6(() => {
     if (isRenderProp && onContentHeightChange && isMeasured) {
       onContentHeightChange(contentHeight);
     }
@@ -3198,7 +3099,7 @@ var line_chart_module_default = {
 import { __ } from "@wordpress/i18n";
 import { Icon, close } from "@wordpress/icons";
 import clsx3 from "clsx";
-import { useEffect as useEffect8, useId as useId3, useRef as useRef7, useState as useState6 } from "react";
+import { useEffect as useEffect7, useId as useId3, useRef as useRef7, useState as useState6 } from "react";
 import { jsx as _jsx12, jsxs as _jsxs4 } from "react/jsx-runtime";
 var POPOVER_BUTTON_SIZE = 44;
 var LineChartAnnotationLabelWithPopover = ({
@@ -3212,7 +3113,7 @@ var LineChartAnnotationLabelWithPopover = ({
   const popoverRef = useRef7(null);
   const [isPositioned, setIsPositioned] = useState6(false);
   const isBrowserSafari = isSafari();
-  useEffect8(() => {
+  useEffect7(() => {
     const button = buttonRef.current;
     const popover = popoverRef.current;
     if (!button || !popover) return;
@@ -3285,7 +3186,7 @@ var line_chart_annotation_label_popover_default = LineChartAnnotationLabelWithPo
 
 // src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 import { DataContext as DataContext2 } from "@visx/xychart";
-import { useEffect as useEffect9, useState as useState7, useCallback as useCallback7 } from "react";
+import { useEffect as useEffect8, useState as useState7, useCallback as useCallback7 } from "react";
 import { jsx as _jsx13 } from "react/jsx-runtime";
 var LineChartAnnotationsOverlay = ({
   children
@@ -3320,7 +3221,7 @@ var LineChartAnnotationsOverlay = ({
     }
     return null;
   }, [chartRef, createScaleSignature]);
-  useEffect9(() => {
+  useEffect8(() => {
     let timeoutId = null;
     let lastSignature = null;
     let retryCount = 0;
@@ -3384,7 +3285,7 @@ var line_chart_annotations_overlay_default = LineChartAnnotationsOverlay;
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
 import { DataContext as DataContext3 } from "@visx/xychart";
 import merge from "deepmerge";
-import { useContext as useContext9, useRef as useRef8, useEffect as useEffect10, useState as useState8, useMemo as useMemo14 } from "react";
+import { useContext as useContext9, useRef as useRef8, useEffect as useEffect9, useState as useState8, useMemo as useMemo14 } from "react";
 import { jsx as _jsx14, jsxs as _jsxs5 } from "react/jsx-runtime";
 var ANNOTATION_MAX_WIDTH = 125;
 var ANNOTATION_INIT_HEIGHT = 100;
@@ -3481,7 +3382,7 @@ var LineChartAnnotation = ({
   const labelRef = useRef8(null);
   const [height, setHeight] = useState8(null);
   const styles = merge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
-  useEffect10(() => {
+  useEffect9(() => {
     if (labelRef.current?.getBBox) {
       const bbox = labelRef.current.getBBox();
       setHeight(bbox.height);
@@ -5332,7 +5233,7 @@ var BarListChartResponsive = withResponsive(BarListChart);
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import clsx7 from "clsx";
-import { useRef as useRef12, useMemo as useMemo20, useEffect as useEffect11, useCallback as useCallback12, useContext as useContext17 } from "react";
+import { useRef as useRef12, useMemo as useMemo20, useEffect as useEffect10, useCallback as useCallback12, useContext as useContext17 } from "react";
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
@@ -5542,7 +5443,7 @@ var ConversionFunnelChartInternal = ({
     });
     return handlers;
   }, [steps, handleStepInteraction, handleBarKeyDown]);
-  useEffect11(() => {
+  useEffect10(() => {
     const handleDocumentClick = (event) => {
       if (selectedBarRef.current && !selectedBarRef.current.contains(event.target)) {
         clearSelectionAndRef();
@@ -5922,14 +5823,14 @@ var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 // ../../../node_modules/.pnpm/@wordpress+components@32.6.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
   const mountedRef = useRef5(false);
-  useEffect5(() => {
+  useEffect4(() => {
     if (mountedRef.current) {
       return effect();
     }
     mountedRef.current = true;
     return void 0;
   }, deps);
-  useEffect5(() => () => {
+  useEffect4(() => () => {
     mountedRef.current = false;
   }, []);
 }
@@ -7946,7 +7847,7 @@ var useBreakpointIndex = (options = {}) => {
     throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
   }
   const [value, setValue] = useState5(defaultIndex);
-  useEffect5(() => {
+  useEffect4(() => {
     const getIndex = () => breakpoints.filter((bp) => {
       return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
     }).length;

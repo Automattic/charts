@@ -1646,15 +1646,6 @@ declare const GlobalChartsContext: react.Context<GlobalChartsContextValue>;
 interface GlobalChartsProviderProps {
     children: ReactNode;
     theme?: Partial<ChartTheme>;
-    /**
-     * Optional ref to an element that chart tooltip portals should be relocated into.
-     * When provided, visx tooltip portals (normally appended to document.body) will be
-     * moved into this container so they participate in the same effective CSS stacking context.
-     * The element referenced here, or one of its ancestors, should establish the desired
-     * stacking context (for example by using `position` and `z-index`) so that tooltips
-     * appear above the relevant chart content.
-     */
-    portalContainer?: React.RefObject<HTMLElement | null>;
 }
 declare const GlobalChartsProvider: FC<GlobalChartsProviderProps>;
 
