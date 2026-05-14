@@ -5,7 +5,7 @@ import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubjec
 import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
 import { LabelProps } from '@visx/annotation/lib/components/Label';
 import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
-import { Orientation, TickFormatter, AxisScale, AxisRendererProps } from '@visx/axis';
+import { Orientation, AxisScale, TickFormatter, AxisRendererProps } from '@visx/axis';
 import { LegendShape } from '@visx/legend/lib/types';
 import { ScaleType, ScaleInput } from '@visx/scale';
 import { TextProps } from '@visx/text/lib/Text';
@@ -294,6 +294,11 @@ type CompleteChartTheme = Required<ChartTheme> & {
 type AxisOptions = {
     orientation?: OrientationType;
     numTicks?: number;
+    /**
+     * Explicit tick values for the axis. When set, takes precedence over `numTicks`
+     * so callers can force a specific axis (e.g. integer-only steps on a sparse chart).
+     */
+    tickValues?: ScaleInput<AxisScale>[];
     axisClassName?: string;
     axisLineClassName?: string;
     labelClassName?: string;
@@ -323,6 +328,11 @@ type AxisOptions = {
 type ScaleOptions = {
     type?: ScaleType;
     zero?: boolean;
+    /**
+     * Extends the scale's domain to nice round values. Pass `false` together with
+     * an explicit `domain` to keep the tick values you set exactly.
+     */
+    nice?: boolean;
     domain?: [number, number];
     range?: [number, number];
     /**

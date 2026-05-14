@@ -1263,6 +1263,9 @@ var useChartMargin = (height, options, data, theme, horizontal = false) => {
     if (horizontal) {
       return allDataPoints.map((d) => d.label || options.axis?.y?.tickFormat(d.date.getTime(), 0, []));
     }
+    if (options.axis?.y?.tickValues?.length) {
+      return options.axis.y.tickValues;
+    }
     const minY = Math.min(...allDataPoints.map((d) => d.value));
     const maxY = Math.max(...allDataPoints.map((d) => d.value));
     const yScale = createScale({

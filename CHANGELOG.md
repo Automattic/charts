@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: expose a source-side `./style.css` alias so monorepo consumers can resolve the import without a prior build.
+- Charts: expose tickValues on AxisOptions and nice on ScaleOptions so callers can force exact axis ticks.
 - Update package dependencies.
 
 ### Removed
