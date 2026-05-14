@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Changed
+- Charts: keep stacked area chart paths mounted on legend toggle so only the hidden series animates down and the y-axis stays fixed.
+
 ## [1.4.0] - 2026-05-14
 ### Changed
 - Charts: Expose a source-side `./style.css` alias so monorepo consumers can resolve the import without a prior build. [#48682]

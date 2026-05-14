@@ -467,7 +467,7 @@ var require_es6 = __commonJS({
 
 // src/charts/area-chart/area-chart.tsx
 import { formatNumberCompact as formatNumberCompact3 } from "@automattic/number-formatters";
-import { XYChart as XYChart2, AreaSeries as AreaSeries2, AreaStack, Grid as Grid2, Axis as Axis2 } from "@visx/xychart";
+import { XYChart as XYChart2, AnimatedAreaSeries, AnimatedAreaStack, Grid as Grid2, Axis as Axis2 } from "@visx/xychart";
 import { __ as __4 } from "@wordpress/i18n";
 import clsx5 from "clsx";
 import { useMemo as useMemo16, useContext as useContext13, forwardRef as forwardRef5, useImperativeHandle as useImperativeHandle4, useState as useState10, useRef as useRef10, useCallback as useCallback9 } from "react";
@@ -4203,6 +4203,42 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     chartRef,
     totalPoints: dataSorted[0]?.data.length || 0
   });
+  const fixedYDomain = useMemo16(() => {
+    if (!legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
+      return void 0;
+    }
+    if (stacked) {
+      const numPoints = Math.max(...dataSorted.map((s) => s.data.length));
+      let posMax = 0;
+      let negMin = 0;
+      for (let i = 0; i < numPoints; i++) {
+        let posSum = 0;
+        let negSum = 0;
+        for (const series of dataSorted) {
+          const v = Number(series.data[i]?.value);
+          if (Number.isNaN(v)) continue;
+          if (v >= 0) posSum += v;
+          else negSum += v;
+        }
+        if (posSum > posMax) posMax = posSum;
+        if (negSum < negMin) negMin = negSum;
+      }
+      return [negMin, posMax];
+    }
+    let max = -Infinity;
+    let min = Infinity;
+    for (const series of dataSorted) {
+      for (const point of series.data) {
+        const v = Number(point?.value);
+        if (!Number.isNaN(v)) {
+          if (v > max) max = v;
+          if (v < min) min = v;
+        }
+      }
+    }
+    if (max === -Infinity) return void 0;
+    return [Math.min(0, min), max];
+  }, [dataSorted, stacked, stackOffset, legendInteractive]);
   const chartOptions = useMemo16(() => {
     const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
     return {
@@ -4231,10 +4267,13 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
         nice: true,
         // Stacked areas should always include zero so the baseline is meaningful.
         zero: stacked,
+        ...fixedYDomain ? {
+          domain: fixedYDomain
+        } : {},
         ...options?.yScale
       }
     };
-  }, [options, dataSorted, width, stacked]);
+  }, [options, dataSorted, width, stacked, fixedYDomain]);
   const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
   const error = validateData2(dataSorted);
   const isDataValid = !error;
@@ -4257,10 +4296,33 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     metadata: chartMetadata
   });
   const prefersReducedMotion = usePrefersReducedMotion();
+  const animationEnabled = !!animation && !prefersReducedMotion;
   const accessors = {
     xAccessor: (d) => d?.date,
     yAccessor: (d) => d?.value
   };
+  const zeroYAccessor = useCallback9(() => 0, []);
+  const visibleLabels = useMemo16(() => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
+  const filteredRenderTooltip = useCallback9((params) => {
+    if (!legendInteractive) return renderTooltip(params);
+    const datumByKey = params?.tooltipData?.datumByKey;
+    if (!datumByKey) return renderTooltip(params);
+    const filtered = Object.fromEntries(Object.entries(datumByKey).filter(([key]) => visibleLabels.has(key)));
+    if (Object.keys(filtered).length === 0) return null;
+    const nearestDatum = params?.tooltipData?.nearestDatum;
+    const nextNearest = nearestDatum && visibleLabels.has(nearestDatum.key) ? nearestDatum : {
+      ...Object.values(filtered)[0],
+      distance: nearestDatum?.distance ?? 0
+    };
+    return renderTooltip({
+      ...params,
+      tooltipData: {
+        ...params.tooltipData,
+        datumByKey: filtered,
+        nearestDatum: nextNearest
+      }
+    });
+  }, [renderTooltip, legendInteractive, visibleLabels]);
   const resolvedFillOpacity = fillOpacity ?? (stacked ? 0.85 : 0.4);
   const resolvedWithStroke = withStroke ?? !stacked;
   if (error) {
@@ -4286,6 +4348,35 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     isVisible
   }) => isVisible);
   const curve = getCurveType(curveType, smoothing);
+  const renderSeries = ({
+    series: seriesData,
+    index,
+    isVisible
+  }) => {
+    const {
+      color,
+      lineStyles
+    } = getElementStyles({
+      data: seriesData,
+      index
+    });
+    return /* @__PURE__ */ _jsx17(AnimatedAreaSeries, {
+      dataKey: seriesData?.label,
+      data: seriesData.data,
+      xAccessor: accessors.xAccessor,
+      yAccessor: isVisible || !legendInteractive ? accessors.yAccessor : zeroYAccessor,
+      fill: color,
+      fillOpacity: resolvedFillOpacity,
+      ...stacked ? {} : {
+        renderLine: resolvedWithStroke,
+        curve
+      },
+      lineProps: {
+        stroke: color,
+        ...lineStyles
+      }
+    }, seriesData?.label || index);
+  };
   return /* @__PURE__ */ _jsx17(SingleChartContext.Provider, {
     value: {
       chartId,
@@ -4299,7 +4390,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
       legendChildren,
       gap,
       className: clsx5("area-chart", area_chart_module_default["area-chart"], {
-        [area_chart_module_default["area-chart--animated"]]: animation && !prefersReducedMotion
+        [area_chart_module_default["area-chart--animated"]]: animationEnabled
       }, className),
       style: {
         width,
@@ -4348,63 +4439,17 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
                 width,
                 height: chartHeight,
                 children: __4("All series are hidden. Click legend items to show data.", "jetpack-charts")
-              }) : null, !allSeriesHidden && stacked && /* @__PURE__ */ _jsx17(AreaStack, {
+              }) : null, !allSeriesHidden && stacked && /* @__PURE__ */ _jsx17(AnimatedAreaStack, {
                 curve,
                 offset: stackOffset,
                 renderLine: resolvedWithStroke,
-                children: visibleSeries.map(({
-                  series: seriesData,
-                  index
-                }) => {
-                  const {
-                    color,
-                    lineStyles
-                  } = getElementStyles({
-                    data: seriesData,
-                    index
-                  });
-                  return /* @__PURE__ */ _jsx17(AreaSeries2, {
-                    dataKey: seriesData?.label,
-                    data: seriesData.data,
-                    ...accessors,
-                    fill: color,
-                    fillOpacity: resolvedFillOpacity,
-                    lineProps: {
-                      stroke: color,
-                      ...lineStyles
-                    }
-                  }, seriesData?.label || index);
-                })
-              }), !allSeriesHidden && !stacked && visibleSeries.map(({
-                series: seriesData,
-                index
-              }) => {
-                const {
-                  color,
-                  lineStyles
-                } = getElementStyles({
-                  data: seriesData,
-                  index
-                });
-                return /* @__PURE__ */ _jsx17(AreaSeries2, {
-                  dataKey: seriesData?.label,
-                  data: seriesData.data,
-                  ...accessors,
-                  fill: color,
-                  fillOpacity: resolvedFillOpacity,
-                  renderLine: resolvedWithStroke,
-                  curve,
-                  lineProps: {
-                    stroke: color,
-                    ...lineStyles
-                  }
-                }, seriesData?.label || index);
-              }), withTooltips && /* @__PURE__ */ _jsxs7(_Fragment4, {
+                children: seriesWithVisibility.map(renderSeries)
+              }), !allSeriesHidden && !stacked && seriesWithVisibility.map(renderSeries), withTooltips && /* @__PURE__ */ _jsxs7(_Fragment4, {
                 children: [/* @__PURE__ */ _jsx17(AccessibleTooltip, {
                   detectBounds: true,
                   snapTooltipToDatumX: true,
                   snapTooltipToDatumY: !stacked,
-                  renderTooltip,
+                  renderTooltip: filteredRenderTooltip,
                   showVerticalCrosshair: withTooltipCrosshairs?.showVertical,
                   showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal,
                   selectedIndex,
