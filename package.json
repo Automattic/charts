@@ -63,7 +63,7 @@
 		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.1.9-alpha",
+		"@automattic/number-formatters": "^1.1.9",
 		"@babel/runtime": "7.29.2",
 		"@react-spring/web": "9.7.5",
 		"@visx/annotation": "^3.12.0",
