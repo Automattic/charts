@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Charts: optional zoomable X-axis on LineChart and AreaChart. Pass `zoomable` to enable drag-to-zoom; a reset button appears in the top-right while zoomed.
+
 ### Changed
 - Charts: AreaChart Y-axis now rescales to the visible series when interactive legends toggle items off. Pass `rescaleYOnLegendToggle={ false }` to restore the previous pinned-extent behavior.
 - Update package dependencies.

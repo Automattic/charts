@@ -3230,6 +3230,126 @@ function withResponsive(WrappedComponent) {
   };
 }
 
+// src/charts/private/x-zoom.tsx
+
+
+
+
+// src/charts/private/x-zoom.module.scss
+var x_zoom_module_default = {
+  "x-zoom__selection": "a8ccharts-KeNSrO",
+  "x-zoom__reset": "a8ccharts-gg6Kte",
+  "x-zoom__reset-icon": "a8ccharts-bQEoeo"
+};
+
+// src/charts/private/x-zoom.tsx
+
+var MIN_DRAG_PIXELS = 6;
+function useXZoom({
+  enabled,
+  chartRef,
+  userHandlers
+}) {
+  const [domain, setDomain] = _react.useState.call(void 0, null);
+  const [drag, setDrag] = _react.useState.call(void 0, null);
+  const reset = _react.useCallback.call(void 0, () => setDomain(null), []);
+  const onPointerDown = _react.useCallback.call(void 0, (params) => {
+    _optionalChain([userHandlers, 'optionalAccess', _140 => _140.onPointerDown, 'optionalCall', _141 => _141(params)]);
+    if (!enabled || !params.svgPoint) return;
+    setDrag({
+      a: params.svgPoint.x,
+      b: params.svgPoint.x
+    });
+  }, [enabled, userHandlers]);
+  const onPointerMove = _react.useCallback.call(void 0, (params) => {
+    _optionalChain([userHandlers, 'optionalAccess', _142 => _142.onPointerMove, 'optionalCall', _143 => _143(params)]);
+    if (!enabled || !params.svgPoint) return;
+    setDrag((current) => current ? {
+      a: current.a,
+      b: params.svgPoint.x
+    } : current);
+  }, [enabled, userHandlers]);
+  const onPointerUp = _react.useCallback.call(void 0, (params) => {
+    _optionalChain([userHandlers, 'optionalAccess', _144 => _144.onPointerUp, 'optionalCall', _145 => _145(params)]);
+    if (!enabled) return;
+    const finalDrag = drag;
+    setDrag(null);
+    if (!finalDrag) return;
+    const lo = Math.min(finalDrag.a, finalDrag.b);
+    const hi = Math.max(finalDrag.a, finalDrag.b);
+    if (hi - lo < MIN_DRAG_PIXELS) return;
+    const xScale = _optionalChain([chartRef, 'access', _146 => _146.current, 'optionalAccess', _147 => _147.getScales, 'call', _148 => _148(), 'optionalAccess', _149 => _149.xScale]);
+    if (!xScale || typeof xScale.invert !== "function") return;
+    setDomain([xScale.invert(lo), xScale.invert(hi)]);
+  }, [enabled, drag, chartRef, userHandlers]);
+  return _react.useMemo.call(void 0, () => ({
+    domain,
+    drag,
+    reset,
+    handlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    }
+  }), [domain, drag, reset, onPointerDown, onPointerMove, onPointerUp]);
+}
+function ZoomSelectionRect({
+  drag
+}) {
+  const {
+    margin,
+    innerHeight
+  } = _react.useContext.call(void 0, _xychart.DataContext);
+  if (!drag || drag.a === drag.b) return null;
+  const x = Math.min(drag.a, drag.b);
+  const w = Math.abs(drag.b - drag.a);
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "rect", {
+    className: x_zoom_module_default["x-zoom__selection"],
+    x,
+    y: _nullishCoalesce(_optionalChain([margin, 'optionalAccess', _150 => _150.top]), () => ( 0)),
+    width: w,
+    height: _nullishCoalesce(innerHeight, () => ( 0))
+  });
+}
+function ZoomResetButton({
+  onClick
+}) {
+  const label = _i18n.__.call(void 0, "Reset zoom", "jetpack-charts");
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "button", {
+    type: "button",
+    className: x_zoom_module_default["x-zoom__reset"],
+    onClick,
+    "aria-label": label,
+    title: label,
+    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "svg", {
+      className: x_zoom_module_default["x-zoom__reset-icon"],
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      "aria-hidden": "true",
+      focusable: "false",
+      children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "circle", {
+        cx: "10",
+        cy: "10",
+        r: "6"
+      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "line", {
+        x1: "15",
+        y1: "15",
+        x2: "20",
+        y2: "20"
+      }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "line", {
+        x1: "7",
+        y1: "10",
+        x2: "13",
+        y2: "10"
+      })]
+    })
+  });
+}
+
 // src/charts/line-chart/line-chart.module.scss
 var line_chart_module_default = {
   "line-chart": "a8ccharts-v-oO8E",
@@ -3360,7 +3480,7 @@ var LineChartAnnotationsOverlay = ({
     return `${xDomain.join(",")}-${yDomain.join(",")}-${xRange.join(",")}-${yRange.join(",")}`;
   }, []);
   const getScalesData = _react.useCallback.call(void 0, () => {
-    if (_optionalChain([chartRef, 'optionalAccess', _140 => _140.current])) {
+    if (_optionalChain([chartRef, 'optionalAccess', _151 => _151.current])) {
       const scaleData = chartRef.current.getScales();
       if (scaleData) {
         const scaleInfo = {
@@ -3537,7 +3657,7 @@ var LineChartAnnotation = ({
   const [height, setHeight] = _react.useState.call(void 0, null);
   const styles = _deepmerge2.default.call(void 0, _nullishCoalesce(providerTheme.annotationStyles, () => ( {})), _nullishCoalesce(datumStyles, () => ( {})));
   _react.useEffect.call(void 0, () => {
-    if (_optionalChain([labelRef, 'access', _141 => _141.current, 'optionalAccess', _142 => _142.getBBox])) {
+    if (_optionalChain([labelRef, 'access', _152 => _152.current, 'optionalAccess', _153 => _153.getBBox])) {
       const bbox = labelRef.current.getBBox();
       setHeight(bbox.height);
     }
@@ -3570,7 +3690,7 @@ var LineChartAnnotation = ({
       y: y2,
       yMin: yMin2,
       yMax: yMax2,
-      maxWidth: _optionalChain([styles, 'optionalAccess', _143 => _143.label, 'optionalAccess', _144 => _144.maxWidth]),
+      maxWidth: _optionalChain([styles, 'optionalAccess', _154 => _154.label, 'optionalAccess', _155 => _155.maxWidth]),
       height
     });
     return {
@@ -3582,7 +3702,7 @@ var LineChartAnnotation = ({
       xMax: xMax2,
       ...position2
     };
-  }, [datum, xScale, yScale, subjectType, _optionalChain([styles, 'optionalAccess', _145 => _145.label, 'optionalAccess', _146 => _146.maxWidth]), height, renderLabel]);
+  }, [datum, xScale, yScale, subjectType, _optionalChain([styles, 'optionalAccess', _156 => _156.label, 'optionalAccess', _157 => _157.maxWidth]), height, renderLabel]);
   if (!positionData) return null;
   const {
     x,
@@ -3597,13 +3717,13 @@ var LineChartAnnotation = ({
     isFlippedVertically
   } = positionData;
   const getLabelY = () => {
-    const labelY = _optionalChain([styles, 'optionalAccess', _147 => _147.label, 'optionalAccess', _148 => _148.y]);
+    const labelY = _optionalChain([styles, 'optionalAccess', _158 => _158.label, 'optionalAccess', _159 => _159.y]);
     if (labelY === "start") return yMax;
     if (labelY === "end") return yMin;
     return labelY;
   };
   const getLabelX = () => {
-    const labelX = _optionalChain([styles, 'optionalAccess', _149 => _149.label, 'optionalAccess', _150 => _150.x]);
+    const labelX = _optionalChain([styles, 'optionalAccess', _160 => _160.label, 'optionalAccess', _161 => _161.x]);
     if (labelX === "start") return xMin;
     if (labelX === "end") return xMax;
     return labelX;
@@ -3628,21 +3748,21 @@ var LineChartAnnotation = ({
       dx,
       dy,
       children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Connector, {
-        ..._optionalChain([styles, 'optionalAccess', _151 => _151.connector])
+        ..._optionalChain([styles, 'optionalAccess', _162 => _162.connector])
       }), subjectType === "circle" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.CircleSubject, {
-        ..._optionalChain([styles, 'optionalAccess', _152 => _152.circleSubject])
+        ..._optionalChain([styles, 'optionalAccess', _163 => _163.circleSubject])
       }), subjectType === "line-vertical" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
         min: yMax,
         max: yMin,
-        ..._optionalChain([styles, 'optionalAccess', _153 => _153.lineSubject]),
+        ..._optionalChain([styles, 'optionalAccess', _164 => _164.lineSubject]),
         orientation: "vertical"
       }), subjectType === "line-horizontal" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.LineSubject, {
         min: xMin,
         max: xMax,
-        ..._optionalChain([styles, 'optionalAccess', _154 => _154.lineSubject]),
+        ..._optionalChain([styles, 'optionalAccess', _165 => _165.lineSubject]),
         orientation: "horizontal"
       }), renderLabel ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.HtmlLabel, {
-        ..._optionalChain([styles, 'optionalAccess', _155 => _155.label]),
+        ..._optionalChain([styles, 'optionalAccess', _166 => _166.label]),
         ...labelPosition,
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
           style: getSafariHTMLLabelPosition(),
@@ -3661,7 +3781,7 @@ var LineChartAnnotation = ({
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _annotation.Label, {
           title,
           subtitle,
-          ..._optionalChain([styles, 'optionalAccess', _156 => _156.label]),
+          ..._optionalChain([styles, 'optionalAccess', _167 => _167.label]),
           ...labelPosition,
           horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally),
           verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, _nullishCoalesce(height, () => ( ANNOTATION_INIT_HEIGHT)))
@@ -3698,7 +3818,7 @@ var LineChartGlyph = ({
   const x = xScale(accessors.xAccessor(point));
   const y = yScale(accessors.yAccessor(point));
   if (typeof x !== "number" || typeof y !== "number") return null;
-  const size = Math.max(0, _nullishCoalesce(toNumber(_optionalChain([glyphStyle, 'optionalAccess', _157 => _157.radius])), () => ( 4)));
+  const size = Math.max(0, _nullishCoalesce(toNumber(_optionalChain([glyphStyle, 'optionalAccess', _168 => _168.radius])), () => ( 4)));
   return renderGlyph({
     key: `${position2}-glyph-${data.label}`,
     index,
@@ -3729,9 +3849,9 @@ var renderDefaultTooltip = (params) => {
   const {
     tooltipData
   } = params;
-  const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _158 => _158.nearestDatum, 'optionalAccess', _159 => _159.datum]);
+  const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _169 => _169.nearestDatum, 'optionalAccess', _170 => _170.datum]);
   if (!nearestDatum) return null;
-  const tooltipPoints = Object.entries(_optionalChain([tooltipData, 'optionalAccess', _160 => _160.datumByKey]) || {}).map(([key, {
+  const tooltipPoints = Object.entries(_optionalChain([tooltipData, 'optionalAccess', _171 => _171.datumByKey]) || {}).map(([key, {
     datum
   }]) => ({
     key,
@@ -3741,7 +3861,7 @@ var renderDefaultTooltip = (params) => {
     className: line_chart_module_default["line-chart__tooltip"],
     children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
       className: line_chart_module_default["line-chart__tooltip-date"],
-      children: _optionalChain([nearestDatum, 'access', _161 => _161.date, 'optionalAccess', _162 => _162.toLocaleDateString, 'call', _163 => _163()])
+      children: _optionalChain([nearestDatum, 'access', _172 => _172.date, 'optionalAccess', _173 => _173.toLocaleDateString, 'call', _174 => _174()])
     }), tooltipPoints.map((point) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, Stack, {
       direction: "row",
       align: "center",
@@ -3758,7 +3878,7 @@ var renderDefaultTooltip = (params) => {
   });
 };
 var validateData = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _164 => _164.length])) return "No data available";
+  if (!_optionalChain([data, 'optionalAccess', _175 => _175.length])) return "No data available";
   const hasInvalidData = data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())));
   if (hasInvalidData) return "Invalid data";
   return null;
@@ -3772,7 +3892,7 @@ var LineChartScalesRef = ({
   const context = _react.useContext.call(void 0, _xychart.DataContext);
   _react.useImperativeHandle.call(void 0, chartRef, () => ({
     getScales: () => {
-      if (!_optionalChain([context, 'optionalAccess', _165 => _165.xScale]) || !_optionalChain([context, 'optionalAccess', _166 => _166.yScale])) {
+      if (!_optionalChain([context, 'optionalAccess', _176 => _176.xScale]) || !_optionalChain([context, 'optionalAccess', _177 => _177.yScale])) {
         return null;
       }
       return {
@@ -3814,6 +3934,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   onPointerUp = void 0,
   onPointerMove = void 0,
   onPointerOut = void 0,
+  zoomable = false,
   children,
   gridVisibility,
   gap = "md"
@@ -3828,6 +3949,15 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
   const internalChartRef = _react.useRef.call(void 0, null);
+  const zoom = useXZoom({
+    enabled: zoomable,
+    chartRef: internalChartRef,
+    userHandlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    }
+  });
   const {
     legendChildren,
     nonLegendChildren
@@ -3838,8 +3968,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     setMeasuredChartHeight(chartHeight);
   }, [height]);
   _react.useImperativeHandle.call(void 0, ref, () => ({
-    getScales: () => _optionalChain([internalChartRef, 'access', _167 => _167.current, 'optionalAccess', _168 => _168.getScales, 'call', _169 => _169()]) || null,
-    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _170 => _170.current, 'optionalAccess', _171 => _171.getChartDimensions, 'call', _172 => _172()]) || {
+    getScales: () => _optionalChain([internalChartRef, 'access', _178 => _178.current, 'optionalAccess', _179 => _179.getScales, 'call', _180 => _180()]) || null,
+    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _181 => _181.current, 'optionalAccess', _182 => _182.getChartDimensions, 'call', _183 => _183()]) || {
       width: 0,
       height: 0,
       margin: {}
@@ -3880,10 +4010,10 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     isNavigating,
     setIsNavigating,
     chartRef,
-    totalPoints: _optionalChain([dataSorted, 'access', _173 => _173[0], 'optionalAccess', _174 => _174.data, 'access', _175 => _175.length]) || 0
+    totalPoints: _optionalChain([dataSorted, 'access', _184 => _184[0], 'optionalAccess', _185 => _185.data, 'access', _186 => _186.length]) || 0
   });
   const chartOptions = _react.useMemo.call(void 0, () => {
-    const formatter = _optionalChain([options, 'optionalAccess', _176 => _176.axis, 'optionalAccess', _177 => _177.x, 'optionalAccess', _178 => _178.tickFormat]) || getFormatter(dataSorted);
+    const formatter = _optionalChain([options, 'optionalAccess', _187 => _187.axis, 'optionalAccess', _188 => _188.x, 'optionalAccess', _189 => _189.tickFormat]) || getFormatter(dataSorted);
     return {
       axis: {
         x: {
@@ -3891,28 +4021,31 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
           tickFormat: formatter,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _179 => _179.axis, 'optionalAccess', _180 => _180.x])
+          ..._optionalChain([options, 'optionalAccess', _190 => _190.axis, 'optionalAccess', _191 => _191.x])
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: _numberformatters.formatNumberCompact,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _181 => _181.axis, 'optionalAccess', _182 => _182.y])
+          ..._optionalChain([options, 'optionalAccess', _192 => _192.axis, 'optionalAccess', _193 => _193.y])
         }
       },
       xScale: {
         type: "time",
-        ..._optionalChain([options, 'optionalAccess', _183 => _183.xScale])
+        ..._optionalChain([options, 'optionalAccess', _194 => _194.xScale]),
+        ...zoom.domain ? {
+          domain: zoom.domain
+        } : {}
       },
       yScale: {
         type: "linear",
         nice: true,
         zero: false,
-        ..._optionalChain([options, 'optionalAccess', _184 => _184.yScale])
+        ..._optionalChain([options, 'optionalAccess', _195 => _195.yScale])
       }
     };
-  }, [options, dataSorted, width]);
+  }, [options, dataSorted, width, zoom.domain]);
   const tooltipRenderGlyph = _react.useMemo.call(void 0, () => {
     return (props) => {
       const seriesIndex = dataSorted.findIndex((series) => series.label === props.key || series.data.includes(props.datum));
@@ -3936,9 +4069,9 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const isDataValid = !error;
   const legendOptions = _react.useMemo.call(void 0, () => ({
     withGlyph: withLegendGlyph,
-    glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _185 => _185.radius])), () => ( 4))),
+    glyphSize: Math.max(0, _nullishCoalesce(toNumber2(_optionalChain([glyphStyle, 'optionalAccess', _196 => _196.radius])), () => ( 4))),
     renderGlyph
-  }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _186 => _186.radius]), renderGlyph]);
+  }), [withLegendGlyph, _optionalChain([glyphStyle, 'optionalAccess', _197 => _197.radius]), renderGlyph]);
   const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     withGradientFill,
@@ -3957,8 +4090,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   });
   const prefersReducedMotion = usePrefersReducedMotion();
   const accessors = {
-    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _187 => _187.date]),
-    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _188 => _188.value])
+    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _198 => _198.date]),
+    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _199 => _199.value])
   };
   if (error) {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
@@ -4011,9 +4144,14 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           onKeyDown: onChartKeyDown,
           onFocus: onChartFocus,
           onBlur: onChartBlur,
-          children: chartHeight > 0 && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+          children: chartHeight > 0 && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
             ref: chartRef,
-            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _xychart.XYChart, {
+            style: {
+              position: "relative"
+            },
+            children: [zoomable && zoom.domain && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ZoomResetButton, {
+              onClick: zoom.reset
+            }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _xychart.XYChart, {
               theme,
               width,
               height: chartHeight,
@@ -4023,9 +4161,9 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
               },
               xScale: chartOptions.xScale,
               yScale: chartOptions.yScale,
-              onPointerDown,
-              onPointerUp,
-              onPointerMove,
+              onPointerDown: zoom.handlers.onPointerDown,
+              onPointerUp: zoom.handlers.onPointerUp,
+              onPointerMove: zoom.handlers.onPointerMove,
               onPointerOut,
               pointerEventsDataKey: "nearest",
               children: [gridVisibility !== "none" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Grid, {
@@ -4068,21 +4206,21 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                     fromOpacity: 0.4,
                     toOpacity: 0.1,
                     to: providerTheme.backgroundColor,
-                    ..._optionalChain([seriesData, 'access', _189 => _189.options, 'optionalAccess', _190 => _190.gradient]),
-                    children: _optionalChain([seriesData, 'access', _191 => _191.options, 'optionalAccess', _192 => _192.gradient, 'optionalAccess', _193 => _193.stops, 'optionalAccess', _194 => _194.map, 'call', _195 => _195((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "stop", {
+                    ..._optionalChain([seriesData, 'access', _200 => _200.options, 'optionalAccess', _201 => _201.gradient]),
+                    children: _optionalChain([seriesData, 'access', _202 => _202.options, 'optionalAccess', _203 => _203.gradient, 'optionalAccess', _204 => _204.stops, 'optionalAccess', _205 => _205.map, 'call', _206 => _206((stop, stopIndex) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "stop", {
                       offset: stop.offset,
                       stopColor: stop.color || color,
                       stopOpacity: _nullishCoalesce(stop.opacity, () => ( 1))
                     }, `${stop.offset}-${stop.color || color}`))])
                   }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.AreaSeries, {
-                    dataKey: _optionalChain([seriesData, 'optionalAccess', _196 => _196.label]),
+                    dataKey: _optionalChain([seriesData, 'optionalAccess', _207 => _207.label]),
                     data: seriesData.data,
                     ...accessors,
                     fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
                     renderLine: true,
                     curve: getCurveType(curveType, smoothing),
                     lineProps
-                  }, _optionalChain([seriesData, 'optionalAccess', _197 => _197.label])), withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
+                  }, _optionalChain([seriesData, 'optionalAccess', _208 => _208.label])), withStartGlyphs && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, line_chart_glyph_default, {
                     index,
                     data: seriesData,
                     color,
@@ -4099,7 +4237,7 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                     glyphStyle,
                     position: "end"
                   })]
-                }, _optionalChain([seriesData, 'optionalAccess', _198 => _198.label]) || index);
+                }, _optionalChain([seriesData, 'optionalAccess', _209 => _209.label]) || index);
               }), withTooltips && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, AccessibleTooltip, {
                 detectBounds: true,
                 snapTooltipToDatumX: true,
@@ -4108,8 +4246,8 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                 renderTooltip,
                 renderGlyph: tooltipRenderGlyph,
                 glyphStyle,
-                showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _199 => _199.showVertical]),
-                showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _200 => _200.showHorizontal]),
+                showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _210 => _210.showVertical]),
+                showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _211 => _211.showHorizontal]),
                 selectedIndex,
                 tooltipRef,
                 keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
@@ -4119,8 +4257,10 @@ var LineChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                 width,
                 height,
                 margin
+              }), zoomable && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ZoomSelectionRect, {
+                drag: zoom.drag
               })]
-            })
+            })]
           })
         });
       }
@@ -4164,8 +4304,8 @@ var area_chart_module_default = {
 // src/charts/area-chart/private/validate-data.ts
 
 var validateData2 = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _201 => _201.length])) return _i18n.__.call(void 0, "No data available", "jetpack-charts");
-  const hasEmptySeries = data.some((series) => !_optionalChain([series, 'access', _202 => _202.data, 'optionalAccess', _203 => _203.length]));
+  if (!_optionalChain([data, 'optionalAccess', _212 => _212.length])) return _i18n.__.call(void 0, "No data available", "jetpack-charts");
+  const hasEmptySeries = data.some((series) => !_optionalChain([series, 'access', _213 => _213.data, 'optionalAccess', _214 => _214.length]));
   if (hasEmptySeries) return _i18n.__.call(void 0, "No data available", "jetpack-charts");
   const hasInvalidData = data.some(
     (series) => series.data.some(
@@ -4189,7 +4329,7 @@ var AreaChartScalesRef = ({
   const context = _react.useContext.call(void 0, _xychart.DataContext);
   _react.useImperativeHandle.call(void 0, chartRef, () => ({
     getScales: () => {
-      if (!_optionalChain([context, 'optionalAccess', _204 => _204.xScale]) || !_optionalChain([context, 'optionalAccess', _205 => _205.yScale])) return null;
+      if (!_optionalChain([context, 'optionalAccess', _215 => _215.xScale]) || !_optionalChain([context, 'optionalAccess', _216 => _216.yScale])) return null;
       return {
         xScale: context.xScale,
         yScale: context.yScale
@@ -4212,10 +4352,10 @@ var HoverGlyphs = ({
 }) => {
   const dataContext = _react.useContext.call(void 0, _xychart.DataContext);
   const tooltipContext = _react.useContext.call(void 0, _xychart.TooltipContext);
-  const xScale = _optionalChain([dataContext, 'optionalAccess', _206 => _206.xScale]);
-  const yScale = _optionalChain([dataContext, 'optionalAccess', _207 => _207.yScale]);
-  const tooltipOpen = _optionalChain([tooltipContext, 'optionalAccess', _208 => _208.tooltipOpen]);
-  const nearestDatum = _optionalChain([tooltipContext, 'optionalAccess', _209 => _209.tooltipData, 'optionalAccess', _210 => _210.nearestDatum, 'optionalAccess', _211 => _211.datum]);
+  const xScale = _optionalChain([dataContext, 'optionalAccess', _217 => _217.xScale]);
+  const yScale = _optionalChain([dataContext, 'optionalAccess', _218 => _218.yScale]);
+  const tooltipOpen = _optionalChain([tooltipContext, 'optionalAccess', _219 => _219.tooltipOpen]);
+  const nearestDatum = _optionalChain([tooltipContext, 'optionalAccess', _220 => _220.tooltipData, 'optionalAccess', _221 => _221.nearestDatum, 'optionalAccess', _222 => _222.datum]);
   if (!tooltipOpen || !xScale || !yScale || !nearestDatum || !nearestDatum.date || stacked && stackOffset !== "none") {
     return null;
   }
@@ -4228,8 +4368,8 @@ var HoverGlyphs = ({
     series,
     index
   } of visibleSeries) {
-    const datum = series.data.find((d) => _optionalChain([d, 'access', _212 => _212.date, 'optionalAccess', _213 => _213.getTime, 'call', _214 => _214()]) === hoveredTime);
-    const value = _nullishCoalesce(_optionalChain([datum, 'optionalAccess', _215 => _215.value]), () => ( 0));
+    const datum = series.data.find((d) => _optionalChain([d, 'access', _223 => _223.date, 'optionalAccess', _224 => _224.getTime, 'call', _225 => _225()]) === hoveredTime);
+    const value = _nullishCoalesce(_optionalChain([datum, 'optionalAccess', _226 => _226.value]), () => ( 0));
     if (stacked) {
       cumulative += value;
     }
@@ -4288,6 +4428,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   onPointerUp,
   onPointerMove,
   onPointerOut,
+  zoomable = false,
   rescaleYOnLegendToggle = true,
   children,
   gridVisibility,
@@ -4303,6 +4444,15 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
   const internalChartRef = _react.useRef.call(void 0, null);
+  const zoom = useXZoom({
+    enabled: zoomable,
+    chartRef: internalChartRef,
+    userHandlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    }
+  });
   const {
     legendChildren,
     nonLegendChildren
@@ -4313,8 +4463,8 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     setMeasuredChartHeight(chartHeight);
   }, [height]);
   _react.useImperativeHandle.call(void 0, ref, () => ({
-    getScales: () => _optionalChain([internalChartRef, 'access', _216 => _216.current, 'optionalAccess', _217 => _217.getScales, 'call', _218 => _218()]) || null,
-    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _219 => _219.current, 'optionalAccess', _220 => _220.getChartDimensions, 'call', _221 => _221()]) || {
+    getScales: () => _optionalChain([internalChartRef, 'access', _227 => _227.current, 'optionalAccess', _228 => _228.getScales, 'call', _229 => _229()]) || null,
+    getChartDimensions: () => _optionalChain([internalChartRef, 'access', _230 => _230.current, 'optionalAccess', _231 => _231.getChartDimensions, 'call', _232 => _232()]) || {
       width: 0,
       height: 0,
       margin: {}
@@ -4353,7 +4503,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     isNavigating,
     setIsNavigating,
     chartRef,
-    totalPoints: _optionalChain([dataSorted, 'access', _222 => _222[0], 'optionalAccess', _223 => _223.data, 'access', _224 => _224.length]) || 0
+    totalPoints: _optionalChain([dataSorted, 'access', _233 => _233[0], 'optionalAccess', _234 => _234.data, 'access', _235 => _235.length]) || 0
   });
   const fixedYDomain = _react.useMemo.call(void 0, () => {
     if (rescaleYOnLegendToggle || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
@@ -4367,7 +4517,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
         let posSum = 0;
         let negSum = 0;
         for (const series of dataSorted) {
-          const v = Number(_optionalChain([series, 'access', _225 => _225.data, 'access', _226 => _226[i], 'optionalAccess', _227 => _227.value]));
+          const v = Number(_optionalChain([series, 'access', _236 => _236.data, 'access', _237 => _237[i], 'optionalAccess', _238 => _238.value]));
           if (Number.isNaN(v)) continue;
           if (v >= 0) posSum += v;
           else negSum += v;
@@ -4381,7 +4531,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     let min = Infinity;
     for (const series of dataSorted) {
       for (const point of series.data) {
-        const v = Number(_optionalChain([point, 'optionalAccess', _228 => _228.value]));
+        const v = Number(_optionalChain([point, 'optionalAccess', _239 => _239.value]));
         if (!Number.isNaN(v)) {
           if (v > max) max = v;
           if (v < min) min = v;
@@ -4392,7 +4542,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     return [Math.min(0, min), max];
   }, [dataSorted, stacked, stackOffset, legendInteractive, rescaleYOnLegendToggle]);
   const chartOptions = _react.useMemo.call(void 0, () => {
-    const formatter = _optionalChain([options, 'optionalAccess', _229 => _229.axis, 'optionalAccess', _230 => _230.x, 'optionalAccess', _231 => _231.tickFormat]) || getFormatter(dataSorted);
+    const formatter = _optionalChain([options, 'optionalAccess', _240 => _240.axis, 'optionalAccess', _241 => _241.x, 'optionalAccess', _242 => _242.tickFormat]) || getFormatter(dataSorted);
     return {
       axis: {
         x: {
@@ -4400,19 +4550,22 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
           tickFormat: formatter,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _232 => _232.axis, 'optionalAccess', _233 => _233.x])
+          ..._optionalChain([options, 'optionalAccess', _243 => _243.axis, 'optionalAccess', _244 => _244.x])
         },
         y: {
           orientation: "left",
           numTicks: 4,
           tickFormat: _numberformatters.formatNumberCompact,
           display: true,
-          ..._optionalChain([options, 'optionalAccess', _234 => _234.axis, 'optionalAccess', _235 => _235.y])
+          ..._optionalChain([options, 'optionalAccess', _245 => _245.axis, 'optionalAccess', _246 => _246.y])
         }
       },
       xScale: {
         type: "time",
-        ..._optionalChain([options, 'optionalAccess', _236 => _236.xScale])
+        ..._optionalChain([options, 'optionalAccess', _247 => _247.xScale]),
+        ...zoom.domain ? {
+          domain: zoom.domain
+        } : {}
       },
       yScale: {
         type: "linear",
@@ -4422,10 +4575,10 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
         ...fixedYDomain ? {
           domain: fixedYDomain
         } : {},
-        ..._optionalChain([options, 'optionalAccess', _237 => _237.yScale])
+        ..._optionalChain([options, 'optionalAccess', _248 => _248.yScale])
       }
     };
-  }, [options, dataSorted, width, stacked, fixedYDomain]);
+  }, [options, dataSorted, width, stacked, fixedYDomain, zoom.domain]);
   const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
   const error = validateData2(dataSorted);
   const isDataValid = !error;
@@ -4450,21 +4603,21 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   const prefersReducedMotion = usePrefersReducedMotion();
   const animationEnabled = !!animation && !prefersReducedMotion;
   const accessors = {
-    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _238 => _238.date]),
-    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _239 => _239.value])
+    xAccessor: (d) => _optionalChain([d, 'optionalAccess', _249 => _249.date]),
+    yAccessor: (d) => _optionalChain([d, 'optionalAccess', _250 => _250.value])
   };
   const zeroYAccessor = _react.useCallback.call(void 0, () => 0, []);
   const visibleLabels = _react.useMemo.call(void 0, () => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
   const filteredRenderTooltip = _react.useCallback.call(void 0, (params) => {
     if (!legendInteractive) return renderTooltip(params);
-    const datumByKey = _optionalChain([params, 'optionalAccess', _240 => _240.tooltipData, 'optionalAccess', _241 => _241.datumByKey]);
+    const datumByKey = _optionalChain([params, 'optionalAccess', _251 => _251.tooltipData, 'optionalAccess', _252 => _252.datumByKey]);
     if (!datumByKey) return renderTooltip(params);
     const filtered = Object.fromEntries(Object.entries(datumByKey).filter(([key]) => visibleLabels.has(key)));
     if (Object.keys(filtered).length === 0) return null;
-    const nearestDatum = _optionalChain([params, 'optionalAccess', _242 => _242.tooltipData, 'optionalAccess', _243 => _243.nearestDatum]);
+    const nearestDatum = _optionalChain([params, 'optionalAccess', _253 => _253.tooltipData, 'optionalAccess', _254 => _254.nearestDatum]);
     const nextNearest = nearestDatum && visibleLabels.has(nearestDatum.key) ? nearestDatum : {
       ...Object.values(filtered)[0],
-      distance: _nullishCoalesce(_optionalChain([nearestDatum, 'optionalAccess', _244 => _244.distance]), () => ( 0))
+      distance: _nullishCoalesce(_optionalChain([nearestDatum, 'optionalAccess', _255 => _255.distance]), () => ( 0))
     };
     return renderTooltip({
       ...params,
@@ -4513,7 +4666,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       index
     });
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.AnimatedAreaSeries, {
-      dataKey: _optionalChain([seriesData, 'optionalAccess', _245 => _245.label]),
+      dataKey: _optionalChain([seriesData, 'optionalAccess', _256 => _256.label]),
       data: seriesData.data,
       xAccessor: accessors.xAccessor,
       yAccessor: isVisible || !legendInteractive ? accessors.yAccessor : zeroYAccessor,
@@ -4527,7 +4680,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
         stroke: color,
         ...lineStyles
       }
-    }, _optionalChain([seriesData, 'optionalAccess', _246 => _246.label]) || index);
+    }, _optionalChain([seriesData, 'optionalAccess', _257 => _257.label]) || index);
   };
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, SingleChartContext.Provider, {
     value: {
@@ -4561,9 +4714,14 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
           onKeyDown: onChartKeyDown,
           onFocus: onChartFocus,
           onBlur: onChartBlur,
-          children: chartHeight > 0 && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
+          children: chartHeight > 0 && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
             ref: chartRef,
-            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _xychart.XYChart, {
+            style: {
+              position: "relative"
+            },
+            children: [zoomable && zoom.domain && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ZoomResetButton, {
+              onClick: zoom.reset
+            }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _xychart.XYChart, {
               theme,
               width,
               height: chartHeight,
@@ -4573,9 +4731,9 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
               },
               xScale: chartOptions.xScale,
               yScale: chartOptions.yScale,
-              onPointerDown,
-              onPointerUp,
-              onPointerMove,
+              onPointerDown: zoom.handlers.onPointerDown,
+              onPointerUp: zoom.handlers.onPointerUp,
+              onPointerMove: zoom.handlers.onPointerMove,
               onPointerOut,
               pointerEventsDataKey: "nearest",
               children: [gridVisibility !== "none" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Grid, {
@@ -4602,8 +4760,8 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                   snapTooltipToDatumX: true,
                   snapTooltipToDatumY: !stacked,
                   renderTooltip: filteredRenderTooltip,
-                  showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _247 => _247.showVertical]),
-                  showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _248 => _248.showHorizontal]),
+                  showVerticalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _258 => _258.showVertical]),
+                  showHorizontalCrosshair: _optionalChain([withTooltipCrosshairs, 'optionalAccess', _259 => _259.showHorizontal]),
                   selectedIndex,
                   tooltipRef,
                   keyboardFocusedClassName: area_chart_module_default["area-chart__tooltip--keyboard-focused"],
@@ -4620,8 +4778,10 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
                 width,
                 height: height || chartHeight,
                 margin
+              }), zoomable && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ZoomSelectionRect, {
+                drag: zoom.drag
               })]
-            })
+            })]
           })
         });
       }
@@ -4794,12 +4954,12 @@ function useBarChartOptions(data, horizontal, options = {}) {
       nice: true,
       zero: false
     };
-    const labelFormatter = _optionalChain([data, 'optionalAccess', _249 => _249[0], 'optionalAccess', _250 => _250.data, 'optionalAccess', _251 => _251[0], 'optionalAccess', _252 => _252.label]) ? (label) => label : formatDateTick2;
+    const labelFormatter = _optionalChain([data, 'optionalAccess', _260 => _260[0], 'optionalAccess', _261 => _261.data, 'optionalAccess', _262 => _262[0], 'optionalAccess', _263 => _263.label]) ? (label) => label : formatDateTick2;
     const valueFormatter = _numberformatters.formatNumberCompact;
-    const labelAccessor = (d) => _optionalChain([d, 'optionalAccess', _253 => _253.label]) || _optionalChain([d, 'optionalAccess', _254 => _254.date]);
+    const labelAccessor = (d) => _optionalChain([d, 'optionalAccess', _264 => _264.label]) || _optionalChain([d, 'optionalAccess', _265 => _265.date]);
     const valueAccessor = (d) => {
       const enhancedPoint = d;
-      return _optionalChain([enhancedPoint, 'optionalAccess', _255 => _255.visualValue]) !== void 0 ? enhancedPoint.visualValue : _optionalChain([d, 'optionalAccess', _256 => _256.value]);
+      return _optionalChain([enhancedPoint, 'optionalAccess', _266 => _266.visualValue]) !== void 0 ? enhancedPoint.visualValue : _optionalChain([d, 'optionalAccess', _267 => _267.value]);
     };
     return {
       vertical: {
@@ -4838,9 +4998,9 @@ function useBarChartOptions(data, horizontal, options = {}) {
     } = defaultOptions[orientationKey];
     const xScale = { ...baseXScale, ...options.xScale || {} };
     const yScale = { ...baseYScale, ...options.yScale || {} };
-    const providedToolTipLabelFormatter = horizontal ? _optionalChain([options, 'access', _257 => _257.axis, 'optionalAccess', _258 => _258.y, 'optionalAccess', _259 => _259.tickFormat]) : _optionalChain([options, 'access', _260 => _260.axis, 'optionalAccess', _261 => _261.x, 'optionalAccess', _262 => _262.tickFormat]);
-    const { labelOverflow: xLabelOverflow, ...xAxisOptions } = _optionalChain([options, 'access', _263 => _263.axis, 'optionalAccess', _264 => _264.x]) || {};
-    const { labelOverflow: yLabelOverflow, ...yAxisOptions } = _optionalChain([options, 'access', _265 => _265.axis, 'optionalAccess', _266 => _266.y]) || {};
+    const providedToolTipLabelFormatter = horizontal ? _optionalChain([options, 'access', _268 => _268.axis, 'optionalAccess', _269 => _269.y, 'optionalAccess', _270 => _270.tickFormat]) : _optionalChain([options, 'access', _271 => _271.axis, 'optionalAccess', _272 => _272.x, 'optionalAccess', _273 => _273.tickFormat]);
+    const { labelOverflow: xLabelOverflow, ...xAxisOptions } = _optionalChain([options, 'access', _274 => _274.axis, 'optionalAccess', _275 => _275.x]) || {};
+    const { labelOverflow: yLabelOverflow, ...yAxisOptions } = _optionalChain([options, 'access', _276 => _276.axis, 'optionalAccess', _277 => _277.y]) || {};
     return {
       gridVisibility,
       xScale,
@@ -4878,7 +5038,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 // src/charts/bar-chart/bar-chart.tsx
 
 var validateData3 = (data) => {
-  if (!_optionalChain([data, 'optionalAccess', _267 => _267.length])) return "No data available";
+  if (!_optionalChain([data, 'optionalAccess', _278 => _278.length])) return "No data available";
   const hasInvalidData = data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))));
   if (hasInvalidData) return "Invalid data";
   return null;
@@ -4928,7 +5088,7 @@ var BarChartInternal = ({
   }, [height]);
   const [selectedIndex, setSelectedIndex] = _react.useState.call(void 0, void 0);
   const [isNavigating, setIsNavigating] = _react.useState.call(void 0, false);
-  const totalPoints = Math.max(0, ...data.map((series) => _optionalChain([series, 'access', _268 => _268.data, 'optionalAccess', _269 => _269.length]) || 0)) * data.length;
+  const totalPoints = Math.max(0, ...data.map((series) => _optionalChain([series, 'access', _279 => _279.data, 'optionalAccess', _280 => _280.length]) || 0)) * data.length;
   const {
     tooltipRef,
     onChartFocus,
@@ -4972,13 +5132,13 @@ var BarChartInternal = ({
   const renderDefaultTooltip2 = _react.useCallback.call(void 0, ({
     tooltipData
   }) => {
-    const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _270 => _270.nearestDatum, 'optionalAccess', _271 => _271.datum]);
+    const nearestDatum = _optionalChain([tooltipData, 'optionalAccess', _281 => _281.nearestDatum, 'optionalAccess', _282 => _282.datum]);
     if (!nearestDatum) return null;
     return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
       className: bar_chart_module_default["bar-chart__tooltip"],
       children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", {
         className: bar_chart_module_default["bar-chart__tooltip-header"],
-        children: _optionalChain([tooltipData, 'optionalAccess', _272 => _272.nearestDatum, 'optionalAccess', _273 => _273.key])
+        children: _optionalChain([tooltipData, 'optionalAccess', _283 => _283.nearestDatum, 'optionalAccess', _284 => _284.key])
       }), /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "div", {
         className: bar_chart_module_default["bar-chart__tooltip-row"],
         children: [/* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", {
@@ -5177,12 +5337,12 @@ var BarChartInternal = ({
                     return null;
                   }
                   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.BarSeries, {
-                    dataKey: _optionalChain([seriesData, 'optionalAccess', _274 => _274.label]),
+                    dataKey: _optionalChain([seriesData, 'optionalAccess', _285 => _285.label]),
                     data: seriesData.data,
                     yAccessor: chartOptions.accessors.yAccessor,
                     xAccessor: chartOptions.accessors.xAccessor,
                     colorAccessor: getBarBackground(index)
-                  }, _optionalChain([seriesData, 'optionalAccess', _275 => _275.label]));
+                  }, _optionalChain([seriesData, 'optionalAccess', _286 => _286.label]));
                 })
               }), /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _xychart.Axis, {
                 ...chartOptions.axis.x
@@ -5236,7 +5396,7 @@ var BarChartResponsive = attachSubComponents(withResponsive(BarChartWithProvider
 
 var getScaleBandwidth2 = (scale) => {
   const s = scale;
-  return s && "bandwidth" in s ? _nullishCoalesce(_optionalChain([s, 'optionalAccess', _276 => _276.bandwidth, 'call', _277 => _277()]), () => ( 0)) : 0;
+  return s && "bandwidth" in s ? _nullishCoalesce(_optionalChain([s, 'optionalAccess', _287 => _287.bandwidth, 'call', _288 => _288()]), () => ( 0)) : 0;
 };
 var DefaultLabelComponent = ({
   textProps,
@@ -5297,7 +5457,7 @@ var AxisRenderer = ({
     delete textProps.dx;
     const sum = data.reduce((acc, {
       data: seriesData
-    }) => acc + (_nullishCoalesce(_optionalChain([seriesData, 'access', _278 => _278[index], 'optionalAccess', _279 => _279.value]), () => ( 0))), 0);
+    }) => acc + (_nullishCoalesce(_optionalChain([seriesData, 'access', _289 => _289[index], 'optionalAccess', _290 => _290.value]), () => ( 0))), 0);
     const y = from2.y + yOffset;
     return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _group.Group, {
       children: [/* @__PURE__ */ _jsxruntime.jsx.call(void 0, LabelComponent, {
@@ -5465,7 +5625,7 @@ var useFunnelSelection = (hideTooltip) => {
     (stepId) => {
       if (clickedStep === stepId) {
         setClickedStep(null);
-        _optionalChain([hideTooltip, 'optionalCall', _280 => _280()]);
+        _optionalChain([hideTooltip, 'optionalCall', _291 => _291()]);
       } else {
         setClickedStep(stepId);
       }
@@ -5478,21 +5638,21 @@ var useFunnelSelection = (hideTooltip) => {
         event.preventDefault();
         if (clickedStep === stepId) {
           setClickedStep(null);
-          _optionalChain([hideTooltip, 'optionalCall', _281 => _281()]);
+          _optionalChain([hideTooltip, 'optionalCall', _292 => _292()]);
         } else {
           setClickedStep(stepId);
         }
       } else if (event.key === "Escape") {
         event.preventDefault();
         setClickedStep(null);
-        _optionalChain([hideTooltip, 'optionalCall', _282 => _282()]);
+        _optionalChain([hideTooltip, 'optionalCall', _293 => _293()]);
       }
     },
     [clickedStep, hideTooltip]
   );
   const clearSelection = _react.useCallback.call(void 0, () => {
     setClickedStep(null);
-    _optionalChain([hideTooltip, 'optionalCall', _283 => _283()]);
+    _optionalChain([hideTooltip, 'optionalCall', _294 => _294()]);
   }, [hideTooltip]);
   const getStepState = _react.useCallback.call(void 0, 
     (stepId) => ({
@@ -5654,7 +5814,7 @@ var ConversionFunnelChartInternal = ({
       document.removeEventListener("mousedown", handleDocumentClick);
     };
   }, [clearSelectionAndRef]);
-  const resolvedHeight = _nullishCoalesce(_nullishCoalesce(height, () => ( _optionalChain([style, 'optionalAccess', _284 => _284.height]))), () => ( "100%"));
+  const resolvedHeight = _nullishCoalesce(_nullishCoalesce(height, () => ( _optionalChain([style, 'optionalAccess', _295 => _295.height]))), () => ( "100%"));
   const {
     primaryColor,
     backgroundColor,
@@ -5669,7 +5829,7 @@ var ConversionFunnelChartInternal = ({
   }) : {
     color: primaryColor || "#000000"
   };
-  const isPositiveChange = _optionalChain([changeIndicator, 'optionalAccess', _285 => _285.startsWith, 'call', _286 => _286("+")]);
+  const isPositiveChange = _optionalChain([changeIndicator, 'optionalAccess', _296 => _296.startsWith, 'call', _297 => _297("+")]);
   const changeColor = isPositiveChange ? positiveChangeColor : negativeChangeColor;
   const barBackgroundColor = backgroundColor || hexToRgba(barColor, 0.08) || "rgba(0, 0, 0, 0.08)";
   const renderDefaultMainMetric = () => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, {
@@ -5700,8 +5860,8 @@ var ConversionFunnelChartInternal = ({
   const chartMetadata = _react.useMemo.call(void 0, () => ({
     mainRate,
     changeIndicator,
-    stepsCount: _optionalChain([steps, 'optionalAccess', _287 => _287.length]) || 0
-  }), [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _288 => _288.length])]);
+    stepsCount: _optionalChain([steps, 'optionalAccess', _298 => _298.length]) || 0
+  }), [mainRate, changeIndicator, _optionalChain([steps, 'optionalAccess', _299 => _299.length])]);
   useChartRegistration({
     chartId,
     legendItems: [],
@@ -5787,8 +5947,8 @@ var ConversionFunnelChartInternal = ({
               direction: "column",
               justify: "flex-end",
               className: conversion_funnel_chart_module_default["bar-container"],
-              onClick: _optionalChain([stepHandlers, 'access', _289 => _289.get, 'call', _290 => _290(step.id), 'optionalAccess', _291 => _291.onClick]),
-              onKeyDown: _optionalChain([stepHandlers, 'access', _292 => _292.get, 'call', _293 => _293(step.id), 'optionalAccess', _294 => _294.onKeyDown]),
+              onClick: _optionalChain([stepHandlers, 'access', _300 => _300.get, 'call', _301 => _301(step.id), 'optionalAccess', _302 => _302.onClick]),
+              onKeyDown: _optionalChain([stepHandlers, 'access', _303 => _303.get, 'call', _304 => _304(step.id), 'optionalAccess', _305 => _305.onKeyDown]),
               role: "button",
               tabIndex: isBlurred ? -1 : 0,
               "aria-label": step.label,
@@ -7338,10 +7498,10 @@ var jsx = function jsx2(type, props) {
   }
   return React7.createElement.apply(null, createElementArgArray);
 };
-(function(_jsx32) {
+(function(_jsx33) {
   var JSX;
   /* @__PURE__ */ (function(_JSX) {
-  })(JSX || (JSX = _jsx32.JSX || (_jsx32.JSX = {})));
+  })(JSX || (JSX = _jsx33.JSX || (_jsx33.JSX = {})));
 })(jsx || (jsx = {}));
 function css() {
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -7801,7 +7961,7 @@ function contextConnect(Component2, namespace) {
   });
 }
 function _contextConnect(Component2, namespace, options) {
-  const WrappedComponent = _optionalChain([options, 'optionalAccess', _295 => _295.forwardsRef]) ? _react.forwardRef.call(void 0, Component2) : Component2;
+  const WrappedComponent = _optionalChain([options, 'optionalAccess', _306 => _306.forwardsRef]) ? _react.forwardRef.call(void 0, Component2) : Component2;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -7837,7 +7997,7 @@ function useContextSystem(props, namespace) {
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("useContextSystem: Please provide a namespace") : void 0;
   }
-  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _296 => _296[namespace]]) || {};
+  const contextProps = _optionalChain([contextSystemProps, 'optionalAccess', _307 => _307[namespace]]) || {};
   const finalComponentProps = {
     ...getConnectedNamespace(),
     ...getNamespace(namespace)
@@ -8218,7 +8378,7 @@ function useLeaderboardLegendItems({
       overrideColor: primaryColor || leaderboardChartSettings.primaryColor
     });
     items.push({
-      label: _optionalChain([legendLabels, 'optionalAccess', _297 => _297.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
+      label: _optionalChain([legendLabels, 'optionalAccess', _308 => _308.primary]) || _i18n.__.call(void 0, "Current period", "jetpack-charts"),
       color: resolvedPrimaryColor
     });
     if (withComparison && !withOverlayLabel) {
@@ -8227,7 +8387,7 @@ function useLeaderboardLegendItems({
         overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
       });
       items.push({
-        label: _optionalChain([legendLabels, 'optionalAccess', _298 => _298.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
+        label: _optionalChain([legendLabels, 'optionalAccess', _309 => _309.comparison]) || _i18n.__.call(void 0, "Previous period", "jetpack-charts"),
         color: resolvedSecondaryColor
       });
     }
@@ -8886,11 +9046,11 @@ var PieChartInternal = ({
                       groupProps.onMouseLeave = onMouseLeave;
                     }
                     const svgLabelSmall = providerTheme.svgLabelSmall;
-                    const fontSize = _nullishCoalesce(resolveFontSize(_optionalChain([svgLabelSmall, 'optionalAccess', _299 => _299.fontSize])), () => ( 12));
+                    const fontSize = _nullishCoalesce(resolveFontSize(_optionalChain([svgLabelSmall, 'optionalAccess', _310 => _310.fontSize])), () => ( 12));
                     const estimatedTextWidth = _chunk7OZEQ5HEcjs.getStringWidth.call(void 0, arc.data.label, {
                       fontSize,
-                      fontFamily: _optionalChain([svgLabelSmall, 'optionalAccess', _300 => _300.fontFamily]),
-                      fontWeight: _optionalChain([svgLabelSmall, 'optionalAccess', _301 => _301.fontWeight])
+                      fontFamily: _optionalChain([svgLabelSmall, 'optionalAccess', _311 => _311.fontFamily]),
+                      fontWeight: _optionalChain([svgLabelSmall, 'optionalAccess', _312 => _312.fontWeight])
                     });
                     const labelPadding = 6;
                     const backgroundWidth = estimatedTextWidth + labelPadding * 2;
@@ -9340,7 +9500,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   animation
 }, ref) => {
   const theme = useGlobalChartsTheme();
-  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _302 => _302.sparkline, 'optionalAccess', _303 => _303.strokeWidth]), () => ( 1.5));
+  const themeStrokeWidth = _nullishCoalesce(_optionalChain([theme, 'access', _313 => _313.sparkline, 'optionalAccess', _314 => _314.strokeWidth]), () => ( 1.5));
   const strokeWidth = _nullishCoalesce(strokeWidthProp, () => ( themeStrokeWidth));
   const seriesData = _react.useMemo.call(void 0, () => {
     if (!data || data.length === 0) {
@@ -9349,7 +9509,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     return transformToSeriesData(data, color, strokeWidth);
   }, [data, color, strokeWidth]);
   const finalMargin = _react.useMemo.call(void 0, () => {
-    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _304 => _304.sparkline, 'optionalAccess', _305 => _305.margin]), () => ( {
+    const themeMargin = _nullishCoalesce(_optionalChain([theme, 'access', _315 => _315.sparkline, 'optionalAccess', _316 => _316.margin]), () => ( {
       top: 2,
       right: 2,
       bottom: 2,
@@ -9360,7 +9520,7 @@ var SparklineComponent = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
       ...themeMargin,
       ...margin
     };
-  }, [marginProp, _optionalChain([theme, 'access', _306 => _306.sparkline, 'optionalAccess', _307 => _307.margin])]);
+  }, [marginProp, _optionalChain([theme, 'access', _317 => _317.sparkline, 'optionalAccess', _318 => _318.margin])]);
   const seriesWithGradient = _react.useMemo.call(void 0, () => {
     if (!gradient || seriesData.length === 0) {
       return seriesData;
