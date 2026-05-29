@@ -4288,6 +4288,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
   onPointerUp,
   onPointerMove,
   onPointerOut,
+  rescaleYOnLegendToggle = true,
   children,
   gridVisibility,
   gap = "md"
@@ -4355,7 +4356,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     totalPoints: dataSorted[0]?.data.length || 0
   });
   const fixedYDomain = useMemo16(() => {
-    if (!legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
+    if (rescaleYOnLegendToggle || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
       return void 0;
     }
     if (stacked) {
@@ -4389,7 +4390,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     }
     if (max === -Infinity) return void 0;
     return [Math.min(0, min), max];
-  }, [dataSorted, stacked, stackOffset, legendInteractive]);
+  }, [dataSorted, stacked, stackOffset, legendInteractive, rescaleYOnLegendToggle]);
   const chartOptions = useMemo16(() => {
     const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
     return {

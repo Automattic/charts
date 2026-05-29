@@ -4288,6 +4288,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
   onPointerUp,
   onPointerMove,
   onPointerOut,
+  rescaleYOnLegendToggle = true,
   children,
   gridVisibility,
   gap = "md"
@@ -4355,7 +4356,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     totalPoints: _optionalChain([dataSorted, 'access', _222 => _222[0], 'optionalAccess', _223 => _223.data, 'access', _224 => _224.length]) || 0
   });
   const fixedYDomain = _react.useMemo.call(void 0, () => {
-    if (!legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
+    if (rescaleYOnLegendToggle || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
       return void 0;
     }
     if (stacked) {
@@ -4389,7 +4390,7 @@ var AreaChartInternal = /* @__PURE__ */ _react.forwardRef.call(void 0, ({
     }
     if (max === -Infinity) return void 0;
     return [Math.min(0, min), max];
-  }, [dataSorted, stacked, stackOffset, legendInteractive]);
+  }, [dataSorted, stacked, stackOffset, legendInteractive, rescaleYOnLegendToggle]);
   const chartOptions = _react.useMemo.call(void 0, () => {
     const formatter = _optionalChain([options, 'optionalAccess', _229 => _229.axis, 'optionalAccess', _230 => _230.x, 'optionalAccess', _231 => _231.tickFormat]) || getFormatter(dataSorted);
     return {
