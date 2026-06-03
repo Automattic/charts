@@ -3243,7 +3243,7 @@ var x_zoom_module_default = {
 };
 
 // src/charts/private/x-zoom.tsx
-import { jsx as _jsx12, jsxs as _jsxs4 } from "react/jsx-runtime";
+import { jsx as _jsx12, Fragment as _Fragment4, jsxs as _jsxs4 } from "react/jsx-runtime";
 var MIN_DRAG_PIXELS = 6;
 function useXZoom({
   enabled,
@@ -3309,6 +3309,35 @@ function ZoomSelectionRect({
     y: margin?.top ?? 0,
     width: w,
     height: innerHeight ?? 0
+  });
+}
+function ZoomClip({
+  active,
+  chartId,
+  children
+}) {
+  const {
+    margin,
+    innerWidth,
+    innerHeight
+  } = useContext9(DataContext2);
+  const id = `chart-zoom-clip-${String(chartId ?? "").replace(/[^A-Za-z0-9_-]/g, "")}`;
+  const clip = active && (innerWidth ?? 0) > 0 && (innerHeight ?? 0) > 0;
+  return /* @__PURE__ */ _jsxs4(_Fragment4, {
+    children: [clip && /* @__PURE__ */ _jsx12("defs", {
+      children: /* @__PURE__ */ _jsx12("clipPath", {
+        id,
+        children: /* @__PURE__ */ _jsx12("rect", {
+          x: margin?.left ?? 0,
+          y: margin?.top ?? 0,
+          width: innerWidth,
+          height: innerHeight
+        })
+      })
+    }), /* @__PURE__ */ _jsx12("g", {
+      clipPath: clip ? `url(#${id})` : void 0,
+      children
+    })]
   });
 }
 function ZoomResetButton({
@@ -4179,65 +4208,69 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
                 width,
                 height: chartHeight,
                 children: __3("All series are hidden. Click legend items to show data.", "jetpack-charts")
-              }) : null, seriesWithVisibility.map(({
-                series: seriesData,
-                index,
-                isVisible
-              }) => {
-                if (!isVisible) {
-                  return null;
-                }
-                const {
-                  color,
-                  lineStyles,
-                  glyph
-                } = getElementStyles({
-                  data: seriesData,
-                  index
-                });
-                const lineProps = {
-                  stroke: color,
-                  ...lineStyles
-                };
-                return /* @__PURE__ */ _jsxs7("g", {
-                  children: [withGradientFill && /* @__PURE__ */ _jsx16(LinearGradient, {
-                    id: `area-gradient-${chartId}-${index + 1}`,
-                    from: color,
-                    fromOpacity: 0.4,
-                    toOpacity: 0.1,
-                    to: providerTheme.backgroundColor,
-                    ...seriesData.options?.gradient,
-                    children: seriesData.options?.gradient?.stops?.map((stop, stopIndex) => /* @__PURE__ */ _jsx16("stop", {
-                      offset: stop.offset,
-                      stopColor: stop.color || color,
-                      stopOpacity: stop.opacity ?? 1
-                    }, `${stop.offset}-${stop.color || color}`))
-                  }), /* @__PURE__ */ _jsx16(AreaSeries, {
-                    dataKey: seriesData?.label,
-                    data: seriesData.data,
-                    ...accessors,
-                    fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
-                    renderLine: true,
-                    curve: getCurveType(curveType, smoothing),
-                    lineProps
-                  }, seriesData?.label), withStartGlyphs && /* @__PURE__ */ _jsx16(line_chart_glyph_default, {
-                    index,
-                    data: seriesData,
+              }) : null, /* @__PURE__ */ _jsx16(ZoomClip, {
+                active: zoomable && !!zoom.domain,
+                chartId,
+                children: seriesWithVisibility.map(({
+                  series: seriesData,
+                  index,
+                  isVisible
+                }) => {
+                  if (!isVisible) {
+                    return null;
+                  }
+                  const {
                     color,
-                    renderGlyph: glyph ?? renderGlyph,
-                    accessors,
-                    glyphStyle,
-                    position: "start"
-                  }), withEndGlyphs && /* @__PURE__ */ _jsx16(line_chart_glyph_default, {
-                    index,
+                    lineStyles,
+                    glyph
+                  } = getElementStyles({
                     data: seriesData,
-                    color,
-                    renderGlyph: glyph ?? renderGlyph,
-                    accessors,
-                    glyphStyle,
-                    position: "end"
-                  })]
-                }, seriesData?.label || index);
+                    index
+                  });
+                  const lineProps = {
+                    stroke: color,
+                    ...lineStyles
+                  };
+                  return /* @__PURE__ */ _jsxs7("g", {
+                    children: [withGradientFill && /* @__PURE__ */ _jsx16(LinearGradient, {
+                      id: `area-gradient-${chartId}-${index + 1}`,
+                      from: color,
+                      fromOpacity: 0.4,
+                      toOpacity: 0.1,
+                      to: providerTheme.backgroundColor,
+                      ...seriesData.options?.gradient,
+                      children: seriesData.options?.gradient?.stops?.map((stop, stopIndex) => /* @__PURE__ */ _jsx16("stop", {
+                        offset: stop.offset,
+                        stopColor: stop.color || color,
+                        stopOpacity: stop.opacity ?? 1
+                      }, `${stop.offset}-${stop.color || color}`))
+                    }), /* @__PURE__ */ _jsx16(AreaSeries, {
+                      dataKey: seriesData?.label,
+                      data: seriesData.data,
+                      ...accessors,
+                      fill: withGradientFill ? `url(#area-gradient-${chartId}-${index + 1})` : "transparent",
+                      renderLine: true,
+                      curve: getCurveType(curveType, smoothing),
+                      lineProps
+                    }, seriesData?.label), withStartGlyphs && /* @__PURE__ */ _jsx16(line_chart_glyph_default, {
+                      index,
+                      data: seriesData,
+                      color,
+                      renderGlyph: glyph ?? renderGlyph,
+                      accessors,
+                      glyphStyle,
+                      position: "start"
+                    }), withEndGlyphs && /* @__PURE__ */ _jsx16(line_chart_glyph_default, {
+                      index,
+                      data: seriesData,
+                      color,
+                      renderGlyph: glyph ?? renderGlyph,
+                      accessors,
+                      glyphStyle,
+                      position: "end"
+                    })]
+                  }, seriesData?.label || index);
+                })
               }), withTooltips && /* @__PURE__ */ _jsx16(AccessibleTooltip, {
                 detectBounds: true,
                 snapTooltipToDatumX: true,
@@ -4403,7 +4436,7 @@ var HoverGlyphs = ({
 };
 
 // src/charts/area-chart/area-chart.tsx
-import { jsx as _jsx18, Fragment as _Fragment4, jsxs as _jsxs8 } from "react/jsx-runtime";
+import { jsx as _jsx18, jsxs as _jsxs8, Fragment as _Fragment5 } from "react/jsx-runtime";
 var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
   data,
   chartId: providedChartId,
@@ -4749,12 +4782,16 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
                 width,
                 height: chartHeight,
                 children: __5("All series are hidden. Click legend items to show data.", "jetpack-charts")
-              }) : null, !allSeriesHidden && stacked && /* @__PURE__ */ _jsx18(AnimatedAreaStack, {
-                curve,
-                offset: stackOffset,
-                renderLine: resolvedWithStroke,
-                children: seriesWithVisibility.map(renderSeries)
-              }), !allSeriesHidden && !stacked && seriesWithVisibility.map(renderSeries), withTooltips && /* @__PURE__ */ _jsxs8(_Fragment4, {
+              }) : null, /* @__PURE__ */ _jsxs8(ZoomClip, {
+                active: zoomable,
+                chartId,
+                children: [!allSeriesHidden && stacked && /* @__PURE__ */ _jsx18(AnimatedAreaStack, {
+                  curve,
+                  offset: stackOffset,
+                  renderLine: resolvedWithStroke,
+                  children: seriesWithVisibility.map(renderSeries)
+                }), !allSeriesHidden && !stacked && seriesWithVisibility.map(renderSeries)]
+              }), withTooltips && /* @__PURE__ */ _jsxs8(_Fragment5, {
                 children: [/* @__PURE__ */ _jsx18(AccessibleTooltip, {
                   detectBounds: true,
                   snapTooltipToDatumX: true,
@@ -5036,7 +5073,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 }
 
 // src/charts/bar-chart/bar-chart.tsx
-import { jsx as _jsx20, jsxs as _jsxs9, Fragment as _Fragment5 } from "react/jsx-runtime";
+import { jsx as _jsx20, jsxs as _jsxs9, Fragment as _Fragment6 } from "react/jsx-runtime";
 var validateData3 = (data) => {
   if (!data?.length) return "No data available";
   const hasInvalidData = data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))));
@@ -5306,7 +5343,7 @@ var BarChartInternal = ({
                 columns: gridVisibility.includes("y"),
                 rows: gridVisibility.includes("x"),
                 numTicks: 4
-              }), withPatterns && /* @__PURE__ */ _jsxs9(_Fragment5, {
+              }), withPatterns && /* @__PURE__ */ _jsxs9(_Fragment6, {
                 children: [/* @__PURE__ */ _jsx20("defs", {
                   children: dataSorted.map((seriesData, index) => renderPattern(index, getElementStyles({
                     data: seriesData,
@@ -5671,7 +5708,7 @@ var useFunnelSelection = (hideTooltip) => {
 };
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
-import { jsx as _jsx22, Fragment as _Fragment6, jsxs as _jsxs11 } from "react/jsx-runtime";
+import { jsx as _jsx22, Fragment as _Fragment7, jsxs as _jsxs11 } from "react/jsx-runtime";
 var ConversionFunnelChartInternal = ({
   mainRate,
   changeIndicator,
@@ -5832,7 +5869,7 @@ var ConversionFunnelChartInternal = ({
   const isPositiveChange = changeIndicator?.startsWith("+");
   const changeColor = isPositiveChange ? positiveChangeColor : negativeChangeColor;
   const barBackgroundColor = backgroundColor || hexToRgba(barColor, 0.08) || "rgba(0, 0, 0, 0.08)";
-  const renderDefaultMainMetric = () => /* @__PURE__ */ _jsxs11(_Fragment6, {
+  const renderDefaultMainMetric = () => /* @__PURE__ */ _jsxs11(_Fragment7, {
     children: [/* @__PURE__ */ _jsx22("span", {
       className: conversion_funnel_chart_module_default["main-rate"],
       children: formatPercentage(mainRate)
@@ -5887,7 +5924,7 @@ var ConversionFunnelChartInternal = ({
     });
   }
   const maxRate = Math.max(...steps.map((step) => step.rate));
-  return /* @__PURE__ */ _jsxs11(_Fragment6, {
+  return /* @__PURE__ */ _jsxs11(_Fragment7, {
     children: [/* @__PURE__ */ _jsxs11(Stack, {
       direction: "column",
       gap: "xl",
@@ -8422,7 +8459,7 @@ var leaderboard_chart_module_default = {
 };
 
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
-import { jsx as _jsx27, Fragment as _Fragment7, jsxs as _jsxs12 } from "react/jsx-runtime";
+import { jsx as _jsx27, Fragment as _Fragment8, jsxs as _jsxs12 } from "react/jsx-runtime";
 var defaultValueFormatter = (value) => {
   return formatMetricValue(value, "number", {
     useMultipliers: true,
@@ -8437,7 +8474,7 @@ var defaultDeltaFormatter = (value) => {
 };
 var BarLabel = ({
   label
-}) => /* @__PURE__ */ _jsx27(_Fragment7, {
+}) => /* @__PURE__ */ _jsx27(_Fragment8, {
   children: typeof label === "string" ? /* @__PURE__ */ _jsx27(Text, {
     className: leaderboard_chart_module_default.label,
     children: label
@@ -8766,7 +8803,7 @@ var pie_chart_module_default = {
 };
 
 // src/charts/pie-chart/pie-chart.tsx
-import { jsx as _jsx29, Fragment as _Fragment8, jsxs as _jsxs13 } from "react/jsx-runtime";
+import { jsx as _jsx29, Fragment as _Fragment9, jsxs as _jsxs13 } from "react/jsx-runtime";
 var renderDefaultPieTooltip = ({
   tooltipData
 }) => {
@@ -8956,7 +8993,7 @@ var PieChartInternal = ({
         width: propWidth || void 0,
         height: propHeight || void 0
       },
-      trailingContent: /* @__PURE__ */ _jsxs13(_Fragment8, {
+      trailingContent: /* @__PURE__ */ _jsxs13(_Fragment9, {
         children: [withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsx29(TooltipInPortal, {
           top: tooltipTop || 0,
           left: tooltipLeft || 0,
@@ -9135,7 +9172,7 @@ var pie_semi_circle_chart_module_default = {
 };
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
-import { jsx as _jsx30, Fragment as _Fragment9, jsxs as _jsxs14 } from "react/jsx-runtime";
+import { jsx as _jsx30, Fragment as _Fragment10, jsxs as _jsxs14 } from "react/jsx-runtime";
 var renderDefaultPieSemiCircleTooltip = ({
   tooltipData
 }) => {
@@ -9337,7 +9374,7 @@ var PieSemiCircleChartInternal = ({
         width: propWidth || void 0,
         height: propHeight || void 0
       },
-      trailingContent: /* @__PURE__ */ _jsxs14(_Fragment9, {
+      trailingContent: /* @__PURE__ */ _jsxs14(_Fragment10, {
         children: [withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ _jsx30(TooltipInPortal, {
           top: tooltipTop || 0,
           left: tooltipLeft || 0,
@@ -9386,7 +9423,7 @@ var PieSemiCircleChartInternal = ({
                 width,
                 height,
                 children: __11("All segments are hidden. Click legend items to show data.", "jetpack-charts")
-              }) : /* @__PURE__ */ _jsxs14(_Fragment9, {
+              }) : /* @__PURE__ */ _jsxs14(_Fragment10, {
                 children: [/* @__PURE__ */ _jsx30(Pie2, {
                   data: dataWithIndex,
                   pieValue: accessors.value,
