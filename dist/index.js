@@ -223,13 +223,13 @@ var require_react_is_development = __commonJS({
         var ContextProvider = REACT_PROVIDER_TYPE;
         var Element = REACT_ELEMENT_TYPE;
         var ForwardRef = REACT_FORWARD_REF_TYPE;
-        var Fragment6 = REACT_FRAGMENT_TYPE;
+        var Fragment7 = REACT_FRAGMENT_TYPE;
         var Lazy = REACT_LAZY_TYPE2;
         var Memo = REACT_MEMO_TYPE;
         var Portal = REACT_PORTAL_TYPE;
         var Profiler = REACT_PROFILER_TYPE;
-        var StrictMode2 = REACT_STRICT_MODE_TYPE;
-        var Suspense2 = REACT_SUSPENSE_TYPE;
+        var StrictMode3 = REACT_STRICT_MODE_TYPE;
+        var Suspense3 = REACT_SUSPENSE_TYPE;
         var hasWarnedAboutDeprecatedIsAsyncMode = false;
         function isAsyncMode(object) {
           {
@@ -282,13 +282,13 @@ var require_react_is_development = __commonJS({
         exports.ContextProvider = ContextProvider;
         exports.Element = Element;
         exports.ForwardRef = ForwardRef;
-        exports.Fragment = Fragment6;
+        exports.Fragment = Fragment7;
         exports.Lazy = Lazy;
         exports.Memo = Memo;
         exports.Portal = Portal;
         exports.Profiler = Profiler;
-        exports.StrictMode = StrictMode2;
-        exports.Suspense = Suspense2;
+        exports.StrictMode = StrictMode3;
+        exports.Suspense = Suspense3;
         exports.isAsyncMode = isAsyncMode;
         exports.isConcurrentMode = isConcurrentMode;
         exports.isContextConsumer = isContextConsumer;
@@ -470,10 +470,10 @@ import { formatNumberCompact as formatNumberCompact3 } from "@automattic/number-
 import { XYChart as XYChart2, AnimatedAreaSeries, AnimatedAreaStack, Grid as Grid2, Axis as Axis2 } from "@visx/xychart";
 import { __ as __5 } from "@wordpress/i18n";
 import clsx5 from "clsx";
-import { useMemo as useMemo17, useContext as useContext14, forwardRef as forwardRef5, useImperativeHandle as useImperativeHandle4, useState as useState11, useRef as useRef10, useCallback as useCallback10 } from "react";
+import { useMemo as useMemo18, useContext as useContext15, forwardRef as forwardRef6, useImperativeHandle as useImperativeHandle5, useState as useState12, useRef as useRef11, useCallback as useCallback11 } from "react";
 
 // src/components/legend/legend.tsx
-import { useContext as useContext6, useMemo as useMemo10, forwardRef as forwardRef3 } from "react";
+import { useContext as useContext7, useMemo as useMemo11, forwardRef as forwardRef4 } from "react";
 
 // src/charts/private/single-chart-context/single-chart-context.tsx
 import { createContext } from "react";
@@ -1670,7 +1670,7 @@ function createFormatErrorMessage(baseUrl, prefix2) {
 var formatErrorMessage = createFormatErrorMessage("https://base-ui.com/production-error", "Base UI");
 var formatErrorMessage_default = formatErrorMessage;
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
 import * as React4 from "react";
 
 // ../../../node_modules/.pnpm/@base-ui+utils@0.2.8_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
@@ -1803,7 +1803,7 @@ function mergeObjects(a, b) {
 var EMPTY_ARRAY = Object.freeze([]);
 var EMPTY_OBJECT = Object.freeze({});
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/getStateAttributesProps.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/getStateAttributesProps.js
 function getStateAttributesProps(state, customMapping) {
   const props = {};
   for (const key in state) {
@@ -1824,17 +1824,17 @@ function getStateAttributesProps(state, customMapping) {
   return props;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
 function resolveClassName(className, state) {
   return typeof className === "function" ? className(state) : className;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
 function resolveStyle(style, state) {
   return typeof style === "function" ? style(state) : style;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
 var EMPTY_PROPS = {};
 function mergeProps(a, b, c, d, e) {
   if (!c && !d && !e && !a) {
@@ -1989,7 +1989,7 @@ function isSyntheticEvent(event) {
   return event != null && typeof event === "object" && "nativeEvent" in event;
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
 import { createElement as _createElement } from "react";
 function useRenderElement(element, componentProps, params = {}) {
   const renderProp = componentProps.render;
@@ -2107,12 +2107,12 @@ function renderTag(Tag, props) {
   return /* @__PURE__ */ React4.createElement(Tag, props);
 }
 
-// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@date-fns+tz@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
+// ../../../node_modules/.pnpm/@base-ui+react@1.4.1_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
 function useRender(params) {
   return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.13.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/text/text.mjs
+// ../../../node_modules/.pnpm/@wordpress+ui@0.13.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/text/text.mjs
 import clsx from "clsx";
 var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
 function getRuntime() {
@@ -2220,7 +2220,41 @@ var Text = forwardRef(function Text2({ variant = "body-md", render, className, .
   return element;
 });
 
-// ../../../node_modules/.pnpm/@wordpress+ui@0.13.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+// ../../../node_modules/.pnpm/@wordpress+element@8.0.0/node_modules/@wordpress/element/build-module/react.mjs
+import {
+  Children as Children3,
+  cloneElement as cloneElement3,
+  Component as Component2,
+  createContext as createContext4,
+  createElement as createElement3,
+  createRef as createRef2,
+  forwardRef as forwardRef2,
+  Fragment as Fragment2,
+  isValidElement as isValidElement4,
+  memo as memo2,
+  PureComponent as PureComponent2,
+  StrictMode as StrictMode2,
+  useCallback as useCallback5,
+  useContext as useContext5,
+  useDebugValue as useDebugValue2,
+  useDeferredValue as useDeferredValue2,
+  useEffect as useEffect5,
+  useId as useId3,
+  useMemo as useMemo10,
+  useImperativeHandle as useImperativeHandle2,
+  useInsertionEffect as useInsertionEffect2,
+  useLayoutEffect as useLayoutEffect3,
+  useReducer as useReducer2,
+  useRef as useRef7,
+  useState as useState6,
+  useSyncExternalStore as useSyncExternalStore2,
+  useTransition as useTransition2,
+  startTransition as startTransition2,
+  lazy as lazy2,
+  Suspense as Suspense2
+} from "react";
+
+// ../../../node_modules/.pnpm/@wordpress+ui@0.13.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 var STYLE_HASH_ATTRIBUTE2 = "data-wp-hash";
 function getRuntime2() {
   const globalScope = globalThis;
@@ -2332,7 +2366,7 @@ var Stack = forwardRef(function Stack2({ direction, gap, align, justify, wrap, r
 
 // src/components/legend/private/base-legend.tsx
 import clsx2 from "clsx";
-import { forwardRef as forwardRef2, useCallback as useCallback5, useContext as useContext5 } from "react";
+import { forwardRef as forwardRef3, useCallback as useCallback6, useContext as useContext6 } from "react";
 
 // src/components/legend/utils/value-or-identity.ts
 function valueOrIdentity(_) {
@@ -2396,7 +2430,7 @@ var LegendText = ({
     children: text
   });
 };
-var BaseLegend = /* @__PURE__ */ forwardRef2(({
+var BaseLegend = /* @__PURE__ */ forwardRef3(({
   items,
   className,
   orientation = "horizontal",
@@ -2432,33 +2466,33 @@ var BaseLegend = /* @__PURE__ */ forwardRef2(({
     margin: shapeMargin = "2px 4px 2px 0"
   } = shapeStyles ?? {};
   const theme = useGlobalChartsTheme();
-  const context = useContext5(GlobalChartsContext);
+  const context = useContext6(GlobalChartsContext);
   const legendScale = scaleOrdinal({
     domain: items.map((item) => item.label),
     range: items.map((item) => item.color)
   });
   const domain = legendScale.domain();
-  const getShapeStyle = useCallback5(({
+  const getShapeStyle = useCallback6(({
     index
   }) => items[index]?.shapeStyle, [items]);
-  const handleLegendClick = useCallback5((seriesLabel) => {
+  const handleLegendClick = useCallback6((seriesLabel) => {
     if (interactive && chartId && context) {
       context.toggleSeriesVisibility(chartId, seriesLabel);
     }
   }, [interactive, chartId, context]);
-  const isSeriesVisible = useCallback5((seriesLabel) => {
+  const isSeriesVisible = useCallback6((seriesLabel) => {
     if (!interactive || !chartId || !context) {
       return true;
     }
     return context.isSeriesVisible(chartId, seriesLabel);
   }, [interactive, chartId, context]);
-  const createClickHandler = useCallback5((labelText) => {
+  const createClickHandler = useCallback6((labelText) => {
     if (!interactive) {
       return void 0;
     }
     return () => handleLegendClick(labelText);
   }, [interactive, handleLegendClick]);
-  const createKeyDownHandler = useCallback5((labelText) => {
+  const createKeyDownHandler = useCallback6((labelText) => {
     if (!interactive) {
       return void 0;
     }
@@ -2561,16 +2595,16 @@ var defaultShapeByChartType = {
   "pie-semi-circle": "circle",
   leaderboard: "circle"
 };
-var Legend = /* @__PURE__ */ forwardRef3(({
+var Legend = /* @__PURE__ */ forwardRef4(({
   chartId,
   items,
   shape,
   ...props
 }, ref) => {
-  const context = useContext6(GlobalChartsContext);
-  const singleChartContext = useContext6(SingleChartContext);
+  const context = useContext7(GlobalChartsContext);
+  const singleChartContext = useContext7(SingleChartContext);
   const contextChartId = chartId ?? singleChartContext?.chartId;
-  const chartData = useMemo10(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
+  const chartData = useMemo11(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
   const contextItems = chartData?.legendItems;
   const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
   const legendItems = items || contextItems;
@@ -2588,7 +2622,7 @@ var Legend = /* @__PURE__ */ forwardRef3(({
 
 // src/components/legend/hooks/use-chart-legend-items.ts
 import { formatNumber as formatNumber3 } from "@automattic/number-formatters";
-import { useMemo as useMemo11 } from "react";
+import { useMemo as useMemo12 } from "react";
 function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
   if (!showValues || legendValueDisplay === "none") {
     return "";
@@ -2666,7 +2700,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
     renderGlyph
   } = options;
   const { getElementStyles } = useGlobalChartsContext();
-  return useMemo11(() => {
+  return useMemo12(() => {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return [];
     }
@@ -2722,13 +2756,13 @@ var BaseTooltip = ({
   data,
   top,
   left,
-  component: Component2 = DefaultTooltipContent,
+  component: Component3 = DefaultTooltipContent,
   children,
   className,
   style,
   renderContainer = true
 }) => {
-  const content = children || data && /* @__PURE__ */ _jsx4(Component2, {
+  const content = children || data && /* @__PURE__ */ _jsx4(Component3, {
     data,
     className
   });
@@ -2749,7 +2783,7 @@ var BaseTooltip = ({
 
 // src/components/tooltip/accessible-tooltip.tsx
 import { Tooltip, TooltipContext } from "@visx/xychart";
-import { useContext as useContext7, useEffect as useEffect5, useCallback as useCallback6, useMemo as useMemo12 } from "react";
+import { useContext as useContext8, useEffect as useEffect6, useCallback as useCallback7, useMemo as useMemo13 } from "react";
 import { jsx as _jsx5 } from "react/jsx-runtime";
 var AccessibleTooltip = ({
   renderTooltip,
@@ -2760,8 +2794,8 @@ var AccessibleTooltip = ({
   mode = "group",
   ...props
 }) => {
-  const tooltipContext = useContext7(TooltipContext);
-  const tooltipData = useMemo12(() => {
+  const tooltipContext = useContext8(TooltipContext);
+  const tooltipData = useMemo13(() => {
     if (mode !== "individual") return [];
     if (series.length === 0) return [];
     const maxDataPoints = Math.max(...series.map((s) => s.data.length));
@@ -2781,7 +2815,7 @@ var AccessibleTooltip = ({
     }
     return flattened;
   }, [series, mode]);
-  useEffect5(() => {
+  useEffect6(() => {
     if (selectedIndex === void 0) {
       tooltipContext?.hideTooltip();
       return;
@@ -2808,7 +2842,7 @@ var AccessibleTooltip = ({
       }
     }
   }, [selectedIndex, tooltipData, series]);
-  const focusableRenderTooltip = useMemo12(() => {
+  const focusableRenderTooltip = useMemo13(() => {
     if (!renderTooltip) return void 0;
     return (params) => {
       const tooltipContent = renderTooltip(params);
@@ -2842,20 +2876,20 @@ var useKeyboardNavigation = ({
   chartRef,
   totalPoints
 }) => {
-  const tooltipRef = useCallback6((element) => {
+  const tooltipRef = useCallback7((element) => {
     if (element && selectedIndex !== void 0) {
       element.focus();
     }
   }, [selectedIndex]);
-  const onChartFocus = useCallback6(() => {
+  const onChartFocus = useCallback7(() => {
     if (!isNavigating && selectedIndex !== void 0) {
       setSelectedIndex(0);
     }
   }, [isNavigating, selectedIndex, setSelectedIndex]);
-  const onChartBlur = useCallback6(() => {
+  const onChartBlur = useCallback7(() => {
     setIsNavigating(false);
   }, [setIsNavigating]);
-  const onChartKeyDown = useCallback6((event) => {
+  const onChartKeyDown = useCallback7((event) => {
     if (totalPoints === 0) return;
     if (event.key === "Tab") {
       chartRef.current?.focus();
@@ -2897,7 +2931,7 @@ import { LinearGradient } from "@visx/gradient";
 import { XYChart, AreaSeries, Grid, Axis, DataContext as DataContext6 } from "@visx/xychart";
 import { __ as __3 } from "@wordpress/i18n";
 import clsx4 from "clsx";
-import { useMemo as useMemo16, useContext as useContext12, forwardRef as forwardRef4, useImperativeHandle as useImperativeHandle2, useState as useState10, useRef as useRef9, useCallback as useCallback9, createElement as _createElement2 } from "react";
+import { useMemo as useMemo17, useContext as useContext13, forwardRef as forwardRef5, useImperativeHandle as useImperativeHandle3, useState as useState11, useRef as useRef10, useCallback as useCallback10, createElement as _createElement2 } from "react";
 
 // src/charts/private/chart-composition/chart-svg.tsx
 import { Fragment as _Fragment2, jsx as _jsx6 } from "react/jsx-runtime";
@@ -2922,25 +2956,25 @@ var ChartHTML = ({
 ChartHTML.displayName = "Chart.HTML";
 
 // src/charts/private/chart-composition/render-legend-slot.ts
-import { createElement as createElement3, Fragment as Fragment2 } from "react";
+import { createElement as createElement4, Fragment as Fragment3 } from "react";
 function renderLegendSlot(legendChildren, position2) {
   return legendChildren.filter((l) => l.position === position2).map(
-    (l, i) => createElement3(Fragment2, { key: `legend-${position2}-${i}` }, l.element)
+    (l, i) => createElement4(Fragment3, { key: `legend-${position2}-${i}` }, l.element)
   );
 }
 
 // src/charts/private/chart-composition/use-chart-children.ts
 import { Group as Group2 } from "@visx/group";
-import { useMemo as useMemo13, Children as Children3, isValidElement as isValidElement4 } from "react";
+import { useMemo as useMemo14, Children as Children4, isValidElement as isValidElement5 } from "react";
 function useChartChildren(children, chartType) {
-  return useMemo13(() => {
+  return useMemo14(() => {
     const svg = [];
     const html = [];
     const legend = [];
     const other = [];
     const nonLegend = [];
-    Children3.forEach(children, (child) => {
-      if (isValidElement4(child)) {
+    Children4.forEach(children, (child) => {
+      if (isValidElement5(child)) {
         if (child.type === Legend) {
           const rawPosition = child.props?.position;
           const position2 = rawPosition === "top" || rawPosition === "bottom" ? rawPosition : "bottom";
@@ -2951,13 +2985,13 @@ function useChartChildren(children, chartType) {
         const displayName = childType?.displayName;
         if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
           if (child.props?.children) {
-            Children3.forEach(child.props.children, (svgChild) => {
+            Children4.forEach(child.props.children, (svgChild) => {
               svg.push(svgChild);
             });
           }
         } else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
           if (child.props?.children) {
-            Children3.forEach(child.props.children, (htmlChild) => {
+            Children4.forEach(child.props.children, (htmlChild) => {
               html.push(htmlChild);
             });
           }
@@ -2980,7 +3014,7 @@ function useChartChildren(children, chartType) {
 }
 
 // src/charts/private/chart-layout/chart-layout.tsx
-import { useEffect as useEffect6 } from "react";
+import { useEffect as useEffect7 } from "react";
 
 // src/charts/private/chart-layout/chart-layout.module.scss
 var chart_layout_module_default = {
@@ -3008,7 +3042,7 @@ var ChartLayout = ({
   const visibilityStyle = isRenderProp && !isMeasured ? {
     visibility: "hidden"
   } : {};
-  useEffect6(() => {
+  useEffect7(() => {
     if (isRenderProp && onContentHeightChange && isMeasured) {
       onContentHeightChange(contentHeight);
     }
@@ -3037,12 +3071,12 @@ var ChartLayout = ({
 
 // src/charts/private/default-glyph/default-glyph.tsx
 import { DataContext } from "@visx/xychart";
-import { useContext as useContext8 } from "react";
+import { useContext as useContext9 } from "react";
 import { jsx as _jsx9 } from "react/jsx-runtime";
 var DefaultGlyph = (props) => {
   const {
     theme
-  } = useContext8(DataContext) || {};
+  } = useContext9(DataContext) || {};
   const position2 = props.position || "start";
   return /* @__PURE__ */ _jsx9("circle", {
     cx: props.x,
@@ -3233,7 +3267,7 @@ function withResponsive(WrappedComponent) {
 // src/charts/private/x-zoom.tsx
 import { DataContext as DataContext2 } from "@visx/xychart";
 import { __ } from "@wordpress/i18n";
-import { useCallback as useCallback7, useContext as useContext9, useMemo as useMemo14, useState as useState6 } from "react";
+import { useCallback as useCallback8, useContext as useContext10, useMemo as useMemo15, useState as useState7 } from "react";
 
 // src/charts/private/x-zoom.module.scss
 var x_zoom_module_default = {
@@ -3250,10 +3284,10 @@ function useXZoom({
   chartRef,
   userHandlers
 }) {
-  const [domain, setDomain] = useState6(null);
-  const [drag, setDrag] = useState6(null);
-  const reset = useCallback7(() => setDomain(null), []);
-  const onPointerDown = useCallback7((params) => {
+  const [domain, setDomain] = useState7(null);
+  const [drag, setDrag] = useState7(null);
+  const reset = useCallback8(() => setDomain(null), []);
+  const onPointerDown = useCallback8((params) => {
     userHandlers?.onPointerDown?.(params);
     if (!enabled || !params.svgPoint) return;
     setDrag({
@@ -3261,7 +3295,7 @@ function useXZoom({
       b: params.svgPoint.x
     });
   }, [enabled, userHandlers]);
-  const onPointerMove = useCallback7((params) => {
+  const onPointerMove = useCallback8((params) => {
     userHandlers?.onPointerMove?.(params);
     if (!enabled || !params.svgPoint) return;
     setDrag((current) => current ? {
@@ -3269,7 +3303,7 @@ function useXZoom({
       b: params.svgPoint.x
     } : current);
   }, [enabled, userHandlers]);
-  const onPointerUp = useCallback7((params) => {
+  const onPointerUp = useCallback8((params) => {
     userHandlers?.onPointerUp?.(params);
     if (!enabled) return;
     const finalDrag = drag;
@@ -3282,7 +3316,7 @@ function useXZoom({
     if (!xScale || typeof xScale.invert !== "function") return;
     setDomain([xScale.invert(lo), xScale.invert(hi)]);
   }, [enabled, drag, chartRef, userHandlers]);
-  return useMemo14(() => ({
+  return useMemo15(() => ({
     domain,
     drag,
     reset,
@@ -3299,7 +3333,7 @@ function ZoomSelectionRect({
   const {
     margin,
     innerHeight
-  } = useContext9(DataContext2);
+  } = useContext10(DataContext2);
   if (!drag || drag.a === drag.b) return null;
   const x = Math.min(drag.a, drag.b);
   const w = Math.abs(drag.b - drag.a);
@@ -3320,7 +3354,7 @@ function ZoomClip({
     margin,
     innerWidth,
     innerHeight
-  } = useContext9(DataContext2);
+  } = useContext10(DataContext2);
   const id = `chart-zoom-clip-${String(chartId ?? "").replace(/[^A-Za-z0-9_-]/g, "")}`;
   const clip = active && (innerWidth ?? 0) > 0 && (innerHeight ?? 0) > 0;
   return /* @__PURE__ */ _jsxs4(_Fragment4, {
@@ -3402,7 +3436,7 @@ var line_chart_module_default = {
 import { __ as __2 } from "@wordpress/i18n";
 import { Icon, close } from "@wordpress/icons";
 import clsx3 from "clsx";
-import { useEffect as useEffect7, useId as useId3, useRef as useRef7, useState as useState7 } from "react";
+import { useEffect as useEffect8, useId as useId4, useRef as useRef8, useState as useState8 } from "react";
 import { jsx as _jsx13, jsxs as _jsxs5 } from "react/jsx-runtime";
 var POPOVER_BUTTON_SIZE = 44;
 var LineChartAnnotationLabelWithPopover = ({
@@ -3411,12 +3445,12 @@ var LineChartAnnotationLabelWithPopover = ({
   renderLabel,
   renderLabelPopover
 }) => {
-  const popoverId = useId3();
-  const buttonRef = useRef7(null);
-  const popoverRef = useRef7(null);
-  const [isPositioned, setIsPositioned] = useState7(false);
+  const popoverId = useId4();
+  const buttonRef = useRef8(null);
+  const popoverRef = useRef8(null);
+  const [isPositioned, setIsPositioned] = useState8(false);
   const isBrowserSafari = isSafari();
-  useEffect7(() => {
+  useEffect8(() => {
     const button = buttonRef.current;
     const popover = popoverRef.current;
     if (!button || !popover) return;
@@ -3489,7 +3523,7 @@ var line_chart_annotation_label_popover_default = LineChartAnnotationLabelWithPo
 
 // src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 import { DataContext as DataContext3 } from "@visx/xychart";
-import { useEffect as useEffect8, useState as useState8, useCallback as useCallback8 } from "react";
+import { useEffect as useEffect9, useState as useState9, useCallback as useCallback9 } from "react";
 import { jsx as _jsx14 } from "react/jsx-runtime";
 var LineChartAnnotationsOverlay = ({
   children
@@ -3499,16 +3533,16 @@ var LineChartAnnotationsOverlay = ({
     chartWidth,
     chartHeight
   } = useSingleChartContext();
-  const [scales, setScales] = useState8(null);
-  const [scalesStable, setScalesStable] = useState8(false);
-  const createScaleSignature = useCallback8((scaleData) => {
+  const [scales, setScales] = useState9(null);
+  const [scalesStable, setScalesStable] = useState9(false);
+  const createScaleSignature = useCallback9((scaleData) => {
     const xDomain = scaleData.xScale.domain();
     const yDomain = scaleData.yScale.domain();
     const xRange = scaleData.xScale.range();
     const yRange = scaleData.yScale.range();
     return `${xDomain.join(",")}-${yDomain.join(",")}-${xRange.join(",")}-${yRange.join(",")}`;
   }, []);
-  const getScalesData = useCallback8(() => {
+  const getScalesData = useCallback9(() => {
     if (chartRef?.current) {
       const scaleData = chartRef.current.getScales();
       if (scaleData) {
@@ -3524,7 +3558,7 @@ var LineChartAnnotationsOverlay = ({
     }
     return null;
   }, [chartRef, createScaleSignature]);
-  useEffect8(() => {
+  useEffect9(() => {
     let timeoutId = null;
     let lastSignature = null;
     let retryCount = 0;
@@ -3588,7 +3622,7 @@ var line_chart_annotations_overlay_default = LineChartAnnotationsOverlay;
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
 import { DataContext as DataContext4 } from "@visx/xychart";
 import merge from "deepmerge";
-import { useContext as useContext10, useRef as useRef8, useEffect as useEffect9, useState as useState9, useMemo as useMemo15 } from "react";
+import { useContext as useContext11, useRef as useRef9, useEffect as useEffect10, useState as useState10, useMemo as useMemo16 } from "react";
 import { jsx as _jsx15, jsxs as _jsxs6 } from "react/jsx-runtime";
 var ANNOTATION_MAX_WIDTH = 125;
 var ANNOTATION_INIT_HEIGHT = 100;
@@ -3681,17 +3715,17 @@ var LineChartAnnotation = ({
   const {
     xScale,
     yScale
-  } = useContext10(DataContext4) || {};
-  const labelRef = useRef8(null);
-  const [height, setHeight] = useState9(null);
+  } = useContext11(DataContext4) || {};
+  const labelRef = useRef9(null);
+  const [height, setHeight] = useState10(null);
   const styles = merge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
-  useEffect9(() => {
+  useEffect10(() => {
     if (labelRef.current?.getBBox) {
       const bbox = labelRef.current.getBBox();
       setHeight(bbox.height);
     }
   }, []);
-  const positionData = useMemo15(() => {
+  const positionData = useMemo16(() => {
     if (!datum || !datum.date || datum.value == null || !xScale || !yScale) return null;
     const x2 = xScale(datum.date);
     const y2 = yScale(datum.value);
@@ -3823,7 +3857,7 @@ var line_chart_annotation_default = LineChartAnnotation;
 
 // src/charts/line-chart/private/line-chart-glyph.tsx
 import { DataContext as DataContext5 } from "@visx/xychart";
-import { useContext as useContext11 } from "react";
+import { useContext as useContext12 } from "react";
 var toNumber = (val) => {
   const num = typeof val === "number" ? val : parseFloat(val);
   return isNaN(num) ? void 0 : num;
@@ -3840,7 +3874,7 @@ var LineChartGlyph = ({
   const {
     xScale,
     yScale
-  } = useContext11(DataContext5) || {};
+  } = useContext12(DataContext5) || {};
   if (!xScale || !yScale) return null;
   if (data.data.length === 0) return null;
   const point = position2 === "start" ? data.data[0] : data.data[data.data.length - 1];
@@ -3918,8 +3952,8 @@ var LineChartScalesRef = ({
   height,
   margin
 }) => {
-  const context = useContext12(DataContext6);
-  useImperativeHandle2(chartRef, () => ({
+  const context = useContext13(DataContext6);
+  useImperativeHandle3(chartRef, () => ({
     getScales: () => {
       if (!context?.xScale || !context?.yScale) {
         return null;
@@ -3937,7 +3971,7 @@ var LineChartScalesRef = ({
   }), [context, width, height, margin]);
   return null;
 };
-var LineChartInternal = /* @__PURE__ */ forwardRef4(({
+var LineChartInternal = /* @__PURE__ */ forwardRef5(({
   data,
   chartId: providedChartId,
   width,
@@ -3974,10 +4008,10 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
   const providerTheme = useGlobalChartsTheme();
   const theme = useXYChartTheme(data);
   const chartId = useChartId(providedChartId);
-  const chartRef = useRef9(null);
-  const [selectedIndex, setSelectedIndex] = useState10(void 0);
-  const [isNavigating, setIsNavigating] = useState10(false);
-  const internalChartRef = useRef9(null);
+  const chartRef = useRef10(null);
+  const [selectedIndex, setSelectedIndex] = useState11(void 0);
+  const [isNavigating, setIsNavigating] = useState11(false);
+  const internalChartRef = useRef10(null);
   const zoom = useXZoom({
     enabled: zoomable,
     chartRef: internalChartRef,
@@ -3991,12 +4025,12 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
     legendChildren,
     nonLegendChildren
   } = useChartChildren(children, "LineChart");
-  const [measuredChartHeight, setMeasuredChartHeight] = useState10();
-  const handleContentHeightChange = useCallback9((contentHeight) => {
+  const [measuredChartHeight, setMeasuredChartHeight] = useState11();
+  const handleContentHeightChange = useCallback10((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
-  useImperativeHandle2(ref, () => ({
+  useImperativeHandle3(ref, () => ({
     getScales: () => internalChartRef.current?.getScales() || null,
     getChartDimensions: () => internalChartRef.current?.getChartDimensions() || {
       width: 0,
@@ -4009,7 +4043,7 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
     getElementStyles,
     isSeriesVisible
   } = useGlobalChartsContext();
-  const seriesWithVisibility = useMemo16(() => {
+  const seriesWithVisibility = useMemo17(() => {
     if (!chartId || !legendInteractive) {
       return dataSorted.map((series, index) => ({
         series,
@@ -4023,7 +4057,7 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
       isVisible: isSeriesVisible(chartId, series.label)
     }));
   }, [dataSorted, chartId, isSeriesVisible, legendInteractive]);
-  const allSeriesHidden = useMemo16(() => {
+  const allSeriesHidden = useMemo17(() => {
     return seriesWithVisibility.every(({
       isVisible
     }) => !isVisible);
@@ -4041,7 +4075,7 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
     chartRef,
     totalPoints: dataSorted[0]?.data.length || 0
   });
-  const chartOptions = useMemo16(() => {
+  const chartOptions = useMemo17(() => {
     const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
     return {
       axis: {
@@ -4075,7 +4109,7 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
       }
     };
   }, [options, dataSorted, width, zoom.domain]);
-  const tooltipRenderGlyph = useMemo16(() => {
+  const tooltipRenderGlyph = useMemo17(() => {
     return (props) => {
       const seriesIndex = dataSorted.findIndex((series) => series.label === props.key || series.data.includes(props.datum));
       const seriesData = dataSorted[seriesIndex];
@@ -4096,13 +4130,13 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
   const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
   const error = validateData(dataSorted);
   const isDataValid = !error;
-  const legendOptions = useMemo16(() => ({
+  const legendOptions = useMemo17(() => ({
     withGlyph: withLegendGlyph,
     glyphSize: Math.max(0, toNumber2(glyphStyle?.radius) ?? 4),
     renderGlyph
   }), [withLegendGlyph, glyphStyle?.radius, renderGlyph]);
   const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
-  const chartMetadata = useMemo16(() => ({
+  const chartMetadata = useMemo17(() => ({
     withGradientFill,
     smoothing,
     curveType,
@@ -4300,8 +4334,8 @@ var LineChartInternal = /* @__PURE__ */ forwardRef4(({
     })
   });
 });
-var LineChartWithProvider = /* @__PURE__ */ forwardRef4((props, ref) => {
-  const existingContext = useContext12(GlobalChartsContext);
+var LineChartWithProvider = /* @__PURE__ */ forwardRef5((props, ref) => {
+  const existingContext = useContext13(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx16(LineChartInternal, {
       ...props,
@@ -4351,7 +4385,7 @@ var validateData2 = (data) => {
 
 // src/charts/area-chart/private/overlays.tsx
 import { DataContext as DataContext7, TooltipContext as TooltipContext2 } from "@visx/xychart";
-import { useContext as useContext13, useImperativeHandle as useImperativeHandle3 } from "react";
+import { useContext as useContext14, useImperativeHandle as useImperativeHandle4 } from "react";
 import { jsx as _jsx17 } from "react/jsx-runtime";
 var AreaChartScalesRef = ({
   chartRef,
@@ -4359,8 +4393,8 @@ var AreaChartScalesRef = ({
   height,
   margin
 }) => {
-  const context = useContext13(DataContext7);
-  useImperativeHandle3(chartRef, () => ({
+  const context = useContext14(DataContext7);
+  useImperativeHandle4(chartRef, () => ({
     getScales: () => {
       if (!context?.xScale || !context?.yScale) return null;
       return {
@@ -4383,8 +4417,8 @@ var HoverGlyphs = ({
   getElementStyles,
   strokeColor
 }) => {
-  const dataContext = useContext13(DataContext7);
-  const tooltipContext = useContext13(TooltipContext2);
+  const dataContext = useContext14(DataContext7);
+  const tooltipContext = useContext14(TooltipContext2);
   const xScale = dataContext?.xScale;
   const yScale = dataContext?.yScale;
   const tooltipOpen = tooltipContext?.tooltipOpen;
@@ -4437,7 +4471,7 @@ var HoverGlyphs = ({
 
 // src/charts/area-chart/area-chart.tsx
 import { jsx as _jsx18, jsxs as _jsxs8, Fragment as _Fragment5 } from "react/jsx-runtime";
-var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
+var AreaChartInternal = /* @__PURE__ */ forwardRef6(({
   data,
   chartId: providedChartId,
   width,
@@ -4473,10 +4507,10 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
   const providerTheme = useGlobalChartsTheme();
   const theme = useXYChartTheme(data);
   const chartId = useChartId(providedChartId);
-  const chartRef = useRef10(null);
-  const [selectedIndex, setSelectedIndex] = useState11(void 0);
-  const [isNavigating, setIsNavigating] = useState11(false);
-  const internalChartRef = useRef10(null);
+  const chartRef = useRef11(null);
+  const [selectedIndex, setSelectedIndex] = useState12(void 0);
+  const [isNavigating, setIsNavigating] = useState12(false);
+  const internalChartRef = useRef11(null);
   const zoom = useXZoom({
     enabled: zoomable,
     chartRef: internalChartRef,
@@ -4490,12 +4524,12 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     legendChildren,
     nonLegendChildren
   } = useChartChildren(children, "AreaChart");
-  const [measuredChartHeight, setMeasuredChartHeight] = useState11();
-  const handleContentHeightChange = useCallback10((contentHeight) => {
+  const [measuredChartHeight, setMeasuredChartHeight] = useState12();
+  const handleContentHeightChange = useCallback11((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
-  useImperativeHandle4(ref, () => ({
+  useImperativeHandle5(ref, () => ({
     getScales: () => internalChartRef.current?.getScales() || null,
     getChartDimensions: () => internalChartRef.current?.getChartDimensions() || {
       width: 0,
@@ -4508,7 +4542,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     getElementStyles,
     isSeriesVisible
   } = useGlobalChartsContext();
-  const seriesWithVisibility = useMemo17(() => {
+  const seriesWithVisibility = useMemo18(() => {
     if (!chartId || !legendInteractive) {
       return dataSorted.map((series, index) => ({
         series,
@@ -4522,7 +4556,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
       isVisible: isSeriesVisible(chartId, series.label)
     }));
   }, [dataSorted, chartId, isSeriesVisible, legendInteractive]);
-  const allSeriesHidden = useMemo17(() => seriesWithVisibility.every(({
+  const allSeriesHidden = useMemo18(() => seriesWithVisibility.every(({
     isVisible
   }) => !isVisible), [seriesWithVisibility]);
   const {
@@ -4538,7 +4572,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     chartRef,
     totalPoints: dataSorted[0]?.data.length || 0
   });
-  const fixedYDomain = useMemo17(() => {
+  const fixedYDomain = useMemo18(() => {
     if (rescaleYOnLegendToggle || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") {
       return void 0;
     }
@@ -4574,7 +4608,7 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     if (max === -Infinity) return void 0;
     return [Math.min(0, min), max];
   }, [dataSorted, stacked, stackOffset, legendInteractive, rescaleYOnLegendToggle]);
-  const chartOptions = useMemo17(() => {
+  const chartOptions = useMemo18(() => {
     const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
     return {
       axis: {
@@ -4615,12 +4649,12 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
   const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
   const error = validateData2(dataSorted);
   const isDataValid = !error;
-  const legendOptions = useMemo17(() => ({
+  const legendOptions = useMemo18(() => ({
     withGlyph: false,
     glyphSize: 0
   }), []);
   const legendItems = useChartLegendItems(dataSorted, legendOptions, legendShape);
-  const chartMetadata = useMemo17(() => ({
+  const chartMetadata = useMemo18(() => ({
     stacked,
     stackOffset,
     smoothing,
@@ -4639,9 +4673,9 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     xAccessor: (d) => d?.date,
     yAccessor: (d) => d?.value
   };
-  const zeroYAccessor = useCallback10(() => 0, []);
-  const visibleLabels = useMemo17(() => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
-  const filteredRenderTooltip = useCallback10((params) => {
+  const zeroYAccessor = useCallback11(() => 0, []);
+  const visibleLabels = useMemo18(() => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
+  const filteredRenderTooltip = useCallback11((params) => {
     if (!legendInteractive) return renderTooltip(params);
     const datumByKey = params?.tooltipData?.datumByKey;
     if (!datumByKey) return renderTooltip(params);
@@ -4825,8 +4859,8 @@ var AreaChartInternal = /* @__PURE__ */ forwardRef5(({
     })
   });
 });
-var AreaChartWithProvider = /* @__PURE__ */ forwardRef5((props, ref) => {
-  const existingContext = useContext14(GlobalChartsContext);
+var AreaChartWithProvider = /* @__PURE__ */ forwardRef6((props, ref) => {
+  const existingContext = useContext15(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx18(AreaChartInternal, {
       ...props,
@@ -4854,7 +4888,7 @@ import { PatternLines, PatternCircles, PatternWaves, PatternHexagons } from "@vi
 import { Axis as Axis3, BarSeries, BarGroup, Grid as Grid3, XYChart as XYChart3 } from "@visx/xychart";
 import { __ as __6 } from "@wordpress/i18n";
 import clsx6 from "clsx";
-import { useCallback as useCallback11, useContext as useContext16, useState as useState12, useRef as useRef11, useMemo as useMemo19 } from "react";
+import { useCallback as useCallback12, useContext as useContext17, useState as useState13, useRef as useRef12, useMemo as useMemo20 } from "react";
 
 // src/charts/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
@@ -4867,11 +4901,11 @@ var bar_chart_module_default = {
 
 // src/charts/bar-chart/private/use-bar-chart-options.ts
 import { formatNumberCompact as formatNumberCompact4 } from "@automattic/number-formatters";
-import { useMemo as useMemo18 } from "react";
+import { useMemo as useMemo19 } from "react";
 
 // src/charts/bar-chart/private/truncated-tick-component.tsx
 import { DataContext as DataContext8 } from "@visx/xychart";
-import { useContext as useContext15 } from "react";
+import { useContext as useContext16 } from "react";
 import { jsx as _jsx19 } from "react/jsx-runtime";
 var getScaleBandwidth = (scale) => {
   return scale && "bandwidth" in scale ? scale.bandwidth() ?? 0 : 0;
@@ -4890,7 +4924,7 @@ var TruncatedTickComponent = ({
   const {
     xScale,
     yScale
-  } = useContext15(DataContext8) || {};
+  } = useContext16(DataContext8) || {};
   const scale = axis === "x" ? xScale : yScale;
   const bandwidth = getScaleBandwidth(scale);
   const maxWidth = Math.max(bandwidth, MIN_TICK_LABEL_WIDTH);
@@ -4980,7 +5014,7 @@ var getGroupPadding = (scale) => {
   return typeof scale.paddingInner === "number" ? scale.paddingInner : 0;
 };
 function useBarChartOptions(data, horizontal, options = {}) {
-  const defaultOptions = useMemo18(() => {
+  const defaultOptions = useMemo19(() => {
     const bandScale = {
       type: "band",
       padding: 0.2,
@@ -5021,7 +5055,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
       }
     };
   }, [data]);
-  return useMemo18(() => {
+  return useMemo19(() => {
     const orientationKey = horizontal ? "horizontal" : "vertical";
     const {
       xTickFormat,
@@ -5113,18 +5147,18 @@ var BarChartInternal = ({
   const legendItems = useChartLegendItems(dataSorted);
   const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
   const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
-  const chartRef = useRef11(null);
+  const chartRef = useRef12(null);
   const {
     legendChildren,
     nonLegendChildren
   } = useChartChildren(children, "BarChart");
-  const [measuredChartHeight, setMeasuredChartHeight] = useState12();
-  const handleContentHeightChange = useCallback11((contentHeight) => {
+  const [measuredChartHeight, setMeasuredChartHeight] = useState13();
+  const handleContentHeightChange = useCallback12((contentHeight) => {
     const chartHeight = contentHeight > 0 ? contentHeight : height;
     setMeasuredChartHeight(chartHeight);
   }, [height]);
-  const [selectedIndex, setSelectedIndex] = useState12(void 0);
-  const [isNavigating, setIsNavigating] = useState12(false);
+  const [selectedIndex, setSelectedIndex] = useState13(void 0);
+  const [isNavigating, setIsNavigating] = useState13(false);
   const totalPoints = Math.max(0, ...data.map((series) => series.data?.length || 0)) * data.length;
   const {
     tooltipRef,
@@ -5143,7 +5177,7 @@ var BarChartInternal = ({
     getElementStyles,
     isSeriesVisible
   } = useGlobalChartsContext();
-  const seriesWithVisibility = useMemo19(() => {
+  const seriesWithVisibility = useMemo20(() => {
     if (!chartId || !legendInteractive) {
       return dataWithVisibleZeros.map((series, index) => ({
         series,
@@ -5157,16 +5191,16 @@ var BarChartInternal = ({
       isVisible: isSeriesVisible(chartId, series.label)
     }));
   }, [dataWithVisibleZeros, chartId, isSeriesVisible, legendInteractive]);
-  const allSeriesHidden = useMemo19(() => {
+  const allSeriesHidden = useMemo20(() => {
     return seriesWithVisibility.every(({
       isVisible
     }) => !isVisible);
   }, [seriesWithVisibility]);
-  const getBarBackground = useCallback11((index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({
+  const getBarBackground = useCallback12((index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({
     data: dataSorted[index],
     index
   }).color, [withPatterns, getElementStyles, dataSorted, chartId]);
-  const renderDefaultTooltip2 = useCallback11(({
+  const renderDefaultTooltip2 = useCallback12(({
     tooltipData
   }) => {
     const nearestDatum = tooltipData?.nearestDatum?.datum;
@@ -5188,7 +5222,7 @@ var BarChartInternal = ({
       })]
     });
   }, [chartOptions.tooltip]);
-  const renderPattern = useCallback11((index, color) => {
+  const renderPattern = useCallback12((index, color) => {
     const patternType = index % 4;
     const id = getPatternId(chartId, index);
     const commonProps = {
@@ -5227,7 +5261,7 @@ var BarChartInternal = ({
         }, id);
     }
   }, [chartId]);
-  const createPatternBorderStyle = useCallback11((index, color) => {
+  const createPatternBorderStyle = useCallback12((index, color) => {
     const patternId = getPatternId(chartId, index);
     return `
 			.visx-bar[fill="url(#${patternId})"] {
@@ -5236,7 +5270,7 @@ var BarChartInternal = ({
 				}
 			`;
   }, [chartId]);
-  const createKeyboardHighlightStyle = useCallback11(() => {
+  const createKeyboardHighlightStyle = useCallback12(() => {
     if (selectedIndex === void 0) return "";
     const maxDataPoints = Math.max(...data.map((s) => s.data.length));
     const dataPointIndex = Math.floor(selectedIndex / data.length);
@@ -5259,7 +5293,7 @@ var BarChartInternal = ({
   }, [selectedIndex, data, chartId]);
   const error = validateData3(dataSorted);
   const isDataValid = !error;
-  const chartMetadata = useMemo19(() => ({
+  const chartMetadata = useMemo20(() => ({
     orientation,
     withPatterns
   }), [orientation, withPatterns]);
@@ -5404,7 +5438,7 @@ var BarChartInternal = ({
   });
 };
 var BarChartWithProvider = (props) => {
-  const existingContext = useContext16(GlobalChartsContext);
+  const existingContext = useContext17(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx20(BarChartInternal, {
       ...props
@@ -5429,7 +5463,7 @@ import { formatNumberCompact as formatNumberCompact5 } from "@automattic/number-
 import { Group as Group3 } from "@visx/group";
 import { createScale as createScale2, scaleBand } from "@visx/scale";
 import { Text as Text3 } from "@visx/text";
-import { useContext as useContext17, useMemo as useMemo20 } from "react";
+import { useContext as useContext18, useMemo as useMemo21 } from "react";
 import { jsx as _jsx21, jsxs as _jsxs10 } from "react/jsx-runtime";
 var getScaleBandwidth2 = (scale) => {
   const s = scale;
@@ -5550,7 +5584,7 @@ var BarListChartInternal = ({
   },
   ...rest
 }) => {
-  const chartOptions = useMemo20(() => {
+  const chartOptions = useMemo21(() => {
     const isMultiSeries = data.length > 1;
     const defaultYScale = {
       // For multi series, set default padding larger to look better.
@@ -5612,7 +5646,7 @@ var BarListChartInternal = ({
   });
 };
 var BarListChart = (props) => {
-  const existingContext = useContext17(GlobalChartsContext);
+  const existingContext = useContext18(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx21(BarListChartInternal, {
       ...props
@@ -5630,7 +5664,7 @@ var BarListChartResponsive = withResponsive(BarListChart);
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import clsx7 from "clsx";
-import { useRef as useRef12, useMemo as useMemo21, useEffect as useEffect10, useCallback as useCallback13, useContext as useContext18 } from "react";
+import { useRef as useRef13, useMemo as useMemo22, useEffect as useEffect11, useCallback as useCallback14, useContext as useContext19 } from "react";
 
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
@@ -5655,10 +5689,10 @@ var conversion_funnel_chart_module_default = {
 };
 
 // src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
-import { useCallback as useCallback12, useState as useState13 } from "react";
+import { useCallback as useCallback13, useState as useState14 } from "react";
 var useFunnelSelection = (hideTooltip) => {
-  const [clickedStep, setClickedStep] = useState13(null);
-  const handleBarClick = useCallback12(
+  const [clickedStep, setClickedStep] = useState14(null);
+  const handleBarClick = useCallback13(
     (stepId) => {
       if (clickedStep === stepId) {
         setClickedStep(null);
@@ -5669,7 +5703,7 @@ var useFunnelSelection = (hideTooltip) => {
     },
     [clickedStep, hideTooltip]
   );
-  const handleBarKeyDown = useCallback12(
+  const handleBarKeyDown = useCallback13(
     (stepId, event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -5687,11 +5721,11 @@ var useFunnelSelection = (hideTooltip) => {
     },
     [clickedStep, hideTooltip]
   );
-  const clearSelection = useCallback12(() => {
+  const clearSelection = useCallback13(() => {
     setClickedStep(null);
     hideTooltip?.();
   }, [hideTooltip]);
-  const getStepState = useCallback12(
+  const getStepState = useCallback13(
     (stepId) => ({
       isClicked: clickedStep === stepId,
       isBlurred: clickedStep !== null && clickedStep !== stepId
@@ -5732,8 +5766,8 @@ var ConversionFunnelChartInternal = ({
     getElementStyles,
     isColorPaletteResolved
   } = useGlobalChartsContext();
-  const chartRef = useRef12(null);
-  const selectedBarRef = useRef12(null);
+  const chartRef = useRef13(null);
+  const selectedBarRef = useRef13(null);
   const {
     tooltipData,
     tooltipLeft,
@@ -5758,19 +5792,19 @@ var ConversionFunnelChartInternal = ({
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
     scroll: true
   });
-  const clearSelectionAndRef = useCallback13(() => {
+  const clearSelectionAndRef = useCallback14(() => {
     clearSelection();
     selectedBarRef.current = null;
     hideTooltip();
   }, [clearSelection, hideTooltip]);
-  const showTooltipAt = useCallback13((step, x, y) => {
+  const showTooltipAt = useCallback14((step, x, y) => {
     showTooltip({
       tooltipData: step,
       tooltipLeft: x,
       tooltipTop: y - 10
     });
   }, [showTooltip]);
-  const getMouseTooltipCoords = useCallback13((event) => {
+  const getMouseTooltipCoords = useCallback14((event) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return null;
     }
@@ -5779,7 +5813,7 @@ var ConversionFunnelChartInternal = ({
       y: event.clientY - containerBounds.top
     };
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]);
-  const getKeyboardTooltipCoords = useCallback13((event) => {
+  const getKeyboardTooltipCoords = useCallback14((event) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return null;
     }
@@ -5791,7 +5825,7 @@ var ConversionFunnelChartInternal = ({
       y
     };
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top]);
-  const handleStepInteraction = useCallback13((step, event, interactionType) => {
+  const handleStepInteraction = useCallback14((step, event, interactionType) => {
     selectedBarRef.current = event.currentTarget;
     const {
       isClicked
@@ -5818,7 +5852,7 @@ var ConversionFunnelChartInternal = ({
       }
     }
   }, [getStepState, handleBarClick, handleBarKeyDown, showTooltipAt, getMouseTooltipCoords, getKeyboardTooltipCoords]);
-  const stepHandlers = useMemo21(() => {
+  const stepHandlers = useMemo22(() => {
     const handlers = /* @__PURE__ */ new Map();
     steps.forEach((step) => {
       const onClick = (event) => {
@@ -5840,7 +5874,7 @@ var ConversionFunnelChartInternal = ({
     });
     return handlers;
   }, [steps, handleStepInteraction, handleBarKeyDown]);
-  useEffect10(() => {
+  useEffect11(() => {
     const handleDocumentClick = (event) => {
       if (selectedBarRef.current && !selectedBarRef.current.contains(event.target)) {
         clearSelectionAndRef();
@@ -5894,7 +5928,7 @@ var ConversionFunnelChartInternal = ({
     })]
   });
   const isDataValid = Boolean(steps && steps.length > 0);
-  const chartMetadata = useMemo21(() => ({
+  const chartMetadata = useMemo22(() => ({
     mainRate,
     changeIndicator,
     stepsCount: steps?.length || 0
@@ -6028,7 +6062,7 @@ var ConversionFunnelChartInternal = ({
   });
 };
 var ConversionFunnelChartWithProvider = (props) => {
-  const existingContext = useContext18(GlobalChartsContext);
+  const existingContext = useContext19(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx22(ConversionFunnelChartInternal, {
       ...props
@@ -6045,7 +6079,7 @@ ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
 // src/charts/geo-chart/geo-chart.tsx
 import { __ as __7 } from "@wordpress/i18n";
 import clsx8 from "clsx";
-import { useContext as useContext19, useMemo as useMemo22 } from "react";
+import { useContext as useContext20, useMemo as useMemo23 } from "react";
 import { Chart } from "react-google-charts";
 
 // src/utils/sanitize-html.ts
@@ -6128,7 +6162,7 @@ var GeoChartInternal = ({
   const lightColorHex = lightenHexColor(fullColorHex, 0.8);
   const backgroundColorHex = normalizeColorToHex(backgroundColor, null, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
   const defaultFillColorHex = normalizeColorToHex(featureFillColor, null, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
-  const sanitizedData = useMemo22(() => {
+  const sanitizedData = useMemo23(() => {
     if (data.length === 0) {
       return {
         data,
@@ -6162,7 +6196,7 @@ var GeoChartInternal = ({
       hasHtmlTooltips: true
     };
   }, [data]);
-  const options = useMemo22(() => ({
+  const options = useMemo23(() => ({
     ...region !== "world" && {
       region
     },
@@ -6202,7 +6236,7 @@ var GeoChartInternal = ({
   });
 };
 var GeoChartWithProvider = (props) => {
-  const existingContext = useContext19(GlobalChartsContext);
+  const existingContext = useContext20(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx23(GeoChartInternal, {
       ...props
@@ -6217,17 +6251,17 @@ var GeoChartWithProvider = (props) => {
 GeoChartWithProvider.displayName = "GeoChart";
 var GeoChartResponsive = withResponsive(GeoChartWithProvider);
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
-  const mountedRef = useRef5(false);
-  useEffect4(() => {
+  const mountedRef = useRef7(false);
+  useEffect5(() => {
     if (mountedRef.current) {
       return effect();
     }
     mountedRef.current = true;
     return void 0;
   }, deps);
-  useEffect4(() => () => {
+  useEffect5(() => () => {
     mountedRef.current = false;
   }, []);
 }
@@ -6235,7 +6269,7 @@ var use_update_effect_default = useUpdateEffect;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
 import * as React6 from "react";
-import { useContext as useContext21, forwardRef as forwardRef7 } from "react";
+import { useContext as useContext22, forwardRef as forwardRef8 } from "react";
 
 // ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
 var isDevelopment = false;
@@ -7407,8 +7441,8 @@ var isBrowser3 = typeof document !== "undefined";
 var syncFallback = function syncFallback2(create) {
   return create();
 };
-var useInsertionEffect3 = React5["useInsertionEffect"] ? React5["useInsertionEffect"] : false;
-var useInsertionEffectAlwaysWithSyncFallback = !isBrowser3 ? syncFallback : useInsertionEffect3 || syncFallback;
+var useInsertionEffect4 = React5["useInsertionEffect"] ? React5["useInsertionEffect"] : false;
+var useInsertionEffectAlwaysWithSyncFallback = !isBrowser3 ? syncFallback : useInsertionEffect4 || syncFallback;
 
 // ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
 var isDevelopment3 = false;
@@ -7426,18 +7460,18 @@ var EmotionCacheContext = /* @__PURE__ */ React6.createContext(
 );
 var CacheProvider = EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
-  return useContext21(EmotionCacheContext);
+  return useContext22(EmotionCacheContext);
 };
 var withEmotionCache = function withEmotionCache2(func) {
-  return /* @__PURE__ */ forwardRef7(function(props, ref) {
-    var cache2 = useContext21(EmotionCacheContext);
+  return /* @__PURE__ */ forwardRef8(function(props, ref) {
+    var cache2 = useContext22(EmotionCacheContext);
     return func(props, cache2, ref);
   });
 };
 if (!isBrowser4) {
   withEmotionCache = function withEmotionCache3(func) {
     return function(props) {
-      var cache2 = useContext21(EmotionCacheContext);
+      var cache2 = useContext22(EmotionCacheContext);
       if (cache2 === null) {
         cache2 = createCache({
           key: "css"
@@ -7671,11 +7705,11 @@ var css2 = _createEmotion.css;
 var sheet = _createEmotion.sheet;
 var cache = _createEmotion.cache;
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
   const cache2 = __unsafe_useEmotionCache();
-  const cx2 = useCallback4((...classNames) => {
+  const cx2 = useCallback5((...classNames) => {
     if (cache2 === null) {
       throw new Error("The `useCx` hook should be only used within a valid Emotion Cache Context");
     }
@@ -7758,7 +7792,7 @@ function memize(fn, options) {
   return memoized;
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
 var white = "#fff";
 var GRAY = {
   900: "#1e1e1e",
@@ -7839,7 +7873,7 @@ var COLORS = Object.freeze({
   ui: UI
 });
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
 var CONTROL_HEIGHT = "36px";
 var CONTROL_PROPS = {
   // These values should be shared with TextControl.
@@ -7910,14 +7944,14 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
   transitionTimingFunctionControl: "cubic-bezier(0.12, 0.8, 0.32, 1)"
 });
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = __toESM(require_es6(), 1);
 import deepmerge2 from "deepmerge";
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.46.0/node_modules/@wordpress/warning/build-module/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.48.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 
-// ../../../node_modules/.pnpm/@wordpress+warning@3.46.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.48.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
   return globalThis.SCRIPT_DEBUG === true;
 }
@@ -7936,19 +7970,19 @@ function warning(message) {
   logged.add(message);
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 import { jsx as _jsx24 } from "react/jsx-runtime";
-var ComponentsContext = createContext3(
+var ComponentsContext = createContext4(
   /** @type {Record<string, any>} */
   {}
 );
 ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => useContext4(ComponentsContext);
+var useComponentsContext = () => useContext5(ComponentsContext);
 function useContextSystemBridge({
   value
 }) {
   const parentContext = useComponentsContext();
-  const valueRef = useRef5(value);
+  const valueRef = useRef7(value);
   use_update_effect_default(() => {
     if (
       // Objects are equivalent.
@@ -7958,7 +7992,7 @@ function useContextSystemBridge({
       globalThis.SCRIPT_DEBUG === true ? warning(`Please memoize your context: ${JSON.stringify(value)}`) : void 0;
     }
   }, [value]);
-  const config = useMemo9(() => {
+  const config = useMemo10(() => {
     return deepmerge2(parentContext ?? {}, value ?? {}, {
       isMergeableObject: isPlainObject
     });
@@ -7977,28 +8011,28 @@ var BaseContextSystemProvider = ({
     children
   });
 };
-var ContextSystemProvider = memo(BaseContextSystemProvider);
+var ContextSystemProvider = memo2(BaseContextSystemProvider);
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 function getStyledClassName(namespace) {
   const kebab = paramCase(namespace);
   return `components-${kebab}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
-function contextConnect(Component2, namespace) {
-  return _contextConnect(Component2, namespace, {
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+function contextConnect(Component3, namespace) {
+  return _contextConnect(Component3, namespace, {
     forwardsRef: true
   });
 }
-function _contextConnect(Component2, namespace, options) {
-  const WrappedComponent = options?.forwardsRef ? forwardRef(Component2) : Component2;
+function _contextConnect(Component3, namespace, options) {
+  const WrappedComponent = options?.forwardsRef ? forwardRef2(Component3) : Component3;
   if (typeof namespace === "undefined") {
     globalThis.SCRIPT_DEBUG === true ? warning("contextConnect: Please provide a namespace") : void 0;
   }
@@ -8016,7 +8050,7 @@ function _contextConnect(Component2, namespace, options) {
   });
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
   return {
     [COMPONENT_NAMESPACE]: componentName
@@ -8028,7 +8062,7 @@ function getConnectedNamespace() {
   };
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
   const contextSystemProps = useComponentsContext();
   if (typeof namespace === "undefined") {
@@ -8212,7 +8246,7 @@ var createStyled = function createStyled2(tag, options) {
   };
 };
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
 import { jsx as _jsx25 } from "react/jsx-runtime";
 var PolymorphicDiv = /* @__PURE__ */ createStyled("div", process.env.NODE_ENV === "production" ? {
   target: "e19lxcc00"
@@ -8230,12 +8264,12 @@ function UnforwardedView({
     ...restProps
   });
 }
-var View = Object.assign(forwardRef(UnforwardedView), {
+var View = Object.assign(forwardRef2(UnforwardedView), {
   selector: ".components-view"
 });
 var component_default = View;
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = ["40em", "52em", "64em"];
 var useBreakpointIndex = (options = {}) => {
   const {
@@ -8246,8 +8280,8 @@ var useBreakpointIndex = (options = {}) => {
   } else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) {
     throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
   }
-  const [value, setValue] = useState5(defaultIndex);
-  useEffect4(() => {
+  const [value, setValue] = useState6(defaultIndex);
+  useEffect5(() => {
     const getIndex = () => breakpoints.filter((bp) => {
       return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
     }).length;
@@ -8278,7 +8312,7 @@ function useResponsiveValue(values, options = {}) {
   return array[index >= array.length ? array.length - 1 : index];
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
   bottom: {
     alignItems: "flex-end",
@@ -8329,7 +8363,7 @@ function getAlignmentProps(alignment) {
   return alignmentProps;
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
 function useGrid(props) {
   const {
     align,
@@ -8353,7 +8387,7 @@ function useGrid(props) {
   const gridTemplateColumns = templateColumns || !!columns && `repeat( ${column2}, 1fr )`;
   const gridTemplateRows = templateRows || !!rows && `repeat( ${row}, 1fr )`;
   const cx2 = useCx();
-  const classes = useMemo9(() => {
+  const classes = useMemo10(() => {
     const alignmentProps = getAlignmentProps(alignment);
     const gridClasses = /* @__PURE__ */ css({
       alignItems: align,
@@ -8375,7 +8409,7 @@ function useGrid(props) {
   };
 }
 
-// ../../../node_modules/.pnpm/@wordpress+components@33.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@35.0.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
 import { jsx as _jsx26 } from "react/jsx-runtime";
 function UnconnectedGrid(props, forwardedRef) {
   const gridProps = useGrid(props);
@@ -8390,11 +8424,11 @@ var component_default2 = Grid4;
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
 import { __ as __9 } from "@wordpress/i18n";
 import clsx9 from "clsx";
-import { useContext as useContext24, useMemo as useMemo24 } from "react";
+import { useContext as useContext25, useMemo as useMemo25 } from "react";
 
 // src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
 import { __ as __8 } from "@wordpress/i18n";
-import { useMemo as useMemo23 } from "react";
+import { useMemo as useMemo24 } from "react";
 function useLeaderboardLegendItems({
   data,
   primaryColor,
@@ -8405,7 +8439,7 @@ function useLeaderboardLegendItems({
 }) {
   const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
   const { getElementStyles } = useGlobalChartsContext();
-  return useMemo23(() => {
+  return useMemo24(() => {
     if (!data || data.length === 0) {
       return [];
     }
@@ -8581,19 +8615,19 @@ var LeaderboardChartInternal = ({
     withOverlayLabel,
     legendLabels
   });
-  const isPrimaryVisible = useMemo24(() => {
+  const isPrimaryVisible = useMemo25(() => {
     if (!chartId || !legendInteractive || legendItems.length === 0) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[0].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const isComparisonVisible = useMemo24(() => {
+  const isComparisonVisible = useMemo25(() => {
     if (!chartId || !legendInteractive || legendItems.length < 2) {
       return true;
     }
     return isSeriesVisible(chartId, legendItems[1].label);
   }, [chartId, legendInteractive, legendItems, isSeriesVisible]);
-  const allSeriesHidden = useMemo24(() => {
+  const allSeriesHidden = useMemo25(() => {
     if (!legendInteractive) return false;
     if (withComparison && !withOverlayLabel) {
       return !isPrimaryVisible && !isComparisonVisible;
@@ -8601,7 +8635,7 @@ var LeaderboardChartInternal = ({
     return !isPrimaryVisible;
   }, [legendInteractive, isPrimaryVisible, isComparisonVisible, withComparison, withOverlayLabel]);
   const isDataValid = Boolean(data && data.length > 0);
-  const chartMetadata = useMemo24(() => ({
+  const chartMetadata = useMemo25(() => ({
     withComparison,
     withOverlayLabel
   }), [withComparison, withOverlayLabel]);
@@ -8683,7 +8717,7 @@ var LeaderboardChartInternal = ({
           children: data.map((entry) => {
             const colorIndex = Math.sign(entry.delta) + 1;
             const deltaColor = deltaColors[colorIndex];
-            return /* @__PURE__ */ _jsxs12(Fragment, {
+            return /* @__PURE__ */ _jsxs12(Fragment2, {
               children: [/* @__PURE__ */ _jsx27(Stack, {
                 direction: "column",
                 gap: labelSpacing,
@@ -8720,7 +8754,7 @@ var LeaderboardChartInternal = ({
   });
 };
 var LeaderboardChartWithProvider = (props) => {
-  const existingContext = useContext24(GlobalChartsContext);
+  const existingContext = useContext25(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx27(LeaderboardChartInternal, {
       ...props
@@ -8746,7 +8780,7 @@ import { Pie } from "@visx/shape";
 import { useTooltip as useTooltip2, useTooltipInPortal as useTooltipInPortal2 } from "@visx/tooltip";
 import { __ as __10 } from "@wordpress/i18n";
 import clsx10 from "clsx";
-import { useCallback as useCallback14, useContext as useContext25, useMemo as useMemo25 } from "react";
+import { useCallback as useCallback15, useContext as useContext26, useMemo as useMemo26 } from "react";
 
 // src/charts/private/radial-wipe-animation/radial-wipe-animation.tsx
 import { jsx as _jsx28 } from "react/jsx-runtime";
@@ -8884,7 +8918,7 @@ var PieChartInternal = ({
     scroll: true,
     debounce: 0
   });
-  const onMouseLeave = useCallback14(() => {
+  const onMouseLeave = useCallback15(() => {
     if (!withTooltips) {
       return;
     }
@@ -8905,7 +8939,7 @@ var PieChartInternal = ({
     legendInteractive,
     isSeriesVisible
   });
-  const legendOptions = useMemo25(() => ({
+  const legendOptions = useMemo26(() => ({
     showValues: true,
     legendValueDisplay
   }), [legendValueDisplay]);
@@ -8920,7 +8954,7 @@ var PieChartInternal = ({
     legendChildren,
     otherChildren
   } = useChartChildren(children, "PieChart");
-  const chartMetadata = useMemo25(() => ({
+  const chartMetadata = useMemo26(() => ({
     thickness,
     gapScale,
     cornerScale
@@ -9129,7 +9163,7 @@ var PieChartInternal = ({
   });
 };
 var PieChartWithProvider = (props) => {
-  const existingContext = useContext25(GlobalChartsContext);
+  const existingContext = useContext26(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx29(PieChartInternal, {
       ...props
@@ -9160,7 +9194,7 @@ import { Text as Text4 } from "@visx/text";
 import { useTooltip as useTooltip3, useTooltipInPortal as useTooltipInPortal3 } from "@visx/tooltip";
 import { __ as __11 } from "@wordpress/i18n";
 import clsx11 from "clsx";
-import { useCallback as useCallback15, useContext as useContext26, useMemo as useMemo26 } from "react";
+import { useCallback as useCallback16, useContext as useContext27, useMemo as useMemo27 } from "react";
 
 // src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
@@ -9252,7 +9286,7 @@ var PieSemiCircleChartInternal = ({
     scroll: true,
     debounce: 0
   });
-  const handleMouseMove = useCallback15((event, arc) => {
+  const handleMouseMove = useCallback16((event, arc) => {
     if (containerBounds.width === 0 || containerBounds.height === 0) {
       return;
     }
@@ -9262,10 +9296,10 @@ var PieSemiCircleChartInternal = ({
       tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
     });
   }, [containerBounds.width, containerBounds.height, containerBounds.left, containerBounds.top, showTooltip, tooltipOffsetX, tooltipOffsetY]);
-  const handleMouseLeave = useCallback15(() => {
+  const handleMouseLeave = useCallback16(() => {
     hideTooltip();
   }, [hideTooltip]);
-  const handleArcMouseMove = useCallback15((arc) => (event) => {
+  const handleArcMouseMove = useCallback16((arc) => (event) => {
     handleMouseMove(event, arc);
   }, [handleMouseMove]);
   const {
@@ -9287,7 +9321,7 @@ var PieSemiCircleChartInternal = ({
     legendInteractive,
     isSeriesVisible
   });
-  const accessors = useMemo26(() => ({
+  const accessors = useMemo27(() => ({
     value: (d) => d.value,
     sort: (a, b) => b.value - a.value,
     fill: (d) => getElementStyles({
@@ -9295,7 +9329,7 @@ var PieSemiCircleChartInternal = ({
       index: d.index
     }).color
   }), [getElementStyles]);
-  const legendOptions = useMemo26(() => ({
+  const legendOptions = useMemo27(() => ({
     showValues: true,
     legendValueDisplay
   }), [legendValueDisplay]);
@@ -9306,7 +9340,7 @@ var PieSemiCircleChartInternal = ({
     legendChildren,
     otherChildren
   } = useChartChildren(children, "PieSemiCircleChart");
-  const chartMetadata = useMemo26(() => ({
+  const chartMetadata = useMemo27(() => ({
     thickness,
     clockwise
   }), [thickness, clockwise]);
@@ -9468,7 +9502,7 @@ var PieSemiCircleChartInternal = ({
   });
 };
 var PieSemiCircleChartWithProvider = (props) => {
-  const existingContext = useContext26(GlobalChartsContext);
+  const existingContext = useContext27(GlobalChartsContext);
   if (existingContext) {
     return /* @__PURE__ */ _jsx30(PieSemiCircleChartInternal, {
       ...props
@@ -9494,7 +9528,7 @@ var PieSemiCircleChartResponsive = attachSubComponents(withResponsive(PieSemiCir
 
 // src/charts/sparkline/sparkline.tsx
 import clsx12 from "clsx";
-import { useMemo as useMemo27, forwardRef as forwardRef8 } from "react";
+import { useMemo as useMemo28, forwardRef as forwardRef9 } from "react";
 
 // src/charts/sparkline/sparkline.module.scss
 var sparkline_module_default = {
@@ -9523,7 +9557,7 @@ var transformToSeriesData = (data, color, strokeWidth) => {
     }
   }];
 };
-var SparklineComponent = /* @__PURE__ */ forwardRef8(({
+var SparklineComponent = /* @__PURE__ */ forwardRef9(({
   data,
   width = DEFAULT_WIDTH2,
   height = DEFAULT_HEIGHT,
@@ -9539,13 +9573,13 @@ var SparklineComponent = /* @__PURE__ */ forwardRef8(({
   const theme = useGlobalChartsTheme();
   const themeStrokeWidth = theme.sparkline?.strokeWidth ?? 1.5;
   const strokeWidth = strokeWidthProp ?? themeStrokeWidth;
-  const seriesData = useMemo27(() => {
+  const seriesData = useMemo28(() => {
     if (!data || data.length === 0) {
       return [];
     }
     return transformToSeriesData(data, color, strokeWidth);
   }, [data, color, strokeWidth]);
-  const finalMargin = useMemo27(() => {
+  const finalMargin = useMemo28(() => {
     const themeMargin = theme.sparkline?.margin ?? {
       top: 2,
       right: 2,
@@ -9558,7 +9592,7 @@ var SparklineComponent = /* @__PURE__ */ forwardRef8(({
       ...margin
     };
   }, [marginProp, theme.sparkline?.margin]);
-  const seriesWithGradient = useMemo27(() => {
+  const seriesWithGradient = useMemo28(() => {
     if (!gradient || seriesData.length === 0) {
       return seriesData;
     }
