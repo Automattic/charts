@@ -3434,11 +3434,22 @@ var line_chart_module_default = {
 
 // src/charts/line-chart/private/line-chart-annotation-label-popover.tsx
 
-var _icons = require('@wordpress/icons');
-
-
-
 var POPOVER_BUTTON_SIZE = 44;
+var CloseIcon = () => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "svg", {
+  width: "16",
+  height: "16",
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": "true",
+  focusable: "false",
+  children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "path", {
+    d: "M6 6l12 12M18 6L6 18"
+  })
+});
 var LineChartAnnotationLabelWithPopover = ({
   title,
   subtitle,
@@ -3510,10 +3521,7 @@ var LineChartAnnotationLabelWithPopover = ({
           popovertargetaction: "hide",
           className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
           "aria-label": _i18n.__.call(void 0, "Close", "jetpack-charts"),
-          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icons.Icon, {
-            icon: _icons.close,
-            size: 16
-          })
+          children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CloseIcon, {})
         })]
       })
     })]

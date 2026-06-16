@@ -1,27 +1,87 @@
 import * as react from 'react';
-import { CSSProperties, PointerEvent, ReactNode, ComponentProps, SVGProps, FC, ComponentType, PropsWithChildren } from 'react';
+import { ComponentClass, CSSProperties, PointerEvent, ReactElement, ReactNode, ComponentProps, SVGProps, FC, ComponentType, PropsWithChildren } from 'react';
 import { LegendOrdinal } from '@visx/legend';
-import { CircleSubjectProps } from '@visx/annotation/lib/components/CircleSubject';
-import { ConnectorProps } from '@visx/annotation/lib/components/Connector';
-import { LabelProps } from '@visx/annotation/lib/components/Label';
-import { LineSubjectProps } from '@visx/annotation/lib/components/LineSubject';
+import { CircleSubjectProps, ConnectorProps, LabelProps, LineSubjectProps } from '@visx/annotation';
 import { Orientation, AxisScale, TickFormatter, AxisRendererProps } from '@visx/axis';
-import { LegendShape } from '@visx/legend/lib/types';
-import { ScaleType, ScaleInput } from '@visx/scale';
-import { TextProps } from '@visx/text/lib/Text';
-import { LineStyles, EventHandlerParams, GridStyles, GlyphProps } from '@visx/xychart';
+import { PickD3Scale, ScaleType, ScaleInput } from '@visx/scale';
+import { TextProps } from '@visx/text';
+import { TooltipProps as VisxTooltipProps, UseTooltipPortalOptions } from '@visx/tooltip';
+import { LineStyles, EventHandlerParams, GridStyles, GlyphProps, TooltipContextType } from '@visx/xychart';
 export { EventHandlerParams, GridStyles, LineStyles } from '@visx/xychart';
-import { GapSize } from '@wordpress/theme';
-import { GoogleDataTableColumn, GoogleDataTableRow } from 'react-google-charts';
-export { GoogleDataTableColumn, GoogleDataTableColumnRoleType, GoogleDataTableRow } from 'react-google-charts';
-import { RenderTooltipParams, TooltipProps as TooltipProps$1 } from '@visx/xychart/lib/components/Tooltip';
-export { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { TextProps as TextProps$1 } from '@visx/text';
-import { PieArcDatum } from '@visx/shape/lib/shapes/Pie';
+import { PieProvidedProps } from '@visx/shape';
 
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+/**
+ * Mirrors the WordPress Design System gap token scale used by @wordpress/ui Stack.
+ */
+type GapSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+type LegendShapeLabel<Data, Output, ExtraAttributes = object> = {
+    datum: Data;
+    index: number;
+    text: string;
+    value?: Output;
+} & ExtraAttributes;
+type LegendShapeRenderProps<Data, Output> = {
+    width?: string | number;
+    height?: string | number;
+    label: LegendShapeLabel<Data, Output>;
+    item: Data;
+    itemIndex: number;
+    fill?: string;
+    size?: string | number;
+    style?: CSSProperties;
+};
+type LegendShape<Data, Output> = 'rect' | 'circle' | 'line' | FC<LegendShapeRenderProps<Data, Output>> | ComponentClass<LegendShapeRenderProps<Data, Output>>;
+type GoogleDataTableColumnType = 'string' | 'number' | 'boolean' | 'date' | 'datetime' | 'timeofday';
+declare enum GoogleDataTableColumnRoleType {
+    annotation = "annotation",
+    annotationText = "annotationText",
+    certainty = "certainty",
+    emphasis = "emphasis",
+    interval = "interval",
+    scope = "scope",
+    style = "style",
+    tooltip = "tooltip",
+    domain = "domain"
+}
+type GoogleDataTableColumn = {
+    type: GoogleDataTableColumnType;
+    label?: string;
+    role?: GoogleDataTableColumnRoleType;
+    pattern?: string;
+    p?: Record<string, unknown>;
+    id?: string;
+} | string;
+type GoogleDataTableCell = {
+    v?: unknown;
+    f?: string;
+    p?: Record<string, unknown>;
+} | string | number | boolean | Date | null;
+type GoogleDataTableRow = GoogleDataTableCell[];
+type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
+    colorScale?: PickD3Scale<'ordinal', string, string>;
+};
+interface RenderTooltipGlyphProps<Datum extends object> extends GlyphProps<Datum> {
+    glyphStyle?: SVGProps<SVGCircleElement>;
+    isNearestDatum: boolean;
+}
+type XyChartTooltipProps<Datum extends object> = {
+    renderTooltip: (params: RenderTooltipParams<Datum>) => ReactNode;
+    renderGlyph?: (params: RenderTooltipGlyphProps<Datum>) => ReactNode;
+    snapTooltipToDatumX?: boolean;
+    snapTooltipToDatumY?: boolean;
+    showVerticalCrosshair?: boolean;
+    showHorizontalCrosshair?: boolean;
+    showDatumGlyph?: boolean;
+    showSeriesGlyphs?: boolean;
+    verticalCrosshairStyle?: SVGProps<SVGLineElement>;
+    horizontalCrosshairStyle?: SVGProps<SVGLineElement>;
+    glyphStyle?: SVGProps<SVGCircleElement>;
+    resizeObserverPolyfill?: UseTooltipPortalOptions['polyfill'];
+} & Omit<VisxTooltipProps, 'left' | 'top' | 'children'> & Pick<UseTooltipPortalOptions, 'debounce' | 'detectBounds' | 'scroll' | 'zIndex'>;
 type ChartType = 'area' | 'bar' | 'conversion-funnel' | 'leaderboard' | 'line' | 'pie' | 'pie-semi-circle';
 type OrientationType = ValueOf<typeof Orientation>;
 type AnnotationStyles = {
@@ -96,7 +156,7 @@ type LeaderboardEntry = {
     /**
      * Human-readable name (e.g., 'Direct') or a JSX element (e.g., <h4>Direct</h4>)
      */
-    label: string | JSX.Element;
+    label: string | ReactElement;
     /**
      * Value of the entry
      */
@@ -1421,7 +1481,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;
 type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps & ResponsiveConfig>;
-type ArcData = PieArcDatum<DataPointPercentageCalculated>;
+type ArcData = PieProvidedProps<DataPointPercentageCalculated>['arcs'][number];
 declare const PieSemiCircleChart: PieSemiCircleChartComponent;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
 
@@ -1573,7 +1633,7 @@ type FlattenedTooltipData = {
     seriesIndex: number;
     dataPointIndex: number;
 };
-interface AccessibleTooltipProps extends Omit<TooltipProps$1<DataPointDate>, 'renderTooltip'> {
+interface AccessibleTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>, 'renderTooltip'> {
     renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
     selectedIndex?: number | undefined;
     tooltipRef?: (element: HTMLDivElement | null) => void;
@@ -1694,4 +1754,4 @@ declare const useGlobalChartsTheme: () => CompleteChartTheme;
  */
 declare const defaultTheme: CompleteChartTheme;
 
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, type GoogleDataTableColumn, type GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridProps, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, GlobalChartsProvider as ThemeProvider, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };

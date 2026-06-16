@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
+- Add React 19 compatibility for consumers while keeping the package's development React version on 18.3.
 - Update package dependencies.
 
 ## [1.5.3] - 2026-06-10

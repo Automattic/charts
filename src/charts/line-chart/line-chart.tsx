@@ -45,7 +45,7 @@ import type { DataPoint, DataPointDate, SeriesData, Optional } from '../../types
 import type { ResponsiveConfig } from '../private/with-responsive';
 import type { TickFormatter } from '@visx/axis';
 import type { GlyphProps } from '@visx/xychart';
-import type { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
+import type { RenderTooltipParams } from '../../visx/types';
 import type { FC, Ref } from 'react';
 
 const defaultRenderGlyph = < Datum extends object >( props: RenderLineGlyphProps< Datum > ) => {
