@@ -5,7 +5,11 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  try {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  } catch (e) {
+    throw mod = 0, e;
+  }
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -28,4 +32,4 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 
 exports.__commonJS = __commonJS; exports.__toESM = __toESM;
-//# sourceMappingURL=chunk-DZUJEN5N.cjs.map
+//# sourceMappingURL=chunk-B7LXJ6LC.cjs.map

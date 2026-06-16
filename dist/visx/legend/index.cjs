@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});require('../../chunk-DZUJEN5N.cjs');
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});require('../../chunk-B7LXJ6LC.cjs');
 
 // src/visx/legend/index.ts
 var _legend = require('@visx/legend');
