@@ -1,12 +1,20 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
-
-
-
-var _chunk7OZEQ5HEcjs = require('../../chunk-7OZEQ5HE.cjs');
-require('../../chunk-B7LXJ6LC.cjs');
-
-
-
-
-exports.Text = _chunk7OZEQ5HEcjs.Text; exports.getStringWidth = _chunk7OZEQ5HEcjs.getStringWidth; exports.useText = _chunk7OZEQ5HEcjs.useText;
-//# sourceMappingURL=index.cjs.map
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+let _visx_text = require("@visx/text");
+Object.defineProperty(exports, "Text", {
+	enumerable: true,
+	get: function() {
+		return _visx_text.Text;
+	}
+});
+Object.defineProperty(exports, "getStringWidth", {
+	enumerable: true,
+	get: function() {
+		return _visx_text.getStringWidth;
+	}
+});
+Object.defineProperty(exports, "useText", {
+	enumerable: true,
+	get: function() {
+		return _visx_text.useText;
+	}
+});

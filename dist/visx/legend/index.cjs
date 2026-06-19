@@ -1,10 +1,20 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});require('../../chunk-B7LXJ6LC.cjs');
-
-// src/visx/legend/index.ts
-var _legend = require('@visx/legend');
-
-
-
-
-exports.CircleShape = _legend.CircleShape; exports.LineShape = _legend.LineShape; exports.RectShape = _legend.RectShape;
-//# sourceMappingURL=index.cjs.map
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+let _visx_legend = require("@visx/legend");
+Object.defineProperty(exports, "CircleShape", {
+	enumerable: true,
+	get: function() {
+		return _visx_legend.CircleShape;
+	}
+});
+Object.defineProperty(exports, "LineShape", {
+	enumerable: true,
+	get: function() {
+		return _visx_legend.LineShape;
+	}
+});
+Object.defineProperty(exports, "RectShape", {
+	enumerable: true,
+	get: function() {
+		return _visx_legend.RectShape;
+	}
+});

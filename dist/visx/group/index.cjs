@@ -1,8 +1,8 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});require('../../chunk-B7LXJ6LC.cjs');
-
-// src/visx/group/index.ts
-var _group = require('@visx/group');
-
-
-exports.Group = _group.Group;
-//# sourceMappingURL=index.cjs.map
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+let _visx_group = require("@visx/group");
+Object.defineProperty(exports, "Group", {
+	enumerable: true,
+	get: function() {
+		return _visx_group.Group;
+	}
+});

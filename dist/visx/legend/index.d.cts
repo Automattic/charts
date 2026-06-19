@@ -1,1 +1,2 @@
-export { CircleShape, LineShape, RectShape } from '@visx/legend';
+import { CircleShape, LineShape, RectShape } from "@visx/legend";
+export { CircleShape, LineShape, RectShape };

@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../src/visx/legend/index.ts"],"sourcesContent":["// Re-export legend components from visx\nexport { LineShape, CircleShape, RectShape } from '@visx/legend';\n"],"mappings":";;;AACA,SAAS,WAAW,aAAa,iBAAiB;","names":[]}
