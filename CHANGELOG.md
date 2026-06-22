@@ -5,17 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.0-alpha] - unreleased
+## [1.6.1-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
-
-### Added
-- Charts: Leaderboard items can be made interactive via a per-entry onClick, rendering the row as a keyboard-accessible button with a hover chevron.
 
 ### Changed
 - Charts: Add React 19 compatibility for consumers.
 - Charts: type `leaderboardChart.labelSpacing` as a WPDS `GapSize` token instead of `number` (the numeric value was silently ignored by `@wordpress/ui`'s Stack) to fix `@wordpress/ui` 0.15 type errors.
-- Update package dependencies.
+
+## [1.6.0] - 2026-06-22
+### Added
+- Allow Leaderboard items to be made interactive via a per-entry onClick, rendering the row as a keyboard-accessible button with a hover chevron. [#49733]
+
+### Changed
+- Update package dependencies. [#49594] [#49631] [#49691] [#49757]
 
 ## [1.5.3] - 2026-06-10
 ### Changed
@@ -875,7 +878,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.6.0-alpha]: https://github.com/Automattic/charts/compare/v1.5.3...v1.6.0-alpha
+[1.6.1-alpha]: https://github.com/Automattic/charts/compare/v1.6.0...v1.6.1-alpha
+[1.6.0]: https://github.com/Automattic/charts/compare/v1.5.3...v1.6.0
 [1.5.3]: https://github.com/Automattic/charts/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/Automattic/charts/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/Automattic/charts/compare/v1.5.0...v1.5.1
