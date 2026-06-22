@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: Add React 19 compatibility for consumers.
+- Charts: type `leaderboardChart.labelSpacing` as a WPDS `GapSize` token instead of `number` (the numeric value was silently ignored by `@wordpress/ui`'s Stack) to fix `@wordpress/ui` 0.15 type errors.
 - Update package dependencies.
 
 ## [1.5.3] - 2026-06-10

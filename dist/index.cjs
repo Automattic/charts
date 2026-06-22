@@ -713,7 +713,7 @@ const defaultTheme = {
 	leaderboardChart: {
 		rowGap: 12,
 		columnGap: 4,
-		labelSpacing: 1.5,
+		labelSpacing: "xs",
 		deltaColors: [
 			"#FF8C8F",
 			"#757575",

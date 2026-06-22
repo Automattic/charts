@@ -266,7 +266,7 @@ type ChartTheme = {
   leaderboardChart?: {
     /** Gap between rows in the leaderboard grid */rowGap?: number; /** Gap between columns in the leaderboard grid */
     columnGap?: number; /** Spacing between label and progress bars */
-    labelSpacing?: number; /** Primary color for current period bars */
+    labelSpacing?: GapSize; /** Primary color for current period bars */
     primaryColor?: string; /** Secondary color for comparison period bars */
     secondaryColor?: string; /** Delta colors: [negative, neutral, positive] */
     deltaColors?: [string, string, string];
