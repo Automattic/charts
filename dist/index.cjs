@@ -8100,7 +8100,9 @@ var leaderboard_chart_module_default = {
 	"bar": "a8ccharts-GovfoW-bar",
 	"bar--animated": "a8ccharts-GovfoW-bar--animated",
 	"barWithLabelContainer": "a8ccharts-GovfoW-barWithLabelContainer",
+	"chevron": "a8ccharts-GovfoW-chevron",
 	"emptyState": "a8ccharts-GovfoW-emptyState",
+	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
 	"is-overlay": "a8ccharts-GovfoW-is-overlay",
 	"label": "a8ccharts-GovfoW-label",
 	"leaderboardChart": "a8ccharts-GovfoW-leaderboardChart",
@@ -8138,6 +8140,15 @@ const defaultDeltaFormatter = (value) => {
 		signDisplay: "exceptZero"
 	});
 };
+/**
+* Build a bar's width. A hover-inset CSS variable (0 by default) is subtracted
+* so interactive rows can pull the bar's right edge back by a fixed pixel amount
+* on hover — instead of a percentage scale — keeping the bar↔value gap constant.
+*
+* @param share - The bar's share of the row width, as a percentage.
+* @return A CSS width value.
+*/
+const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px))`;
 const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
 	className: leaderboard_chart_module_default.label,
 	children: label
@@ -8149,14 +8160,14 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 		isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
 			style: {
-				width: entry.currentShare + "%",
+				width: getBarWidth(entry.currentShare),
 				backgroundColor: primaryColor
 			}
 		}),
 		withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
 			style: {
-				width: entry.previousShare + "%",
+				width: getBarWidth(entry.previousShare),
 				backgroundColor: secondaryColor
 			}
 		})
@@ -8320,7 +8331,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					columnGap,
 					children: data.map((entry) => {
 						const deltaColor = deltaColors[Math.sign(entry.delta) + 1];
-						return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react$1.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
+						const rowCells = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
 							direction: "column",
 							gap: labelSpacing,
 							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarWithLabel, {
@@ -8341,7 +8352,18 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								style: { color: deltaColor },
 								children: deltaFormatter(entry.delta)
 							})]
-						})] }, entry.id);
+						})] });
+						if (entry.onClick) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+							type: "button",
+							className: leaderboard_chart_module_default.interactiveRow,
+							onClick: entry.onClick,
+							children: [rowCells, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_icons.Icon, {
+								className: leaderboard_chart_module_default.chevron,
+								icon: _wordpress_icons.chevronRight,
+								size: 24
+							})]
+						}, entry.id);
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react$1.Fragment, { children: rowCells }, entry.id);
 					})
 				})
 			})

@@ -17,7 +17,7 @@ import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { useParentSize } from "@visx/responsive";
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
-import { Icon, close } from "@wordpress/icons";
+import { Icon, chevronRight, close } from "@wordpress/icons";
 import { PatternCircles, PatternHexagons, PatternLines, PatternWaves } from "@visx/pattern";
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { Chart } from "react-google-charts";
@@ -7721,7 +7721,9 @@ var leaderboard_chart_module_default = {
 	"bar": "a8ccharts-GovfoW-bar",
 	"bar--animated": "a8ccharts-GovfoW-bar--animated",
 	"barWithLabelContainer": "a8ccharts-GovfoW-barWithLabelContainer",
+	"chevron": "a8ccharts-GovfoW-chevron",
 	"emptyState": "a8ccharts-GovfoW-emptyState",
+	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
 	"is-overlay": "a8ccharts-GovfoW-is-overlay",
 	"label": "a8ccharts-GovfoW-label",
 	"leaderboardChart": "a8ccharts-GovfoW-leaderboardChart",
@@ -7759,6 +7761,15 @@ const defaultDeltaFormatter = (value) => {
 		signDisplay: "exceptZero"
 	});
 };
+/**
+* Build a bar's width. A hover-inset CSS variable (0 by default) is subtracted
+* so interactive rows can pull the bar's right edge back by a fixed pixel amount
+* on hover — instead of a percentage scale — keeping the bar↔value gap constant.
+*
+* @param share - The bar's share of the row width, as a percentage.
+* @return A CSS width value.
+*/
+const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px))`;
 const BarLabel = ({ label }) => /* @__PURE__ */ jsx(Fragment$1, { children: typeof label === "string" ? /* @__PURE__ */ jsx(Text$1, {
 	className: leaderboard_chart_module_default.label,
 	children: label
@@ -7770,14 +7781,14 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 		isPrimaryVisible && /* @__PURE__ */ jsx("div", {
 			className: clsx(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
 			style: {
-				width: entry.currentShare + "%",
+				width: getBarWidth(entry.currentShare),
 				backgroundColor: primaryColor
 			}
 		}),
 		withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ jsx("div", {
 			className: clsx(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
 			style: {
-				width: entry.previousShare + "%",
+				width: getBarWidth(entry.previousShare),
 				backgroundColor: secondaryColor
 			}
 		})
@@ -7941,7 +7952,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					columnGap,
 					children: data.map((entry) => {
 						const deltaColor = deltaColors[Math.sign(entry.delta) + 1];
-						return /* @__PURE__ */ jsxs(Fragment$2, { children: [/* @__PURE__ */ jsx(Stack, {
+						const rowCells = /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Stack, {
 							direction: "column",
 							gap: labelSpacing,
 							children: /* @__PURE__ */ jsx(BarWithLabel, {
@@ -7962,7 +7973,18 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								style: { color: deltaColor },
 								children: deltaFormatter(entry.delta)
 							})]
-						})] }, entry.id);
+						})] });
+						if (entry.onClick) return /* @__PURE__ */ jsxs("button", {
+							type: "button",
+							className: leaderboard_chart_module_default.interactiveRow,
+							onClick: entry.onClick,
+							children: [rowCells, /* @__PURE__ */ jsx(Icon, {
+								className: leaderboard_chart_module_default.chevron,
+								icon: chevronRight,
+								size: 24
+							})]
+						}, entry.id);
+						return /* @__PURE__ */ jsx(Fragment$2, { children: rowCells }, entry.id);
 					})
 				})
 			})

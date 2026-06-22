@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.4-alpha] - unreleased
+## [1.6.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Charts: Leaderboard items can be made interactive via a per-entry onClick, rendering the row as a keyboard-accessible button with a hover chevron.
 
 ### Changed
 - Update package dependencies.
@@ -870,7 +873,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.5.4-alpha]: https://github.com/Automattic/charts/compare/v1.5.3...v1.5.4-alpha
+[1.6.0-alpha]: https://github.com/Automattic/charts/compare/v1.5.3...v1.6.0-alpha
 [1.5.3]: https://github.com/Automattic/charts/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/Automattic/charts/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/Automattic/charts/compare/v1.5.0...v1.5.1

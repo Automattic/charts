@@ -440,10 +440,11 @@
 }
 
 .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar {
-  border-radius: var(--a8c--charts--leaderboard--bar--border-radius, 9999px);
-  z-index: -1;
   height: 100%;
   min-height: 6px;
+  min-width: var(--wpds-dimension-size-5xs, 4px);
+  border-radius: var(--a8c--charts--leaderboard--bar--border-radius, 9999px);
+  z-index: -1;
 }
 
 .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar--animated {
@@ -473,6 +474,79 @@
   color: #666;
   font-size: var(--wpds-typography-font-size-md, 13px);
   font-style: italic;
+}
+
+.a8ccharts-GovfoW-interactiveRow {
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  appearance: none;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  position: relative;
+}
+
+.a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar {
+  transition: opacity .15s, width .15s;
+}
+
+.a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer {
+  transition: transform .15s;
+}
+
+.a8ccharts-GovfoW-interactiveRow:hover, .a8ccharts-GovfoW-interactiveRow:focus-visible {
+  --a8c--charts--leaderboard--bar--hover-inset: var(--wpds-dimension-gap-2xl, 32px);
+}
+
+.a8ccharts-GovfoW-interactiveRow:hover .a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-interactiveRow:focus-visible .a8ccharts-GovfoW-bar {
+  opacity: .5;
+}
+
+.a8ccharts-GovfoW-interactiveRow:hover .a8ccharts-GovfoW-valueContainer, .a8ccharts-GovfoW-interactiveRow:focus-visible .a8ccharts-GovfoW-valueContainer {
+  transform: translateX(calc(var(--a8c--charts--leaderboard--bar--hover-inset) * -1));
+}
+
+.a8ccharts-GovfoW-interactiveRow:hover .a8ccharts-GovfoW-chevron, .a8ccharts-GovfoW-interactiveRow:focus-visible .a8ccharts-GovfoW-chevron {
+  opacity: 1;
+}
+
+[dir="rtl"] .a8ccharts-GovfoW-interactiveRow:hover .a8ccharts-GovfoW-valueContainer, [dir="rtl"] .a8ccharts-GovfoW-interactiveRow:focus-visible .a8ccharts-GovfoW-valueContainer {
+  transform: translateX(var(--a8c--charts--leaderboard--bar--hover-inset));
+}
+
+.a8ccharts-GovfoW-interactiveRow:focus-visible {
+  outline: 2px solid var(--wpds-color-fg-interactive-brand, var(--wp-admin-theme-color, #3858e9));
+  outline-offset: -2px;
+}
+
+.a8ccharts-GovfoW-chevron {
+  inset-inline-end: var(--wpds-dimension-padding-xs, 4px);
+  opacity: 0;
+  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  pointer-events: none;
+  margin-block: auto;
+  transition: opacity .15s;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+[dir="rtl"] .a8ccharts-GovfoW-chevron {
+  transform: scaleX(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-chevron {
+    transition: none;
+  }
 }
 .a8ccharts-gnszbG-pie-chart {
   overflow: hidden;

@@ -9,7 +9,7 @@ import { ScaleInput, ScaleType } from "@visx/scale";
 import { TextProps } from "@visx/text/lib/Text.js";
 import { EventHandlerParams, EventHandlerParams as EventHandlerParams$1, GlyphProps, GridStyles, GridStyles as GridStyles$1, LineStyles, LineStyles as LineStyles$1 } from "@visx/xychart";
 import { GapSize } from "@wordpress/theme";
-import { CSSProperties, ComponentProps, ComponentType, FC, PointerEvent, PropsWithChildren, ReactNode, SVGProps } from "react";
+import { CSSProperties, ComponentProps, ComponentType, FC, MouseEvent, PointerEvent, PropsWithChildren, ReactNode, SVGProps } from "react";
 import { GoogleDataTableColumn, GoogleDataTableColumn as GoogleDataTableColumn$1, GoogleDataTableColumnRoleType, GoogleDataTableRow, GoogleDataTableRow as GoogleDataTableRow$1 } from "react-google-charts";
 import { RenderTooltipParams, RenderTooltipParams as RenderTooltipParams$1, TooltipProps as BaseTooltipProps$1 } from "@visx/xychart/lib/components/Tooltip.js";
 import { TextProps as TextProps$1 } from "@visx/text";
@@ -117,6 +117,19 @@ type LeaderboardEntry = {
    * Optional color for the entry's image/icon
    */
   imageColor?: string;
+  /**
+   * Optional click handler. When provided, the entire row becomes an
+   * interactive `<button>`: clickable and keyboard-focusable (Enter/Space),
+   * with a chevron affordance revealed on hover/focus. The consumer
+   * decides what the action does (e.g. drill-down). Rows without onClick are
+   * inert and render unchanged.
+   *
+   * For links or other interactive affordances (external-link icons, info
+   * tooltips), put them in the `label` render prop instead of using onClick —
+   * a row is either a button (onClick) or carries interactive label content,
+   * never both, since interactive elements cannot be nested in HTML.
+   */
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 type GradientStop = {
   offset: string;
