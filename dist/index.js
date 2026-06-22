@@ -17,7 +17,6 @@ import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { useParentSize } from "@visx/responsive";
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
-import { Icon, chevronRight, close } from "@wordpress/icons";
 import { PatternCircles, PatternHexagons, PatternLines, PatternWaves } from "@visx/pattern";
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { Chart } from "react-google-charts";
@@ -25,6 +24,7 @@ import DOMPurify from "dompurify";
 import { __assign } from "tslib";
 import _extends from "@babel/runtime/helpers/esm/extends";
 import "@babel/runtime/helpers/extends";
+import { Icon, chevronRight } from "@wordpress/icons";
 import { Pie } from "@visx/shape";
 //#region \0rolldown/runtime.js
 var __create = Object.create;
@@ -3059,6 +3059,19 @@ const LineChartAnnotationsOverlay = ({ children }) => {
 		})
 	});
 };
+const CloseIcon = () => /* @__PURE__ */ jsx("svg", {
+	width: "16",
+	height: "16",
+	viewBox: "0 0 24 24",
+	fill: "none",
+	stroke: "currentColor",
+	strokeWidth: "2",
+	strokeLinecap: "round",
+	strokeLinejoin: "round",
+	"aria-hidden": "true",
+	focusable: "false",
+	children: /* @__PURE__ */ jsx("path", { d: "M6 6l12 12M18 6L6 18" })
+});
 const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, renderLabelPopover }) => {
 	const popoverId = useId();
 	const buttonRef = useRef(null);
@@ -3120,10 +3133,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 					popovertargetaction: "hide",
 					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
 					"aria-label": __("Close", "jetpack-charts"),
-					children: /* @__PURE__ */ jsx(Icon, {
-						icon: close,
-						size: 16
-					})
+					children: /* @__PURE__ */ jsx(CloseIcon, {})
 				})]
 			})
 		})]

@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Leaderboard items can be made interactive via a per-entry onClick, rendering the row as a keyboard-accessible button with a hover chevron.
 
 ### Changed
+- Charts: Add React 19 compatibility for consumers.
 - Update package dependencies.
 
 ## [1.5.3] - 2026-06-10

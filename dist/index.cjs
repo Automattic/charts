@@ -43,7 +43,6 @@ let _visx_gradient = require("@visx/gradient");
 let _visx_curve = require("@visx/curve");
 let _visx_responsive = require("@visx/responsive");
 let _visx_annotation = require("@visx/annotation");
-let _wordpress_icons = require("@wordpress/icons");
 let _visx_pattern = require("@visx/pattern");
 let _visx_tooltip = require("@visx/tooltip");
 let react_google_charts = require("react-google-charts");
@@ -52,6 +51,7 @@ dompurify = __toESM(dompurify, 1);
 let _babel_runtime_helpers_esm_extends = require("@babel/runtime/helpers/esm/extends");
 _babel_runtime_helpers_esm_extends = __toESM(_babel_runtime_helpers_esm_extends);
 require("@babel/runtime/helpers/extends");
+let _wordpress_icons = require("@wordpress/icons");
 let _visx_shape = require("@visx/shape");
 //#region src/charts/private/single-chart-context/single-chart-context.tsx
 const ChartInstanceContext = (0, react$1.createContext)(null);
@@ -3063,6 +3063,19 @@ const LineChartAnnotationsOverlay = ({ children }) => {
 		})
 	});
 };
+const CloseIcon = () => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+	width: "16",
+	height: "16",
+	viewBox: "0 0 24 24",
+	fill: "none",
+	stroke: "currentColor",
+	strokeWidth: "2",
+	strokeLinecap: "round",
+	strokeLinejoin: "round",
+	"aria-hidden": "true",
+	focusable: "false",
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M6 6l12 12M18 6L6 18" })
+});
 const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, renderLabelPopover }) => {
 	const popoverId = (0, react$1.useId)();
 	const buttonRef = (0, react$1.useRef)(null);
@@ -3124,10 +3137,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 					popovertargetaction: "hide",
 					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
 					"aria-label": (0, _wordpress_i18n.__)("Close", "jetpack-charts"),
-					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_icons.Icon, {
-						icon: _wordpress_icons.close,
-						size: 16
-					})
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CloseIcon, {})
 				})]
 			})
 		})]
