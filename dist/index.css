@@ -477,10 +477,13 @@
 }
 
 .a8ccharts-GovfoW-interactiveRow {
+  --focus-ring-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px));
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
+  box-sizing: border-box;
   appearance: none;
   width: 100%;
+  padding: var(--focus-ring-width);
   color: inherit;
   font: inherit;
   text-align: inherit;
@@ -489,7 +492,6 @@
   border: 0;
   align-items: center;
   margin: 0;
-  padding: 0;
   display: grid;
   position: relative;
 }
@@ -523,8 +525,9 @@
 }
 
 .a8ccharts-GovfoW-interactiveRow:focus-visible {
-  outline: 2px solid var(--wpds-color-fg-interactive-brand, var(--wp-admin-theme-color, #3858e9));
-  outline-offset: -2px;
+  border-radius: var(--wpds-border-radius-sm, 2px);
+  outline: var(--focus-ring-width) solid var(--wpds-color-stroke-focus-brand, var(--wp-admin-theme-color, #3858e9));
+  outline-offset: calc(-1 * var(--focus-ring-width));
 }
 
 .a8ccharts-GovfoW-chevron {

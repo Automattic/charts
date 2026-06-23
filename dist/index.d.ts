@@ -170,6 +170,16 @@ type LeaderboardEntry = {
    * never both, since interactive elements cannot be nested in HTML.
    */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  /**
+   * Optional accessible name for the interactive row's `<button>`. Only applies
+   * when `onClick` is set — without it the row renders as a Fragment with no
+   * element to receive `aria-label`. By default the button derives its name from
+   * its rendered content (label text plus the formatted value), which is the
+   * right outcome for plain-text labels. Set this when the `label` is JSX whose
+   * text content does not yield a clean name on its own — e.g. an image-only
+   * label — to give assistive tech a deterministic, human-readable name.
+   */
+  ariaLabel?: string;
 };
 type GradientStop = {
   offset: string;
@@ -900,7 +910,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "width" | "height" | "size"> & {
+}: Omit<BarListChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1044,7 +1054,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "width" | "height" | "size"> & {
+}: Omit<GeoChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1120,7 +1130,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
+}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1627,7 +1637,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "width" | "height" | "size"> & {
+}: Omit<SparklineProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;

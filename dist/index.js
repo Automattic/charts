@@ -7773,13 +7773,15 @@ const defaultDeltaFormatter = (value) => {
 };
 /**
 * Build a bar's width. A hover-inset CSS variable (0 by default) is subtracted
-* so interactive rows can pull the bar's right edge back by a fixed pixel amount
-* on hover — instead of a percentage scale — keeping the bar↔value gap constant.
+* on hover, scaled by the bar's share so the pull-back is proportional to its
+* length: the full-length (100%) bar — the one that reaches the value — pulls
+* back the whole inset to keep its gap with the value, while shorter bars pull
+* back proportionally less, down to ~0 for a very short bar.
 *
 * @param share - The bar's share of the row width, as a percentage.
 * @return A CSS width value.
 */
-const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px))`;
+const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px) * ${share} / 100)`;
 const BarLabel = ({ label }) => /* @__PURE__ */ jsx(Fragment$1, { children: typeof label === "string" ? /* @__PURE__ */ jsx(Text$1, {
 	className: leaderboard_chart_module_default.label,
 	children: label
@@ -7988,6 +7990,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 							type: "button",
 							className: leaderboard_chart_module_default.interactiveRow,
 							onClick: entry.onClick,
+							"aria-label": entry.ariaLabel,
 							children: [rowCells, /* @__PURE__ */ jsx(Icon, {
 								className: leaderboard_chart_module_default.chevron,
 								icon: chevronRight,

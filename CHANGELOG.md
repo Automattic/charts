@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.1-alpha] - unreleased
+## [1.7.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Charts: Leaderboard interactive rows gain an opt-in `ariaLabel` for image-only labels, and the hover affordance now shrinks each bar in proportion to its length so small-share rows stay consistent.
 
 ### Changed
 - Charts: Add React 19 compatibility for consumers.
@@ -878,7 +881,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.6.1-alpha]: https://github.com/Automattic/charts/compare/v1.6.0...v1.6.1-alpha
+[1.7.0-alpha]: https://github.com/Automattic/charts/compare/v1.6.0...v1.7.0-alpha
 [1.6.0]: https://github.com/Automattic/charts/compare/v1.5.3...v1.6.0
 [1.5.3]: https://github.com/Automattic/charts/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/Automattic/charts/compare/v1.5.1...v1.5.2
