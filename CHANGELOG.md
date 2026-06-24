@@ -5,15 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.8.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [1.8.0] - 2026-06-24
 ### Added
-- Charts: add comparison mode to the Bar Chart — a translucent shadow bar (standard slot width, 50% opacity) rendered behind each primary bar, paired by group. Primary bars are narrowed to 1/widthFactor of the slot (default widthFactor 1.5 → ~67% width, centered), with widthFactor as the single control.
+- Add comparison mode to the Bar Chart — a translucent shadow bar (standard slot width, 50% opacity) rendered behind each primary bar, paired by group. Primary bars are narrowed to 1/widthFactor of the slot (default widthFactor 1.5 → ~67% width, centered), with widthFactor as the single control. [#49676]
 
 ### Changed
-- Charts: add an internal Center layout primitive and use it for centered chart wrappers.
+- Add an internal Center layout primitive and use it for centered chart wrappers. [#49164]
 
 ## [1.7.0] - 2026-06-23
 ### Added
@@ -888,7 +885,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.8.0-alpha]: https://github.com/Automattic/charts/compare/v1.7.0...v1.8.0-alpha
+[1.8.0]: https://github.com/Automattic/charts/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/Automattic/charts/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/Automattic/charts/compare/v1.5.3...v1.6.0
 [1.5.3]: https://github.com/Automattic/charts/compare/v1.5.2...v1.5.3
