@@ -205,6 +205,15 @@ type SeriesData = {
   data: DataPointDate[] | DataPoint[];
   options?: SeriesDataOptions;
 };
+/**
+ * Visual styling for a bar series of a given semantic type (e.g. 'comparison').
+ * `widthFactor` is the bar width relative to the primary bar slot (1.5 = 150%);
+ * `opacity` sets the shadow translucency.
+ */
+type BarStyles = {
+  widthFactor?: number;
+  opacity?: number;
+};
 type MultipleDataPointsDate = {
   label: string;
   data: DataPointDate[];
@@ -289,6 +298,9 @@ type ChartTheme = {
   };
   lineChart?: {
     lineStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, LineStyles$1>>;
+  };
+  barChart?: {
+    barStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, BarStyles>>;
   }; /** Sparkline specific settings */
   sparkline?: {
     /** Margin around the sparkline chart */margin?: {
@@ -309,6 +321,9 @@ type CompleteChartTheme = Required<ChartTheme> & {
   conversionFunnelChart: Omit<Required<NonNullable<ChartTheme['conversionFunnelChart']>>, 'primaryColor'> & Pick<NonNullable<ChartTheme['conversionFunnelChart']>, 'primaryColor'>;
   lineChart: {
     lineStyles: Record<NonNullable<SeriesDataOptions['type']>, LineStyles$1>;
+  };
+  barChart: {
+    barStyles: Record<NonNullable<SeriesDataOptions['type']>, BarStyles>;
   };
   legend: Required<NonNullable<ChartTheme['legend']>>;
   sparkline: Required<NonNullable<ChartTheme['sparkline']>> & {
@@ -910,7 +925,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "size" | "width" | "height"> & {
+}: Omit<BarListChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1054,7 +1069,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "size" | "width" | "height"> & {
+}: Omit<GeoChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1130,7 +1145,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
+}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1637,7 +1652,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "size" | "width" | "height"> & {
+}: Omit<SparklineProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1685,7 +1700,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
+}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
@@ -1788,6 +1803,7 @@ type GetElementStylesParams = {
 type ElementStyles = {
   color: string;
   lineStyles: LineStyles$1;
+  barStyles: BarStyles;
   glyph: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
   shapeStyles: CSSProperties & LineStyles$1;
 };
