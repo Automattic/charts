@@ -2662,6 +2662,32 @@ const DefaultGlyph = (props) => {
 	});
 };
 //#endregion
+//#region src/charts/private/center/center.module.scss
+var center_module_default = { "center": "a8ccharts-w3qxlG-center" };
+//#endregion
+//#region src/charts/private/center/center.tsx
+/**
+* Centers its children on both axes and fills its parent.
+*
+* A thin wrapper around `Stack` with `align="center"` and `justify="center"`
+* defaults (both overridable) plus `width: 100%; height: 100%`. Reads more
+* honestly than a `Stack` with both axes centered, and lets call sites drop
+* ad-hoc `*__centering` classes. Forwards its ref and spreads remaining props
+* onto the underlying `Stack`.
+*
+* @param props - Stack props; `align`/`justify` default to `"center"`.
+* @param ref   - Forwarded to the underlying element.
+* @return The centered layout element.
+*/
+const Center = (0, react$1.forwardRef)(({ align = "center", justify = "center", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
+	ref,
+	align,
+	justify,
+	className: (0, clsx.default)(center_module_default.center, className),
+	...props
+}));
+Center.displayName = "Center";
+//#endregion
 //#region src/charts/private/svg-empty-state/svg-empty-state.module.scss
 var svg_empty_state_module_default = { "svg-empty-state": "a8ccharts-udGPVq-svg-empty-state" };
 //#endregion
@@ -2686,9 +2712,7 @@ const SvgEmptyState = ({ x, y, width, height, children }) => {
 		y: y - height / 2,
 		width,
 		height,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
-			align: "center",
-			justify: "center",
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 			className: svg_empty_state_module_default["svg-empty-state"],
 			children
 		})
@@ -5618,9 +5642,7 @@ const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 */
 const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", renderPlaceholder }) => {
 	const { getElementStyles, theme: { geoChart: { featureFillColor }, backgroundColor } } = useGlobalChartsContext();
-	const loadingPlaceholder = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
-		align: "center",
-		justify: "center",
+	const loadingPlaceholder = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 		className: (0, clsx.default)("geo-chart", geo_chart_module_default.container, className),
 		style: {
 			width,
@@ -5678,9 +5700,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 		defaultFillColorHex,
 		sanitizedData.hasHtmlTooltips
 	]);
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
-		align: "center",
-		justify: "center",
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 		className: (0, clsx.default)("geo-chart", geo_chart_module_default.container, className),
 		style: {
 			width,
@@ -8727,7 +8747,6 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 //#region src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
 	"pie-chart": "a8ccharts-gnszbG-pie-chart",
-	"pie-chart__centering": "a8ccharts-gnszbG-pie-chart__centering",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
 //#endregion
@@ -8892,11 +8911,8 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 				const innerRadius = thickness === 0 ? 0 : outerRadius * (1 - thickness);
 				const maxCornerRadius = (outerRadius - innerRadius) / 2;
 				const cornerRadius = cornerScale ? Math.min(cornerScale * outerRadius, maxCornerRadius) : 0;
-				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 					ref: containerRef,
-					align: "center",
-					justify: "center",
-					className: pie_chart_module_default["pie-chart__centering"],
 					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 						viewBox: `0 0 ${width} ${height}`,
 						preserveAspectRatio: "xMidYMid meet",
@@ -9009,7 +9025,6 @@ var pie_semi_circle_chart_module_default = {
 	"label": "a8ccharts-YtTOxW-label",
 	"note": "a8ccharts-YtTOxW-note",
 	"pie-semi-circle-chart": "a8ccharts-YtTOxW-pie-semi-circle-chart",
-	"pie-semi-circle-chart__centering": "a8ccharts-YtTOxW-pie-semi-circle-chart__centering",
 	"pie-semi-circle-chart--responsive": "a8ccharts-YtTOxW-pie-semi-circle-chart--responsive"
 };
 //#endregion
@@ -9189,11 +9204,8 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 				const height = width / 2;
 				const radius = height;
 				const innerRadius = radius * (1 - thickness);
-				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 					ref: containerRef,
-					align: "center",
-					justify: "center",
-					className: pie_semi_circle_chart_module_default["pie-semi-circle-chart__centering"],
 					children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
 						width,
 						height,
