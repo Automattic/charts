@@ -925,7 +925,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "size" | "width" | "height"> & {
+}: Omit<BarListChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1069,7 +1069,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "size" | "width" | "height"> & {
+}: Omit<GeoChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1145,7 +1145,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
+}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1652,7 +1652,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "size" | "width" | "height"> & {
+}: Omit<SparklineProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
