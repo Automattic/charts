@@ -5600,6 +5600,11 @@ var geo_chart_module_default = { "container": "a8ccharts-8hS2IW-container" };
 */
 const DEFAULT_FEATURE_FILL_COLOR = "#ffffff";
 const DEFAULT_BACKGROUND_COLOR = "#ffffff";
+const GEO_CHART_PACKAGES = [
+	"corechart",
+	"controls",
+	"geochart"
+];
 /**
 * Renders a geographical chart using Google Charts GeoChart to visualize data.
 *
@@ -5688,6 +5693,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 		},
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_google_charts.Chart, {
 			chartType: "GeoChart",
+			chartPackages: GEO_CHART_PACKAGES,
 			width,
 			height,
 			data: sanitizedData.data,
