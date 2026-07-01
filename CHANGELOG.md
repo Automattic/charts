@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Bar Chart: Declare a local process type so the comparison-bars module type-checks when imported as source by other packages.
+- Update package dependencies.
 
 ### Fixed
 - GeoChart: Load the required Google Charts package explicitly.
