@@ -6,7 +6,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { Children, Fragment, Fragment as Fragment$2, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, forwardRef as forwardRef$2, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
 import { color, hsl } from "@visx/vendor/d3-color";
-import { differenceInHours, differenceInYears, isValid, parse, parseISO } from "date-fns";
+import { addDays, differenceInCalendarWeeks, differenceInHours, differenceInYears, format, isValid, parse, parseISO, startOfWeek } from "date-fns";
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
@@ -444,6 +444,35 @@ const lightenHexColor = (hex, blend) => {
 	const newB = Math.round(b + (255 - b) * blend);
 	return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
 };
+/**
+* WCAG relative luminance of a hex color (0 = black, 1 = white).
+*
+* @param  hex - Hex color string (e.g., '#98C8DF')
+* @return Relative luminance in the range [0, 1]
+* @throws {Error} if hex string is malformed
+*/
+const relativeLuminance = (hex) => {
+	validateHexColor(hex);
+	const toLinear = (value) => {
+		const channel = value / 255;
+		return channel <= .03928 ? channel / 12.92 : Math.pow((channel + .055) / 1.055, 2.4);
+	};
+	const r = toLinear(parseInt(hex.slice(1, 3), 16));
+	const g = toLinear(parseInt(hex.slice(3, 5), 16));
+	const b = toLinear(parseInt(hex.slice(5, 7), 16));
+	return .2126 * r + .7152 * g + .0722 * b;
+};
+/**
+* Whether light text reads better than dark text on the given background, using the W3C
+* luminance threshold (0.179) that maximizes contrast against black vs white.
+*
+* @param backgroundHex - Hex background color
+* @return true if light text should be used; false (dark text) for malformed colors
+*/
+const prefersLightText = (backgroundHex) => {
+	if (!isValidHexColor(backgroundHex)) return false;
+	return relativeLuminance(backgroundHex) <= .179;
+};
 //#endregion
 //#region src/utils/resolve-css-var.ts
 /**
@@ -755,6 +784,10 @@ const defaultTheme = {
 			left: 2
 		},
 		strokeWidth: 1.5
+	},
+	heatmapChart: {
+		compactCellGap: 2,
+		compactCellSize: 11
 	}
 };
 //#endregion
@@ -2802,12 +2835,17 @@ function withResponsive(WrappedComponent) {
 		const effectiveWidth = measuredWidth || width || 0;
 		const effectiveHeight = measuredHeight || height || 0;
 		const defaultHeight = hasAspectRatio ? "auto" : "100%";
+		const aspectRatioStyle = hasAspectRatio && aspectRatio ? {
+			aspectRatio: `${1 / aspectRatio}`,
+			maxWidth: width === void 0 ? maxWidth : void 0
+		} : null;
 		return /* @__PURE__ */ jsx("div", {
 			ref: parentRef,
 			className: with_responsive_module_default.container,
 			style: {
 				width: width ?? "100%",
-				height: height ?? defaultHeight
+				height: height ?? defaultHeight,
+				...aspectRatioStyle
 			},
 			children: /* @__PURE__ */ jsx(WrappedComponent, {
 				width: effectiveWidth,
@@ -5704,6 +5742,403 @@ const GeoChartWithProvider = (props) => {
 };
 GeoChartWithProvider.displayName = "GeoChart";
 const GeoChartResponsive = withResponsive(GeoChartWithProvider);
+//#endregion
+//#region src/charts/heatmap-chart/heatmap-chart.module.scss
+var heatmap_chart_module_default = {
+	"heatmap-chart": "a8ccharts-O3YMOW-heatmap-chart",
+	"heatmap-chart__cell": "a8ccharts-O3YMOW-heatmap-chart__cell",
+	"heatmap-chart__cell--filled": "a8ccharts-O3YMOW-heatmap-chart__cell--filled",
+	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
+	"heatmap-chart__cell--strong": "a8ccharts-O3YMOW-heatmap-chart__cell--strong",
+	"heatmap-chart__cell-value": "a8ccharts-O3YMOW-heatmap-chart__cell-value",
+	"heatmap-chart__col-label": "a8ccharts-O3YMOW-heatmap-chart__col-label",
+	"heatmap-chart__empty": "a8ccharts-O3YMOW-heatmap-chart__empty",
+	"heatmap-chart__grid": "a8ccharts-O3YMOW-heatmap-chart__grid",
+	"heatmap-chart__grid--compact": "a8ccharts-O3YMOW-heatmap-chart__grid--compact",
+	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
+	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
+	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label"
+};
+//#endregion
+//#region src/charts/heatmap-chart/private/use-heatmap-colors.ts
+const isPresent = (value) => value !== null && value !== void 0 && !isNaN(value);
+/**
+* Get the min and max values from heatmap data, ignoring null/NaN.
+* @param data - The heatmap columns
+* @return Tuple of [min, max] values
+*/
+const getValueExtent = (data) => {
+	let min = Infinity;
+	let max = -Infinity;
+	for (const column of data) for (const cell of column.data) {
+		if (!isPresent(cell.value)) continue;
+		if (cell.value < min) min = cell.value;
+		if (cell.value > max) max = cell.value;
+	}
+	if (min === Infinity) return [0, 0];
+	return [min, max];
+};
+/**
+* Normalize a value to 0–1 within the extent. A flat extent (min === max) maps to 1.
+* @param value  - The value to normalize
+* @param extent - Tuple of [min, max] values for the normalization range
+* @return Normalized value between 0 and 1
+*/
+const getNormalizedValue = (value, extent) => {
+	const [min, max] = extent;
+	if (min === max) return 1;
+	return Math.min(1, Math.max(0, (value - min) / (max - min)));
+};
+//#endregion
+//#region src/charts/heatmap-chart/private/build-calendar-data.ts
+/** Rows that get a weekday label (Mon, Wed, Fri with a Monday week start). */
+const LABELLED_ROWS = [
+	0,
+	2,
+	4
+];
+const toDate = (point) => {
+	if (point.date instanceof Date && !isNaN(point.date.getTime())) return point.date;
+	if (point.dateString) {
+		const parsed = parseISO(point.dateString);
+		if (!isNaN(parsed.getTime())) return parsed;
+	}
+	return null;
+};
+const buildCalendarHeatmapData = (series, options = {}) => {
+	const weekStartsOn = options.weekStartsOn ?? 1;
+	const entries = series.map((point) => ({
+		date: toDate(point),
+		value: point.value
+	})).filter((entry) => entry.date !== null);
+	if (!entries.length) return {
+		data: [],
+		rowLabels: []
+	};
+	const valueByDay = /* @__PURE__ */ new Map();
+	let minDate = entries[0].date;
+	let maxDate = entries[0].date;
+	for (const { date, value } of entries) {
+		valueByDay.set(format(date, "yyyy-MM-dd"), value);
+		if (date < minDate) minDate = date;
+		if (date > maxDate) maxDate = date;
+	}
+	const gridStart = startOfWeek(minDate, { weekStartsOn });
+	const weekCount = differenceInCalendarWeeks(maxDate, gridStart, { weekStartsOn }) + 1;
+	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? format(addDays(gridStart, row), "EEE") : "");
+	const data = [];
+	let previousMonth = -1;
+	for (let week = 0; week < weekCount; week++) {
+		const columnStart = addDays(gridStart, week * 7);
+		const month = columnStart.getMonth();
+		const label = month !== previousMonth ? format(columnStart, "MMM") : "";
+		previousMonth = month;
+		const cells = [];
+		for (let row = 0; row < 7; row++) {
+			const day = addDays(gridStart, week * 7 + row);
+			const key = format(day, "yyyy-MM-dd");
+			cells.push({
+				label: format(day, "EEE, MMM d, yyyy"),
+				value: valueByDay.has(key) ? valueByDay.get(key) : null
+			});
+		}
+		data.push({
+			label,
+			data: cells
+		});
+	}
+	return {
+		data,
+		rowLabels
+	};
+};
+//#endregion
+//#region src/charts/heatmap-chart/private/heatmap-legend.tsx
+const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
+	const context = useContext(HeatmapContext);
+	const { legend } = useGlobalChartsTheme();
+	if (!context) return null;
+	const { primaryColorHex } = context;
+	const labelStyle = legend.labelStyles;
+	return /* @__PURE__ */ jsxs(Stack, {
+		direction: "row",
+		gap: "xs",
+		align: "center",
+		children: [
+			/* @__PURE__ */ jsx(Text$1, {
+				variant: "body-sm",
+				style: labelStyle,
+				children: lessLabel ?? __("Less", "jetpack-charts")
+			}),
+			/* @__PURE__ */ jsx(Stack, {
+				direction: "row",
+				gap: "xs",
+				children: Array.from({ length: steps }, (_, index) => {
+					const intensity = steps <= 1 ? 1 : index / (steps - 1);
+					return /* @__PURE__ */ jsx("span", {
+						"aria-hidden": "true",
+						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
+						style: {
+							"--heatmap-primary": primaryColorHex,
+							"--intensity": intensity
+						}
+					}, index);
+				})
+			}),
+			/* @__PURE__ */ jsx(Text$1, {
+				variant: "body-sm",
+				style: labelStyle,
+				children: moreLabel ?? __("More", "jetpack-charts")
+			})
+		]
+	});
+};
+//#endregion
+//#region src/charts/heatmap-chart/heatmap-chart.tsx
+const HeatmapContext = createContext(null);
+const CELL_MIX_FLOOR = .15;
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, rowLabels = [], primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
+	const chartId = useChartId(providedChartId);
+	const { getElementStyles, theme } = useGlobalChartsContext();
+	const { heatmapChart: heatmapChartSettings } = theme;
+	const { nonLegendChildren } = useChartChildren(children, "HeatmapChart");
+	const [selectedIndex, setSelectedIndex] = useState();
+	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, showTooltip, hideTooltip } = useTooltip();
+	const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal({
+		detectBounds: true,
+		scroll: true
+	});
+	const containerBoundsRef = useRef(containerBounds);
+	containerBoundsRef.current = containerBounds;
+	const { color: primaryColorHex } = getElementStyles({
+		index: 0,
+		overrideColor: primaryColor || heatmapChartSettings.primaryColor
+	});
+	const primaryHex = normalizeColorToHex(primaryColorHex);
+	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && prefersLightText(lightenHexColor(primaryHex, 1 - (CELL_MIX_FLOOR + (1 - CELL_MIX_FLOOR) * intensity)));
+	const extent = useMemo(() => getValueExtent(data), [data]);
+	const heatmapContext = useMemo(() => ({
+		extent,
+		primaryColorHex
+	}), [extent, primaryColorHex]);
+	const columns = data.length;
+	const rows = Math.max(0, ...data.map((column) => column.data.length));
+	const { compactCellGap, compactCellSize } = heatmapChartSettings;
+	const drawValues = showValues ?? !compact;
+	const buildTooltipData = useCallback((columnIndex, rowIndex) => {
+		const cell = data[columnIndex]?.data[rowIndex];
+		return {
+			value: cell?.value ?? null,
+			rowLabel: rowLabels[rowIndex],
+			columnLabel: data[columnIndex]?.label,
+			cellLabel: cell?.label,
+			row: rowIndex,
+			column: columnIndex
+		};
+	}, [data, rowLabels]);
+	const onChartBlur = useCallback(() => {
+		setSelectedIndex(void 0);
+		hideTooltip();
+	}, [hideTooltip]);
+	const onChartKeyDown = useCallback((event) => {
+		if (![
+			"ArrowLeft",
+			"ArrowRight",
+			"ArrowUp",
+			"ArrowDown",
+			"Escape",
+			"Tab"
+		].includes(event.key)) return;
+		if (event.key === "Tab" || event.key === "Escape") {
+			setSelectedIndex(void 0);
+			hideTooltip();
+			return;
+		}
+		event.preventDefault();
+		if (selectedIndex === void 0) {
+			setSelectedIndex(0);
+			return;
+		}
+		let col = Math.floor(selectedIndex / rows);
+		let row = selectedIndex % rows;
+		if (event.key === "ArrowRight") col = Math.min(col + 1, columns - 1);
+		else if (event.key === "ArrowLeft") col = Math.max(col - 1, 0);
+		else if (event.key === "ArrowDown") row = Math.min(row + 1, rows - 1);
+		else if (event.key === "ArrowUp") row = Math.max(row - 1, 0);
+		setSelectedIndex(col * rows + row);
+	}, [
+		rows,
+		columns,
+		selectedIndex,
+		hideTooltip
+	]);
+	const handleCellMouseMove = useCallback((event) => {
+		if (!withTooltips) return;
+		const target = event.currentTarget;
+		const columnIndex = Number(target.dataset.column);
+		const rowIndex = Number(target.dataset.row);
+		const bounds = containerBoundsRef.current;
+		showTooltip({
+			tooltipLeft: event.clientX - bounds.left,
+			tooltipTop: event.clientY - bounds.top,
+			tooltipData: buildTooltipData(columnIndex, rowIndex)
+		});
+	}, [
+		withTooltips,
+		showTooltip,
+		buildTooltipData
+	]);
+	const handleCellMouseLeave = useCallback(() => {
+		if (withTooltips && selectedIndex === void 0) hideTooltip();
+	}, [
+		withTooltips,
+		selectedIndex,
+		hideTooltip
+	]);
+	useEffect(() => {
+		if (!withTooltips || selectedIndex === void 0) return;
+		const col = Math.floor(selectedIndex / rows);
+		const row = selectedIndex % rows;
+		const rect = (typeof document !== "undefined" ? document.getElementById(`${chartId}-cell-${col}-${row}`) : null)?.getBoundingClientRect();
+		const bounds = containerBoundsRef.current;
+		showTooltip({
+			tooltipLeft: rect ? rect.left + rect.width / 2 - bounds.left : 0,
+			tooltipTop: rect ? rect.top + rect.height / 2 - bounds.top : 0,
+			tooltipData: buildTooltipData(col, row)
+		});
+	}, [
+		selectedIndex,
+		withTooltips,
+		rows,
+		chartId,
+		buildTooltipData,
+		showTooltip
+	]);
+	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim() }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
+	if (!columns || !rows) return /* @__PURE__ */ jsx(Center, {
+		className: clsx("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className),
+		style: {
+			width: width || void 0,
+			height: height || void 0
+		},
+		children: /* @__PURE__ */ jsx("span", {
+			className: heatmap_chart_module_default["heatmap-chart__empty"],
+			children: __("No data available", "jetpack-charts")
+		})
+	});
+	const trackSize = compact ? "var(--heatmap-cell-size)" : "minmax(0, 1fr)";
+	const gridStyle = {
+		"--heatmap-primary": primaryColorHex,
+		gridTemplateColumns: `auto repeat(${columns}, ${trackSize})`,
+		gridTemplateRows: `auto repeat(${rows}, ${trackSize})`
+	};
+	if (compact) {
+		gridStyle["--heatmap-cell-gap"] = `${compactCellGap}px`;
+		gridStyle["--heatmap-cell-size"] = `${compactCellSize}px`;
+	}
+	const activeDescendant = selectedIndex !== void 0 ? `${chartId}-cell-${Math.floor(selectedIndex / rows)}-${selectedIndex % rows}` : void 0;
+	return /* @__PURE__ */ jsx(HeatmapContext.Provider, {
+		value: heatmapContext,
+		children: /* @__PURE__ */ jsx(SingleChartContext.Provider, {
+			value: { chartId },
+			children: /* @__PURE__ */ jsxs(ChartLayout, {
+				legendPosition: "bottom",
+				legendChildren: [],
+				trailingContent: nonLegendChildren,
+				gap,
+				className: clsx("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className),
+				style: {
+					width: width || void 0,
+					height: height || void 0
+				},
+				"data-chart-id": `heatmap-chart-${chartId}`,
+				children: [/* @__PURE__ */ jsxs("div", {
+					ref: containerRef,
+					role: "grid",
+					"aria-label": __("Heatmap chart", "jetpack-charts"),
+					"aria-rowcount": rows,
+					"aria-colcount": columns,
+					"aria-activedescendant": activeDescendant,
+					tabIndex: 0,
+					onBlur: onChartBlur,
+					onKeyDown: onChartKeyDown,
+					className: clsx(heatmap_chart_module_default["heatmap-chart__grid"], { [heatmap_chart_module_default["heatmap-chart__grid--compact"]]: compact }),
+					style: gridStyle,
+					children: [
+						/* @__PURE__ */ jsx("span", { "aria-hidden": "true" }),
+						data.map((column, columnIndex) => /* @__PURE__ */ jsx("span", {
+							"aria-hidden": "true",
+							className: heatmap_chart_module_default["heatmap-chart__col-label"],
+							children: column.label
+						}, `col-${columnIndex}`)),
+						Array.from({ length: rows }).map((_row, rowIndex) => {
+							const labelVisible = !compact || rowIndex % 2 === 0;
+							return /* @__PURE__ */ jsxs("div", {
+								role: "row",
+								"aria-rowindex": rowIndex + 1,
+								className: heatmap_chart_module_default["heatmap-chart__row"],
+								children: [/* @__PURE__ */ jsx("span", {
+									"aria-hidden": "true",
+									className: heatmap_chart_module_default["heatmap-chart__row-label"],
+									children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
+								}), data.map((column, columnIndex) => {
+									const value = column.data[rowIndex]?.value ?? null;
+									const present = isPresent(value);
+									const normalized = present ? getNormalizedValue(value, extent) : 0;
+									const flatIndex = columnIndex * rows + rowIndex;
+									const info = buildTooltipData(columnIndex, rowIndex);
+									const accessibleLabel = `${info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim()}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
+									return /* @__PURE__ */ jsx("div", {
+										id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
+										role: "gridcell",
+										tabIndex: -1,
+										"aria-colindex": columnIndex + 1,
+										"aria-label": accessibleLabel,
+										"data-column": columnIndex,
+										"data-row": rowIndex,
+										className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], {
+											[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: present,
+											[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: present && cellHasLightText(normalized),
+											[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
+										}),
+										style: present ? { "--intensity": normalized } : void 0,
+										onMouseMove: handleCellMouseMove,
+										onMouseLeave: handleCellMouseLeave,
+										children: drawValues && present && /* @__PURE__ */ jsx("span", {
+											className: heatmap_chart_module_default["heatmap-chart__cell-value"],
+											children: formatNumberCompact(value)
+										})
+									}, `cell-${columnIndex}-${rowIndex}`);
+								})]
+							}, `row-${rowIndex}`);
+						})
+					]
+				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, {
+					top: tooltipTop,
+					left: tooltipLeft,
+					children: /* @__PURE__ */ jsx("div", {
+						role: "tooltip",
+						tabIndex: -1,
+						children: (renderTooltip ?? defaultRenderTooltip)(tooltipData)
+					})
+				})]
+			})
+		})
+	});
+};
+const HeatmapChartWithProvider = (props) => {
+	if (useContext(GlobalChartsContext)) return /* @__PURE__ */ jsx(HeatmapChartInternal, { ...props });
+	return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(HeatmapChartInternal, { ...props }) });
+};
+HeatmapChartWithProvider.displayName = "HeatmapChart";
+const HeatmapChart = attachSubComponents(HeatmapChartWithProvider, { Legend: HeatmapLegend });
+const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ jsx(HeatmapChartWithProvider, {
+	...props,
+	width: void 0,
+	height: void 0
+});
+HeatmapChartResponsiveInner.displayName = "HeatmapChart";
+const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+warning@3.49.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
@@ -9093,6 +9528,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 
 //# sourceMappingURL=index.js.map
