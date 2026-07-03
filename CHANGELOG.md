@@ -19,6 +19,7 @@ This is an alpha version! The changes listed here are not final.
 ### Fixed
 - Conversion Funnel Chart: Let the funnel shrink to fit height-constrained cards instead of enforcing a 200px minimum that forced a scrollbar.
 - GeoChart: Load the required Google Charts package explicitly.
+- Line Chart: Fix typing on `.gradient.from` and `.gradient.to` to better match behavior and documentation.
 
 ## [1.8.1] - 2026-06-26
 ### Fixed
