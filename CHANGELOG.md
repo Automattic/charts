@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Conversion Funnel Chart: Let the funnel shrink to fit height-constrained cards instead of enforcing a 200px minimum that forced a scrollbar.
 - GeoChart: Load the required Google Charts package explicitly.
 
 ## [1.8.1] - 2026-06-26
