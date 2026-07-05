@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Bar Chart: Declare a local process type so the comparison-bars module type-checks when imported as source by other packages.
+- Charts: replace hardcoded surface, foreground, and UI colors with WPDS design tokens.
 - Update package dependencies.
 
 ### Fixed

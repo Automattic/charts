@@ -710,7 +710,7 @@ const getChartColor = (index, colorCache) => {
 * Default theme configuration
 */
 const defaultTheme = {
-	backgroundColor: "#FFFFFF",
+	backgroundColor: "var(--wpds-color-bg-surface-neutral-strong, #fff)",
 	labelBackgroundColor: "transparent",
 	labelTextColor: "#FFFFFF",
 	colors: [
@@ -721,56 +721,59 @@ const defaultTheme = {
 		"#FF8C8F"
 	],
 	gridStyles: {
-		stroke: "#DCDCDE",
+		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
 		strokeWidth: 1
 	},
 	tickLength: 4,
 	gridColor: "",
 	gridColorDark: "",
-	xTickLineStyles: { stroke: "black" },
+	xTickLineStyles: {
+		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
+		strokeWidth: 1
+	},
 	xAxisLineStyles: {
-		stroke: "#DCDCDE",
+		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
 		strokeWidth: 1
 	},
 	legend: {
-		labelStyles: { color: "var(--jp-gray-80, #2c3338)" },
+		labelStyles: { color: "var(--wpds-color-fg-content-neutral, #1e1e1e)" },
 		containerStyles: {},
 		shapeStyles: []
 	},
 	seriesLineStyles: [],
 	glyphs: [],
 	svgLabelSmall: {
-		fill: "var(--jp-gray-80, #2c3338)",
+		fill: "var(--wpds-color-fg-content-neutral, #1e1e1e)",
 		fontFamily: "inherit"
 	},
 	svgLabelBig: { fontFamily: "inherit" },
 	annotationStyles: {
 		label: {
-			anchorLineStroke: "var(--jp-gray-80, #2c3338)",
-			backgroundFill: "#fff"
+			anchorLineStroke: "var(--wpds-color-fg-content-neutral, #1e1e1e)",
+			backgroundFill: "var(--wpds-color-bg-surface-neutral-strong, #fff)"
 		},
-		connector: { stroke: "var(--jp-gray-80, #2c3338)" },
+		connector: { stroke: "var(--wpds-color-fg-content-neutral, #1e1e1e)" },
 		circleSubject: {
 			stroke: "transparent",
-			fill: "var(--jp-gray-80, #2c3338)",
+			fill: "var(--wpds-color-fg-content-neutral, #1e1e1e)",
 			radius: 5
 		}
 	},
-	geoChart: { featureFillColor: "var(--jp-gray-0, #f6f7f7)" },
+	geoChart: { featureFillColor: "var(--wpds-color-bg-surface-neutral-weak, #f4f4f4)" },
 	leaderboardChart: {
 		rowGap: 12,
 		columnGap: 4,
 		labelSpacing: "xs",
 		deltaColors: [
-			"#FF8C8F",
-			"#757575",
-			"#1F9828"
+			"var(--wpds-color-fg-content-error-weak, #cc1818)",
+			"var(--wpds-color-fg-content-neutral-weak, #707070)",
+			"var(--wpds-color-fg-content-success-weak, #008030)"
 		]
 	},
 	conversionFunnelChart: {
-		backgroundColor: "#F3F4F6",
-		positiveChangeColor: "#1F9828",
-		negativeChangeColor: "#FF8C8F"
+		backgroundColor: "var(--wpds-color-bg-surface-neutral-weak, #f4f4f4)",
+		positiveChangeColor: "var(--wpds-color-fg-content-success-weak, #008030)",
+		negativeChangeColor: "var(--wpds-color-fg-content-error-weak, #cc1818)"
 	},
 	lineChart: { lineStyles: { comparison: {
 		strokeDasharray: "4 4",
@@ -1004,13 +1007,31 @@ const useDeepMemo = (value) => {
 };
 //#endregion
 //#region src/hooks/use-xychart-theme.ts
+const resolveColor = (value) => value ? resolveCssVariable(value) ?? value : value;
 const useXYChartTheme = (data) => {
 	const theme = useGlobalChartsTheme();
 	return (0, react$1.useMemo)(() => {
 		const seriesColors = (data ?? []).map((series) => series.options?.stroke).filter((color) => Boolean(color));
 		return (0, _visx_xychart.buildChartTheme)({
 			...theme,
-			colors: [...seriesColors, ...theme.colors ?? []]
+			colors: [...seriesColors, ...theme.colors ?? []],
+			backgroundColor: resolveColor(theme.backgroundColor),
+			gridStyles: theme.gridStyles && {
+				...theme.gridStyles,
+				stroke: resolveColor(theme.gridStyles.stroke)
+			},
+			xAxisLineStyles: theme.xAxisLineStyles && {
+				...theme.xAxisLineStyles,
+				stroke: resolveColor(theme.xAxisLineStyles.stroke)
+			},
+			xTickLineStyles: theme.xTickLineStyles && {
+				...theme.xTickLineStyles,
+				stroke: resolveColor(theme.xTickLineStyles.stroke)
+			},
+			svgLabelSmall: theme.svgLabelSmall && {
+				...theme.svgLabelSmall,
+				fill: resolveColor(theme.svgLabelSmall.fill)
+			}
 		});
 	}, [theme, data]);
 };
@@ -3290,6 +3311,7 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 	const labelRef = (0, react$1.useRef)(null);
 	const [height, setHeight] = (0, react$1.useState)(null);
 	const styles = (0, deepmerge.default)(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
+	const resolveColor = (value) => value ? resolveCssVariable(value) ?? value : value;
 	(0, react$1.useEffect)(() => {
 		if (labelRef.current?.getBBox) setHeight(labelRef.current.getBBox().height);
 	}, []);
@@ -3372,8 +3394,15 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 		dx,
 		dy,
 		children: [
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_annotation.Connector, { ...styles?.connector }),
-			subjectType === "circle" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_annotation.CircleSubject, { ...styles?.circleSubject }),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_annotation.Connector, {
+				...styles?.connector,
+				stroke: resolveColor(styles?.connector?.stroke)
+			}),
+			subjectType === "circle" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_annotation.CircleSubject, {
+				...styles?.circleSubject,
+				fill: resolveColor(styles?.circleSubject?.fill),
+				stroke: resolveColor(styles?.circleSubject?.stroke)
+			}),
 			subjectType === "line-vertical" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_annotation.LineSubject, {
 				min: yMax,
 				max: yMin,
@@ -3407,6 +3436,8 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 					title,
 					subtitle,
 					...styles?.label,
+					anchorLineStroke: resolveColor(styles?.label?.anchorLineStroke),
+					backgroundFill: resolveColor(styles?.label?.backgroundFill),
 					...labelPosition,
 					horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally),
 					verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, height ?? ANNOTATION_INIT_HEIGHT)
@@ -3523,6 +3554,7 @@ const LineChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const providerTheme = useGlobalChartsTheme();
+	const resolvedBackgroundColor = resolveCssVariable(providerTheme.backgroundColor) ?? providerTheme.backgroundColor;
 	const theme = useXYChartTheme(data);
 	const chartId = useChartId(providedChartId);
 	const chartRef = (0, react$1.useRef)(null);
@@ -3770,7 +3802,7 @@ const LineChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 												from: color,
 												fromOpacity: .4,
 												toOpacity: .1,
-												to: providerTheme.backgroundColor,
+												to: resolvedBackgroundColor,
 												...seriesData.options?.gradient,
 												children: seriesData.options?.gradient?.stops?.map((stop, stopIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("stop", {
 													offset: stop.offset,
@@ -4274,7 +4306,7 @@ const AreaChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 									stacked,
 									stackOffset,
 									getElementStyles,
-									strokeColor: providerTheme.backgroundColor
+									strokeColor: resolveCssVariable(providerTheme.backgroundColor) ?? providerTheme.backgroundColor
 								})] }),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AreaChartScalesRef, {
 									chartRef: internalChartRef,
