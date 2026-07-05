@@ -15,6 +15,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Bar Chart: Declare a local process type so the comparison-bars module type-checks when imported as source by other packages.
 - Charts: replace hardcoded surface, foreground, and UI colors with WPDS design tokens.
+- Charts: tokenize box-shadow, transition, and animation values with WPDS elevation and motion tokens. Shadows now use --wpds-elevation-sm and motion uses --wpds-motion-duration/easing tokens, making elevation and motion themeable; chart entrance animations move to the design system's motion scale (400ms).
 - Update package dependencies.
 
 ### Fixed

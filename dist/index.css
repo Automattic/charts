@@ -9,7 +9,7 @@
 .a8ccharts-04TogW-legend-item--interactive {
   cursor: pointer;
   user-select: none;
-  transition: opacity .2s;
+  transition: opacity var(--wpds-motion-duration-md, .2s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
 .a8ccharts-04TogW-legend-item--interactive:hover {
@@ -57,11 +57,11 @@
   color: #fff;
   border-radius: var(--wpds-border-radius-md, 4px);
   font-size: var(--wpds-typography-font-size-md, 13px);
+  box-shadow: var(--wpds-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005);
   pointer-events: none;
   background-color: #000000d9;
   position: absolute;
   transform: translate(-50%, -100%);
-  box-shadow: 0 1px 2px #0000001a;
 }
 .a8ccharts-fpNVAq-chart-layout__content {
   flex: 1;
@@ -103,12 +103,12 @@
   border: var(--wpds-border-width-xs, 1px) solid var(--charts-zoom-reset-border, #00000029);
   border-radius: var(--wpds-border-radius-md, 4px);
   cursor: pointer;
+  box-shadow: var(--wpds-elevation-xs, 0 1px 1px 0 #00000008, 0 1px 2px 0 #00000005, 0 3px 3px 0 #00000005, 0 4px 4px 0 #00000003);
   justify-content: center;
   align-items: center;
   padding: 0;
   display: inline-flex;
   position: absolute;
-  box-shadow: 0 1px 2px #00000014;
 }
 
 .a8ccharts-y6bXNq-x-zoom__reset:hover {
@@ -131,7 +131,7 @@
 
 .a8ccharts-inuQka-line-chart--animated path {
   transform-origin: 0 95%;
-  animation: 1s ease-out forwards a8ccharts-inuQka-rise;
+  animation: a8ccharts-inuQka-rise var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleY(0);
 }
 
@@ -186,11 +186,11 @@
   border-radius: var(--wpds-border-radius-md, 4px);
   min-width: 125px;
   font-size: var(--wpds-typography-font-size-md, 13px);
+  box-shadow: var(--wpds-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005);
   margin: var(--wpds-dimension-gap-sm, 8px);
   visibility: hidden;
   border: none;
   position: fixed;
-  box-shadow: 0 1px 2px #0000001a;
 }
 
 .a8ccharts-inuQka-line-chart__annotation-label-popover--visible {
@@ -234,7 +234,7 @@
 
 .a8ccharts-jlynaq-area-chart--animated path {
   transform-origin: 0 95%;
-  animation: 1s ease-out forwards a8ccharts-jlynaq-rise;
+  animation: a8ccharts-jlynaq-rise var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleY(0);
 }
 
@@ -254,7 +254,7 @@
 .a8ccharts-97yN9W-bar-chart--animated rect {
   transform-origin: bottom;
   transform-box: fill-box;
-  animation: 1s ease-out forwards a8ccharts-97yN9W-rise;
+  animation: a8ccharts-97yN9W-rise var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleY(0);
 }
 
@@ -267,7 +267,7 @@
 .a8ccharts-97yN9W-bar-chart--animated-horizontal rect {
   transform-origin: 0;
   transform-box: fill-box;
-  animation: 1s ease-out forwards a8ccharts-97yN9W-stretch;
+  animation: a8ccharts-97yN9W-stretch var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleX(0);
 }
 
@@ -319,7 +319,7 @@
 }
 
 .a8ccharts-mGEVca-funnel-step--animated {
-  transition: opacity .3s;
+  transition: opacity var(--wpds-motion-duration-lg, .3s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
 .a8ccharts-mGEVca-funnel-step--blurred {
@@ -359,7 +359,7 @@
 .a8ccharts-mGEVca-funnel-bar--animated {
   transform-origin: bottom;
   transform-box: fill-box;
-  animation: 1s ease-out forwards a8ccharts-mGEVca-stretch;
+  animation: a8ccharts-mGEVca-stretch var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleY(0);
 }
 
@@ -373,7 +373,7 @@
   background: var(--wpds-color-bg-surface-neutral-strong, #fff);
   border-radius: var(--wpds-border-radius-md, 4px) !important;
   padding: var(--wpds-dimension-padding-md, 12px) !important;
-  box-shadow: 0 1px 3px #00000026, 0 3px 9px #0000001f !important;
+  box-shadow: var(--wpds-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005) !important;
 }
 
 .a8ccharts-mGEVca-tooltip-title {
@@ -490,7 +490,7 @@
   background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), transparent);
 }
 .a8ccharts-GovfoW-leaderboardChart {
-  transition: opacity .3s ease-in-out;
+  transition: opacity var(--wpds-motion-duration-lg, .3s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
 .a8ccharts-GovfoW-leaderboardChart--responsive {
@@ -540,7 +540,7 @@
 .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar--animated {
   transform-origin: 0;
   transform-box: fill-box;
-  animation: 1s ease-out forwards a8ccharts-GovfoW-stretch;
+  animation: a8ccharts-GovfoW-stretch var(--wpds-motion-duration-xl, .4s) var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1)) forwards;
   transform: scaleX(0);
 }
 
@@ -587,11 +587,11 @@
 }
 
 .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar {
-  transition: opacity .15s, width .15s;
+  transition: opacity var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1)), width var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
 .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer {
-  transition: transform .15s;
+  transition: transform var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
 .a8ccharts-GovfoW-interactiveRow:hover, .a8ccharts-GovfoW-interactiveRow:focus-visible {
@@ -624,9 +624,9 @@
   inset-inline-end: var(--wpds-dimension-padding-xs, 4px);
   opacity: 0;
   color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  transition: opacity var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
   pointer-events: none;
   margin-block: auto;
-  transition: opacity .15s;
   position: absolute;
   top: 0;
   bottom: 0;
