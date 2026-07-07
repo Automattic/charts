@@ -79,7 +79,7 @@
 .a8ccharts-udGPVq-svg-empty-state {
   text-align: center;
   font-size: var(--wpds-typography-font-size-md, 13px);
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
 }
 .a8ccharts-sP1gHa-container {
   min-width: 0;
@@ -99,7 +99,7 @@
   background: var(--charts-zoom-reset-bg, #ffffffeb);
   width: 28px;
   height: 28px;
-  color: var(--charts-zoom-reset-fg, var(--wpds-color-fg-content-neutral, #1e1e1e));
+  color: var(--charts-zoom-reset-fg, var(--wpds-color-foreground-content-neutral, #1e1e1e));
   border: var(--wpds-border-width-xs, 1px) solid var(--charts-zoom-reset-border, #00000029);
   border-radius: var(--wpds-border-radius-md, 4px);
   cursor: pointer;
@@ -116,7 +116,7 @@
 }
 
 .a8ccharts-y6bXNq-x-zoom__reset:focus-visible {
-  outline: 2px solid var(--charts-zoom-reset-focus, var(--wpds-color-stroke-focus-brand, #3858e9));
+  outline: 2px solid var(--charts-zoom-reset-focus, var(--wpds-color-stroke-focus, #3858e9));
   outline-offset: 1px;
 }
 
@@ -140,8 +140,8 @@
 }
 
 .a8ccharts-inuQka-line-chart__tooltip, .a8ccharts-inuQka-line-chart__annotation-label-popover {
-  background: var(--wpds-color-bg-surface-neutral-strong, #fff);
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  background: var(--wpds-color-background-surface-neutral-strong, #fff);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   padding: var(--wpds-dimension-padding-sm, 8px);
 }
 
@@ -286,7 +286,7 @@
 }
 
 .a8ccharts-mGEVca-main-rate {
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   text-overflow: ellipsis;
   font-size: var(--wpds-typography-font-size-xl, 18px);
   font-style: normal;
@@ -327,7 +327,7 @@
 }
 
 .a8ccharts-mGEVca-step-label {
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   font-size: var(--wpds-typography-font-size-sm, 12px);
   font-weight: var(--wpds-typography-font-weight-regular, 400);
   line-height: var(--wpds-typography-line-height-xs, 16px);
@@ -337,7 +337,7 @@
 }
 
 .a8ccharts-mGEVca-step-rate {
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   font-size: var(--wpds-typography-font-size-md, 13px);
   font-weight: var(--wpds-typography-font-weight-medium, 499);
   line-height: var(--wpds-typography-line-height-xs, 16px);
@@ -370,14 +370,14 @@
 }
 
 .a8ccharts-mGEVca-tooltip-wrapper {
-  background: var(--wpds-color-bg-surface-neutral-strong, #fff);
+  background: var(--wpds-color-background-surface-neutral-strong, #fff);
   border-radius: var(--wpds-border-radius-md, 4px) !important;
   padding: var(--wpds-dimension-padding-md, 12px) !important;
   box-shadow: var(--wpds-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005) !important;
 }
 
 .a8ccharts-mGEVca-tooltip-title {
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   font-size: var(--wpds-typography-font-size-sm, 12px);
   font-style: normal;
   font-weight: var(--wpds-typography-font-weight-regular, 400);
@@ -385,7 +385,7 @@
 }
 
 .a8ccharts-mGEVca-tooltip-content {
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   font-size: var(--wpds-typography-font-size-md, 13px);
   font-style: normal;
   font-weight: var(--wpds-typography-font-weight-medium, 499);
@@ -394,7 +394,7 @@
 
 .a8ccharts-mGEVca-empty-state {
   text-align: center;
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   font-size: var(--wpds-typography-font-size-lg, 16px);
 }
 .a8ccharts-8hS2IW-container {
@@ -409,7 +409,7 @@
 
 .a8ccharts-O3YMOW-heatmap-chart__empty {
   padding: var(--wpds-dimension-padding-lg, 16px);
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__grid {
@@ -421,7 +421,7 @@
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__grid:focus-visible {
-  outline: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)) solid var(--wpds-color-stroke-focus-brand, var(--wp-admin-theme-color, #3858e9));
+  outline: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)) solid var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
   outline-offset: 2px;
   border-radius: var(--wpds-border-radius-sm, 2px);
 }
@@ -438,7 +438,7 @@
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__col-label, .a8ccharts-O3YMOW-heatmap-chart__row-label {
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   font-size: var(--wpds-typography-font-size-xs, 11px);
   white-space: nowrap;
   overflow: visible;
@@ -457,7 +457,7 @@
 
 .a8ccharts-O3YMOW-heatmap-chart__cell {
   border-radius: var(--wpds-border-radius-sm, 2px);
-  background: var(--wpds-color-bg-track-neutral-weak, #f0f0f0);
+  background: var(--wpds-color-background-track-neutral-weak, #f0f0f0);
   justify-content: center;
   align-items: center;
   min-width: 0;
@@ -470,17 +470,17 @@
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__cell--selected {
-  outline: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)) solid var(--wpds-color-stroke-focus-brand, var(--wp-admin-theme-color, #3858e9));
+  outline: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)) solid var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
   outline-offset: calc(-1 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__cell-value {
-  color: var(--wpds-color-fg-content-neutral, #1e1e1e);
+  color: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   font-size: var(--wpds-typography-font-size-md, 13px);
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__cell--strong .a8ccharts-O3YMOW-heatmap-chart__cell-value {
-  color: var(--wpds-color-fg-interactive-neutral-strong, #f0f0f0);
+  color: var(--wpds-color-foreground-interactive-neutral-strong, #f0f0f0);
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__legend-swatch {
@@ -561,7 +561,7 @@
 .a8ccharts-GovfoW-emptyState {
   padding: var(--wpds-dimension-padding-3xl, 32px) var(--wpds-dimension-padding-lg, 16px);
   text-align: center;
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   font-size: var(--wpds-typography-font-size-md, 13px);
   font-style: italic;
 }
@@ -616,14 +616,14 @@
 
 .a8ccharts-GovfoW-interactiveRow:focus-visible {
   border-radius: var(--wpds-border-radius-sm, 2px);
-  outline: var(--focus-ring-width) solid var(--wpds-color-stroke-focus-brand, var(--wp-admin-theme-color, #3858e9));
+  outline: var(--focus-ring-width) solid var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
   outline-offset: calc(-1 * var(--focus-ring-width));
 }
 
 .a8ccharts-GovfoW-chevron {
   inset-inline-end: var(--wpds-dimension-padding-xs, 4px);
   opacity: 0;
-  color: var(--wpds-color-fg-content-neutral-weak, #707070);
+  color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   transition: opacity var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
   pointer-events: none;
   margin-block: auto;
@@ -690,15 +690,15 @@
 }
 
 .a8ccharts-zR7F7G-trend-indicator--up {
-  color: var(--charts-trend-up-color, var(--wpds-color-fg-content-success-weak, #008030));
+  color: var(--charts-trend-up-color, var(--wpds-color-foreground-content-success-weak, #008030));
 }
 
 .a8ccharts-zR7F7G-trend-indicator--down {
-  color: var(--charts-trend-down-color, var(--wpds-color-fg-content-error-weak, #cc1818));
+  color: var(--charts-trend-down-color, var(--wpds-color-foreground-content-error-weak, #cc1818));
 }
 
 .a8ccharts-zR7F7G-trend-indicator--neutral {
-  color: var(--charts-trend-neutral-color, var(--wpds-color-fg-content-neutral-weak, #707070));
+  color: var(--charts-trend-neutral-color, var(--wpds-color-foreground-content-neutral-weak, #707070));
 }
 
 .a8ccharts-zR7F7G-trend-indicator__icon {
