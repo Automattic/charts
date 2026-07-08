@@ -5675,6 +5675,51 @@ const GEO_CHART_PACKAGES = [
 	"controls",
 	"geochart"
 ];
+const GOOGLE_CHARTS_ERROR_ID_PREFIX = "google-visualization-errors-";
+const GOOGLE_CHARTS_ERROR_WRAPPER_INFIX = "-all-";
+/**
+* Collects Google Charts error elements rendered inside a chart container.
+*
+* @param container - The chart container element to scan.
+* @return Errors found in the container, one per error span.
+*/
+function collectRenderedGeoChartErrors(container) {
+	const elements = container.querySelectorAll(`[id^="${GOOGLE_CHARTS_ERROR_ID_PREFIX}"]`);
+	return Array.from(elements).filter((element) => !element.id.includes(GOOGLE_CHARTS_ERROR_WRAPPER_INFIX)).map((element) => ({
+		id: element.id,
+		message: element.textContent?.trim() ?? ""
+	})).filter((error) => error.message.length > 0);
+}
+/**
+* Whether a node added to the chart container is — or contains — a Google
+* Charts error element. Also matches text appended into an existing error
+* span, in case Google fills the message after inserting the element.
+*
+* @param node - The added DOM node to inspect.
+* @return Whether the node involves a Google Charts error element.
+*/
+function involvesGeoChartErrorElement(node) {
+	if (node.nodeType === Node.TEXT_NODE) return !!node.parentElement?.id.startsWith(GOOGLE_CHARTS_ERROR_ID_PREFIX);
+	if (!(node instanceof HTMLElement)) return false;
+	return node.id.startsWith(GOOGLE_CHARTS_ERROR_ID_PREFIX) || node.querySelector(`[id^="${GOOGLE_CHARTS_ERROR_ID_PREFIX}"]`) !== null;
+}
+/**
+* Normalizes the raw Google Charts error event into the GeoChart error shape.
+*
+* @param eventArgs - Error event payload from react-google-charts.
+* @return Normalized GeoChart error.
+*/
+function normalizeGeoChartError(eventArgs) {
+	const payload = Array.isArray(eventArgs) ? eventArgs[0] : eventArgs;
+	if (!payload || typeof payload !== "object") return {};
+	const { id, message, detailedMessage, options } = payload;
+	return {
+		...typeof id === "string" && { id },
+		...typeof message === "string" && { message },
+		...typeof detailedMessage === "string" && { detailedMessage },
+		...options && typeof options === "object" && !Array.isArray(options) && { options }
+	};
+}
 /**
 * Renders a geographical chart using Google Charts GeoChart to visualize data.
 *
@@ -5690,12 +5735,35 @@ const GEO_CHART_PACKAGES = [
 * @param props.height            - Height of the chart in pixels
 * @param props.region            - Region to display ('world', 'US', or ISO 3166-1 alpha-2 code)
 * @param props.resolution        - Resolution level ('countries', 'provinces', or 'metros')
+* @param props.onError           - Optional callback for Google Charts errors
 * @param props.className         - Additional CSS class name for the chart container
 * @param props.renderPlaceholder - Optional render function for the loading placeholder
 * @return A React component displaying an interactive map with data visualization
 */
-const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", renderPlaceholder }) => {
+const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", onError, renderPlaceholder }) => {
 	const { getElementStyles, theme: { geoChart: { featureFillColor }, backgroundColor } } = useGlobalChartsContext();
+	const containerRef = (0, react$1.useRef)(null);
+	const reportedErrorIdsRef = (0, react$1.useRef)(/* @__PURE__ */ new Set());
+	(0, react$1.useEffect)(() => {
+		const container = containerRef.current;
+		if (!onError || !container || typeof MutationObserver === "undefined") return;
+		const reportRenderedErrors = () => {
+			for (const error of collectRenderedGeoChartErrors(container)) {
+				if (reportedErrorIdsRef.current.has(error.id)) continue;
+				reportedErrorIdsRef.current.add(error.id);
+				onError(error);
+			}
+		};
+		const observer = new MutationObserver((records) => {
+			if (records.some((record) => Array.from(record.addedNodes).some(involvesGeoChartErrorElement))) reportRenderedErrors();
+		});
+		observer.observe(container, {
+			childList: true,
+			subtree: true
+		});
+		reportRenderedErrors();
+		return () => observer.disconnect();
+	}, [onError]);
 	const loadingPlaceholder = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
 		className: (0, clsx.default)("geo-chart", geo_chart_module_default.container, className),
 		style: {
@@ -5754,7 +5822,17 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 		defaultFillColorHex,
 		sanitizedData.hasHtmlTooltips
 	]);
+	const chartEvents = (0, react$1.useMemo)(() => {
+		if (!onError) return;
+		return [{
+			eventName: "error",
+			callback: ({ eventArgs }) => {
+				onError(normalizeGeoChartError(eventArgs));
+			}
+		}];
+	}, [onError]);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Center, {
+		ref: containerRef,
 		className: (0, clsx.default)("geo-chart", geo_chart_module_default.container, className),
 		style: {
 			width,
@@ -5768,6 +5846,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 			height,
 			data: sanitizedData.data,
 			options,
+			chartEvents,
 			loader: loadingPlaceholder
 		})
 	});
