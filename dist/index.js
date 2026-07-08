@@ -1428,7 +1428,7 @@ const useGlobalChartsTheme = () => {
 	return useContext(GlobalChartsContext)?.theme ?? defaultTheme;
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/mergeObjects.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/mergeObjects.js
 function mergeObjects(a, b) {
 	if (a && !b) return a;
 	if (!a && b) return b;
@@ -1438,7 +1438,7 @@ function mergeObjects(a, b) {
 	};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/merge-props/mergeProps.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/merge-props/mergeProps.js
 const EMPTY_PROPS = {};
 /**
 * Merges multiple sets of React props. It follows the Object.assign pattern where the rightmost object's fields overwrite
@@ -1589,7 +1589,7 @@ function isSyntheticEvent(event) {
 	return event != null && typeof event === "object" && "nativeEvent" in event;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/formatErrorMessage.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/formatErrorMessage.js
 /**
 * Creates a formatErrorMessage function with a custom URL and prefix.
 * @param baseUrl - The base URL for the error page (e.g., 'https://base-ui.com/production-error')
@@ -1615,7 +1615,7 @@ function createFormatErrorMessage(baseUrl, prefix) {
 */
 const formatErrorMessage = createFormatErrorMessage("https://base-ui.com/production-error", "Base UI");
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useRefWithInit.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useRefWithInit.js
 const UNINITIALIZED = {};
 /**
 * A React.useRef() that is initialized with a function. Note that it accepts an optional
@@ -1630,7 +1630,7 @@ function useRefWithInit(init, initArg) {
 	return ref;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useMergedRefs.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/useMergedRefs.js
 /**
 * Merges refs into a single memoized callback ref or `null`.
 * This makes sure multiple refs are updated together and have the same value.
@@ -1721,13 +1721,13 @@ function update(forkRef, refs) {
 	};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/reactVersion.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/reactVersion.js
 const majorVersion = parseInt(React.version, 10);
 function isReactVersionAtLeast(reactVersionToCheck) {
 	return majorVersion >= reactVersionToCheck;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/getReactElementRef.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/getReactElementRef.js
 /**
 * Extracts the `ref` from a React element, handling different React versions.
 */
@@ -1738,7 +1738,7 @@ function getReactElementRef(element) {
 	return (isReactVersionAtLeast(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/warn.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.2.9_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/esm/warn.js
 let set;
 if (process.env.NODE_ENV !== "production") set = /* @__PURE__ */ new Set();
 function warn(...messages) {
@@ -1753,7 +1753,7 @@ function warn(...messages) {
 Object.freeze([]);
 const EMPTY_OBJECT = Object.freeze({});
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/getStateAttributesProps.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/getStateAttributesProps.js
 function getStateAttributesProps(state, customMapping) {
 	const props = {};
 	for (const key in state) {
@@ -1769,7 +1769,7 @@ function getStateAttributesProps(state, customMapping) {
 	return props;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveClassName.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveClassName.js
 /**
 * If the provided className is a string, it will be returned as is.
 * Otherwise, the function will call the className function with the state as the first argument.
@@ -1781,7 +1781,7 @@ function resolveClassName(className, state) {
 	return typeof className === "function" ? className(state) : className;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveStyle.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/utils/resolveStyle.js
 /**
 * If the provided style is an object, it will be returned as is.
 * Otherwise, the function will call the style function with the state as the first argument.
@@ -1793,7 +1793,7 @@ function resolveStyle(style, state) {
 	return typeof style === "function" ? style(state) : style;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/useRenderElement.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/internals/useRenderElement.js
 /**
 * Renders a Base UI element.
 *
@@ -1882,7 +1882,7 @@ function renderTag(Tag, props) {
 	return /*#__PURE__*/ React.createElement(Tag, props);
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/use-render/useRender.mjs
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.5.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/esm/use-render/useRender.js
 /**
 * Renders a Base UI element.
 *
