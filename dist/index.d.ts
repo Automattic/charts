@@ -138,21 +138,24 @@ type LeaderboardEntry = {
    */
   currentValue: number;
   /**
-   * Value of the entry in the previous period
+   * Value of the entry in the previous period. Omit when this row has no
+   * matching comparison-period value.
    */
-  previousValue: number;
+  previousValue?: number;
   /**
    * Width of current bar, as % of the current value
    */
   currentShare: number;
   /**
-   * Width of previous bar, as % of the current value
+   * Width of previous bar, as % of the current value. Omit when this row has
+   * no matching comparison-period value.
    */
-  previousShare: number;
+  previousShare?: number;
   /**
-   * Delta of the entry
+   * Delta of the entry. Omit when this row has no matching comparison-period
+   * value.
    */
-  delta: number;
+  delta?: number;
   /**
    * Optional color for the entry's image/icon
    */
@@ -939,7 +942,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "width" | "height" | "size"> & {
+}: Omit<BarListChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1093,7 +1096,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "width" | "height" | "size"> & {
+}: Omit<GeoChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1229,7 +1232,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
+}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1752,7 +1755,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "width" | "height" | "size"> & {
+}: Omit<SparklineProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1800,7 +1803,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
+}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {

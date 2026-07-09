@@ -552,6 +552,18 @@
 
 .a8ccharts-GovfoW-valueContainer {
   justify-content: flex-end;
+  align-items: center;
+}
+
+.a8ccharts-GovfoW-deltaValue {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  min-width: 3ch;
+  display: inline-block;
+}
+
+.a8ccharts-GovfoW-deltaPlaceholder {
+  text-align: center;
 }
 
 .a8ccharts-GovfoW-overlayLabel {

@@ -8622,7 +8622,7 @@ function UnforwardedView({ as, ...restProps }, ref) {
 		...restProps
 	});
 }
-var component_default$1 = Object.assign((0, react$1.forwardRef)(UnforwardedView), { selector: ".components-view" });
+var component_default$2 = Object.assign((0, react$1.forwardRef)(UnforwardedView), { selector: ".components-view" });
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
@@ -8893,12 +8893,43 @@ function useGrid(props) {
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$1, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
 		...useGrid(props),
 		ref: forwardedRef
 	});
 }
-var component_default = contextConnect(UnconnectedGrid, "Grid");
+var component_default$1 = contextConnect(UnconnectedGrid, "Grid");
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+var visuallyHidden = {
+	border: 0,
+	clip: "rect(1px, 1px, 1px, 1px)",
+	WebkitClipPath: "inset( 50% )",
+	clipPath: "inset( 50% )",
+	height: "1px",
+	margin: "-1px",
+	overflow: "hidden",
+	padding: 0,
+	position: "absolute",
+	width: "1px",
+	wordWrap: "normal",
+	wordBreak: "normal"
+};
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+function UnconnectedVisuallyHidden(props, forwardedRef) {
+	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
+		ref: forwardedRef,
+		...contextProps,
+		"data-visually-hidden": "",
+		style: {
+			...visuallyHidden,
+			...styleProp || {}
+		}
+	});
+}
+var component_default = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
 //#endregion
 //#region src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
 /**
@@ -8957,6 +8988,8 @@ var leaderboard_chart_module_default = {
 	"bar--animated": "a8ccharts-GovfoW-bar--animated",
 	"barWithLabelContainer": "a8ccharts-GovfoW-barWithLabelContainer",
 	"chevron": "a8ccharts-GovfoW-chevron",
+	"deltaPlaceholder": "a8ccharts-GovfoW-deltaPlaceholder",
+	"deltaValue": "a8ccharts-GovfoW-deltaValue",
 	"emptyState": "a8ccharts-GovfoW-emptyState",
 	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
 	"is-overlay": "a8ccharts-GovfoW-is-overlay",
@@ -9007,30 +9040,34 @@ const defaultDeltaFormatter = (value) => {
 * @return A CSS width value.
 */
 const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px) * ${share} / 100)`;
+const hasComparisonValue = (entry) => entry.previousValue != null && entry.previousShare != null && entry.delta != null;
 const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
 	className: leaderboard_chart_module_default.label,
 	children: label
 }) : label });
-const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, secondaryColor, animation, isPrimaryVisible = true, isComparisonVisible = true }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-	className: (0, clsx.default)(leaderboard_chart_module_default.barWithLabelContainer, { [leaderboard_chart_module_default["is-overlay"]]: withOverlayLabel }),
-	children: [
-		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarLabel, { label: entry.label }),
-		isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-			className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
-			style: {
-				width: getBarWidth(entry.currentShare),
-				backgroundColor: primaryColor
-			}
-		}),
-		withComparison && !withOverlayLabel && isComparisonVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-			className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
-			style: {
-				width: getBarWidth(entry.previousShare),
-				backgroundColor: secondaryColor
-			}
-		})
-	]
-});
+const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, secondaryColor, animation, isPrimaryVisible = true, isComparisonVisible = true }) => {
+	const showComparisonBar = withComparison && !withOverlayLabel && isComparisonVisible;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		className: (0, clsx.default)(leaderboard_chart_module_default.barWithLabelContainer, { [leaderboard_chart_module_default["is-overlay"]]: withOverlayLabel }),
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarLabel, { label: entry.label }),
+			isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
+				style: {
+					width: getBarWidth(entry.currentShare),
+					backgroundColor: primaryColor
+				}
+			}),
+			showComparisonBar && hasComparisonValue(entry) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
+				style: {
+					width: getBarWidth(entry.previousShare),
+					backgroundColor: secondaryColor
+				}
+			})
+		]
+	});
+};
 /**
 * LeaderboardChart component displays a ranked list of data with progress bars
 * and optional comparison values.
@@ -9183,12 +9220,16 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 				children: allSeriesHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: leaderboard_chart_module_default.emptyState,
 					children: (0, _wordpress_i18n.__)("All series are hidden. Click legend items to show data.", "jetpack-charts")
-				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default, {
+				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$1, {
 					templateColumns: "minmax(0, 1fr) auto",
 					rowGap,
 					columnGap,
 					children: data.map((entry) => {
-						const deltaColor = deltaColors[Math.sign(entry.delta) + 1];
+						const showComparisonColumn = withComparison && isComparisonVisible;
+						const hasDeltaValue = hasComparisonValue(entry);
+						const showComparisonValue = showComparisonColumn && hasDeltaValue;
+						const showComparisonPlaceholder = showComparisonColumn && !hasDeltaValue;
+						const deltaColor = deltaColors[showComparisonValue ? Math.sign(entry.delta) + 1 : 1];
 						const rowCells = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
 							direction: "column",
 							gap: labelSpacing,
@@ -9206,10 +9247,25 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 							direction: "row",
 							gap: "xs",
 							className: (0, clsx.default)(leaderboard_chart_module_default.valueContainer, { [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel }),
-							children: [isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, { children: valueFormatter(entry.currentValue) }), withComparison && isComparisonVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
-								style: { color: deltaColor },
-								children: deltaFormatter(entry.delta)
-							})]
+							children: [
+								isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, { children: valueFormatter(entry.currentValue) }),
+								showComparisonValue && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
+									className: leaderboard_chart_module_default.deltaValue,
+									style: { color: deltaColor },
+									children: deltaFormatter(entry.delta)
+								}),
+								showComparisonPlaceholder && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Text$2, {
+									className: (0, clsx.default)(leaderboard_chart_module_default.deltaValue, leaderboard_chart_module_default.deltaPlaceholder),
+									style: { color: deltaColor },
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										"aria-hidden": "true",
+										children: "-"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default, {
+										as: "span",
+										children: (0, _wordpress_i18n.__)("No comparison data", "jetpack-charts")
+									})]
+								})
+							]
 						})] });
 						if (entry.onClick) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
