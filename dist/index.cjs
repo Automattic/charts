@@ -449,6 +449,22 @@ const lightenHexColor = (hex, blend) => {
 	return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
 };
 /**
+* Blend one hex color toward another, per-channel in sRGB.
+*
+* @param  fromHex - Starting hex color, returned when blend is 0
+* @param  toHex   - Target hex color, returned when blend is 1
+* @param  blend   - Amount toward toHex, clamped to [0, 1]
+* @return Blended hex color string
+* @throws {Error} if either hex string is malformed
+*/
+const mixHexColors = (fromHex, toHex, blend) => {
+	validateHexColor(fromHex);
+	validateHexColor(toHex);
+	const amount = Math.min(1, Math.max(0, blend));
+	const channel = (start, end) => Math.round(start + (end - start) * amount).toString(16).padStart(2, "0");
+	return `#${channel(parseInt(fromHex.slice(1, 3), 16), parseInt(toHex.slice(1, 3), 16))}${channel(parseInt(fromHex.slice(3, 5), 16), parseInt(toHex.slice(3, 5), 16))}${channel(parseInt(fromHex.slice(5, 7), 16), parseInt(toHex.slice(5, 7), 16))}`;
+};
+/**
 * WCAG relative luminance of a hex color (0 = black, 1 = white).
 *
 * @param  hex - Hex color string (e.g., '#98C8DF')
@@ -883,6 +899,7 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		}
 		return getChartColor(index, colorCache);
 	}, [colorCache, groupToColorMap]);
+	const resolveThemeColor = (0, react$1.useCallback)((value) => value ? normalizeColorToHex(value, wrapperRef.current, resolveCssVariable) : "", []);
 	const getElementStyles = (0, react$1.useCallback)(({ data, index, overrideColor, legendShape }) => {
 		const isSeriesData = data && typeof data === "object" && "data" in data && "options" in data;
 		const isPointPercentageData = data && typeof data === "object" && "value" in data && typeof data.value === "number" && !("data" in data);
@@ -925,6 +942,7 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		getChartData,
 		theme: providerTheme,
 		getElementStyles,
+		resolveThemeColor,
 		toggleSeriesVisibility,
 		isSeriesVisible,
 		getHiddenSeries,
@@ -936,6 +954,7 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		getChartData,
 		providerTheme,
 		getElementStyles,
+		resolveThemeColor,
 		toggleSeriesVisibility,
 		isSeriesVisible,
 		getHiddenSeries,
@@ -5941,12 +5960,17 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 	const gridStart = (0, date_fns.startOfWeek)(minDate, { weekStartsOn });
 	const weekCount = (0, date_fns.differenceInCalendarWeeks)(maxDate, gridStart, { weekStartsOn }) + 1;
 	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? (0, date_fns.format)((0, date_fns.addDays)(gridStart, row), "EEE") : "");
+	const MIN_FIRST_MONTH_WEEKS = 2;
+	const firstMonth = gridStart.getMonth();
+	let firstMonthWeeks = 0;
+	while (firstMonthWeeks < weekCount && (0, date_fns.addDays)(gridStart, firstMonthWeeks * 7).getMonth() === firstMonth) firstMonthWeeks++;
+	const showFirstMonthLabel = !(firstMonthWeeks < weekCount) || firstMonthWeeks >= MIN_FIRST_MONTH_WEEKS;
 	const data = [];
 	let previousMonth = -1;
 	for (let week = 0; week < weekCount; week++) {
 		const columnStart = (0, date_fns.addDays)(gridStart, week * 7);
 		const month = columnStart.getMonth();
-		const label = month !== previousMonth ? (0, date_fns.format)(columnStart, "MMM") : "";
+		const label = month !== previousMonth && (week !== 0 || showFirstMonthLabel) ? (0, date_fns.format)(columnStart, "MMM") : "";
 		previousMonth = month;
 		const cells = [];
 		for (let row = 0; row < 7; row++) {
@@ -5968,10 +5992,14 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 	};
 };
 //#endregion
+//#region src/charts/heatmap-chart/private/heatmap-context.ts
+/** Shared by the chart and legend without importing back from `heatmap-chart.tsx`. */
+const HeatmapContext = (0, react$1.createContext)(null);
+//#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.tsx
 const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 	const context = (0, react$1.useContext)(HeatmapContext);
-	const { legend } = useGlobalChartsTheme();
+	const { legend, backgroundColor } = useGlobalChartsTheme();
 	if (!context) return null;
 	const { primaryColorHex } = context;
 	const labelStyle = legend.labelStyles;
@@ -5995,6 +6023,7 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
 						style: {
 							"--heatmap-primary": primaryColorHex,
+							"--heatmap-bg": backgroundColor,
 							"--intensity": intensity
 						}
 					}, index);
@@ -6010,11 +6039,10 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 };
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
-const HeatmapContext = (0, react$1.createContext)(null);
 const CELL_MIX_FLOOR = .15;
 const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, rowLabels = [], primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
 	const chartId = useChartId(providedChartId);
-	const { getElementStyles, theme } = useGlobalChartsContext();
+	const { getElementStyles, resolveThemeColor, theme } = useGlobalChartsContext();
 	const { heatmapChart: heatmapChartSettings } = theme;
 	const { nonLegendChildren } = useChartChildren(children, "HeatmapChart");
 	const [selectedIndex, setSelectedIndex] = (0, react$1.useState)();
@@ -6029,8 +6057,9 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		index: 0,
 		overrideColor: primaryColor || heatmapChartSettings.primaryColor
 	});
+	const chartBackgroundHex = resolveThemeColor(theme.backgroundColor);
 	const primaryHex = normalizeColorToHex(primaryColorHex);
-	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && prefersLightText(lightenHexColor(primaryHex, 1 - (CELL_MIX_FLOOR + (1 - CELL_MIX_FLOOR) * intensity)));
+	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) && prefersLightText(mixHexColors(primaryHex, chartBackgroundHex, 1 - (CELL_MIX_FLOOR + (1 - CELL_MIX_FLOOR) * intensity)));
 	const extent = (0, react$1.useMemo)(() => getValueExtent(data), [data]);
 	const heatmapContext = (0, react$1.useMemo)(() => ({
 		extent,
@@ -6144,6 +6173,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const trackSize = compact ? "var(--heatmap-cell-size)" : "minmax(0, 1fr)";
 	const gridStyle = {
 		"--heatmap-primary": primaryColorHex,
+		"--heatmap-bg": theme.backgroundColor,
 		gridTemplateColumns: `auto repeat(${columns}, ${trackSize})`,
 		gridTemplateRows: `auto repeat(${rows}, ${trackSize})`
 	};
@@ -6179,55 +6209,55 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 					onKeyDown: onChartKeyDown,
 					className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__grid"], { [heatmap_chart_module_default["heatmap-chart__grid--compact"]]: compact }),
 					style: gridStyle,
-					children: [
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { "aria-hidden": "true" }),
-						data.map((column, columnIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-							"aria-hidden": "true",
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						role: "row",
+						"aria-hidden": "true",
+						className: heatmap_chart_module_default["heatmap-chart__row"],
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {}), data.map((column, columnIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: heatmap_chart_module_default["heatmap-chart__col-label"],
 							children: column.label
-						}, `col-${columnIndex}`)),
-						Array.from({ length: rows }).map((_row, rowIndex) => {
-							const labelVisible = !compact || rowIndex % 2 === 0;
-							return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-								role: "row",
-								"aria-rowindex": rowIndex + 1,
-								className: heatmap_chart_module_default["heatmap-chart__row"],
-								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-									"aria-hidden": "true",
-									className: heatmap_chart_module_default["heatmap-chart__row-label"],
-									children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
-								}), data.map((column, columnIndex) => {
-									const value = column.data[rowIndex]?.value ?? null;
-									const present = isPresent(value);
-									const normalized = present ? getNormalizedValue(value, extent) : 0;
-									const flatIndex = columnIndex * rows + rowIndex;
-									const info = buildTooltipData(columnIndex, rowIndex);
-									const accessibleLabel = `${info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim()}: ${info.value === null ? (0, _wordpress_i18n.__)("No data", "jetpack-charts") : (0, _automattic_number_formatters.formatNumber)(info.value)}`;
-									return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-										id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
-										role: "gridcell",
-										tabIndex: -1,
-										"aria-colindex": columnIndex + 1,
-										"aria-label": accessibleLabel,
-										"data-column": columnIndex,
-										"data-row": rowIndex,
-										className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__cell"], {
-											[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: present,
-											[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: present && cellHasLightText(normalized),
-											[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
-										}),
-										style: present ? { "--intensity": normalized } : void 0,
-										onMouseMove: handleCellMouseMove,
-										onMouseLeave: handleCellMouseLeave,
-										children: drawValues && present && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-											className: heatmap_chart_module_default["heatmap-chart__cell-value"],
-											children: (0, _automattic_number_formatters.formatNumberCompact)(value)
-										})
-									}, `cell-${columnIndex}-${rowIndex}`);
-								})]
-							}, `row-${rowIndex}`);
-						})
-					]
+						}, `col-${columnIndex}`))]
+					}), Array.from({ length: rows }).map((_row, rowIndex) => {
+						const labelVisible = !compact || rowIndex % 2 === 0;
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+							role: "row",
+							"aria-rowindex": rowIndex + 1,
+							className: heatmap_chart_module_default["heatmap-chart__row"],
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								"aria-hidden": "true",
+								className: heatmap_chart_module_default["heatmap-chart__row-label"],
+								children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
+							}), data.map((column, columnIndex) => {
+								const value = column.data[rowIndex]?.value ?? null;
+								const present = isPresent(value);
+								const normalized = present ? getNormalizedValue(value, extent) : 0;
+								const flatIndex = columnIndex * rows + rowIndex;
+								const info = buildTooltipData(columnIndex, rowIndex);
+								const accessibleLabel = `${info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim()}: ${info.value === null ? (0, _wordpress_i18n.__)("No data", "jetpack-charts") : (0, _automattic_number_formatters.formatNumber)(info.value)}`;
+								return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+									id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
+									role: "gridcell",
+									tabIndex: -1,
+									"aria-colindex": columnIndex + 1,
+									"aria-label": accessibleLabel,
+									"data-column": columnIndex,
+									"data-row": rowIndex,
+									className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__cell"], {
+										[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: present,
+										[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: present && cellHasLightText(normalized),
+										[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
+									}),
+									style: present ? { "--intensity": normalized } : void 0,
+									onMouseMove: handleCellMouseMove,
+									onMouseLeave: handleCellMouseLeave,
+									children: drawValues && present && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: heatmap_chart_module_default["heatmap-chart__cell-value"],
+										children: (0, _automattic_number_formatters.formatNumberCompact)(value)
+									})
+								}, `cell-${columnIndex}-${rowIndex}`);
+							})]
+						}, `row-${rowIndex}`);
+					})]
 				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipInPortal, {
 					top: tooltipTop,
 					left: tooltipLeft,
@@ -10111,6 +10141,7 @@ exports.hexToRgba = hexToRgba;
 exports.isValidHexColor = isValidHexColor;
 exports.lightenHexColor = lightenHexColor;
 exports.mergeThemes = mergeThemes;
+exports.mixHexColors = mixHexColors;
 exports.normalizeColorToHex = normalizeColorToHex;
 exports.parseAsLocalDate = parseAsLocalDate;
 exports.parseHslString = parseHslString;

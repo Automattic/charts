@@ -416,7 +416,7 @@
   gap: var(--heatmap-cell-gap, var(--wpds-dimension-gap-xs, 4px));
   flex: 1 1 0;
   width: 100%;
-  min-height: 200px;
+  min-height: 0;
   display: grid;
 }
 
@@ -466,7 +466,7 @@
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__cell--filled {
-  background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), transparent);
+  background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), var(--heatmap-bg, #fff));
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__cell--selected {
@@ -487,7 +487,7 @@
   width: var(--wpds-dimension-size-3xs, 12px);
   height: var(--wpds-dimension-size-3xs, 12px);
   border-radius: var(--wpds-border-radius-sm, 2px);
-  background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), transparent);
+  background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), var(--heatmap-bg, #fff));
 }
 .a8ccharts-GovfoW-leaderboardChart {
   transition: opacity var(--wpds-motion-duration-lg, .3s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
