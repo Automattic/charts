@@ -1159,7 +1159,9 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		};
 		const yAxisOrientation = options.axis?.y?.orientation;
 		const yAxisStyles = yAxisOrientation === "right" ? theme.axisStyles.y.right : theme.axisStyles.y.left;
-		const yMarginValue = (getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, yAxisStyles.axisLabel) ?? DEFAULT_Y_TICK_WIDTH) + (yAxisStyles?.tickLength ?? 0);
+		const yTickWidth = getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, yAxisStyles.axisLabel);
+		const yTickLabelFontSize = resolveFontSize(yAxisStyles?.tickLabel?.fontSize) || DEFAULT_FONT_SIZE;
+		const yMarginValue = (yTickWidth ?? DEFAULT_Y_TICK_WIDTH) + (yAxisStyles?.tickLength ?? 0) + Math.ceil(yTickLabelFontSize * .25);
 		if (yAxisOrientation === "right") defaultMargin.right = yMarginValue;
 		else defaultMargin.left = yMarginValue;
 		const xOrientation = options.axis?.x?.orientation === "top" ? "top" : "bottom";
