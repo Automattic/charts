@@ -10,21 +10,21 @@ import { addDays, differenceInCalendarWeeks, differenceInHours, differenceInYear
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
+import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { createScale, getTicks, scaleBand, scaleOrdinal, scaleTime } from "@visx/scale";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
+import { __assign } from "tslib";
+import { Icon, chevronRight } from "@wordpress/icons";
 import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { useParentSize } from "@visx/responsive";
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
 import { PatternCircles, PatternHexagons, PatternLines, PatternWaves } from "@visx/pattern";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { Chart } from "react-google-charts";
 import DOMPurify from "dompurify";
-import { __assign } from "tslib";
 import _extends from "@babel/runtime/helpers/esm/extends";
 import "@babel/runtime/helpers/extends";
-import { Icon, chevronRight } from "@wordpress/icons";
 import { Pie } from "@visx/shape";
 //#region \0rolldown/runtime.js
 var __create = Object.create;
@@ -1246,7 +1246,8 @@ function useTextTruncation(enabled = true) {
 		}
 		if (node && enabled) {
 			const checkTruncation = () => {
-				setIsTruncated(node.scrollWidth > node.clientWidth);
+				const truncated = node.scrollWidth > node.clientWidth;
+				setIsTruncated(truncated);
 			};
 			checkTruncation();
 			const resizeObserver = new ResizeObserver(checkTruncation);
@@ -1447,6 +1448,235 @@ const useGlobalChartsTheme = () => {
 	return useContext(GlobalChartsContext)?.theme ?? defaultTheme;
 };
 //#endregion
+//#region ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
+/*!
+* is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+*
+* Copyright (c) 2014-2017, Jon Schlinkert.
+* Released under the MIT License.
+*/
+function isObject(o) {
+	return Object.prototype.toString.call(o) === "[object Object]";
+}
+function isPlainObject(o) {
+	var ctor, prot;
+	if (isObject(o) === false) return false;
+	ctor = o.constructor;
+	if (ctor === void 0) return true;
+	prot = ctor.prototype;
+	if (isObject(prot) === false) return false;
+	if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
+	return true;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
+/**
+* Lower case as a function.
+*/
+function lowerCase(str) {
+	return str.toLowerCase();
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
+var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
+var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
+/**
+* Normalize the string into something other libraries can manipulate easier.
+*/
+function noCase(input, options) {
+	if (options === void 0) options = {};
+	var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter = _d === void 0 ? " " : _d;
+	var result = replace$1(replace$1(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
+	var start = 0;
+	var end = result.length;
+	while (result.charAt(start) === "\0") start++;
+	while (result.charAt(end - 1) === "\0") end--;
+	return result.slice(start, end).split("\0").map(transform).join(delimiter);
+}
+/**
+* Replace `re` in the input string with the replacement value.
+*/
+function replace$1(input, re, value) {
+	if (re instanceof RegExp) return input.replace(re, value);
+	return re.reduce(function(input, re) {
+		return input.replace(re, value);
+	}, input);
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
+function dotCase(input, options) {
+	if (options === void 0) options = {};
+	return noCase(input, __assign({ delimiter: "." }, options));
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
+function paramCase(input, options) {
+	if (options === void 0) options = {};
+	return dotCase(input, __assign({ delimiter: "-" }, options));
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useRefWithInit.mjs
+const UNINITIALIZED = {};
+/**
+* A React.useRef() that is initialized with a function. Note that it accepts an optional
+* initialization argument, so the initialization function doesn't need to be an inline closure.
+*
+* @usage
+*   const ref = useRefWithInit(sortColumns, columns)
+*/
+function useRefWithInit(init, initArg) {
+	const ref = React.useRef(UNINITIALIZED);
+	if (ref.current === UNINITIALIZED) ref.current = init(initArg);
+	return ref;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/warn.mjs
+let set;
+if (process.env.NODE_ENV !== "production") set = /* @__PURE__ */ new Set();
+function warn(...messages) {
+	if (process.env.NODE_ENV !== "production") {
+		const messageKey = messages.join(" ");
+		if (!set.has(messageKey)) {
+			set.add(messageKey);
+			console.warn(`Base UI: ${messageKey}`);
+		}
+	}
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/formatErrorMessage.mjs
+/**
+* Creates a formatErrorMessage function with a custom URL and prefix.
+* @param baseUrl - The base URL for the error page (e.g., 'https://base-ui.com/production-error')
+* @param prefix - The prefix for the error message (e.g., 'Base UI')
+* @returns A function that formats error messages with the given URL and prefix
+*/
+function createFormatErrorMessage(baseUrl, prefix) {
+	return function formatErrorMessage(code, ...args) {
+		const url = new URL(baseUrl);
+		url.searchParams.set("code", code.toString());
+		args.forEach((arg) => url.searchParams.append("args[]", arg));
+		return `${prefix} error #${code}; visit ${url} for the full message.`;
+	};
+}
+/**
+* WARNING: Don't import this directly. It's imported by the code generated by
+* `@mui/internal-babel-plugin-minify-errors`. Make sure to always use string literals in `Error`
+* constructors to ensure the plugin works as expected. Supported patterns include:
+*   throw new Error('My message');
+*   throw new Error(`My message: ${foo}`);
+*   throw new Error(`My message: ${foo}` + 'another string');
+*   ...
+*/
+const formatErrorMessage = createFormatErrorMessage("https://base-ui.com/production-error", "Base UI");
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useMergedRefs.mjs
+/**
+* Merges refs into a single memoized callback ref or `null`.
+* This makes sure multiple refs are updated together and have the same value.
+*
+* This function accepts up to four refs. If you need to merge more, or have an unspecified number of refs to merge,
+* use `useMergedRefsN` instead.
+*/
+function useMergedRefs(a, b, c, d) {
+	const forkRef = useRefWithInit(createForkRef).current;
+	if (didChange(forkRef, a, b, c, d)) update(forkRef, [
+		a,
+		b,
+		c,
+		d
+	]);
+	return forkRef.callback;
+}
+/**
+* Merges an array of refs into a single memoized callback ref or `null`.
+*
+* If you need to merge a fixed number (up to four) of refs, use `useMergedRefs` instead for better performance.
+*/
+function useMergedRefsN(refs) {
+	const forkRef = useRefWithInit(createForkRef).current;
+	if (didChangeN(forkRef, refs)) update(forkRef, refs);
+	return forkRef.callback;
+}
+function createForkRef() {
+	return {
+		callback: null,
+		cleanup: null,
+		refs: []
+	};
+}
+function didChange(forkRef, a, b, c, d) {
+	return forkRef.refs[0] !== a || forkRef.refs[1] !== b || forkRef.refs[2] !== c || forkRef.refs[3] !== d;
+}
+function didChangeN(forkRef, newRefs) {
+	return forkRef.refs.length !== newRefs.length || forkRef.refs.some((ref, index) => ref !== newRefs[index]);
+}
+function update(forkRef, refs) {
+	forkRef.refs = refs;
+	if (refs.every((ref) => ref == null)) {
+		forkRef.callback = null;
+		return;
+	}
+	forkRef.callback = (instance) => {
+		if (forkRef.cleanup) {
+			forkRef.cleanup();
+			forkRef.cleanup = null;
+		}
+		if (instance != null) {
+			const cleanupCallbacks = Array(refs.length).fill(null);
+			for (let i = 0; i < refs.length; i += 1) {
+				const ref = refs[i];
+				if (ref == null) continue;
+				switch (typeof ref) {
+					case "function": {
+						const refCleanup = ref(instance);
+						if (typeof refCleanup === "function") cleanupCallbacks[i] = refCleanup;
+						break;
+					}
+					case "object":
+						ref.current = instance;
+						break;
+					default:
+				}
+			}
+			forkRef.cleanup = () => {
+				for (let i = 0; i < refs.length; i += 1) {
+					const ref = refs[i];
+					if (ref == null) continue;
+					switch (typeof ref) {
+						case "function": {
+							const cleanupCallback = cleanupCallbacks[i];
+							if (typeof cleanupCallback === "function") cleanupCallback();
+							else ref(null);
+							break;
+						}
+						case "object":
+							ref.current = null;
+							break;
+						default:
+					}
+				}
+			};
+		}
+	};
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/reactVersion.mjs
+const majorVersion = parseInt(React.version, 10);
+function isReactVersionAtLeast(reactVersionToCheck) {
+	return majorVersion >= reactVersionToCheck;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/getReactElementRef.mjs
+/**
+* Extracts the `ref` from a React element, handling different React versions.
+*/
+function getReactElementRef(element) {
+	if (!/*#__PURE__*/ React.isValidElement(element)) return null;
+	const reactElement = element;
+	const propsWithRef = reactElement.props;
+	return (isReactVersionAtLeast(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
+}
+//#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/mergeObjects.mjs
 function mergeObjects(a, b) {
 	if (a && !b) return a;
@@ -1455,6 +1685,48 @@ function mergeObjects(a, b) {
 		...a,
 		...b
 	};
+}
+Object.freeze([]);
+const EMPTY_OBJECT = Object.freeze({});
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/getStateAttributesProps.mjs
+function getStateAttributesProps(state, customMapping) {
+	const props = {};
+	for (const key in state) {
+		const value = state[key];
+		if (customMapping?.hasOwnProperty(key)) {
+			const customProps = customMapping[key](value);
+			if (customProps != null) Object.assign(props, customProps);
+			continue;
+		}
+		if (value === true) props[`data-${key.toLowerCase()}`] = "";
+		else if (value) props[`data-${key.toLowerCase()}`] = value.toString();
+	}
+	return props;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveClassName.mjs
+/**
+* If the provided className is a string, it will be returned as is.
+* Otherwise, the function will call the className function with the state as the first argument.
+*
+* @param className
+* @param state
+*/
+function resolveClassName(className, state) {
+	return typeof className === "function" ? className(state) : className;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveStyle.mjs
+/**
+* If the provided style is an object, it will be returned as is.
+* Otherwise, the function will call the style function with the state as the first argument.
+*
+* @param style
+* @param state
+*/
+function resolveStyle(style, state) {
+	return typeof style === "function" ? style(state) : style;
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/merge-props/mergeProps.mjs
@@ -1608,210 +1880,6 @@ function isSyntheticEvent(event) {
 	return event != null && typeof event === "object" && "nativeEvent" in event;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/formatErrorMessage.mjs
-/**
-* Creates a formatErrorMessage function with a custom URL and prefix.
-* @param baseUrl - The base URL for the error page (e.g., 'https://base-ui.com/production-error')
-* @param prefix - The prefix for the error message (e.g., 'Base UI')
-* @returns A function that formats error messages with the given URL and prefix
-*/
-function createFormatErrorMessage(baseUrl, prefix) {
-	return function formatErrorMessage(code, ...args) {
-		const url = new URL(baseUrl);
-		url.searchParams.set("code", code.toString());
-		args.forEach((arg) => url.searchParams.append("args[]", arg));
-		return `${prefix} error #${code}; visit ${url} for the full message.`;
-	};
-}
-/**
-* WARNING: Don't import this directly. It's imported by the code generated by
-* `@mui/internal-babel-plugin-minify-errors`. Make sure to always use string literals in `Error`
-* constructors to ensure the plugin works as expected. Supported patterns include:
-*   throw new Error('My message');
-*   throw new Error(`My message: ${foo}`);
-*   throw new Error(`My message: ${foo}` + 'another string');
-*   ...
-*/
-const formatErrorMessage = createFormatErrorMessage("https://base-ui.com/production-error", "Base UI");
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useRefWithInit.mjs
-const UNINITIALIZED = {};
-/**
-* A React.useRef() that is initialized with a function. Note that it accepts an optional
-* initialization argument, so the initialization function doesn't need to be an inline closure.
-*
-* @usage
-*   const ref = useRefWithInit(sortColumns, columns)
-*/
-function useRefWithInit(init, initArg) {
-	const ref = React.useRef(UNINITIALIZED);
-	if (ref.current === UNINITIALIZED) ref.current = init(initArg);
-	return ref;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useMergedRefs.mjs
-/**
-* Merges refs into a single memoized callback ref or `null`.
-* This makes sure multiple refs are updated together and have the same value.
-*
-* This function accepts up to four refs. If you need to merge more, or have an unspecified number of refs to merge,
-* use `useMergedRefsN` instead.
-*/
-function useMergedRefs(a, b, c, d) {
-	const forkRef = useRefWithInit(createForkRef).current;
-	if (didChange(forkRef, a, b, c, d)) update(forkRef, [
-		a,
-		b,
-		c,
-		d
-	]);
-	return forkRef.callback;
-}
-/**
-* Merges an array of refs into a single memoized callback ref or `null`.
-*
-* If you need to merge a fixed number (up to four) of refs, use `useMergedRefs` instead for better performance.
-*/
-function useMergedRefsN(refs) {
-	const forkRef = useRefWithInit(createForkRef).current;
-	if (didChangeN(forkRef, refs)) update(forkRef, refs);
-	return forkRef.callback;
-}
-function createForkRef() {
-	return {
-		callback: null,
-		cleanup: null,
-		refs: []
-	};
-}
-function didChange(forkRef, a, b, c, d) {
-	return forkRef.refs[0] !== a || forkRef.refs[1] !== b || forkRef.refs[2] !== c || forkRef.refs[3] !== d;
-}
-function didChangeN(forkRef, newRefs) {
-	return forkRef.refs.length !== newRefs.length || forkRef.refs.some((ref, index) => ref !== newRefs[index]);
-}
-function update(forkRef, refs) {
-	forkRef.refs = refs;
-	if (refs.every((ref) => ref == null)) {
-		forkRef.callback = null;
-		return;
-	}
-	forkRef.callback = (instance) => {
-		if (forkRef.cleanup) {
-			forkRef.cleanup();
-			forkRef.cleanup = null;
-		}
-		if (instance != null) {
-			const cleanupCallbacks = Array(refs.length).fill(null);
-			for (let i = 0; i < refs.length; i += 1) {
-				const ref = refs[i];
-				if (ref == null) continue;
-				switch (typeof ref) {
-					case "function": {
-						const refCleanup = ref(instance);
-						if (typeof refCleanup === "function") cleanupCallbacks[i] = refCleanup;
-						break;
-					}
-					case "object":
-						ref.current = instance;
-						break;
-					default:
-				}
-			}
-			forkRef.cleanup = () => {
-				for (let i = 0; i < refs.length; i += 1) {
-					const ref = refs[i];
-					if (ref == null) continue;
-					switch (typeof ref) {
-						case "function": {
-							const cleanupCallback = cleanupCallbacks[i];
-							if (typeof cleanupCallback === "function") cleanupCallback();
-							else ref(null);
-							break;
-						}
-						case "object":
-							ref.current = null;
-							break;
-						default:
-					}
-				}
-			};
-		}
-	};
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/reactVersion.mjs
-const majorVersion = parseInt(React.version, 10);
-function isReactVersionAtLeast(reactVersionToCheck) {
-	return majorVersion >= reactVersionToCheck;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/getReactElementRef.mjs
-/**
-* Extracts the `ref` from a React element, handling different React versions.
-*/
-function getReactElementRef(element) {
-	if (!/*#__PURE__*/ React.isValidElement(element)) return null;
-	const reactElement = element;
-	const propsWithRef = reactElement.props;
-	return (isReactVersionAtLeast(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/warn.mjs
-let set;
-if (process.env.NODE_ENV !== "production") set = /* @__PURE__ */ new Set();
-function warn(...messages) {
-	if (process.env.NODE_ENV !== "production") {
-		const messageKey = messages.join(" ");
-		if (!set.has(messageKey)) {
-			set.add(messageKey);
-			console.warn(`Base UI: ${messageKey}`);
-		}
-	}
-}
-Object.freeze([]);
-const EMPTY_OBJECT = Object.freeze({});
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/getStateAttributesProps.mjs
-function getStateAttributesProps(state, customMapping) {
-	const props = {};
-	for (const key in state) {
-		const value = state[key];
-		if (customMapping?.hasOwnProperty(key)) {
-			const customProps = customMapping[key](value);
-			if (customProps != null) Object.assign(props, customProps);
-			continue;
-		}
-		if (value === true) props[`data-${key.toLowerCase()}`] = "";
-		else if (value) props[`data-${key.toLowerCase()}`] = value.toString();
-	}
-	return props;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveClassName.mjs
-/**
-* If the provided className is a string, it will be returned as is.
-* Otherwise, the function will call the className function with the state as the first argument.
-*
-* @param className
-* @param state
-*/
-function resolveClassName(className, state) {
-	return typeof className === "function" ? className(state) : className;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/resolveStyle.mjs
-/**
-* If the provided style is an object, it will be returned as is.
-* Otherwise, the function will call the style function with the state as the first argument.
-*
-* @param style
-* @param state
-*/
-function resolveStyle(style, state) {
-	return typeof style === "function" ? style(state) : style;
-}
-//#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/useRenderElement.mjs
 /**
 * Renders a Base UI element.
@@ -1911,7 +1979,7 @@ function useRender(params) {
 	return useRenderElement(params.defaultTagName ?? "div", params, params);
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/text/text.mjs
 var STYLE_HASH_ATTRIBUTE$1 = "data-wp-hash";
 function getRuntime$1() {
 	const globalScope = globalThis;
@@ -1967,35 +2035,39 @@ function registerStyle$1(hash, css) {
 	runtime.styles.set(hash, css);
 	for (const targetDocument of runtime.documents.keys()) injectStyle$1(targetDocument, hash, css);
 }
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("32aba35fe1", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._19ce0419607e1896__stack{display:flex}}}");
-var style_default$1 = { "stack": "_19ce0419607e1896__stack" };
-var gapTokens = {
-	xs: "var(--wpds-dimension-gap-xs, 4px)",
-	sm: "var(--wpds-dimension-gap-sm, 8px)",
-	md: "var(--wpds-dimension-gap-md, 12px)",
-	lg: "var(--wpds-dimension-gap-lg, 16px)",
-	xl: "var(--wpds-dimension-gap-xl, 24px)",
-	"2xl": "var(--wpds-dimension-gap-2xl, 32px)",
-	"3xl": "var(--wpds-dimension-gap-3xl, 40px)"
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("0c5702ddca", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._83ed8a8da5dd50ea__text{margin:0}._14437cfb77831647__heading-2xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-p-line-height:var(--wpds-typography-line-height-2xl,40px);font-size:var(--wpds-typography-font-size-2xl,32px);line-height:var(--wpds-typography-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-md,24px)}.aa58f227716bcde2__heading-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-xl,32px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-lg,15px);line-height:var(--wpds-typography-line-height-md,24px)}._131101940be12424__body-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px);line-height:var(--wpds-typography-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}");
+var style_default$1 = {
+	"text": "_83ed8a8da5dd50ea__text",
+	"heading-2xl": "_14437cfb77831647__heading-2xl",
+	"heading-xl": "_3c78b7fa9b4072dd__heading-xl",
+	"heading-lg": "aa58f227716bcde2__heading-lg",
+	"heading-md": "fc4da56d8dfe52c4__heading-md",
+	"heading-sm": "a9b78c7c82e8dff7__heading-sm",
+	"body-xl": "_305ff559e52180d5__body-xl",
+	"body-lg": "ca1aa3fc2029e958__body-lg",
+	"body-md": "_131101940be12424__body-md",
+	"body-sm": "_0e8d87a42c1f75fa__body-sm"
 };
-var Stack = forwardRef$1(function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("d390e935a7", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+var global_css_defense_default = {
+	"button": "_6defc79820e382c6__button",
+	"input": "d2cff2e5dea83bd1__input",
+	"textarea": "_547d86373d02e108__textarea",
+	"div": "_8c15fd0ed9f28ba4__div",
+	"p": "_43cec3e1eec1066d__p",
+	"heading": "e97669c6d9a38497__heading",
+	"a": "_2c0831b0499dbd6e__a"
+};
+var Text$1 = forwardRef$1(function Text2({ variant = "body-md", render, className, ...props }, ref) {
 	return useRender({
 		render,
+		defaultTagName: "span",
 		ref,
-		props: mergeProps(props, {
-			style: {
-				gap: gap && gapTokens[gap],
-				alignItems: align,
-				justifyContent: justify,
-				flexDirection: direction,
-				flexWrap: wrap
-			},
-			className: style_default$1.stack
-		})
+		props: mergeProps(props, { className: clsx(style_default$1.text, global_css_defense_default.heading, global_css_defense_default.p, style_default$1[variant], className) })
 	});
 });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/text/text.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
 function getRuntime() {
 	const globalScope = globalThis;
@@ -2051,35 +2123,31 @@ function registerStyle(hash, css) {
 	runtime.styles.set(hash, css);
 	for (const targetDocument of runtime.documents.keys()) injectStyle(targetDocument, hash, css);
 }
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("0c5702ddca", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._83ed8a8da5dd50ea__text{margin:0}._14437cfb77831647__heading-2xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-p-line-height:var(--wpds-typography-line-height-2xl,40px);font-size:var(--wpds-typography-font-size-2xl,32px);line-height:var(--wpds-typography-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-md,24px)}.aa58f227716bcde2__heading-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-xl,32px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-lg,15px);line-height:var(--wpds-typography-line-height-md,24px)}._131101940be12424__body-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px);line-height:var(--wpds-typography-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}");
-var style_default = {
-	"text": "_83ed8a8da5dd50ea__text",
-	"heading-2xl": "_14437cfb77831647__heading-2xl",
-	"heading-xl": "_3c78b7fa9b4072dd__heading-xl",
-	"heading-lg": "aa58f227716bcde2__heading-lg",
-	"heading-md": "fc4da56d8dfe52c4__heading-md",
-	"heading-sm": "a9b78c7c82e8dff7__heading-sm",
-	"body-xl": "_305ff559e52180d5__body-xl",
-	"body-lg": "ca1aa3fc2029e958__body-lg",
-	"body-md": "_131101940be12424__body-md",
-	"body-sm": "_0e8d87a42c1f75fa__body-sm"
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("32aba35fe1", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._19ce0419607e1896__stack{display:flex}}}");
+var style_default = { "stack": "_19ce0419607e1896__stack" };
+var gapTokens = {
+	xs: "var(--wpds-dimension-gap-xs, 4px)",
+	sm: "var(--wpds-dimension-gap-sm, 8px)",
+	md: "var(--wpds-dimension-gap-md, 12px)",
+	lg: "var(--wpds-dimension-gap-lg, 16px)",
+	xl: "var(--wpds-dimension-gap-xl, 24px)",
+	"2xl": "var(--wpds-dimension-gap-2xl, 32px)",
+	"3xl": "var(--wpds-dimension-gap-3xl, 40px)"
 };
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("d390e935a7", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
-var global_css_defense_default = {
-	"button": "_6defc79820e382c6__button",
-	"input": "d2cff2e5dea83bd1__input",
-	"textarea": "_547d86373d02e108__textarea",
-	"div": "_8c15fd0ed9f28ba4__div",
-	"p": "_43cec3e1eec1066d__p",
-	"heading": "e97669c6d9a38497__heading",
-	"a": "_2c0831b0499dbd6e__a"
-};
-var Text$1 = forwardRef$1(function Text2({ variant = "body-md", render, className, ...props }, ref) {
+var Stack = forwardRef$1(function Stack2({ direction, gap, align, justify, wrap, render, ...props }, ref) {
 	return useRender({
 		render,
-		defaultTagName: "span",
 		ref,
-		props: mergeProps(props, { className: clsx(style_default.text, global_css_defense_default.heading, global_css_defense_default.p, style_default[variant], className) })
+		props: mergeProps(props, {
+			style: {
+				gap: gap && gapTokens[gap],
+				alignItems: align,
+				justifyContent: justify,
+				flexDirection: direction,
+				flexWrap: wrap
+			},
+			className: style_default.stack
+		})
 	});
 });
 //#endregion
@@ -3100,6 +3168,86 @@ var line_chart_module_default = {
 	"line-chart--animated": "a8ccharts-inuQka-line-chart--animated",
 	"rise": "a8ccharts-inuQka-rise"
 };
+const CloseIcon = () => /* @__PURE__ */ jsx("svg", {
+	width: "16",
+	height: "16",
+	viewBox: "0 0 24 24",
+	fill: "none",
+	stroke: "currentColor",
+	strokeWidth: "2",
+	strokeLinecap: "round",
+	strokeLinejoin: "round",
+	"aria-hidden": "true",
+	focusable: "false",
+	children: /* @__PURE__ */ jsx("path", { d: "M6 6l12 12M18 6L6 18" })
+});
+const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, renderLabelPopover }) => {
+	const popoverId = useId();
+	const buttonRef = useRef(null);
+	const popoverRef = useRef(null);
+	const [isPositioned, setIsPositioned] = useState(false);
+	const isBrowserSafari = isSafari();
+	useEffect(() => {
+		const button = buttonRef.current;
+		const popover = popoverRef.current;
+		if (!button || !popover) return;
+		const positionPopover = () => {
+			if (!isBrowserSafari) {
+				const buttonRect = button.getBoundingClientRect();
+				popover.style.left = `${buttonRect.right}px`;
+				popover.style.top = `${buttonRect.top}px`;
+			}
+			setIsPositioned(true);
+		};
+		popover.addEventListener("toggle", (e) => {
+			if (e.newState === "open") positionPopover();
+		});
+		try {
+			if (popover.matches(":popover-open")) positionPopover();
+		} catch {}
+	}, [isBrowserSafari]);
+	return /* @__PURE__ */ jsxs("div", {
+		className: line_chart_module_default["line-chart__annotation-label"],
+		children: [/* @__PURE__ */ jsx("button", {
+			ref: buttonRef,
+			popovertarget: popoverId,
+			className: line_chart_module_default["line-chart__annotation-label-trigger-button"],
+			style: {
+				width: `44px`,
+				height: `44px`,
+				transform: `translate(${44 / 2}px, 0)`
+			},
+			"aria-label": title || __("View details", "jetpack-charts"),
+			children: renderLabel({
+				title,
+				subtitle
+			})
+		}), /* @__PURE__ */ jsx("div", {
+			ref: popoverRef,
+			id: popoverId,
+			popover: "auto",
+			className: clsx(line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
+			children: /* @__PURE__ */ jsxs(Stack, {
+				direction: "row",
+				align: "flex-start",
+				justify: "space-between",
+				children: [/* @__PURE__ */ jsx("div", {
+					className: line_chart_module_default["line-chart__annotation-label-popover-content"],
+					children: renderLabelPopover({
+						title,
+						subtitle
+					})
+				}), /* @__PURE__ */ jsx("button", {
+					popovertarget: popoverId,
+					popovertargetaction: "hide",
+					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
+					"aria-label": __("Close", "jetpack-charts"),
+					children: /* @__PURE__ */ jsx(CloseIcon, {})
+				})]
+			})
+		})]
+	});
+};
 //#endregion
 //#region src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 const LineChartAnnotationsOverlay = ({ children }) => {
@@ -3184,86 +3332,6 @@ const LineChartAnnotationsOverlay = ({ children }) => {
 		})
 	});
 };
-const CloseIcon = () => /* @__PURE__ */ jsx("svg", {
-	width: "16",
-	height: "16",
-	viewBox: "0 0 24 24",
-	fill: "none",
-	stroke: "currentColor",
-	strokeWidth: "2",
-	strokeLinecap: "round",
-	strokeLinejoin: "round",
-	"aria-hidden": "true",
-	focusable: "false",
-	children: /* @__PURE__ */ jsx("path", { d: "M6 6l12 12M18 6L6 18" })
-});
-const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, renderLabelPopover }) => {
-	const popoverId = useId();
-	const buttonRef = useRef(null);
-	const popoverRef = useRef(null);
-	const [isPositioned, setIsPositioned] = useState(false);
-	const isBrowserSafari = isSafari();
-	useEffect(() => {
-		const button = buttonRef.current;
-		const popover = popoverRef.current;
-		if (!button || !popover) return;
-		const positionPopover = () => {
-			if (!isBrowserSafari) {
-				const buttonRect = button.getBoundingClientRect();
-				popover.style.left = `${buttonRect.right}px`;
-				popover.style.top = `${buttonRect.top}px`;
-			}
-			setIsPositioned(true);
-		};
-		popover.addEventListener("toggle", (e) => {
-			if (e.newState === "open") positionPopover();
-		});
-		try {
-			if (popover.matches(":popover-open")) positionPopover();
-		} catch {}
-	}, [isBrowserSafari]);
-	return /* @__PURE__ */ jsxs("div", {
-		className: line_chart_module_default["line-chart__annotation-label"],
-		children: [/* @__PURE__ */ jsx("button", {
-			ref: buttonRef,
-			popovertarget: popoverId,
-			className: line_chart_module_default["line-chart__annotation-label-trigger-button"],
-			style: {
-				width: `44px`,
-				height: `44px`,
-				transform: `translate(${44 / 2}px, 0)`
-			},
-			"aria-label": title || __("View details", "jetpack-charts"),
-			children: renderLabel({
-				title,
-				subtitle
-			})
-		}), /* @__PURE__ */ jsx("div", {
-			ref: popoverRef,
-			id: popoverId,
-			popover: "auto",
-			className: clsx(line_chart_module_default["line-chart__annotation-label-popover"], isPositioned && line_chart_module_default["line-chart__annotation-label-popover--visible"], isBrowserSafari && line_chart_module_default["line-chart__annotation-label-popover--safari"]),
-			children: /* @__PURE__ */ jsxs(Stack, {
-				direction: "row",
-				align: "flex-start",
-				justify: "space-between",
-				children: [/* @__PURE__ */ jsx("div", {
-					className: line_chart_module_default["line-chart__annotation-label-popover-content"],
-					children: renderLabelPopover({
-						title,
-						subtitle
-					})
-				}), /* @__PURE__ */ jsx("button", {
-					popovertarget: popoverId,
-					popovertargetaction: "hide",
-					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
-					"aria-label": __("Close", "jetpack-charts"),
-					children: /* @__PURE__ */ jsx(CloseIcon, {})
-				})]
-			})
-		})]
-	});
-};
 //#endregion
 //#region src/charts/line-chart/private/line-chart-annotation.tsx
 const ANNOTATION_MAX_WIDTH = 125;
@@ -3328,7 +3396,10 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 	const styles = deepmerge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
 	const resolveColor = (value) => value ? resolveCssVariable(value) ?? value : value;
 	useEffect(() => {
-		if (labelRef.current?.getBBox) setHeight(labelRef.current.getBBox().height);
+		if (labelRef.current?.getBBox) {
+			const bbox = labelRef.current.getBBox();
+			setHeight(bbox.height);
+		}
 	}, []);
 	const positionData = useMemo(() => {
 		if (!datum || !datum.date || datum.value == null || !xScale || !yScale) return null;
@@ -4969,8 +5040,9 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		if (dataPointIndex >= maxDataPoints || seriesIndex >= primaryCount) return "";
 		const seriesData = primaryEntries[seriesIndex]?.series;
 		if (!seriesData || dataPointIndex >= seriesData.data.length) return "";
+		const actualBarIndex = seriesIndex * maxDataPoints + dataPointIndex;
 		return `
-			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${seriesIndex * maxDataPoints + dataPointIndex + 1}) {
+			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${actualBarIndex + 1}) {
 				stroke: #005fcc;
 				stroke-width: 2px;
 			}
@@ -5190,16 +5262,18 @@ const AxisRenderer = ({ ticks, tickLabelProps, yOffset, labelPosition, valuePosi
 const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
 	if (!isMultiSeries) return 0;
 	const dataKeys = data.map(({ label }) => label);
-	return -(getScaleBandwidth(scaleBand({
+	const yScale = createScale({
+		type: "band",
+		range: [0, height],
 		domain: dataKeys,
-		range: [0, getScaleBandwidth(createScale({
-			type: "band",
-			range: [0, height],
-			domain: dataKeys,
-			...yScaleConfig
-		}))],
+		...yScaleConfig
+	});
+	const groupScale = scaleBand({
+		domain: dataKeys,
+		range: [0, getScaleBandwidth(yScale)],
 		padding: yScaleConfig.paddingInner
-	})) + 6);
+	});
+	return -(getScaleBandwidth(groupScale) + 6);
 };
 const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	left: 0,
@@ -6281,256 +6355,6 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ jsx(HeatmapChartW
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
 const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/utils.mjs
-var logged = /* @__PURE__ */ new Set();
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/index.mjs
-function isDev() {
-	return globalThis.SCRIPT_DEBUG === true;
-}
-function warning(message) {
-	if (!isDev()) return;
-	if (logged.has(message)) return;
-	console.warn(message);
-	try {
-		throw Error(message);
-	} catch {}
-	logged.add(message);
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
-var COMPONENT_NAMESPACE = "data-wp-component";
-var CONNECTED_NAMESPACE = "data-wp-c16t";
-var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
-//#endregion
-//#region ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
-/**
-* Lower case as a function.
-*/
-function lowerCase(str) {
-	return str.toLowerCase();
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
-var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
-var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
-/**
-* Normalize the string into something other libraries can manipulate easier.
-*/
-function noCase(input, options) {
-	if (options === void 0) options = {};
-	var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter = _d === void 0 ? " " : _d;
-	var result = replace$1(replace$1(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
-	var start = 0;
-	var end = result.length;
-	while (result.charAt(start) === "\0") start++;
-	while (result.charAt(end - 1) === "\0") end--;
-	return result.slice(start, end).split("\0").map(transform).join(delimiter);
-}
-/**
-* Replace `re` in the input string with the replacement value.
-*/
-function replace$1(input, re, value) {
-	if (re instanceof RegExp) return input.replace(re, value);
-	return re.reduce(function(input, re) {
-		return input.replace(re, value);
-	}, input);
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
-function dotCase(input, options) {
-	if (options === void 0) options = {};
-	return noCase(input, __assign({ delimiter: "." }, options));
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
-function paramCase(input, options) {
-	if (options === void 0) options = {};
-	return dotCase(input, __assign({ delimiter: "-" }, options));
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/memize@2.1.1/node_modules/memize/dist/index.js
-/**
-* Memize options object.
-*
-* @typedef MemizeOptions
-*
-* @property {number} [maxSize] Maximum size of the cache.
-*/
-/**
-* Internal cache entry.
-*
-* @typedef MemizeCacheNode
-*
-* @property {?MemizeCacheNode|undefined} [prev] Previous node.
-* @property {?MemizeCacheNode|undefined} [next] Next node.
-* @property {Array<*>}                   args   Function arguments for cache
-*                                               entry.
-* @property {*}                          val    Function result.
-*/
-/**
-* Properties of the enhanced function for controlling cache.
-*
-* @typedef MemizeMemoizedFunction
-*
-* @property {()=>void} clear Clear the cache.
-*/
-/**
-* Accepts a function to be memoized, and returns a new memoized function, with
-* optional options.
-*
-* @template {(...args: any[]) => any} F
-*
-* @param {F}             fn        Function to memoize.
-* @param {MemizeOptions} [options] Options object.
-*
-* @return {((...args: Parameters<F>) => ReturnType<F>) & MemizeMemoizedFunction} Memoized function.
-*/
-function memize(fn, options) {
-	var size = 0;
-	/** @type {?MemizeCacheNode|undefined} */
-	var head;
-	/** @type {?MemizeCacheNode|undefined} */
-	var tail;
-	options = options || {};
-	function memoized() {
-		var node = head, len = arguments.length, args, i;
-		searchCache: while (node) {
-			if (node.args.length !== arguments.length) {
-				node = node.next;
-				continue;
-			}
-			for (i = 0; i < len; i++) if (node.args[i] !== arguments[i]) {
-				node = node.next;
-				continue searchCache;
-			}
-			if (node !== head) {
-				if (node === tail) tail = node.prev;
-				/** @type {MemizeCacheNode} */ node.prev.next = node.next;
-				if (node.next) node.next.prev = node.prev;
-				node.next = head;
-				node.prev = null;
-				/** @type {MemizeCacheNode} */ head.prev = node;
-				head = node;
-			}
-			return node.val;
-		}
-		args = new Array(len);
-		for (i = 0; i < len; i++) args[i] = arguments[i];
-		node = {
-			args,
-			val: fn.apply(null, args)
-		};
-		if (head) {
-			head.prev = node;
-			node.next = head;
-		} else tail = node;
-		if (size === options.maxSize) {
-			tail = tail.prev;
-			/** @type {MemizeCacheNode} */ tail.next = null;
-		} else size++;
-		head = node;
-		return node.val;
-	}
-	memoized.clear = function() {
-		head = null;
-		tail = null;
-		size = 0;
-	};
-	return memoized;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
-function getStyledClassName(namespace) {
-	return `components-${paramCase(namespace)}`;
-}
-var getStyledClassNameFromKey = memize(getStyledClassName);
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
-function contextConnect(Component, namespace) {
-	return _contextConnect(Component, namespace, { forwardsRef: true });
-}
-function _contextConnect(Component, namespace, options) {
-	const WrappedComponent = options?.forwardsRef ? forwardRef$1(Component) : Component;
-	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("contextConnect: Please provide a namespace");
-	let mergedNamespace = WrappedComponent["__contextSystemKey__"] || [namespace];
-	if (Array.isArray(namespace)) mergedNamespace = [...mergedNamespace, ...namespace];
-	if (typeof namespace === "string") mergedNamespace = [...mergedNamespace, namespace];
-	return Object.assign(WrappedComponent, {
-		[CONNECT_STATIC_NAMESPACE]: [...new Set(mergedNamespace)],
-		displayName: namespace,
-		selector: `.${getStyledClassNameFromKey(namespace)}`
-	});
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/es6/index.js
-var require_es6 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	module.exports = function equal(a, b) {
-		if (a === b) return true;
-		if (a && b && typeof a == "object" && typeof b == "object") {
-			if (a.constructor !== b.constructor) return false;
-			var length, i, keys;
-			if (Array.isArray(a)) {
-				length = a.length;
-				if (length != b.length) return false;
-				for (i = length; i-- !== 0;) if (!equal(a[i], b[i])) return false;
-				return true;
-			}
-			if (a instanceof Map && b instanceof Map) {
-				if (a.size !== b.size) return false;
-				for (i of a.entries()) if (!b.has(i[0])) return false;
-				for (i of a.entries()) if (!equal(i[1], b.get(i[0]))) return false;
-				return true;
-			}
-			if (a instanceof Set && b instanceof Set) {
-				if (a.size !== b.size) return false;
-				for (i of a.entries()) if (!b.has(i[0])) return false;
-				return true;
-			}
-			if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
-				length = a.length;
-				if (length != b.length) return false;
-				for (i = length; i-- !== 0;) if (a[i] !== b[i]) return false;
-				return true;
-			}
-			if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
-			if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
-			if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
-			keys = Object.keys(a);
-			length = keys.length;
-			if (length !== Object.keys(b).length) return false;
-			for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
-			for (i = length; i-- !== 0;) {
-				var key = keys[i];
-				if (!equal(a[key], b[key])) return false;
-			}
-			return true;
-		}
-		return a !== a && b !== b;
-	};
-}));
-//#endregion
-//#region ../../../node_modules/.pnpm/is-plain-object@5.0.0/node_modules/is-plain-object/dist/is-plain-object.mjs
-/*!
-* is-plain-object <https://github.com/jonschlinkert/is-plain-object>
-*
-* Copyright (c) 2014-2017, Jon Schlinkert.
-* Released under the MIT License.
-*/
-function isObject(o) {
-	return Object.prototype.toString.call(o) === "[object Object]";
-}
-function isPlainObject(o) {
-	var ctor, prot;
-	if (isObject(o) === false) return false;
-	ctor = o.constructor;
-	if (ctor === void 0) return true;
-	prot = ctor.prototype;
-	if (isObject(prot) === false) return false;
-	if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
-	return true;
-}
-//#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
 	const mountedRef = useRef$1(false);
@@ -6544,43 +6368,7 @@ function useUpdateEffect(effect, deps) {
 }
 var use_update_effect_default = useUpdateEffect;
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
-var import_es6 = /* @__PURE__ */ __toESM(require_es6(), 1);
-var ComponentsContext = createContext$1(
-	/** @type {Record<string, any>} */
-	{}
-);
-ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => useContext$1(ComponentsContext);
-function useContextSystemBridge({ value }) {
-	const parentContext = useComponentsContext();
-	const valueRef = useRef$1(value);
-	use_update_effect_default(() => {
-		if ((0, import_es6.default)(valueRef.current, value) && valueRef.current !== value) globalThis.SCRIPT_DEBUG === true && warning(`Please memoize your context: ${JSON.stringify(value)}`);
-	}, [value]);
-	return useMemo$1(() => {
-		return deepmerge(parentContext ?? {}, value ?? {}, { isMergeableObject: isPlainObject });
-	}, [parentContext, value]);
-}
-var BaseContextSystemProvider = ({ children, value }) => {
-	const contextValue = useContextSystemBridge({ value });
-	return /* @__PURE__ */ jsx(ComponentsContext.Provider, {
-		value: contextValue,
-		children
-	});
-};
-memo(BaseContextSystemProvider);
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
-function getNamespace(componentName) {
-	return { [COMPONENT_NAMESPACE]: componentName };
-}
-function getConnectedNamespace() {
-	return { [CONNECTED_NAMESPACE]: true };
-}
-//#endregion
 //#region ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
-var isDevelopment$3 = false;
 function sheetForTag(tag) {
 	if (tag.sheet) return tag.sheet;
 	/* istanbul ignore next */
@@ -6606,7 +6394,7 @@ var StyleSheet = /*#__PURE__*/ function() {
 			_this.container.insertBefore(tag, before);
 			_this.tags.push(tag);
 		};
-		this.isSpeedy = options.speedy === void 0 ? !isDevelopment$3 : options.speedy;
+		this.isSpeedy = options.speedy === void 0 ? true : options.speedy;
 		this.tags = [];
 		this.ctr = 0;
 		this.nonce = options.nonce;
@@ -7402,7 +7190,25 @@ var createCache = function createCache(options) {
 * LICENSE file in the root directory of this source tree.
 */
 var require_react_is_production_min = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var b = "function" === typeof Symbol && Symbol.for, c = b ? Symbol.for("react.element") : 60103, d = b ? Symbol.for("react.portal") : 60106, e = b ? Symbol.for("react.fragment") : 60107, f = b ? Symbol.for("react.strict_mode") : 60108, g = b ? Symbol.for("react.profiler") : 60114, h = b ? Symbol.for("react.provider") : 60109, k = b ? Symbol.for("react.context") : 60110, l = b ? Symbol.for("react.async_mode") : 60111, m = b ? Symbol.for("react.concurrent_mode") : 60111, n = b ? Symbol.for("react.forward_ref") : 60112, p = b ? Symbol.for("react.suspense") : 60113, q = b ? Symbol.for("react.suspense_list") : 60120, r = b ? Symbol.for("react.memo") : 60115, t = b ? Symbol.for("react.lazy") : 60116, v = b ? Symbol.for("react.block") : 60121, w = b ? Symbol.for("react.fundamental") : 60117, x = b ? Symbol.for("react.responder") : 60118, y = b ? Symbol.for("react.scope") : 60119;
+	var b = "function" === typeof Symbol && Symbol.for;
+	var c = b ? Symbol.for("react.element") : 60103;
+	var d = b ? Symbol.for("react.portal") : 60106;
+	var e = b ? Symbol.for("react.fragment") : 60107;
+	var f = b ? Symbol.for("react.strict_mode") : 60108;
+	var g = b ? Symbol.for("react.profiler") : 60114;
+	var h = b ? Symbol.for("react.provider") : 60109;
+	var k = b ? Symbol.for("react.context") : 60110;
+	var l = b ? Symbol.for("react.async_mode") : 60111;
+	var m = b ? Symbol.for("react.concurrent_mode") : 60111;
+	var n = b ? Symbol.for("react.forward_ref") : 60112;
+	var p = b ? Symbol.for("react.suspense") : 60113;
+	var q = b ? Symbol.for("react.suspense_list") : 60120;
+	var r = b ? Symbol.for("react.memo") : 60115;
+	var t = b ? Symbol.for("react.lazy") : 60116;
+	var v = b ? Symbol.for("react.block") : 60121;
+	var w = b ? Symbol.for("react.fundamental") : 60117;
+	var x = b ? Symbol.for("react.responder") : 60118;
+	var y = b ? Symbol.for("react.scope") : 60119;
 	function z(a) {
 		if ("object" === typeof a && null !== a) {
 			var u = a.$$typeof;
@@ -7725,7 +7531,6 @@ var require_hoist_non_react_statics_cjs = /* @__PURE__ */ __commonJSMin(((export
 }));
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.browser.esm.js
-var isBrowser = true;
 function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 	var rawClassName = "";
 	classNames.split(" ").forEach(function(className) {
@@ -7736,7 +7541,7 @@ function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 }
 var registerStyles = function registerStyles(cache, serialized, isStringTag) {
 	var className = cache.key + "-" + serialized.name;
-	if ((isStringTag === false || isBrowser === false) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
+	if ((isStringTag === false || false) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
 };
 var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 	registerStyles(cache, serialized, isStringTag);
@@ -8108,11 +7913,12 @@ var classnames = function classnames(args) {
 		}
 	}
 	return cls;
-}, _createEmotion = createEmotion({ key: "css" });
-_createEmotion.flush;
-_createEmotion.hydrate;
+};
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/dist/emotion-css.esm.js
+var _createEmotion = createEmotion({ key: "css" });
+_createEmotion.flush;
+_createEmotion.hydrate;
 var cx = _createEmotion.cx;
 _createEmotion.merge;
 _createEmotion.getRegisteredStyles;
@@ -8138,223 +7944,95 @@ var useCx = () => {
 	}, [cache]);
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
-function useContextSystem(props, namespace) {
-	const contextSystemProps = useComponentsContext();
-	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
-	const contextProps = contextSystemProps?.[namespace] || {};
-	const finalComponentProps = {
-		...getConnectedNamespace(),
-		...getNamespace(namespace)
-	};
-	const { _overrides: overrideProps, ...otherContextProps } = contextProps;
-	const initialMergedProps = Object.entries(otherContextProps).length ? Object.assign({}, otherContextProps, props) : props;
-	const classes = useCx()(getStyledClassNameFromKey(namespace), props.className);
-	const rendered = typeof initialMergedProps.renderChildren === "function" ? initialMergedProps.renderChildren(initialMergedProps) : initialMergedProps.children;
-	for (const key in initialMergedProps) finalComponentProps[key] = initialMergedProps[key];
-	for (const key in overrideProps) finalComponentProps[key] = overrideProps[key];
-	if (rendered !== void 0) finalComponentProps.children = rendered;
-	finalComponentProps.className = classes;
-	return finalComponentProps;
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+is-prop-valid@1.4.0/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
-var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
-var isPropValid = /* #__PURE__ */ memoize(function(prop) {
-	return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110 && prop.charCodeAt(2) < 91;
-});
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1__@types+react@18.3.28_react@18.3.1/node_modules/@emotion/styled/base/dist/emotion-styled-base.browser.esm.js
-var isDevelopment = false;
-var testOmitPropsOnStringTag = isPropValid;
-var testOmitPropsOnComponent = function testOmitPropsOnComponent(key) {
-	return key !== "theme";
-};
-var getDefaultShouldForwardProp = function getDefaultShouldForwardProp(tag) {
-	return typeof tag === "string" && tag.charCodeAt(0) > 96 ? testOmitPropsOnStringTag : testOmitPropsOnComponent;
-};
-var composeShouldForwardProps = function composeShouldForwardProps(tag, options, isReal) {
-	var shouldForwardProp;
-	if (options) {
-		var optionsShouldForwardProp = options.shouldForwardProp;
-		shouldForwardProp = tag.__emotion_forwardProp && optionsShouldForwardProp ? function(propName) {
-			return tag.__emotion_forwardProp(propName) && optionsShouldForwardProp(propName);
-		} : optionsShouldForwardProp;
-	}
-	if (typeof shouldForwardProp !== "function" && isReal) shouldForwardProp = tag.__emotion_forwardProp;
-	return shouldForwardProp;
-};
-var Insertion = function Insertion(_ref) {
-	var cache = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
-	registerStyles(cache, serialized, isStringTag);
-	useInsertionEffectAlwaysWithSyncFallback(function() {
-		return insertStyles(cache, serialized, isStringTag);
-	});
-	return null;
-};
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
-var PolymorphicDiv = /* @__PURE__ */ function createStyled(tag, options) {
-	var isReal = tag.__emotion_real === tag;
-	var baseTag = isReal && tag.__emotion_base || tag;
-	var identifierName;
-	var targetClassName;
-	if (options !== void 0) {
-		identifierName = options.label;
-		targetClassName = options.target;
-	}
-	var shouldForwardProp = composeShouldForwardProps(tag, options, isReal);
-	var defaultShouldForwardProp = shouldForwardProp || getDefaultShouldForwardProp(baseTag);
-	var shouldUseAs = !defaultShouldForwardProp("as");
-	return function() {
-		var args = arguments;
-		var styles = isReal && tag.__emotion_styles !== void 0 ? tag.__emotion_styles.slice(0) : [];
-		if (identifierName !== void 0) styles.push("label:" + identifierName + ";");
-		if (args[0] == null || args[0].raw === void 0) styles.push.apply(styles, args);
-		else {
-			var templateStringsArr = args[0];
-			styles.push(templateStringsArr[0]);
-			var len = args.length;
-			var i = 1;
-			for (; i < len; i++) styles.push(args[i], templateStringsArr[i]);
+//#region ../../../node_modules/.pnpm/memize@2.1.1/node_modules/memize/dist/index.js
+/**
+* Memize options object.
+*
+* @typedef MemizeOptions
+*
+* @property {number} [maxSize] Maximum size of the cache.
+*/
+/**
+* Internal cache entry.
+*
+* @typedef MemizeCacheNode
+*
+* @property {?MemizeCacheNode|undefined} [prev] Previous node.
+* @property {?MemizeCacheNode|undefined} [next] Next node.
+* @property {Array<*>}                   args   Function arguments for cache
+*                                               entry.
+* @property {*}                          val    Function result.
+*/
+/**
+* Properties of the enhanced function for controlling cache.
+*
+* @typedef MemizeMemoizedFunction
+*
+* @property {()=>void} clear Clear the cache.
+*/
+/**
+* Accepts a function to be memoized, and returns a new memoized function, with
+* optional options.
+*
+* @template {(...args: any[]) => any} F
+*
+* @param {F}             fn        Function to memoize.
+* @param {MemizeOptions} [options] Options object.
+*
+* @return {((...args: Parameters<F>) => ReturnType<F>) & MemizeMemoizedFunction} Memoized function.
+*/
+function memize(fn, options) {
+	var size = 0;
+	/** @type {?MemizeCacheNode|undefined} */
+	var head;
+	/** @type {?MemizeCacheNode|undefined} */
+	var tail;
+	options = options || {};
+	function memoized() {
+		var node = head, len = arguments.length, args, i;
+		searchCache: while (node) {
+			if (node.args.length !== arguments.length) {
+				node = node.next;
+				continue;
+			}
+			for (i = 0; i < len; i++) if (node.args[i] !== arguments[i]) {
+				node = node.next;
+				continue searchCache;
+			}
+			if (node !== head) {
+				if (node === tail) tail = node.prev;
+				/** @type {MemizeCacheNode} */ node.prev.next = node.next;
+				if (node.next) node.next.prev = node.prev;
+				node.next = head;
+				node.prev = null;
+				/** @type {MemizeCacheNode} */ head.prev = node;
+				head = node;
+			}
+			return node.val;
 		}
-		var Styled = withEmotionCache(function(props, cache, ref) {
-			var FinalTag = shouldUseAs && props.as || baseTag;
-			var className = "";
-			var classInterpolations = [];
-			var mergedProps = props;
-			if (props.theme == null) {
-				mergedProps = {};
-				for (var key in props) mergedProps[key] = props[key];
-				mergedProps.theme = React.useContext(ThemeContext);
-			}
-			if (typeof props.className === "string") className = getRegisteredStyles$1(cache.registered, classInterpolations, props.className);
-			else if (props.className != null) className = props.className + " ";
-			var serialized = serializeStyles(styles.concat(classInterpolations), cache.registered, mergedProps);
-			className += cache.key + "-" + serialized.name;
-			if (targetClassName !== void 0) className += " " + targetClassName;
-			var finalShouldForwardProp = shouldUseAs && shouldForwardProp === void 0 ? getDefaultShouldForwardProp(FinalTag) : defaultShouldForwardProp;
-			var newProps = {};
-			for (var _key in props) {
-				if (shouldUseAs && _key === "as") continue;
-				if (finalShouldForwardProp(_key)) newProps[_key] = props[_key];
-			}
-			newProps.className = className;
-			if (ref) newProps.ref = ref;
-			return /*#__PURE__*/ React.createElement(React.Fragment, null, /*#__PURE__*/ React.createElement(Insertion, {
-				cache,
-				serialized,
-				isStringTag: typeof FinalTag === "string"
-			}), /*#__PURE__*/ React.createElement(FinalTag, newProps));
-		});
-		Styled.displayName = identifierName !== void 0 ? identifierName : "Styled(" + (typeof baseTag === "string" ? baseTag : baseTag.displayName || baseTag.name || "Component") + ")";
-		Styled.defaultProps = tag.defaultProps;
-		Styled.__emotion_real = Styled;
-		Styled.__emotion_base = baseTag;
-		Styled.__emotion_styles = styles;
-		Styled.__emotion_forwardProp = shouldForwardProp;
-		Object.defineProperty(Styled, "toString", { value: function value() {
-			if (targetClassName === void 0 && isDevelopment) return "NO_COMPONENT_SELECTOR";
-			return "." + targetClassName;
-		} });
-		Styled.withComponent = function(nextTag, nextOptions) {
-			return createStyled(nextTag, _extends({}, options, nextOptions, { shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true) })).apply(void 0, styles);
+		args = new Array(len);
+		for (i = 0; i < len; i++) args[i] = arguments[i];
+		node = {
+			args,
+			val: fn.apply(null, args)
 		};
-		return Styled;
-	};
-}("div", process.env.NODE_ENV === "production" ? { target: "e19lxcc00" } : {
-	target: "e19lxcc00",
-	label: "PolymorphicDiv"
-})(process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudC50c3giXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBZWlDIiwiZmlsZSI6ImNvbXBvbmVudC50c3giLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgc3R5bGVkIGZyb20gJ0BlbW90aW9uL3N0eWxlZCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyBmb3J3YXJkUmVmIH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuXG5jb25zdCBQb2x5bW9ycGhpY0RpdiA9IHN0eWxlZC5kaXZgYDtcblxuZnVuY3Rpb24gVW5mb3J3YXJkZWRWaWV3PCBUIGV4dGVuZHMgUmVhY3QuRWxlbWVudFR5cGUgPSAnZGl2JyA+KFxuXHR7IGFzLCAuLi5yZXN0UHJvcHMgfTogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IHt9LCBUID4sXG5cdHJlZjogUmVhY3QuRm9yd2FyZGVkUmVmPCBhbnkgPlxuKSB7XG5cdHJldHVybiA8UG9seW1vcnBoaWNEaXYgYXM9eyBhcyB9IHJlZj17IHJlZiB9IHsgLi4ucmVzdFByb3BzIH0gLz47XG59XG5cbi8qKlxuICogYFZpZXdgIGlzIGEgY29yZSBjb21wb25lbnQgdGhhdCByZW5kZXJzIGV2ZXJ5dGhpbmcgaW4gdGhlIGxpYnJhcnkuXG4gKiBJdCBpcyB0aGUgcHJpbmNpcGxlIGNvbXBvbmVudCBpbiB0aGUgZW50aXJlIGxpYnJhcnkuXG4gKlxuICogYGBganN4XG4gKiBpbXBvcnQgeyBWaWV3IH0gZnJvbSBgQHdvcmRwcmVzcy9jb21wb25lbnRzYDtcbiAqXG4gKiBmdW5jdGlvbiBFeGFtcGxlKCkge1xuICogXHRyZXR1cm4gKFxuICogXHRcdDxWaWV3PlxuICogXHRcdFx0IENvZGUgaXMgUG9ldHJ5XG4gKiBcdFx0PC9WaWV3PlxuICogXHQpO1xuICogfVxuICogYGBgXG4gKi9cbmV4cG9ydCBjb25zdCBWaWV3ID0gT2JqZWN0LmFzc2lnbiggZm9yd2FyZFJlZiggVW5mb3J3YXJkZWRWaWV3ICksIHtcblx0c2VsZWN0b3I6ICcuY29tcG9uZW50cy12aWV3Jyxcbn0gKTtcblxuZXhwb3J0IGRlZmF1bHQgVmlldztcbiJdfQ== */");
-function UnforwardedView({ as, ...restProps }, ref) {
-	return /* @__PURE__ */ jsx(PolymorphicDiv, {
-		as,
-		ref,
-		...restProps
-	});
-}
-var component_default$2 = Object.assign(forwardRef$1(UnforwardedView), { selector: ".components-view" });
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
-var ALIGNMENTS = {
-	bottom: {
-		alignItems: "flex-end",
-		justifyContent: "center"
-	},
-	bottomLeft: {
-		alignItems: "flex-start",
-		justifyContent: "flex-end"
-	},
-	bottomRight: {
-		alignItems: "flex-end",
-		justifyContent: "flex-end"
-	},
-	center: {
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	spaced: {
-		alignItems: "center",
-		justifyContent: "space-between"
-	},
-	left: {
-		alignItems: "center",
-		justifyContent: "flex-start"
-	},
-	right: {
-		alignItems: "center",
-		justifyContent: "flex-end"
-	},
-	stretch: { alignItems: "stretch" },
-	top: {
-		alignItems: "flex-start",
-		justifyContent: "center"
-	},
-	topLeft: {
-		alignItems: "flex-start",
-		justifyContent: "flex-start"
-	},
-	topRight: {
-		alignItems: "flex-start",
-		justifyContent: "flex-end"
+		if (head) {
+			head.prev = node;
+			node.next = head;
+		} else tail = node;
+		if (size === options.maxSize) {
+			tail = tail.prev;
+			/** @type {MemizeCacheNode} */ tail.next = null;
+		} else size++;
+		head = node;
+		return node.val;
 	}
-};
-function getAlignmentProps(alignment) {
-	return alignment ? ALIGNMENTS[alignment] : {};
-}
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
-var breakpoints = [
-	"40em",
-	"52em",
-	"64em"
-];
-var useBreakpointIndex = (options = {}) => {
-	const { defaultIndex = 0 } = options;
-	if (typeof defaultIndex !== "number") throw new TypeError(`Default breakpoint index should be a number. Got: ${defaultIndex}, ${typeof defaultIndex}`);
-	else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
-	const [value, setValue] = useState$1(defaultIndex);
-	useEffect$1(() => {
-		const getIndex = () => breakpoints.filter((bp) => {
-			return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
-		}).length;
-		const onResize = () => {
-			const newValue = getIndex();
-			if (value !== newValue) setValue(newValue);
-		};
-		onResize();
-		if (typeof window !== "undefined") window.addEventListener("resize", onResize);
-		return () => {
-			if (typeof window !== "undefined") window.removeEventListener("resize", onResize);
-		};
-	}, [value]);
-	return value;
-};
-function useResponsiveValue(values, options = {}) {
-	const index = useBreakpointIndex(options);
-	if (!Array.isArray(values) && typeof values !== "function") return values;
-	const array = values || [];
-	return array[index >= array.length ? array.length - 1 : index];
+	memoized.clear = function() {
+		head = null;
+		tail = null;
+		size = 0;
+	};
+	return memoized;
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
@@ -8501,6 +8179,383 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 	transitionTimingFunctionControl: "cubic-bezier(0.12, 0.8, 0.32, 1)"
 });
 //#endregion
+//#region ../../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/es6/index.js
+var require_es6 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = function equal(a, b) {
+		if (a === b) return true;
+		if (a && b && typeof a == "object" && typeof b == "object") {
+			if (a.constructor !== b.constructor) return false;
+			var length, i, keys;
+			if (Array.isArray(a)) {
+				length = a.length;
+				if (length != b.length) return false;
+				for (i = length; i-- !== 0;) if (!equal(a[i], b[i])) return false;
+				return true;
+			}
+			if (a instanceof Map && b instanceof Map) {
+				if (a.size !== b.size) return false;
+				for (i of a.entries()) if (!b.has(i[0])) return false;
+				for (i of a.entries()) if (!equal(i[1], b.get(i[0]))) return false;
+				return true;
+			}
+			if (a instanceof Set && b instanceof Set) {
+				if (a.size !== b.size) return false;
+				for (i of a.entries()) if (!b.has(i[0])) return false;
+				return true;
+			}
+			if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
+				length = a.length;
+				if (length != b.length) return false;
+				for (i = length; i-- !== 0;) if (a[i] !== b[i]) return false;
+				return true;
+			}
+			if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+			if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+			if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+			keys = Object.keys(a);
+			length = keys.length;
+			if (length !== Object.keys(b).length) return false;
+			for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+			for (i = length; i-- !== 0;) {
+				var key = keys[i];
+				if (!equal(a[key], b[key])) return false;
+			}
+			return true;
+		}
+		return a !== a && b !== b;
+	};
+}));
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/utils.mjs
+var logged = /* @__PURE__ */ new Set();
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/index.mjs
+function isDev() {
+	return globalThis.SCRIPT_DEBUG === true;
+}
+function warning(message) {
+	if (!isDev()) return;
+	if (logged.has(message)) return;
+	console.warn(message);
+	try {
+		throw Error(message);
+	} catch {}
+	logged.add(message);
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+var import_es6 = /* @__PURE__ */ __toESM(require_es6(), 1);
+var ComponentsContext = createContext$1(
+	/** @type {Record<string, any>} */
+	{}
+);
+ComponentsContext.displayName = "ComponentsContext";
+var useComponentsContext = () => useContext$1(ComponentsContext);
+function useContextSystemBridge({ value }) {
+	const parentContext = useComponentsContext();
+	const valueRef = useRef$1(value);
+	use_update_effect_default(() => {
+		if ((0, import_es6.default)(valueRef.current, value) && valueRef.current !== value) globalThis.SCRIPT_DEBUG === true && warning(`Please memoize your context: ${JSON.stringify(value)}`);
+	}, [value]);
+	return useMemo$1(() => {
+		return deepmerge(parentContext ?? {}, value ?? {}, { isMergeableObject: isPlainObject });
+	}, [parentContext, value]);
+}
+var BaseContextSystemProvider = ({ children, value }) => {
+	const contextValue = useContextSystemBridge({ value });
+	return /* @__PURE__ */ jsx(ComponentsContext.Provider, {
+		value: contextValue,
+		children
+	});
+};
+memo(BaseContextSystemProvider);
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
+var COMPONENT_NAMESPACE = "data-wp-component";
+var CONNECTED_NAMESPACE = "data-wp-c16t";
+var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+function getStyledClassName(namespace) {
+	return `components-${paramCase(namespace)}`;
+}
+var getStyledClassNameFromKey = memize(getStyledClassName);
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+function contextConnect(Component, namespace) {
+	return _contextConnect(Component, namespace, { forwardsRef: true });
+}
+function _contextConnect(Component, namespace, options) {
+	const WrappedComponent = options?.forwardsRef ? forwardRef$1(Component) : Component;
+	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("contextConnect: Please provide a namespace");
+	let mergedNamespace = WrappedComponent["__contextSystemKey__"] || [namespace];
+	if (Array.isArray(namespace)) mergedNamespace = [...mergedNamespace, ...namespace];
+	if (typeof namespace === "string") mergedNamespace = [...mergedNamespace, namespace];
+	return Object.assign(WrappedComponent, {
+		[CONNECT_STATIC_NAMESPACE]: [...new Set(mergedNamespace)],
+		displayName: namespace,
+		selector: `.${getStyledClassNameFromKey(namespace)}`
+	});
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
+function getNamespace(componentName) {
+	return { [COMPONENT_NAMESPACE]: componentName };
+}
+function getConnectedNamespace() {
+	return { [CONNECTED_NAMESPACE]: true };
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+function useContextSystem(props, namespace) {
+	const contextSystemProps = useComponentsContext();
+	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
+	const contextProps = contextSystemProps?.[namespace] || {};
+	const finalComponentProps = {
+		...getConnectedNamespace(),
+		...getNamespace(namespace)
+	};
+	const { _overrides: overrideProps, ...otherContextProps } = contextProps;
+	const initialMergedProps = Object.entries(otherContextProps).length ? Object.assign({}, otherContextProps, props) : props;
+	const classes = useCx()(getStyledClassNameFromKey(namespace), props.className);
+	const rendered = typeof initialMergedProps.renderChildren === "function" ? initialMergedProps.renderChildren(initialMergedProps) : initialMergedProps.children;
+	for (const key in initialMergedProps) finalComponentProps[key] = initialMergedProps[key];
+	for (const key in overrideProps) finalComponentProps[key] = overrideProps[key];
+	if (rendered !== void 0) finalComponentProps.children = rendered;
+	finalComponentProps.className = classes;
+	return finalComponentProps;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+var visuallyHidden = {
+	border: 0,
+	clip: "rect(1px, 1px, 1px, 1px)",
+	WebkitClipPath: "inset( 50% )",
+	clipPath: "inset( 50% )",
+	height: "1px",
+	margin: "-1px",
+	overflow: "hidden",
+	padding: 0,
+	position: "absolute",
+	width: "1px",
+	wordWrap: "normal",
+	wordBreak: "normal"
+};
+//#endregion
+//#region ../../../node_modules/.pnpm/@emotion+is-prop-valid@1.4.0/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
+var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
+var isPropValid = /* #__PURE__ */ memoize(function(prop) {
+	return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110 && prop.charCodeAt(2) < 91;
+});
+//#endregion
+//#region ../../../node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1__@types+react@18.3.28_react@18.3.1/node_modules/@emotion/styled/base/dist/emotion-styled-base.browser.esm.js
+var isDevelopment = false;
+var testOmitPropsOnStringTag = isPropValid;
+var testOmitPropsOnComponent = function testOmitPropsOnComponent(key) {
+	return key !== "theme";
+};
+var getDefaultShouldForwardProp = function getDefaultShouldForwardProp(tag) {
+	return typeof tag === "string" && tag.charCodeAt(0) > 96 ? testOmitPropsOnStringTag : testOmitPropsOnComponent;
+};
+var composeShouldForwardProps = function composeShouldForwardProps(tag, options, isReal) {
+	var shouldForwardProp;
+	if (options) {
+		var optionsShouldForwardProp = options.shouldForwardProp;
+		shouldForwardProp = tag.__emotion_forwardProp && optionsShouldForwardProp ? function(propName) {
+			return tag.__emotion_forwardProp(propName) && optionsShouldForwardProp(propName);
+		} : optionsShouldForwardProp;
+	}
+	if (typeof shouldForwardProp !== "function" && isReal) shouldForwardProp = tag.__emotion_forwardProp;
+	return shouldForwardProp;
+};
+var Insertion = function Insertion(_ref) {
+	var cache = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
+	registerStyles(cache, serialized, isStringTag);
+	useInsertionEffectAlwaysWithSyncFallback(function() {
+		return insertStyles(cache, serialized, isStringTag);
+	});
+	return null;
+};
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
+var PolymorphicDiv = /* @__PURE__ */ function createStyled(tag, options) {
+	var isReal = tag.__emotion_real === tag;
+	var baseTag = isReal && tag.__emotion_base || tag;
+	var identifierName;
+	var targetClassName;
+	if (options !== void 0) {
+		identifierName = options.label;
+		targetClassName = options.target;
+	}
+	var shouldForwardProp = composeShouldForwardProps(tag, options, isReal);
+	var defaultShouldForwardProp = shouldForwardProp || getDefaultShouldForwardProp(baseTag);
+	var shouldUseAs = !defaultShouldForwardProp("as");
+	return function() {
+		var args = arguments;
+		var styles = isReal && tag.__emotion_styles !== void 0 ? tag.__emotion_styles.slice(0) : [];
+		if (identifierName !== void 0) styles.push("label:" + identifierName + ";");
+		if (args[0] == null || args[0].raw === void 0) styles.push.apply(styles, args);
+		else {
+			var templateStringsArr = args[0];
+			styles.push(templateStringsArr[0]);
+			var len = args.length;
+			var i = 1;
+			for (; i < len; i++) styles.push(args[i], templateStringsArr[i]);
+		}
+		var Styled = withEmotionCache(function(props, cache, ref) {
+			var FinalTag = shouldUseAs && props.as || baseTag;
+			var className = "";
+			var classInterpolations = [];
+			var mergedProps = props;
+			if (props.theme == null) {
+				mergedProps = {};
+				for (var key in props) mergedProps[key] = props[key];
+				mergedProps.theme = React.useContext(ThemeContext);
+			}
+			if (typeof props.className === "string") className = getRegisteredStyles$1(cache.registered, classInterpolations, props.className);
+			else if (props.className != null) className = props.className + " ";
+			var serialized = serializeStyles(styles.concat(classInterpolations), cache.registered, mergedProps);
+			className += cache.key + "-" + serialized.name;
+			if (targetClassName !== void 0) className += " " + targetClassName;
+			var finalShouldForwardProp = shouldUseAs && shouldForwardProp === void 0 ? getDefaultShouldForwardProp(FinalTag) : defaultShouldForwardProp;
+			var newProps = {};
+			for (var _key in props) {
+				if (shouldUseAs && _key === "as") continue;
+				if (finalShouldForwardProp(_key)) newProps[_key] = props[_key];
+			}
+			newProps.className = className;
+			if (ref) newProps.ref = ref;
+			return /*#__PURE__*/ React.createElement(React.Fragment, null, /*#__PURE__*/ React.createElement(Insertion, {
+				cache,
+				serialized,
+				isStringTag: typeof FinalTag === "string"
+			}), /*#__PURE__*/ React.createElement(FinalTag, newProps));
+		});
+		Styled.displayName = identifierName !== void 0 ? identifierName : "Styled(" + (typeof baseTag === "string" ? baseTag : baseTag.displayName || baseTag.name || "Component") + ")";
+		Styled.defaultProps = tag.defaultProps;
+		Styled.__emotion_real = Styled;
+		Styled.__emotion_base = baseTag;
+		Styled.__emotion_styles = styles;
+		Styled.__emotion_forwardProp = shouldForwardProp;
+		Object.defineProperty(Styled, "toString", { value: function value() {
+			if (targetClassName === void 0 && isDevelopment) return "NO_COMPONENT_SELECTOR";
+			return "." + targetClassName;
+		} });
+		Styled.withComponent = function(nextTag, nextOptions) {
+			return createStyled(nextTag, _extends({}, options, nextOptions, { shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true) })).apply(void 0, styles);
+		};
+		return Styled;
+	};
+}("div", process.env.NODE_ENV === "production" ? { target: "e19lxcc00" } : {
+	target: "e19lxcc00",
+	label: "PolymorphicDiv"
+})(process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudC50c3giXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBZWlDIiwiZmlsZSI6ImNvbXBvbmVudC50c3giLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgc3R5bGVkIGZyb20gJ0BlbW90aW9uL3N0eWxlZCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyBmb3J3YXJkUmVmIH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuXG5jb25zdCBQb2x5bW9ycGhpY0RpdiA9IHN0eWxlZC5kaXZgYDtcblxuZnVuY3Rpb24gVW5mb3J3YXJkZWRWaWV3PCBUIGV4dGVuZHMgUmVhY3QuRWxlbWVudFR5cGUgPSAnZGl2JyA+KFxuXHR7IGFzLCAuLi5yZXN0UHJvcHMgfTogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IHt9LCBUID4sXG5cdHJlZjogUmVhY3QuRm9yd2FyZGVkUmVmPCBhbnkgPlxuKSB7XG5cdHJldHVybiA8UG9seW1vcnBoaWNEaXYgYXM9eyBhcyB9IHJlZj17IHJlZiB9IHsgLi4ucmVzdFByb3BzIH0gLz47XG59XG5cbi8qKlxuICogYFZpZXdgIGlzIGEgY29yZSBjb21wb25lbnQgdGhhdCByZW5kZXJzIGV2ZXJ5dGhpbmcgaW4gdGhlIGxpYnJhcnkuXG4gKiBJdCBpcyB0aGUgcHJpbmNpcGxlIGNvbXBvbmVudCBpbiB0aGUgZW50aXJlIGxpYnJhcnkuXG4gKlxuICogYGBganN4XG4gKiBpbXBvcnQgeyBWaWV3IH0gZnJvbSBgQHdvcmRwcmVzcy9jb21wb25lbnRzYDtcbiAqXG4gKiBmdW5jdGlvbiBFeGFtcGxlKCkge1xuICogXHRyZXR1cm4gKFxuICogXHRcdDxWaWV3PlxuICogXHRcdFx0IENvZGUgaXMgUG9ldHJ5XG4gKiBcdFx0PC9WaWV3PlxuICogXHQpO1xuICogfVxuICogYGBgXG4gKi9cbmV4cG9ydCBjb25zdCBWaWV3ID0gT2JqZWN0LmFzc2lnbiggZm9yd2FyZFJlZiggVW5mb3J3YXJkZWRWaWV3ICksIHtcblx0c2VsZWN0b3I6ICcuY29tcG9uZW50cy12aWV3Jyxcbn0gKTtcblxuZXhwb3J0IGRlZmF1bHQgVmlldztcbiJdfQ== */");
+function UnforwardedView({ as, ...restProps }, ref) {
+	return /* @__PURE__ */ jsx(PolymorphicDiv, {
+		as,
+		ref,
+		...restProps
+	});
+}
+var component_default$2 = Object.assign(forwardRef$1(UnforwardedView), { selector: ".components-view" });
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+function UnconnectedVisuallyHidden(props, forwardedRef) {
+	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
+	return /* @__PURE__ */ jsx(component_default$2, {
+		ref: forwardedRef,
+		...contextProps,
+		"data-visually-hidden": "",
+		style: {
+			...visuallyHidden,
+			...styleProp || {}
+		}
+	});
+}
+var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+var breakpoints = [
+	"40em",
+	"52em",
+	"64em"
+];
+var useBreakpointIndex = (options = {}) => {
+	const { defaultIndex = 0 } = options;
+	if (typeof defaultIndex !== "number") throw new TypeError(`Default breakpoint index should be a number. Got: ${defaultIndex}, ${typeof defaultIndex}`);
+	else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
+	const [value, setValue] = useState$1(defaultIndex);
+	useEffect$1(() => {
+		const getIndex = () => breakpoints.filter((bp) => {
+			return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
+		}).length;
+		const onResize = () => {
+			const newValue = getIndex();
+			if (value !== newValue) setValue(newValue);
+		};
+		onResize();
+		if (typeof window !== "undefined") window.addEventListener("resize", onResize);
+		return () => {
+			if (typeof window !== "undefined") window.removeEventListener("resize", onResize);
+		};
+	}, [value]);
+	return value;
+};
+function useResponsiveValue(values, options = {}) {
+	const index = useBreakpointIndex(options);
+	if (!Array.isArray(values) && typeof values !== "function") return values;
+	const array = values || [];
+	return array[index >= array.length ? array.length - 1 : index];
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
+var ALIGNMENTS = {
+	bottom: {
+		alignItems: "flex-end",
+		justifyContent: "center"
+	},
+	bottomLeft: {
+		alignItems: "flex-start",
+		justifyContent: "flex-end"
+	},
+	bottomRight: {
+		alignItems: "flex-end",
+		justifyContent: "flex-end"
+	},
+	center: {
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	spaced: {
+		alignItems: "center",
+		justifyContent: "space-between"
+	},
+	left: {
+		alignItems: "center",
+		justifyContent: "flex-start"
+	},
+	right: {
+		alignItems: "center",
+		justifyContent: "flex-end"
+	},
+	stretch: { alignItems: "stretch" },
+	top: {
+		alignItems: "flex-start",
+		justifyContent: "center"
+	},
+	topLeft: {
+		alignItems: "flex-start",
+		justifyContent: "flex-start"
+	},
+	topRight: {
+		alignItems: "flex-start",
+		justifyContent: "flex-end"
+	}
+};
+function getAlignmentProps(alignment) {
+	return alignment ? ALIGNMENTS[alignment] : {};
+}
+//#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
 function useGrid(props) {
 	const { align, alignment, className, columnGap, columns = 2, gap = 3, isInline = false, justify, rowGap, rows, templateColumns, templateRows, ...otherProps } = useContextSystem(props, "Grid");
@@ -8511,7 +8566,7 @@ function useGrid(props) {
 	const cx = useCx();
 	const classes = useMemo$1(() => {
 		const alignmentProps = getAlignmentProps(alignment);
-		return cx(/* @__PURE__ */ css$1({
+		const gridClasses = /* @__PURE__ */ css$1({
 			alignItems: align,
 			display: isInline ? "inline-grid" : "grid",
 			gap: `calc( ${config_values_default.gridBase} * ${gap} )`,
@@ -8522,7 +8577,8 @@ function useGrid(props) {
 			justifyContent: justify,
 			verticalAlign: isInline ? "middle" : void 0,
 			...alignmentProps
-		}, process.env.NODE_ENV === "production" ? "" : ";label:gridClasses;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBdURzQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IGdldEFsaWdubWVudFByb3BzIH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyB1c2VSZXNwb25zaXZlVmFsdWUgfSBmcm9tICcuLi91dGlscy91c2UtcmVzcG9uc2l2ZS12YWx1ZSc7XG5pbXBvcnQgQ09ORklHIGZyb20gJy4uL3V0aWxzL2NvbmZpZy12YWx1ZXMnO1xuaW1wb3J0IHsgdXNlQ3ggfSBmcm9tICcuLi91dGlscy9ob29rcy91c2UtY3gnO1xuaW1wb3J0IHR5cGUgeyBHcmlkUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlR3JpZChcblx0cHJvcHM6IFdvcmRQcmVzc0NvbXBvbmVudFByb3BzPCBHcmlkUHJvcHMsICdkaXYnID5cbikge1xuXHRjb25zdCB7XG5cdFx0YWxpZ24sXG5cdFx0YWxpZ25tZW50LFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2x1bW5HYXAsXG5cdFx0Y29sdW1ucyA9IDIsXG5cdFx0Z2FwID0gMyxcblx0XHRpc0lubGluZSA9IGZhbHNlLFxuXHRcdGp1c3RpZnksXG5cdFx0cm93R2FwLFxuXHRcdHJvd3MsXG5cdFx0dGVtcGxhdGVDb2x1bW5zLFxuXHRcdHRlbXBsYXRlUm93cyxcblx0XHQuLi5vdGhlclByb3BzXG5cdH0gPSB1c2VDb250ZXh0U3lzdGVtKCBwcm9wcywgJ0dyaWQnICk7XG5cblx0Y29uc3QgY29sdW1uc0FzQXJyYXkgPSBBcnJheS5pc0FycmF5KCBjb2x1bW5zICkgPyBjb2x1bW5zIDogWyBjb2x1bW5zIF07XG5cdGNvbnN0IGNvbHVtbiA9IHVzZVJlc3BvbnNpdmVWYWx1ZSggY29sdW1uc0FzQXJyYXkgKTtcblx0Y29uc3Qgcm93c0FzQXJyYXkgPSBBcnJheS5pc0FycmF5KCByb3dzICkgPyByb3dzIDogWyByb3dzIF07XG5cdGNvbnN0IHJvdyA9IHVzZVJlc3BvbnNpdmVWYWx1ZSggcm93c0FzQXJyYXkgKTtcblxuXHRjb25zdCBncmlkVGVtcGxhdGVDb2x1bW5zID1cblx0XHR0ZW1wbGF0ZUNvbHVtbnMgfHwgKCAhISBjb2x1bW5zICYmIGByZXBlYXQoICR7IGNvbHVtbiB9LCAxZnIgKWAgKTtcblx0Y29uc3QgZ3JpZFRlbXBsYXRlUm93cyA9XG5cdFx0dGVtcGxhdGVSb3dzIHx8ICggISEgcm93cyAmJiBgcmVwZWF0KCAkeyByb3cgfSwgMWZyIClgICk7XG5cblx0Y29uc3QgY3ggPSB1c2VDeCgpO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Y29uc3QgYWxpZ25tZW50UHJvcHMgPSBnZXRBbGlnbm1lbnRQcm9wcyggYWxpZ25tZW50ICk7XG5cblx0XHRjb25zdCBncmlkQ2xhc3NlcyA9IGNzcygge1xuXHRcdFx0YWxpZ25JdGVtczogYWxpZ24sXG5cdFx0XHRkaXNwbGF5OiBpc0lubGluZSA/ICdpbmxpbmUtZ3JpZCcgOiAnZ3JpZCcsXG5cdFx0XHRnYXA6IGBjYWxjKCAkeyBDT05GSUcuZ3JpZEJhc2UgfSAqICR7IGdhcCB9IClgLFxuXHRcdFx0Z3JpZFRlbXBsYXRlQ29sdW1uczogZ3JpZFRlbXBsYXRlQ29sdW1ucyB8fCB1bmRlZmluZWQsXG5cdFx0XHRncmlkVGVtcGxhdGVSb3dzOiBncmlkVGVtcGxhdGVSb3dzIHx8IHVuZGVmaW5lZCxcblx0XHRcdGdyaWRSb3dHYXA6IHJvd0dhcCxcblx0XHRcdGdyaWRDb2x1bW5HYXA6IGNvbHVtbkdhcCxcblx0XHRcdGp1c3RpZnlDb250ZW50OiBqdXN0aWZ5LFxuXHRcdFx0dmVydGljYWxBbGlnbjogaXNJbmxpbmUgPyAnbWlkZGxlJyA6IHVuZGVmaW5lZCxcblx0XHRcdC4uLmFsaWdubWVudFByb3BzLFxuXHRcdH0gKTtcblxuXHRcdHJldHVybiBjeCggZ3JpZENsYXNzZXMsIGNsYXNzTmFtZSApO1xuXHR9LCBbXG5cdFx0YWxpZ24sXG5cdFx0YWxpZ25tZW50LFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2x1bW5HYXAsXG5cdFx0Y3gsXG5cdFx0Z2FwLFxuXHRcdGdyaWRUZW1wbGF0ZUNvbHVtbnMsXG5cdFx0Z3JpZFRlbXBsYXRlUm93cyxcblx0XHRpc0lubGluZSxcblx0XHRqdXN0aWZ5LFxuXHRcdHJvd0dhcCxcblx0XSApO1xuXG5cdHJldHVybiB7IC4uLm90aGVyUHJvcHMsIGNsYXNzTmFtZTogY2xhc3NlcyB9O1xufVxuIl19 */"), className);
+		}, process.env.NODE_ENV === "production" ? "" : ";label:gridClasses;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBdURzQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBFeHRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuXG4vKipcbiAqIFdvcmRQcmVzcyBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5cbi8qKlxuICogSW50ZXJuYWwgZGVwZW5kZW5jaWVzXG4gKi9cbmltcG9ydCB0eXBlIHsgV29yZFByZXNzQ29tcG9uZW50UHJvcHMgfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IHVzZUNvbnRleHRTeXN0ZW0gfSBmcm9tICcuLi9jb250ZXh0JztcbmltcG9ydCB7IGdldEFsaWdubWVudFByb3BzIH0gZnJvbSAnLi91dGlscyc7XG5pbXBvcnQgeyB1c2VSZXNwb25zaXZlVmFsdWUgfSBmcm9tICcuLi91dGlscy91c2UtcmVzcG9uc2l2ZS12YWx1ZSc7XG5pbXBvcnQgQ09ORklHIGZyb20gJy4uL3V0aWxzL2NvbmZpZy12YWx1ZXMnO1xuaW1wb3J0IHsgdXNlQ3ggfSBmcm9tICcuLi91dGlscy9ob29rcy91c2UtY3gnO1xuaW1wb3J0IHR5cGUgeyBHcmlkUHJvcHMgfSBmcm9tICcuL3R5cGVzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gdXNlR3JpZChcblx0cHJvcHM6IFdvcmRQcmVzc0NvbXBvbmVudFByb3BzPCBHcmlkUHJvcHMsICdkaXYnID5cbikge1xuXHRjb25zdCB7XG5cdFx0YWxpZ24sXG5cdFx0YWxpZ25tZW50LFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2x1bW5HYXAsXG5cdFx0Y29sdW1ucyA9IDIsXG5cdFx0Z2FwID0gMyxcblx0XHRpc0lubGluZSA9IGZhbHNlLFxuXHRcdGp1c3RpZnksXG5cdFx0cm93R2FwLFxuXHRcdHJvd3MsXG5cdFx0dGVtcGxhdGVDb2x1bW5zLFxuXHRcdHRlbXBsYXRlUm93cyxcblx0XHQuLi5vdGhlclByb3BzXG5cdH0gPSB1c2VDb250ZXh0U3lzdGVtKCBwcm9wcywgJ0dyaWQnICk7XG5cblx0Y29uc3QgY29sdW1uc0FzQXJyYXkgPSBBcnJheS5pc0FycmF5KCBjb2x1bW5zICkgPyBjb2x1bW5zIDogWyBjb2x1bW5zIF07XG5cdGNvbnN0IGNvbHVtbiA9IHVzZVJlc3BvbnNpdmVWYWx1ZSggY29sdW1uc0FzQXJyYXkgKTtcblx0Y29uc3Qgcm93c0FzQXJyYXkgPSBBcnJheS5pc0FycmF5KCByb3dzICkgPyByb3dzIDogWyByb3dzIF07XG5cdGNvbnN0IHJvdyA9IHVzZVJlc3BvbnNpdmVWYWx1ZSggcm93c0FzQXJyYXkgKTtcblxuXHRjb25zdCBncmlkVGVtcGxhdGVDb2x1bW5zID1cblx0XHR0ZW1wbGF0ZUNvbHVtbnMgfHwgKCAhISBjb2x1bW5zICYmIGByZXBlYXQoICR7IGNvbHVtbiB9LCAxZnIgKWAgKTtcblx0Y29uc3QgZ3JpZFRlbXBsYXRlUm93cyA9XG5cdFx0dGVtcGxhdGVSb3dzIHx8ICggISEgcm93cyAmJiBgcmVwZWF0KCAkeyByb3cgfSwgMWZyIClgICk7XG5cblx0Y29uc3QgY3ggPSB1c2VDeCgpO1xuXG5cdGNvbnN0IGNsYXNzZXMgPSB1c2VNZW1vKCAoKSA9PiB7XG5cdFx0Y29uc3QgYWxpZ25tZW50UHJvcHMgPSBnZXRBbGlnbm1lbnRQcm9wcyggYWxpZ25tZW50ICk7XG5cblx0XHRjb25zdCBncmlkQ2xhc3NlcyA9IGNzcygge1xuXHRcdFx0YWxpZ25JdGVtczogYWxpZ24sXG5cdFx0XHRkaXNwbGF5OiBpc0lubGluZSA/ICdpbmxpbmUtZ3JpZCcgOiAnZ3JpZCcsXG5cdFx0XHRnYXA6IGBjYWxjKCAkeyBDT05GSUcuZ3JpZEJhc2UgfSAqICR7IGdhcCB9IClgLFxuXHRcdFx0Z3JpZFRlbXBsYXRlQ29sdW1uczogZ3JpZFRlbXBsYXRlQ29sdW1ucyB8fCB1bmRlZmluZWQsXG5cdFx0XHRncmlkVGVtcGxhdGVSb3dzOiBncmlkVGVtcGxhdGVSb3dzIHx8IHVuZGVmaW5lZCxcblx0XHRcdGdyaWRSb3dHYXA6IHJvd0dhcCxcblx0XHRcdGdyaWRDb2x1bW5HYXA6IGNvbHVtbkdhcCxcblx0XHRcdGp1c3RpZnlDb250ZW50OiBqdXN0aWZ5LFxuXHRcdFx0dmVydGljYWxBbGlnbjogaXNJbmxpbmUgPyAnbWlkZGxlJyA6IHVuZGVmaW5lZCxcblx0XHRcdC4uLmFsaWdubWVudFByb3BzLFxuXHRcdH0gKTtcblxuXHRcdHJldHVybiBjeCggZ3JpZENsYXNzZXMsIGNsYXNzTmFtZSApO1xuXHR9LCBbXG5cdFx0YWxpZ24sXG5cdFx0YWxpZ25tZW50LFxuXHRcdGNsYXNzTmFtZSxcblx0XHRjb2x1bW5HYXAsXG5cdFx0Y3gsXG5cdFx0Z2FwLFxuXHRcdGdyaWRUZW1wbGF0ZUNvbHVtbnMsXG5cdFx0Z3JpZFRlbXBsYXRlUm93cyxcblx0XHRpc0lubGluZSxcblx0XHRqdXN0aWZ5LFxuXHRcdHJvd0dhcCxcblx0XSApO1xuXG5cdHJldHVybiB7IC4uLm90aGVyUHJvcHMsIGNsYXNzTmFtZTogY2xhc3NlcyB9O1xufVxuIl19 */");
+		return cx(gridClasses, className);
 	}, [
 		align,
 		alignment,
@@ -8549,38 +8605,7 @@ function UnconnectedGrid(props, forwardedRef) {
 		ref: forwardedRef
 	});
 }
-var component_default$1 = contextConnect(UnconnectedGrid, "Grid");
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
-var visuallyHidden = {
-	border: 0,
-	clip: "rect(1px, 1px, 1px, 1px)",
-	WebkitClipPath: "inset( 50% )",
-	clipPath: "inset( 50% )",
-	height: "1px",
-	margin: "-1px",
-	overflow: "hidden",
-	padding: 0,
-	position: "absolute",
-	width: "1px",
-	wordWrap: "normal",
-	wordBreak: "normal"
-};
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
-function UnconnectedVisuallyHidden(props, forwardedRef) {
-	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
-	return /* @__PURE__ */ jsx(component_default$2, {
-		ref: forwardedRef,
-		...contextProps,
-		"data-visually-hidden": "",
-		style: {
-			...visuallyHidden,
-			...styleProp || {}
-		}
-	});
-}
-var component_default = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
+var component_default = contextConnect(UnconnectedGrid, "Grid");
 //#endregion
 //#region src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
 /**
@@ -8871,7 +8896,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 				children: allSeriesHidden ? /* @__PURE__ */ jsx("div", {
 					className: leaderboard_chart_module_default.emptyState,
 					children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
-				}) : /* @__PURE__ */ jsx(component_default$1, {
+				}) : /* @__PURE__ */ jsx(component_default, {
 					templateColumns: "minmax(0, 1fr) auto",
 					rowGap,
 					columnGap,
@@ -8880,7 +8905,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						const hasDeltaValue = hasComparisonValue(entry);
 						const showComparisonValue = showComparisonColumn && hasDeltaValue;
 						const showComparisonPlaceholder = showComparisonColumn && !hasDeltaValue;
-						const deltaColor = deltaColors[showComparisonValue ? Math.sign(entry.delta) + 1 : 1];
+						const colorIndex = showComparisonValue ? Math.sign(entry.delta) + 1 : 1;
+						const deltaColor = deltaColors[colorIndex];
 						const rowCells = /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Stack, {
 							direction: "column",
 							gap: labelSpacing,
@@ -8911,7 +8937,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 									children: [/* @__PURE__ */ jsx("span", {
 										"aria-hidden": "true",
 										children: "-"
-									}), /* @__PURE__ */ jsx(component_default, {
+									}), /* @__PURE__ */ jsx(component_default$1, {
 										as: "span",
 										children: __("No comparison data", "jetpack-charts")
 									})]

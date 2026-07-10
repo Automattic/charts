@@ -1,10 +1,10 @@
 import { EventHandlerParams, EventHandlerParams as EventHandlerParams$1, GlyphProps, GridStyles, GridStyles as GridStyles$1, LineStyles, LineStyles as LineStyles$1, TooltipContextType } from "@visx/xychart";
 import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
 import { TextProps } from "@visx/text";
+import { TooltipProps as TooltipProps$1, UseTooltipPortalOptions } from "@visx/tooltip";
 import { PickD3Scale, ScaleInput, ScaleType } from "@visx/scale";
 import { LegendOrdinal } from "@visx/legend";
 import { CircleSubjectProps, ConnectorProps, LabelProps, LineSubjectProps } from "@visx/annotation";
-import { TooltipProps as TooltipProps$1, UseTooltipPortalOptions } from "@visx/tooltip";
 import { PieProvidedProps } from "@visx/shape";
 import { AxisRendererProps, AxisScale, Orientation, TickFormatter } from "@visx/axis";
 
@@ -1813,7 +1813,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
+}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
