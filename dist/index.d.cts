@@ -1813,7 +1813,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
+}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
