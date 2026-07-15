@@ -407,6 +407,10 @@
   font-size: var(--wpds-typography-font-size-sm, 12px);
 }
 
+.a8ccharts-O3YMOW-heatmap-chart--height-capped {
+  height: max-content;
+}
+
 .a8ccharts-O3YMOW-heatmap-chart__empty {
   padding: var(--wpds-dimension-padding-lg, 16px);
   color: var(--wpds-color-foreground-content-neutral-weak, #707070);
@@ -429,6 +433,12 @@
 .a8ccharts-O3YMOW-heatmap-chart__grid--compact {
   flex: none;
   width: max-content;
+  height: max-content;
+  min-height: 0;
+}
+
+.a8ccharts-O3YMOW-heatmap-chart__grid--height-capped {
+  flex: none;
   height: max-content;
   min-height: 0;
 }

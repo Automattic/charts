@@ -6261,9 +6261,11 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__empty": "a8ccharts-O3YMOW-heatmap-chart__empty",
 	"heatmap-chart__grid": "a8ccharts-O3YMOW-heatmap-chart__grid",
 	"heatmap-chart__grid--compact": "a8ccharts-O3YMOW-heatmap-chart__grid--compact",
+	"heatmap-chart__grid--height-capped": "a8ccharts-O3YMOW-heatmap-chart__grid--height-capped",
 	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
 	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
-	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label"
+	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label",
+	"heatmap-chart--height-capped": "a8ccharts-O3YMOW-heatmap-chart--height-capped"
 };
 //#endregion
 //#region src/charts/heatmap-chart/private/use-heatmap-colors.ts
@@ -6285,14 +6287,18 @@ const getValueExtent = (data) => {
 	return [min, max];
 };
 /**
-* Normalize a value to 0–1 within the extent. A flat extent (min === max) maps to 1.
+* Normalize a value to 0–1 within the extent. A flat extent (min === max)
+* maps to 1 — every cell is equally the "highest" — except an all-zero
+* extent, which maps to 0 so a no-activity grid renders at the scale's
+* bottom instead of full intensity.
+*
 * @param value  - The value to normalize
 * @param extent - Tuple of [min, max] values for the normalization range
 * @return Normalized value between 0 and 1
 */
 const getNormalizedValue = (value, extent) => {
 	const [min, max] = extent;
-	if (min === max) return 1;
+	if (min === max) return max === 0 ? 0 : 1;
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
 };
 //#endregion
@@ -6412,7 +6418,7 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_MIX_FLOOR = .15;
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, rowLabels = [], primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = [], primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, resolveThemeColor, theme } = useGlobalChartsContext();
 	const { heatmapChart: heatmapChartSettings } = theme;
@@ -6542,18 +6548,20 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 			children: (0, _wordpress_i18n.__)("No data available", "jetpack-charts")
 		})
 	});
-	const trackSize = compact ? "var(--heatmap-cell-size)" : "minmax(0, 1fr)";
+	const columnTrack = compact ? "var(--heatmap-cell-size)" : `minmax(${minCellWidth ?? 0}px, ${maxCellWidth ? `${maxCellWidth}px` : "1fr"})`;
+	const rowTrack = compact ? "var(--heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
 	const gridStyle = {
 		"--heatmap-primary": primaryColorHex,
 		"--heatmap-bg": theme.backgroundColor,
-		gridTemplateColumns: `auto repeat(${columns}, ${trackSize})`,
-		gridTemplateRows: `auto repeat(${rows}, ${trackSize})`
+		gridTemplateColumns: `auto repeat(${columns}, ${columnTrack})`,
+		gridTemplateRows: `auto repeat(${rows}, ${rowTrack})`
 	};
 	if (compact) {
 		gridStyle["--heatmap-cell-gap"] = `${compactCellGap}px`;
 		gridStyle["--heatmap-cell-size"] = `${compactCellSize}px`;
 	}
 	const activeDescendant = selectedIndex !== void 0 ? `${chartId}-cell-${Math.floor(selectedIndex / rows)}-${selectedIndex % rows}` : void 0;
+	const heightCapped = !compact && Boolean(maxCellHeight);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(HeatmapContext.Provider, {
 		value: heatmapContext,
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
@@ -6563,7 +6571,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 				legendChildren: [],
 				trailingContent: nonLegendChildren,
 				gap,
-				className: (0, clsx.default)("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className),
+				className: (0, clsx.default)("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className, { [heatmap_chart_module_default["heatmap-chart--height-capped"]]: heightCapped }),
 				style: {
 					width: width || void 0,
 					height: height || void 0
@@ -6579,7 +6587,10 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 					tabIndex: 0,
 					onBlur: onChartBlur,
 					onKeyDown: onChartKeyDown,
-					className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__grid"], { [heatmap_chart_module_default["heatmap-chart__grid--compact"]]: compact }),
+					className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__grid"], {
+						[heatmap_chart_module_default["heatmap-chart__grid--compact"]]: compact,
+						[heatmap_chart_module_default["heatmap-chart__grid--height-capped"]]: heightCapped
+					}),
 					style: gridStyle,
 					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						role: "row",

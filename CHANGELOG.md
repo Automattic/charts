@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Charts: add HeatmapChart min/max cell size bounds (sparse grids keep sensible cells, long grids overflow for scrolling) and floor an all-zero heatmap at the scale bottom instead of full intensity.
+
 ### Changed
 - Charts: HeatmapChart follow-ups — wrap header labels in an ARIA row so the grid keeps a strict grid/row/gridcell structure, let the grid shrink to fit short containers instead of overflowing and scrolling, hide the calendar's partial first-month label so it no longer collides with the next month's, and pick in-cell text color from the fill blended over the actual chart background so it stays legible on any themed (including dark) background.
 - Charts: Reserve the y-axis tick label dx offset in the auto margin so the widest label no longer clips at the chart edge.

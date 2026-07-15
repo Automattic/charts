@@ -942,7 +942,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "width" | "height" | "size"> & {
+}: Omit<BarListChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1096,7 +1096,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "width" | "height" | "size"> & {
+}: Omit<GeoChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1128,6 +1128,27 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
   compact?: boolean;
   /** Render the numeric value inside each cell. Default `! compact`. */
   showValues?: boolean;
+  /**
+   * Cap a cell's width (px) in non-compact mode. Cells grow up to the cap
+   * and stop instead of splitting the whole container width, so sparse
+   * ranges don't produce oversized cells; narrow containers still shrink
+   * them. Ignored in compact mode, which uses a fixed cell size.
+   */
+  maxCellWidth?: number;
+  /**
+   * Cap a cell's height (px) in non-compact mode. Applying this cap
+   * content-sizes the chart vertically so rows do not absorb unused height.
+   * Ignored in compact mode, which uses a fixed cell size.
+   */
+  maxCellHeight?: number;
+  /**
+   * Floor a cell's width (px) in non-compact mode. Below it the grid stops
+   * shrinking and overflows its container instead, so a scrollable wrapper
+   * can take over for long ranges. Default 0 (cells shrink freely).
+   */
+  minCellWidth?: number;
+  /** Floor a cell's height (px) in non-compact mode; see `minCellWidth`. */
+  minCellHeight?: number;
   /**
    * Color the cell scale interpolates toward at the highest value
    * (this prop > theme `heatmapChart.primaryColor` > palette `colors[0]`).
@@ -1232,7 +1253,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
+}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1765,7 +1786,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "width" | "height" | "size"> & {
+}: Omit<SparklineProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
