@@ -2907,27 +2907,14 @@ const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 };
 //#endregion
 //#region src/charts/private/with-responsive/with-responsive.module.scss
-var with_responsive_module_default = { "container": "a8ccharts-sP1gHa-container" };
+var with_responsive_module_default = {
+	"container": "a8ccharts-sP1gHa-container",
+	"content": "a8ccharts-sP1gHa-content",
+	"isContained": "a8ccharts-sP1gHa-isContained"
+};
 //#endregion
 //#region src/charts/private/with-responsive/with-responsive.tsx
-const useResponsiveDimensions = ({ resizeDebounceTime = 300, maxWidth = 1200, aspectRatio }) => {
-	const { parentRef, width: parentWidth, height: parentHeight } = useParentSize({
-		debounceTime: resizeDebounceTime,
-		enableDebounceLeadingCall: true
-	});
-	const containerWidth = parentWidth > 0 ? Math.min(parentWidth, maxWidth) : 0;
-	return {
-		parentRef,
-		width: containerWidth,
-		height: aspectRatio !== void 0 ? containerWidth * aspectRatio : parentHeight,
-		/**
-		* Whether an aspectRatio was provided. Used to determine container
-		* height styling: 'auto' when true (height derived from width),
-		* '100%' when false (fill parent container).
-		*/
-		hasAspectRatio: aspectRatio !== void 0
-	};
-};
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 /**
 * A higher-order component that provides responsive dimensions
 * to the wrapped chart component using useParentSize from `@visx/responsive`.
@@ -2937,32 +2924,67 @@ const useResponsiveDimensions = ({ resizeDebounceTime = 300, maxWidth = 1200, as
 */
 function withResponsive(WrappedComponent) {
 	return function ResponsiveChart({ resizeDebounceTime = 300, maxWidth = 1200, aspectRatio, size, width, height, ...chartProps }) {
-		const { parentRef, width: measuredWidth, height: measuredHeight, hasAspectRatio } = useResponsiveDimensions({
-			resizeDebounceTime,
-			maxWidth,
-			aspectRatio
+		const { parentRef, width: parentWidth, height: parentHeight } = useParentSize({
+			debounceTime: resizeDebounceTime,
+			enableDebounceLeadingCall: true
 		});
-		const effectiveWidth = measuredWidth || width || 0;
-		const effectiveHeight = measuredHeight || height || 0;
-		const defaultHeight = hasAspectRatio ? "auto" : "100%";
-		const aspectRatioStyle = hasAspectRatio && aspectRatio ? {
-			aspectRatio: `${1 / aspectRatio}`,
-			maxWidth: width === void 0 ? maxWidth : void 0
-		} : null;
+		const hasAspectRatio = aspectRatio !== void 0 && aspectRatio > 0;
+		const wrapperRef = useRef(null);
+		const setWrapperRef = useCallback((node) => {
+			wrapperRef.current = node;
+			if (typeof parentRef === "function") parentRef(node);
+			else if (parentRef) parentRef.current = node;
+		}, [parentRef]);
+		const [containedHeight, setContainedHeight] = useState(null);
+		const availableWidth = parentWidth > 0 ? Math.min(parentWidth, width === void 0 ? maxWidth : Infinity) : width ?? 0;
+		let boxWidth = availableWidth;
+		let boxHeight;
+		if (hasAspectRatio) {
+			const derivedHeight = availableWidth * aspectRatio;
+			if (containedHeight !== null && derivedHeight > containedHeight) {
+				boxHeight = containedHeight;
+				boxWidth = boxHeight / aspectRatio;
+			} else boxHeight = derivedHeight;
+		} else boxHeight = parentHeight > 0 ? parentHeight : height ?? 0;
+		useIsomorphicLayoutEffect(() => {
+			if (!hasAspectRatio) {
+				if (containedHeight !== null) setContainedHeight(null);
+				return;
+			}
+			const available = wrapperRef.current?.clientHeight ?? 0;
+			const derivedHeight = availableWidth * aspectRatio;
+			if (containedHeight === null) {
+				if (available > 0 && derivedHeight > available + 1) setContainedHeight(available);
+			} else if (available >= derivedHeight - 1) setContainedHeight(null);
+			else if (Math.abs(available - containedHeight) > 1) setContainedHeight(available);
+		}, [
+			hasAspectRatio,
+			availableWidth,
+			aspectRatio,
+			containedHeight,
+			parentHeight
+		]);
+		const wrappedComponent = /* @__PURE__ */ jsx(WrappedComponent, {
+			width: boxWidth,
+			height: boxHeight,
+			size,
+			...chartProps
+		});
 		return /* @__PURE__ */ jsx("div", {
-			ref: parentRef,
-			className: with_responsive_module_default.container,
+			ref: setWrapperRef,
+			className: clsx(with_responsive_module_default.container, hasAspectRatio && with_responsive_module_default.isContained),
 			style: {
-				width: width ?? "100%",
-				height: height ?? defaultHeight,
-				...aspectRatioStyle
+				...width !== void 0 ? { width } : null,
+				...height !== void 0 ? { height } : null
 			},
-			children: /* @__PURE__ */ jsx(WrappedComponent, {
-				width: effectiveWidth,
-				height: effectiveHeight,
-				size,
-				...chartProps
-			})
+			children: hasAspectRatio ? /* @__PURE__ */ jsx("div", {
+				className: with_responsive_module_default.content,
+				style: {
+					width: boxWidth,
+					height: boxHeight
+				},
+				children: wrappedComponent
+			}) : wrappedComponent
 		});
 	};
 }

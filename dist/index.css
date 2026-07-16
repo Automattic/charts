@@ -82,6 +82,20 @@
   color: var(--wpds-color-foreground-content-neutral-weak, #707070);
 }
 .a8ccharts-sP1gHa-container {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.a8ccharts-sP1gHa-isContained {
+  justify-content: center;
+  align-items: flex-start;
+  display: flex;
+}
+
+.a8ccharts-sP1gHa-content {
+  flex: none;
   min-width: 0;
   min-height: 0;
 }

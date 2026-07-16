@@ -15,6 +15,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Charts: keep aspectRatio charts within their parent on both axes so a height-constrained container no longer overflows vertically.
+
 ## [1.10.1] - 2026-07-13
 ### Changed
 - HeatmapChart: Fix the grid's ARIA structure, shrink to fit short containers instead of scrolling, hide the colliding partial first-month calendar label, and keep in-cell text legible on themed and dark backgrounds. [#50136]

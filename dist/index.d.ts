@@ -833,7 +833,11 @@ type ResponsiveConfig = {
   maxWidth?: number;
   /**
    * The aspect ratio of the chart (height = width * aspectRatio).
-   * When provided, height is calculated from width.
+   * When provided, the chart keeps this ratio and is contained within the
+   * parent on both axes: it fills the available width and derives its height,
+   * but if the parent is shorter than that derived height it shrinks both axes
+   * to fit rather than overflowing. When it is narrower than the parent (the
+   * height-constrained case) it is centered horizontally.
    * When omitted, the chart fills the parent container's height.
    */
   aspectRatio?: number;
