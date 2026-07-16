@@ -946,7 +946,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "width" | "height" | "size"> & {
+}: Omit<BarListChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1100,7 +1100,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "width" | "height" | "size"> & {
+}: Omit<GeoChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1257,7 +1257,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
+}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1790,7 +1790,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "width" | "height" | "size"> & {
+}: Omit<SparklineProps, "size" | "width" | "height"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1838,7 +1838,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
+}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
