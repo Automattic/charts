@@ -49,8 +49,7 @@ let _visx_pattern = require("@visx/pattern");
 let react_google_charts = require("react-google-charts");
 let dompurify = require("dompurify");
 dompurify = __toESM(dompurify, 1);
-let _babel_runtime_helpers_esm_extends = require("@babel/runtime/helpers/esm/extends");
-_babel_runtime_helpers_esm_extends = __toESM(_babel_runtime_helpers_esm_extends);
+require("@babel/runtime/helpers/esm/extends");
 require("@babel/runtime/helpers/extends");
 let _visx_shape = require("@visx/shape");
 //#region src/charts/private/single-chart-context/single-chart-context.tsx
@@ -6690,7 +6689,7 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ (0, react_jsx_run
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
 const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
 	const mountedRef = (0, react$1.useRef)(false);
 	(0, react$1.useEffect)(() => {
@@ -7300,7 +7299,7 @@ function memoize(fn) {
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+cache@11.14.0/node_modules/@emotion/cache/dist/emotion-cache.esm.js
-var isBrowser$4 = typeof document !== "undefined";
+var isBrowser$3 = typeof document !== "undefined";
 var identifierWithPointTracking = function identifierWithPointTracking(begin, points, index) {
 	var previous = 0;
 	var character = 0;
@@ -7473,7 +7472,7 @@ var prefixer = function prefixer(element, index, children, callback) {
 		}
 	}
 };
-var getServerStylisCache = isBrowser$4 ? void 0 : weakMemoize(function() {
+var getServerStylisCache = isBrowser$3 ? void 0 : weakMemoize(function() {
 	return memoize(function() {
 		return {};
 	});
@@ -7481,7 +7480,7 @@ var getServerStylisCache = isBrowser$4 ? void 0 : weakMemoize(function() {
 var defaultStylisPlugins = [prefixer];
 var createCache = function createCache(options) {
 	var key = options.key;
-	if (isBrowser$4 && key === "css") {
+	if (isBrowser$3 && key === "css") {
 		var ssrStyles = document.querySelectorAll("style[data-emotion]:not([data-s])");
 		Array.prototype.forEach.call(ssrStyles, function(node) {
 			if (node.getAttribute("data-emotion").indexOf(" ") === -1) return;
@@ -7493,7 +7492,7 @@ var createCache = function createCache(options) {
 	var inserted = {};
 	var container;
 	var nodesToHydrate = [];
-	if (isBrowser$4) {
+	if (isBrowser$3) {
 		container = options.container || document.head;
 		Array.prototype.forEach.call(document.querySelectorAll("style[data-emotion^=\"" + key + " \"]"), function(node) {
 			var attrib = node.getAttribute("data-emotion").split(" ");
@@ -7909,7 +7908,7 @@ var require_hoist_non_react_statics_cjs = /* @__PURE__ */ __commonJSMin(((export
 }));
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.esm.js
-var isBrowser$3 = typeof document !== "undefined";
+var isBrowser$2 = typeof document !== "undefined";
 function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 	var rawClassName = "";
 	classNames.split(" ").forEach(function(className) {
@@ -7920,7 +7919,7 @@ function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 }
 var registerStyles = function registerStyles(cache, serialized, isStringTag) {
 	var className = cache.key + "-" + serialized.name;
-	if ((isStringTag === false || isBrowser$3 === false && cache.compat !== void 0) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
+	if ((isStringTag === false || isBrowser$2 === false && cache.compat !== void 0) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
 };
 var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 	registerStyles(cache, serialized, isStringTag);
@@ -7930,10 +7929,10 @@ var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 		var current = serialized;
 		do {
 			var maybeStyles = cache.insert(serialized === current ? "." + className : "", current, cache.sheet, true);
-			if (!isBrowser$3 && maybeStyles !== void 0) stylesForSSR += maybeStyles;
+			if (!isBrowser$2 && maybeStyles !== void 0) stylesForSSR += maybeStyles;
 			current = current.next;
 		} while (current !== void 0);
-		if (!isBrowser$3 && stylesForSSR.length !== 0) return stylesForSSR;
+		if (!isBrowser$2 && stylesForSSR.length !== 0) return stylesForSSR;
 	}
 };
 //#endregion
@@ -8011,7 +8010,7 @@ var unitlessKeys = {
 };
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+serialize@1.3.3/node_modules/@emotion/serialize/dist/emotion-serialize.esm.js
-var isDevelopment$2 = false;
+var isDevelopment$1 = false;
 var hyphenateRegex = /[A-Z]|^ms/g;
 var animationRegex = /_EMO_([^_]+?)_([^]*?)_EMO_/g;
 var isCustomProperty = function isCustomProperty(property) {
@@ -8093,7 +8092,7 @@ function createStringFromObject(mergedProps, registered, obj) {
 			if (registered != null && registered[asString] !== void 0) string += key + "{" + registered[asString] + "}";
 			else if (isProcessableValue(asString)) string += processStyleName(key) + ":" + processStyleValue(key, asString) + ";";
 		} else {
-			if (key === "NO_COMPONENT_SELECTOR" && isDevelopment$2) throw new Error(noComponentSelectorMessage);
+			if (key === "NO_COMPONENT_SELECTOR" && isDevelopment$1) throw new Error(noComponentSelectorMessage);
 			if (Array.isArray(value) && typeof value[0] === "string" && (registered == null || registered[value[0]] === void 0)) {
 				for (var _i = 0; _i < value.length; _i++) if (isProcessableValue(value[_i])) string += processStyleName(key) + ":" + processStyleValue(key, value[_i]) + ";";
 			} else {
@@ -8138,14 +8137,14 @@ function serializeStyles(args, registered, mergedProps) {
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+use-insertion-effect-with-fallbacks@1.2.0_react@18.3.1/node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.esm.js
-var isBrowser$2 = typeof document !== "undefined";
+var isBrowser$1 = typeof document !== "undefined";
 var syncFallback = function syncFallback(create) {
 	return create();
 };
 var useInsertionEffect = react["useInsertionEffect"] ? react["useInsertionEffect"] : false;
-var useInsertionEffectAlwaysWithSyncFallback = !isBrowser$2 ? syncFallback : useInsertionEffect || syncFallback;
+var useInsertionEffectAlwaysWithSyncFallback = !isBrowser$1 ? syncFallback : useInsertionEffect || syncFallback;
 useInsertionEffect || react.useLayoutEffect;
-var isBrowser$1 = typeof document !== "undefined";
+var isBrowser = typeof document !== "undefined";
 var EmotionCacheContext = /* #__PURE__ */ react.createContext(typeof HTMLElement !== "undefined" ? /* #__PURE__ */ createCache({ key: "css" }) : null);
 EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
@@ -8156,7 +8155,7 @@ var withEmotionCache = function withEmotionCache(func) {
 		return func(props, (0, react.useContext)(EmotionCacheContext), ref);
 	});
 };
-if (!isBrowser$1) withEmotionCache = function withEmotionCache(func) {
+if (!isBrowser) withEmotionCache = function withEmotionCache(func) {
 	return function(props) {
 		var cache = (0, react.useContext)(EmotionCacheContext);
 		if (cache === null) {
@@ -8174,13 +8173,13 @@ var createEmotionProps = function createEmotionProps(type, props) {
 	newProps[typePropName] = type;
 	return newProps;
 };
-var Insertion$1 = function Insertion(_ref) {
+var Insertion = function Insertion(_ref) {
 	var cache = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
 	registerStyles(cache, serialized, isStringTag);
 	var rules = useInsertionEffectAlwaysWithSyncFallback(function() {
 		return insertStyles(cache, serialized, isStringTag);
 	});
-	if (!isBrowser$1 && rules !== void 0) {
+	if (!isBrowser && rules !== void 0) {
 		var _ref2;
 		var serializedNames = serialized.name;
 		var next = serialized.next;
@@ -8206,7 +8205,7 @@ var Emotion$1 = /* @__PURE__ */ withEmotionCache(function(props, cache, ref) {
 	for (var _key2 in props) if (hasOwn.call(props, _key2) && _key2 !== "css" && _key2 !== typePropName && true) newProps[_key2] = props[_key2];
 	newProps.className = className;
 	if (ref) newProps.ref = ref;
-	return /*#__PURE__*/ react.createElement(react.Fragment, null, /*#__PURE__*/ react.createElement(Insertion$1, {
+	return /*#__PURE__*/ react.createElement(react.Fragment, null, /*#__PURE__*/ react.createElement(Insertion, {
 		cache,
 		serialized,
 		isStringTag: typeof WrappedComponent === "string"
@@ -8331,7 +8330,7 @@ _createEmotion.css;
 _createEmotion.sheet;
 _createEmotion.cache;
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
 	const cache = __unsafe_useEmotionCache();
@@ -8438,7 +8437,7 @@ function memize(fn, options) {
 	return memoized;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
 var white = "#fff";
 var GRAY = {
 	900: "#1e1e1e",
@@ -8517,7 +8516,7 @@ var COLORS = Object.freeze({
 	ui: UI
 });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/config-values.mjs
 var CONTROL_HEIGHT = "36px";
 var CONTROL_PROPS = {
 	controlPaddingX: 12,
@@ -8559,20 +8558,13 @@ var config_values_default = Object.assign({}, CONTROL_PROPS, {
 	fontSizeXSmall: "calc(0.75 * 13px)",
 	fontLineHeightBase: "1.4",
 	fontWeight: "normal",
-	fontWeightMedium: "499",
-	fontWeightHeading: "600",
+	fontWeightEmphasis: "600",
 	gridBase: "4px",
 	elevationXSmall: `0 1px 1px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02), 0 3px 3px rgba(0, 0, 0, 0.02), 0 4px 4px rgba(0, 0, 0, 0.01)`,
 	elevationSmall: `0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 3px rgba(0, 0, 0, 0.04), 0 6px 6px rgba(0, 0, 0, 0.03), 0 8px 8px rgba(0, 0, 0, 0.02)`,
 	elevationMedium: `0 2px 3px rgba(0, 0, 0, 0.05), 0 4px 5px rgba(0, 0, 0, 0.04), 0 12px 12px rgba(0, 0, 0, 0.03), 0 16px 16px rgba(0, 0, 0, 0.02)`,
 	elevationLarge: `0 5px 15px rgba(0, 0, 0, 0.08), 0 15px 27px rgba(0, 0, 0, 0.07), 0 30px 36px rgba(0, 0, 0, 0.04), 0 50px 43px rgba(0, 0, 0, 0.02)`,
-	surfaceBackgroundColor: COLORS.white,
-	surfaceBackgroundSubtleColor: "#F3F3F3",
-	surfaceBackgroundTintColor: "#F5F5F5",
 	surfaceBorderColor: "rgba(0, 0, 0, 0.1)",
-	surfaceBorderBoldColor: "rgba(0, 0, 0, 0.15)",
-	surfaceBorderSubtleColor: "rgba(0, 0, 0, 0.05)",
-	surfaceBackgroundTertiaryColor: COLORS.white,
 	surfaceColor: COLORS.white,
 	transitionDuration: "200ms",
 	transitionDurationFast: "160ms",
@@ -8629,10 +8621,10 @@ var require_es6 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.51.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.50.0/node_modules/@wordpress/warning/build-module/index.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.51.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
 	return globalThis.SCRIPT_DEBUG === true;
 }
@@ -8646,7 +8638,7 @@ function warning(message) {
 	logged.add(message);
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = /* @__PURE__ */ __toESM(require_es6(), 1);
 var ComponentsContext = (0, react$1.createContext)(
 	/** @type {Record<string, any>} */
@@ -8673,19 +8665,19 @@ var BaseContextSystemProvider = ({ children, value }) => {
 };
 (0, react$1.memo)(BaseContextSystemProvider);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 var import_dist = require_dist();
 function getStyledClassName(namespace) {
 	return `components-${(0, import_dist.paramCase)(namespace)}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/context-connect.mjs
 function contextConnect(Component, namespace) {
 	return _contextConnect(Component, namespace, { forwardsRef: true });
 }
@@ -8702,7 +8694,7 @@ function _contextConnect(Component, namespace, options) {
 	});
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
 	return { [COMPONENT_NAMESPACE]: componentName };
 }
@@ -8710,7 +8702,7 @@ function getConnectedNamespace() {
 	return { [CONNECTED_NAMESPACE]: true };
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
 	const contextSystemProps = useComponentsContext();
 	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
@@ -8730,7 +8722,7 @@ function useContextSystem(props, namespace) {
 	return finalComponentProps;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
 var visuallyHidden = {
 	border: 0,
 	clip: "rect(1px, 1px, 1px, 1px)",
@@ -8746,135 +8738,105 @@ var visuallyHidden = {
 	wordBreak: "normal"
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/@emotion+is-prop-valid@1.4.0/node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
-var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|disableRemotePlayback|download|draggable|encType|enterKeyHint|fetchpriority|fetchPriority|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|popover|popoverTarget|popoverTargetAction|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/;
-var isPropValid = /* #__PURE__ */ memoize(function(prop) {
-	return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110 && prop.charCodeAt(2) < 91;
-});
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+styled@11.14.1_@emotion+react@11.14.0_@types+react@18.3.28_react@18.3.1__@types+react@18.3.28_react@18.3.1/node_modules/@emotion/styled/base/dist/emotion-styled-base.esm.js
-var isBrowser = typeof document !== "undefined";
-var isDevelopment = false;
-var testOmitPropsOnStringTag = isPropValid;
-var testOmitPropsOnComponent = function testOmitPropsOnComponent(key) {
-	return key !== "theme";
-};
-var getDefaultShouldForwardProp = function getDefaultShouldForwardProp(tag) {
-	return typeof tag === "string" && tag.charCodeAt(0) > 96 ? testOmitPropsOnStringTag : testOmitPropsOnComponent;
-};
-var composeShouldForwardProps = function composeShouldForwardProps(tag, options, isReal) {
-	var shouldForwardProp;
-	if (options) {
-		var optionsShouldForwardProp = options.shouldForwardProp;
-		shouldForwardProp = tag.__emotion_forwardProp && optionsShouldForwardProp ? function(propName) {
-			return tag.__emotion_forwardProp(propName) && optionsShouldForwardProp(propName);
-		} : optionsShouldForwardProp;
-	}
-	if (typeof shouldForwardProp !== "function" && isReal) shouldForwardProp = tag.__emotion_forwardProp;
-	return shouldForwardProp;
-};
-var Insertion = function Insertion(_ref) {
-	var cache = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
-	registerStyles(cache, serialized, isStringTag);
-	var rules = useInsertionEffectAlwaysWithSyncFallback(function() {
-		return insertStyles(cache, serialized, isStringTag);
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
+var customAttributeRegExp = /^(data|aria|x)-/i;
+var eventHandlerRegExp = /^on[A-Z]/;
+var svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
+	feBlend feColorMatrix feComponentTransfer feComposite feConvolveMatrix
+	feDiffuseLighting feDisplacementMap feDistantLight feDropShadow feFlood
+	feFuncA feFuncB feFuncG feFuncR feGaussianBlur feImage feMerge feMergeNode
+	feMorphology feOffset fePointLight feSpecularLighting feSpotLight feTile
+	feTurbulence filter foreignObject g image line linearGradient marker mask
+	metadata mpath path pattern polygon polyline radialGradient rect set stop svg
+	switch symbol text textPath tspan use view`.split(/\s+/));
+var baseElementProps = new Set(`children dangerouslySetInnerHTML key autoFocus defaultValue defaultChecked
+	innerHTML suppressContentEditableWarning suppressHydrationWarning valueLink
+	abbr accept acceptCharset accessKey action allow allowUserMedia
+	allowPaymentRequest allowFullScreen allowTransparency alt async autoComplete
+	autoPlay capture cellPadding cellSpacing challenge charSet checked cite classID
+	className cols colSpan content contentEditable contextMenu controls controlsList
+	coords crossOrigin data dateTime decoding default defer dir disabled
+	disablePictureInPicture disableRemotePlayback download draggable encType
+	enterKeyHint fetchpriority fetchPriority form formAction formEncType formMethod
+	formNoValidate formTarget frameBorder headers height hidden high href hrefLang
+	htmlFor httpEquiv id inputMode integrity is keyParams keyType kind label lang
+	list loading loop low marginHeight marginWidth max maxLength media mediaGroup
+	method min minLength multiple muted name nonce noValidate open optimum pattern
+	placeholder playsInline popover popoverTarget popoverTargetAction poster
+	preload profile radioGroup readOnly referrerPolicy rel required reversed role
+	rows rowSpan sandbox scope scoped scrolling seamless selected shape size sizes
+	slot span spellCheck src srcDoc srcLang srcSet start step style summary
+	tabIndex target title translate type useMap value width wmode wrap about
+	datatype inlist prefix property resource typeof vocab autoCapitalize
+	autoCorrect autoSave color incremental fallback inert itemProp itemScope
+	itemType itemID itemRef on option results security unselectable`.split(/\s+/));
+var svgElementProps = new Set(`accentHeight accumulate additive alignmentBaseline allowReorder alphabetic
+	amplitude arabicForm ascent attributeName attributeType autoReverse azimuth
+	baseFrequency baselineShift baseProfile bbox begin bias by calcMode capHeight
+	clip clipPathUnits clipPath clipRule colorInterpolation
+	colorInterpolationFilters colorProfile colorRendering contentScriptType
+	contentStyleType cursor cx cy d decelerate descent diffuseConstant direction
+	display divisor dominantBaseline dur dx dy edgeMode elevation enableBackground
+	end exponent externalResourcesRequired fill fillOpacity fillRule filter
+	filterRes filterUnits floodColor floodOpacity focusable fontFamily fontSize
+	fontSizeAdjust fontStretch fontStyle fontVariant fontWeight format from fr fx
+	fy g1 g2 glyphName glyphOrientationHorizontal glyphOrientationVertical
+	glyphRef gradientTransform gradientUnits hanging horizAdvX horizOriginX
+	ideographic imageRendering in in2 intercept k k1 k2 k3 k4 kernelMatrix
+	kernelUnitLength kerning keyPoints keySplines keyTimes lengthAdjust
+	letterSpacing lightingColor limitingConeAngle local markerEnd markerMid
+	markerStart markerHeight markerUnits markerWidth mask maskContentUnits
+	maskUnits mathematical mode numOctaves offset opacity operator order orient
+	orientation origin overflow overlinePosition overlineThickness panose1
+	paintOrder pathLength patternContentUnits patternTransform patternUnits
+	pointerEvents points pointsAtX pointsAtY pointsAtZ preserveAlpha
+	preserveAspectRatio primitiveUnits r radius refX refY renderingIntent
+	repeatCount repeatDur requiredExtensions requiredFeatures restart result rotate
+	rx ry scale seed shapeRendering slope spacing specularConstant
+	specularExponent speed spreadMethod startOffset stdDeviation stemh stemv
+	stitchTiles stopColor stopOpacity strikethroughPosition strikethroughThickness
+	string stroke strokeDasharray strokeDashoffset strokeLinecap strokeLinejoin
+	strokeMiterlimit strokeOpacity strokeWidth surfaceScale systemLanguage
+	tableValues targetX targetY textAnchor textDecoration textRendering textLength
+	to transform u1 u2 underlinePosition underlineThickness unicode unicodeBidi
+	unicodeRange unitsPerEm vAlphabetic vHanging vIdeographic vMathematical values
+	vectorEffect version vertAdvY vertOriginX vertOriginY viewBox viewTarget
+	visibility widths wordSpacing writingMode x xHeight x1 x2 xChannelSelector
+	xlinkActuate xlinkArcrole xlinkHref xlinkRole xlinkShow xlinkTitle xlinkType
+	xmlBase xmlns xmlnsXlink xmlLang xmlSpace y y1 y2 yChannelSelector z
+	zoomAndPan`.split(/\s+/));
+var compatElementProps = /* @__PURE__ */ new Set([
+	"autofocus",
+	"class",
+	"for"
+]);
+function isValidIntrinsicElementProp(prop, element) {
+	if (customAttributeRegExp.test(prop) || eventHandlerRegExp.test(prop)) return true;
+	if (baseElementProps.has(prop) || compatElementProps.has(prop)) return true;
+	return svgElementNames.has(element) && svgElementProps.has(prop);
+}
+function filterIntrinsicElementProps(props, element) {
+	return Object.fromEntries(Object.entries(props).filter(([prop]) => isValidIntrinsicElementProp(prop, element)));
+}
+function UnforwardedPolymorphicElement({ as, ...props }, ref) {
+	const Element = as || "div";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Element, {
+		ref,
+		...typeof Element === "string" ? filterIntrinsicElementProps(props, Element) : props
 	});
-	if (!isBrowser && rules !== void 0) {
-		var _ref2;
-		var serializedNames = serialized.name;
-		var next = serialized.next;
-		while (next !== void 0) {
-			serializedNames += " " + next.name;
-			next = next.next;
-		}
-		return /*#__PURE__*/ react.createElement("style", (_ref2 = {}, _ref2["data-emotion"] = cache.key + " " + serializedNames, _ref2.dangerouslySetInnerHTML = { __html: rules }, _ref2.nonce = cache.sheet.nonce, _ref2));
-	}
-	return null;
-};
+}
+var PolymorphicElement = (0, react$1.forwardRef)(UnforwardedPolymorphicElement);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
-var PolymorphicDiv = /* @__PURE__ */ function createStyled(tag, options) {
-	var isReal = tag.__emotion_real === tag;
-	var baseTag = isReal && tag.__emotion_base || tag;
-	var identifierName;
-	var targetClassName;
-	if (options !== void 0) {
-		identifierName = options.label;
-		targetClassName = options.target;
-	}
-	var shouldForwardProp = composeShouldForwardProps(tag, options, isReal);
-	var defaultShouldForwardProp = shouldForwardProp || getDefaultShouldForwardProp(baseTag);
-	var shouldUseAs = !defaultShouldForwardProp("as");
-	return function() {
-		var args = arguments;
-		var styles = isReal && tag.__emotion_styles !== void 0 ? tag.__emotion_styles.slice(0) : [];
-		if (identifierName !== void 0) styles.push("label:" + identifierName + ";");
-		if (args[0] == null || args[0].raw === void 0) styles.push.apply(styles, args);
-		else {
-			var templateStringsArr = args[0];
-			styles.push(templateStringsArr[0]);
-			var len = args.length;
-			var i = 1;
-			for (; i < len; i++) styles.push(args[i], templateStringsArr[i]);
-		}
-		var Styled = withEmotionCache(function(props, cache, ref) {
-			var FinalTag = shouldUseAs && props.as || baseTag;
-			var className = "";
-			var classInterpolations = [];
-			var mergedProps = props;
-			if (props.theme == null) {
-				mergedProps = {};
-				for (var key in props) mergedProps[key] = props[key];
-				mergedProps.theme = react.useContext(ThemeContext);
-			}
-			if (typeof props.className === "string") className = getRegisteredStyles$1(cache.registered, classInterpolations, props.className);
-			else if (props.className != null) className = props.className + " ";
-			var serialized = serializeStyles(styles.concat(classInterpolations), cache.registered, mergedProps);
-			className += cache.key + "-" + serialized.name;
-			if (targetClassName !== void 0) className += " " + targetClassName;
-			var finalShouldForwardProp = shouldUseAs && shouldForwardProp === void 0 ? getDefaultShouldForwardProp(FinalTag) : defaultShouldForwardProp;
-			var newProps = {};
-			for (var _key in props) {
-				if (shouldUseAs && _key === "as") continue;
-				if (finalShouldForwardProp(_key)) newProps[_key] = props[_key];
-			}
-			newProps.className = className;
-			if (ref) newProps.ref = ref;
-			return /*#__PURE__*/ react.createElement(react.Fragment, null, /*#__PURE__*/ react.createElement(Insertion, {
-				cache,
-				serialized,
-				isStringTag: typeof FinalTag === "string"
-			}), /*#__PURE__*/ react.createElement(FinalTag, newProps));
-		});
-		Styled.displayName = identifierName !== void 0 ? identifierName : "Styled(" + (typeof baseTag === "string" ? baseTag : baseTag.displayName || baseTag.name || "Component") + ")";
-		Styled.defaultProps = tag.defaultProps;
-		Styled.__emotion_real = Styled;
-		Styled.__emotion_base = baseTag;
-		Styled.__emotion_styles = styles;
-		Styled.__emotion_forwardProp = shouldForwardProp;
-		Object.defineProperty(Styled, "toString", { value: function value() {
-			if (targetClassName === void 0 && isDevelopment) return "NO_COMPONENT_SELECTOR";
-			return "." + targetClassName;
-		} });
-		Styled.withComponent = function(nextTag, nextOptions) {
-			return createStyled(nextTag, (0, _babel_runtime_helpers_esm_extends.default)({}, options, nextOptions, { shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true) })).apply(void 0, styles);
-		};
-		return Styled;
-	};
-}("div", process.env.NODE_ENV === "production" ? { target: "e19lxcc00" } : {
-	target: "e19lxcc00",
-	label: "PolymorphicDiv"
-})(process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudC50c3giXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBZWlDIiwiZmlsZSI6ImNvbXBvbmVudC50c3giLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEV4dGVybmFsIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgc3R5bGVkIGZyb20gJ0BlbW90aW9uL3N0eWxlZCc7XG5cbi8qKlxuICogV29yZFByZXNzIGRlcGVuZGVuY2llc1xuICovXG5pbXBvcnQgeyBmb3J3YXJkUmVmIH0gZnJvbSAnQHdvcmRwcmVzcy9lbGVtZW50JztcblxuLyoqXG4gKiBJbnRlcm5hbCBkZXBlbmRlbmNpZXNcbiAqL1xuaW1wb3J0IHR5cGUgeyBXb3JkUHJlc3NDb21wb25lbnRQcm9wcyB9IGZyb20gJy4uL2NvbnRleHQnO1xuXG5jb25zdCBQb2x5bW9ycGhpY0RpdiA9IHN0eWxlZC5kaXZgYDtcblxuZnVuY3Rpb24gVW5mb3J3YXJkZWRWaWV3PCBUIGV4dGVuZHMgUmVhY3QuRWxlbWVudFR5cGUgPSAnZGl2JyA+KFxuXHR7IGFzLCAuLi5yZXN0UHJvcHMgfTogV29yZFByZXNzQ29tcG9uZW50UHJvcHM8IHt9LCBUID4sXG5cdHJlZjogUmVhY3QuRm9yd2FyZGVkUmVmPCBhbnkgPlxuKSB7XG5cdHJldHVybiA8UG9seW1vcnBoaWNEaXYgYXM9eyBhcyB9IHJlZj17IHJlZiB9IHsgLi4ucmVzdFByb3BzIH0gLz47XG59XG5cbi8qKlxuICogYFZpZXdgIGlzIGEgY29yZSBjb21wb25lbnQgdGhhdCByZW5kZXJzIGV2ZXJ5dGhpbmcgaW4gdGhlIGxpYnJhcnkuXG4gKiBJdCBpcyB0aGUgcHJpbmNpcGxlIGNvbXBvbmVudCBpbiB0aGUgZW50aXJlIGxpYnJhcnkuXG4gKlxuICogYGBganN4XG4gKiBpbXBvcnQgeyBWaWV3IH0gZnJvbSBgQHdvcmRwcmVzcy9jb21wb25lbnRzYDtcbiAqXG4gKiBmdW5jdGlvbiBFeGFtcGxlKCkge1xuICogXHRyZXR1cm4gKFxuICogXHRcdDxWaWV3PlxuICogXHRcdFx0IENvZGUgaXMgUG9ldHJ5XG4gKiBcdFx0PC9WaWV3PlxuICogXHQpO1xuICogfVxuICogYGBgXG4gKi9cbmV4cG9ydCBjb25zdCBWaWV3ID0gT2JqZWN0LmFzc2lnbiggZm9yd2FyZFJlZiggVW5mb3J3YXJkZWRWaWV3ICksIHtcblx0c2VsZWN0b3I6ICcuY29tcG9uZW50cy12aWV3Jyxcbn0gKTtcblxuZXhwb3J0IGRlZmF1bHQgVmlldztcbiJdfQ== */");
-function UnforwardedView({ as, ...restProps }, ref) {
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PolymorphicDiv, {
-		as,
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/view/component.mjs
+function UnforwardedView({ css, ...restProps }, ref) {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PolymorphicElement, {
 		ref,
 		...restProps
 	});
 }
 var component_default$2 = Object.assign((0, react$1.forwardRef)(UnforwardedView), { selector: ".components-view" });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
 function UnconnectedVisuallyHidden(props, forwardedRef) {
 	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
@@ -8889,7 +8851,7 @@ function UnconnectedVisuallyHidden(props, forwardedRef) {
 }
 var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = [
 	"40em",
 	"52em",
@@ -8923,7 +8885,7 @@ function useResponsiveValue(values, options = {}) {
 	return array[index >= array.length ? array.length - 1 : index];
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
 	bottom: {
 		alignItems: "flex-end",
@@ -8971,7 +8933,7 @@ function getAlignmentProps(alignment) {
 	return alignment ? ALIGNMENTS[alignment] : {};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/hook.mjs
 function useGrid(props) {
 	const { align, alignment, className, columnGap, columns = 2, gap = 3, isInline = false, justify, rowGap, rows, templateColumns, templateRows, ...otherProps } = useContextSystem(props, "Grid");
 	const column = useResponsiveValue(Array.isArray(columns) ? columns : [columns]);
@@ -9013,7 +8975,7 @@ function useGrid(props) {
 	};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@36.1.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
 		...useGrid(props),
