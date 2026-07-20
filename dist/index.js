@@ -5976,6 +5976,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart": "a8ccharts-O3YMOW-heatmap-chart",
 	"heatmap-chart__cell": "a8ccharts-O3YMOW-heatmap-chart__cell",
 	"heatmap-chart__cell--filled": "a8ccharts-O3YMOW-heatmap-chart__cell--filled",
+	"heatmap-chart__cell--hidden": "a8ccharts-O3YMOW-heatmap-chart__cell--hidden",
 	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
 	"heatmap-chart__cell--strong": "a8ccharts-O3YMOW-heatmap-chart__cell--strong",
 	"heatmap-chart__cell-value": "a8ccharts-O3YMOW-heatmap-chart__cell-value",
@@ -6041,6 +6042,7 @@ const toDate = (point) => {
 };
 const buildCalendarHeatmapData = (series, options = {}) => {
 	const weekStartsOn = options.weekStartsOn ?? 1;
+	const hideOutOfRangeDays = options.hideOutOfRangeDays ?? true;
 	const entries = series.map((point) => ({
 		date: toDate(point),
 		value: point.value
@@ -6059,6 +6061,8 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 	}
 	const gridStart = startOfWeek(minDate, { weekStartsOn });
 	const weekCount = differenceInCalendarWeeks(maxDate, gridStart, { weekStartsOn }) + 1;
+	const minDayKey = format(minDate, "yyyy-MM-dd");
+	const maxDayKey = format(maxDate, "yyyy-MM-dd");
 	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? format(addDays(gridStart, row), "EEE") : "");
 	const MIN_FIRST_MONTH_WEEKS = 2;
 	const firstMonth = gridStart.getMonth();
@@ -6076,10 +6080,12 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 		for (let row = 0; row < 7; row++) {
 			const day = addDays(gridStart, week * 7 + row);
 			const key = format(day, "yyyy-MM-dd");
-			cells.push({
+			const cell = {
 				label: format(day, "EEE, MMM d, yyyy"),
 				value: valueByDay.has(key) ? valueByDay.get(key) : null
-			});
+			};
+			if (hideOutOfRangeDays && (key < minDayKey || key > maxDayKey)) cell.hidden = true;
+			cells.push(cell);
 		}
 		data.push({
 			label,
@@ -6184,6 +6190,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		setSelectedIndex(void 0);
 		hideTooltip();
 	}, [hideTooltip]);
+	const isCellHidden = useCallback((col, row) => data[col]?.data[row]?.hidden === true, [data]);
 	const onChartKeyDown = useCallback((event) => {
 		if (![
 			"ArrowLeft",
@@ -6200,21 +6207,32 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		}
 		event.preventDefault();
 		if (selectedIndex === void 0) {
-			setSelectedIndex(0);
+			for (let index = 0; index < columns * rows; index++) if (!isCellHidden(Math.floor(index / rows), index % rows)) {
+				setSelectedIndex(index);
+				return;
+			}
 			return;
 		}
+		let stepCol = 0;
+		let stepRow = 0;
+		if (event.key === "ArrowRight") stepCol = 1;
+		else if (event.key === "ArrowLeft") stepCol = -1;
+		else if (event.key === "ArrowDown") stepRow = 1;
+		else if (event.key === "ArrowUp") stepRow = -1;
 		let col = Math.floor(selectedIndex / rows);
 		let row = selectedIndex % rows;
-		if (event.key === "ArrowRight") col = Math.min(col + 1, columns - 1);
-		else if (event.key === "ArrowLeft") col = Math.max(col - 1, 0);
-		else if (event.key === "ArrowDown") row = Math.min(row + 1, rows - 1);
-		else if (event.key === "ArrowUp") row = Math.max(row - 1, 0);
+		do {
+			col += stepCol;
+			row += stepRow;
+		} while (col >= 0 && col < columns && row >= 0 && row < rows && isCellHidden(col, row));
+		if (col < 0 || col >= columns || row < 0 || row >= rows) return;
 		setSelectedIndex(col * rows + row);
 	}, [
 		rows,
 		columns,
 		selectedIndex,
-		hideTooltip
+		hideTooltip,
+		isCellHidden
 	]);
 	const handleCellMouseMove = useCallback((event) => {
 		if (!withTooltips) return;
@@ -6333,7 +6351,12 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 								className: heatmap_chart_module_default["heatmap-chart__row-label"],
 								children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
 							}), data.map((column, columnIndex) => {
-								const value = column.data[rowIndex]?.value ?? null;
+								const cell = column.data[rowIndex];
+								if (cell?.hidden) return /* @__PURE__ */ jsx("div", {
+									"aria-hidden": "true",
+									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--hidden"])
+								}, `cell-${columnIndex}-${rowIndex}`);
+								const value = cell?.value ?? null;
 								const present = isPresent(value);
 								const normalized = present ? getNormalizedValue(value, extent) : 0;
 								const flatIndex = columnIndex * rows + rowIndex;

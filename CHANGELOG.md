@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: add HeatmapChart min/max cell size bounds (sparse grids keep sensible cells, long grids overflow for scrolling) and floor an all-zero heatmap at the scale bottom instead of full intensity.
 
 ### Changed
+- Charts: make calendar heatmaps render ragged edges by default, with out-of-range days skipped by hover and keyboard navigation.
 - Update package dependencies.
 
 ### Fixed

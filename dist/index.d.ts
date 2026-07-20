@@ -946,7 +946,7 @@ declare const BarListChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<BarListChartProps, "size" | "width" | "height"> & {
+}: Omit<BarListChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1100,7 +1100,7 @@ declare const GeoChartResponsive: ({
   width,
   height,
   ...chartProps
-}: Omit<GeoChartProps, "size" | "width" | "height"> & {
+}: Omit<GeoChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1111,6 +1111,13 @@ declare const GeoChartResponsive: ({
 type HeatmapCell = {
   /** Per-cell label used in the tooltip / accessible name. */label?: string;
   value: number | null;
+  /**
+   * Leave the cell's grid slot empty: nothing is painted and the cell is
+   * skipped by hover and keyboard navigation, while the slot keeps its
+   * place so the rest of the grid doesn't shift. For calendar edges, where
+   * days completing the first/last week fall outside the covered range.
+   */
+  hidden?: boolean;
 };
 /** A heatmap column (rendered left→right); its cells render top→bottom. */
 type HeatmapColumn = {
@@ -1169,6 +1176,13 @@ type CalendarHeatmapResult = {
 };
 declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: {
   weekStartsOn?: 0 | 1;
+  /**
+   * Mark the days completing the first/last week outside the series'
+   * date span as hidden cells (empty grid slots) instead of blank
+   * cells, giving the calendar ragged edges. Days inside the span stay
+   * blank cells even when the series has no entry for them.
+   */
+  hideOutOfRangeDays?: boolean;
 }) => CalendarHeatmapResult;
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.d.ts
@@ -1257,7 +1271,7 @@ declare const LeaderboardChartResponsive: (({
   width,
   height,
   ...chartProps
-}: Omit<LeaderboardChartProps, "size" | "width" | "height"> & {
+}: Omit<LeaderboardChartProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1790,7 +1804,7 @@ declare const Sparkline: ({
   width,
   height,
   ...chartProps
-}: Omit<SparklineProps, "size" | "width" | "height"> & {
+}: Omit<SparklineProps, "width" | "height" | "size"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1838,7 +1852,7 @@ declare const BaseTooltip: ({
   className,
   style,
   renderContainer
-}: BaseTooltipProps) => string | number | true | Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element;
+}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {

@@ -489,6 +489,11 @@
   display: flex;
 }
 
+.a8ccharts-O3YMOW-heatmap-chart__cell--hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .a8ccharts-O3YMOW-heatmap-chart__cell--filled {
   background: color-mix(in sRGB, var(--heatmap-primary) calc((.15 + .85 * var(--intensity)) * 100%), var(--heatmap-bg, #fff));
 }
