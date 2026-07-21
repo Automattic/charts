@@ -18,6 +18,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Charts: keep aspectRatio charts within their parent on both axes so a height-constrained container no longer overflows vertically.
+- LeaderboardChart: Keep row spacing and column alignment identical whether or not a row is interactive.
 
 ## [1.10.1] - 2026-07-13
 ### Changed

@@ -4,7 +4,7 @@ import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarS
 import { __, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
-import { Children, Fragment, Fragment as Fragment$2, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
+import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
 import { color, hsl } from "@visx/vendor/d3-color";
 import { addDays, differenceInCalendarWeeks, differenceInHours, differenceInYears, format, isValid, parse, parseISO, startOfWeek } from "date-fns";
 import { Text, getStringWidth } from "@visx/text";
@@ -8708,6 +8708,7 @@ var leaderboard_chart_module_default = {
 	"leaderboardChart--responsive": "a8ccharts-GovfoW-leaderboardChart--responsive",
 	"overlap": "a8ccharts-GovfoW-overlap",
 	"overlayLabel": "a8ccharts-GovfoW-overlayLabel",
+	"row": "a8ccharts-GovfoW-row",
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
@@ -8978,7 +8979,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						})] });
 						if (entry.onClick) return /* @__PURE__ */ jsxs("button", {
 							type: "button",
-							className: leaderboard_chart_module_default.interactiveRow,
+							className: clsx(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow),
 							onClick: entry.onClick,
 							"aria-label": entry.ariaLabel,
 							children: [rowCells, /* @__PURE__ */ jsx(Icon, {
@@ -8987,7 +8988,10 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								size: 24
 							})]
 						}, entry.id);
-						return /* @__PURE__ */ jsx(Fragment$2, { children: rowCells }, entry.id);
+						return /* @__PURE__ */ jsx("div", {
+							className: leaderboard_chart_module_default.row,
+							children: rowCells
+						}, entry.id);
 					})
 				})
 			})

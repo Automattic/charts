@@ -9076,6 +9076,7 @@ var leaderboard_chart_module_default = {
 	"leaderboardChart--responsive": "a8ccharts-GovfoW-leaderboardChart--responsive",
 	"overlap": "a8ccharts-GovfoW-overlap",
 	"overlayLabel": "a8ccharts-GovfoW-overlayLabel",
+	"row": "a8ccharts-GovfoW-row",
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
@@ -9346,7 +9347,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						})] });
 						if (entry.onClick) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
-							className: leaderboard_chart_module_default.interactiveRow,
+							className: (0, clsx.default)(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow),
 							onClick: entry.onClick,
 							"aria-label": entry.ariaLabel,
 							children: [rowCells, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_icons.Icon, {
@@ -9355,7 +9356,10 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								size: 24
 							})]
 						}, entry.id);
-						return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react$1.Fragment, { children: rowCells }, entry.id);
+						return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							className: leaderboard_chart_module_default.row,
+							children: rowCells
+						}, entry.id);
 					})
 				})
 			})
