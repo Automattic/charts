@@ -537,6 +537,11 @@
   overflow: auto;
 }
 
+.a8ccharts-GovfoW-leaderboardChart__content--fit {
+  position: relative;
+  overflow: hidden;
+}
+
 .a8ccharts-GovfoW-barWithLabelContainer {
   isolation: isolate;
   grid-template-columns: 1fr;
@@ -605,6 +610,15 @@
   color: var(--wpds-color-foreground-content-neutral-weak, #707070);
   font-size: var(--wpds-typography-font-size-md, 13px);
   font-style: italic;
+}
+
+.a8ccharts-GovfoW-fitEmptyState {
+  justify-content: center;
+  align-items: center;
+  padding-block: 0;
+  display: flex;
+  position: absolute;
+  inset: 0;
 }
 
 .a8ccharts-GovfoW-row {

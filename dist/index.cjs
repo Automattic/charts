@@ -9007,6 +9007,90 @@ function UnconnectedGrid(props, forwardedRef) {
 }
 var component_default = contextConnect(UnconnectedGrid, "Grid");
 //#endregion
+//#region src/charts/leaderboard-chart/hooks/use-fitted-row-count.ts
+/**
+* Fractional layout rounding can put a row's bottom a hair past the container's
+* without any visible clipping. Allow that much slack before hiding a row.
+*
+* Exported so tests and stories assert against the real tolerance rather than
+* restating it.
+*/
+const SUBPIXEL_TOLERANCE = .5;
+/**
+* Counts how many leading rows fit inside the content container.
+*
+* Rows are read from the DOM rather than derived from constants: row height
+* depends on the theme's row gap, label wrapping, and whatever a caller renders
+* as a label, so any restated number would drift.
+*
+* Every row is a direct grid child marked with `data-row-index`; interactive rows
+* use a button wrapper and non-interactive rows use a div wrapper.
+*
+* @param enabled  - Whether to measure at all. When false every row fits.
+* @param rowCount - Total number of rows rendered.
+* @param data     - Rendered row data, whose geometry may change without changing the count.
+* @return Ref for the content container and the number of leading rows that fit.
+*/
+function useFittedRowCount(enabled, rowCount, data) {
+	const contentRef = (0, react$1.useRef)(null);
+	const [fittedCount, setFittedCount] = (0, react$1.useState)(rowCount);
+	const [isMeasurable, setIsMeasurable] = (0, react$1.useState)(true);
+	const measure = (0, react$1.useCallback)(() => {
+		const content = contentRef.current;
+		if (!content) return;
+		content.scrollTop = 0;
+		const rows = content.querySelectorAll(":scope > [data-leaderboard-grid] > [data-row-index]");
+		const rowBottoms = [];
+		rows.forEach((row) => {
+			const index = Number(row.getAttribute("data-row-index"));
+			if (!Number.isInteger(index) || index < 0 || index >= rowCount) return;
+			const { bottom } = row.getBoundingClientRect();
+			rowBottoms[index] = Math.max(rowBottoms[index] ?? -Infinity, bottom);
+		});
+		if (rowBottoms.length === 0) {
+			setIsMeasurable(false);
+			setFittedCount(rowCount);
+			return;
+		}
+		setIsMeasurable(true);
+		const contentBottom = content.getBoundingClientRect().bottom + SUBPIXEL_TOLERANCE;
+		let fits = 0;
+		while (fits < rowBottoms.length && rowBottoms[fits] <= contentBottom) fits++;
+		setFittedCount((current) => current === fits ? current : fits);
+	}, [rowCount]);
+	(0, react$1.useLayoutEffect)(() => {
+		if (!enabled) {
+			setFittedCount(rowCount);
+			return;
+		}
+		measure();
+	}, [
+		enabled,
+		rowCount,
+		data,
+		measure
+	]);
+	(0, react$1.useLayoutEffect)(() => {
+		if (!enabled) return;
+		const content = contentRef.current;
+		if (!content) return;
+		const observer = new ResizeObserver(measure);
+		observer.observe(content);
+		const grid = content.querySelector(":scope > [data-leaderboard-grid]");
+		if (grid) observer.observe(grid);
+		return () => observer.disconnect();
+	}, [
+		enabled,
+		rowCount,
+		measure
+	]);
+	return {
+		contentRef,
+		fittedCount: enabled ? fittedCount : rowCount,
+		isMeasurable
+	};
+}
+//#endregion
 //#region src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
 /**
 * Hook to create legend items from leaderboard data
@@ -9067,11 +9151,13 @@ var leaderboard_chart_module_default = {
 	"deltaPlaceholder": "a8ccharts-GovfoW-deltaPlaceholder",
 	"deltaValue": "a8ccharts-GovfoW-deltaValue",
 	"emptyState": "a8ccharts-GovfoW-emptyState",
+	"fitEmptyState": "a8ccharts-GovfoW-fitEmptyState",
 	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
 	"is-overlay": "a8ccharts-GovfoW-is-overlay",
 	"label": "a8ccharts-GovfoW-label",
 	"leaderboardChart": "a8ccharts-GovfoW-leaderboardChart",
 	"leaderboardChart__content": "a8ccharts-GovfoW-leaderboardChart__content",
+	"leaderboardChart__content--fit": "a8ccharts-GovfoW-leaderboardChart__content--fit",
 	"leaderboardChart--loading": "a8ccharts-GovfoW-leaderboardChart--loading",
 	"leaderboardChart--responsive": "a8ccharts-GovfoW-leaderboardChart--responsive",
 	"overlap": "a8ccharts-GovfoW-overlap",
@@ -9161,6 +9247,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 * @param props.valueFormatter   - Custom formatter for values
 * @param props.deltaFormatter   - Custom formatter for delta values
 * @param props.loading          - Whether the chart is in loading state
+* @param props.fitRows          - Whether to show only the rows that fit the chart's height
 * @param props.animation        - Whether the chart should animate on load
 * @param props.showLegend       - Whether to show legend
 * @param props.legend           - Legend configuration (orientation, position, alignment, shape, shapeStyles, interactive)
@@ -9171,7 +9258,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 * @param props.style            - Custom styling for the chart container
 * @return JSX element representing the leaderboard chart
 */
-const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, showLegend = false, legend = {}, legendLabels, gap = "md", className, style, children }) => {
+const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, fitRows = false, showLegend = false, legend = {}, legendLabels, gap = "md", className, style, children }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendPosition = legend.position ?? "bottom";
 	const chartId = useChartId(providedChartId);
@@ -9240,6 +9327,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		}), [withComparison, withOverlayLabel])
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
+	const { contentRef, fittedCount, isMeasurable } = useFittedRowCount(fitRows && !allSeriesHidden, data?.length ?? 0, data);
+	const shouldFitRows = fitRows && isMeasurable;
 	if (!data || data.length === 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartLayout, {
@@ -9292,16 +9381,22 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 				height: propHeight || void 0
 			},
 			trailingContent: nonLegendChildren,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-				className: leaderboard_chart_module_default.leaderboardChart__content,
-				children: allSeriesHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				ref: contentRef,
+				className: (0, clsx.default)(leaderboard_chart_module_default.leaderboardChart__content, { [leaderboard_chart_module_default["leaderboardChart__content--fit"]]: shouldFitRows }),
+				children: [shouldFitRows && fittedCount === 0 && !allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: (0, clsx.default)(leaderboard_chart_module_default.emptyState, leaderboard_chart_module_default.fitEmptyState),
+					children: (0, _wordpress_i18n.__)("Not enough space to display data", "jetpack-charts")
+				}), allSeriesHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: leaderboard_chart_module_default.emptyState,
 					children: (0, _wordpress_i18n.__)("All series are hidden. Click legend items to show data.", "jetpack-charts")
 				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default, {
 					templateColumns: "minmax(0, 1fr) auto",
 					rowGap,
 					columnGap,
-					children: data.map((entry) => {
+					"data-leaderboard-grid": true,
+					children: data.map((entry, rowIndex) => {
+						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;
 						const showComparisonColumn = withComparison && isComparisonVisible;
 						const hasDeltaValue = hasComparisonValue(entry);
 						const showComparisonValue = showComparisonColumn && hasDeltaValue;
@@ -9347,6 +9442,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						})] });
 						if (entry.onClick) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
+							"data-row-index": rowIndex,
+							style: rowStyle,
 							className: (0, clsx.default)(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow),
 							onClick: entry.onClick,
 							"aria-label": entry.ariaLabel,
@@ -9357,11 +9454,13 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 							})]
 						}, entry.id);
 						return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							"data-row-index": rowIndex,
+							style: rowStyle,
 							className: leaderboard_chart_module_default.row,
 							children: rowCells
 						}, entry.id);
 					})
-				})
+				})]
 			})
 		})
 	});
