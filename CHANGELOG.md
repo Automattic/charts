@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Charts: add a `fitRows` prop to LeaderboardChart so a chart in a fixed-height container shows only the rows that fit instead of scrolling.
 
+### Changed
+- Charts: standardise package CSS custom properties on the --a8c-charts-{category}-{name} naming convention and document the token catalog; existing public override variables keep working via deprecated aliases.
+
 ## [1.10.3] - 2026-07-22
 ### Fixed
 - LeaderboardChart: Keep row spacing and column alignment identical whether or not a row is interactive. [#50657]

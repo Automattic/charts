@@ -725,9 +725,9 @@ const getChartColor = (index, colorCache) => {
 * Default theme configuration
 */
 const defaultTheme = {
-	backgroundColor: "var(--wpds-color-background-surface-neutral-strong, #fff)",
+	backgroundColor: "var(--a8c-charts-color-background, var(--wpds-color-background-surface-neutral-strong, #fff))",
 	labelBackgroundColor: "transparent",
-	labelTextColor: "#FFFFFF",
+	labelTextColor: "var(--a8c-charts-color-label-on-fill, #FFFFFF)",
 	colors: [
 		"#98C8DF",
 		"#006DAB",
@@ -736,59 +736,59 @@ const defaultTheme = {
 		"#FF8C8F"
 	],
 	gridStyles: {
-		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
+		stroke: "var(--a8c-charts-color-grid, var(--wpds-color-stroke-surface-neutral, #dbdbdb))",
 		strokeWidth: 1
 	},
 	tickLength: 4,
 	gridColor: "",
 	gridColorDark: "",
 	xTickLineStyles: {
-		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
+		stroke: "var(--a8c-charts-color-tick, var(--wpds-color-stroke-surface-neutral, #dbdbdb))",
 		strokeWidth: 1
 	},
 	xAxisLineStyles: {
-		stroke: "var(--wpds-color-stroke-surface-neutral, #dbdbdb)",
+		stroke: "var(--a8c-charts-color-axis, var(--wpds-color-stroke-surface-neutral, #dbdbdb))",
 		strokeWidth: 1
 	},
 	legend: {
-		labelStyles: { color: "var(--wpds-color-foreground-content-neutral, #1e1e1e)" },
+		labelStyles: { color: "var(--a8c-charts-color-label, var(--wpds-color-foreground-content-neutral, #1e1e1e))" },
 		containerStyles: {},
 		shapeStyles: []
 	},
 	seriesLineStyles: [],
 	glyphs: [],
 	svgLabelSmall: {
-		fill: "var(--wpds-color-foreground-content-neutral, #1e1e1e)",
+		fill: "var(--a8c-charts-color-label, var(--wpds-color-foreground-content-neutral, #1e1e1e))",
 		fontFamily: "inherit"
 	},
 	svgLabelBig: { fontFamily: "inherit" },
 	annotationStyles: {
 		label: {
-			anchorLineStroke: "var(--wpds-color-foreground-content-neutral, #1e1e1e)",
-			backgroundFill: "var(--wpds-color-background-surface-neutral-strong, #fff)"
+			anchorLineStroke: "var(--a8c-charts-color-annotation, var(--wpds-color-foreground-content-neutral, #1e1e1e))",
+			backgroundFill: "var(--a8c-charts-color-background, var(--wpds-color-background-surface-neutral-strong, #fff))"
 		},
-		connector: { stroke: "var(--wpds-color-foreground-content-neutral, #1e1e1e)" },
+		connector: { stroke: "var(--a8c-charts-color-annotation, var(--wpds-color-foreground-content-neutral, #1e1e1e))" },
 		circleSubject: {
 			stroke: "transparent",
-			fill: "var(--wpds-color-foreground-content-neutral, #1e1e1e)",
+			fill: "var(--a8c-charts-color-annotation, var(--wpds-color-foreground-content-neutral, #1e1e1e))",
 			radius: 5
 		}
 	},
-	geoChart: { featureFillColor: "var(--wpds-color-background-surface-neutral-weak, #f4f4f4)" },
+	geoChart: { featureFillColor: "var(--a8c-charts-color-surface-secondary, var(--wpds-color-background-surface-neutral-weak, #f4f4f4))" },
 	leaderboardChart: {
 		rowGap: 12,
 		columnGap: 4,
 		labelSpacing: "xs",
 		deltaColors: [
-			"var(--wpds-color-foreground-content-error-weak, #cc1818)",
-			"var(--wpds-color-foreground-content-neutral-weak, #707070)",
-			"var(--wpds-color-foreground-content-success-weak, #008030)"
+			"var(--a8c-charts-color-trend-down, var(--wpds-color-foreground-content-error-weak, #cc1818))",
+			"var(--a8c-charts-color-trend-neutral, var(--wpds-color-foreground-content-neutral-weak, #707070))",
+			"var(--a8c-charts-color-trend-up, var(--wpds-color-foreground-content-success-weak, #008030))"
 		]
 	},
 	conversionFunnelChart: {
-		backgroundColor: "var(--wpds-color-background-surface-neutral-weak, #f4f4f4)",
-		positiveChangeColor: "var(--wpds-color-foreground-content-success-weak, #008030)",
-		negativeChangeColor: "var(--wpds-color-foreground-content-error-weak, #cc1818)"
+		backgroundColor: "var(--a8c-charts-color-surface-secondary, var(--wpds-color-background-surface-neutral-weak, #f4f4f4))",
+		positiveChangeColor: "var(--a8c-charts-color-trend-up, var(--wpds-color-foreground-content-success-weak, #008030))",
+		negativeChangeColor: "var(--a8c-charts-color-trend-down, var(--wpds-color-foreground-content-error-weak, #cc1818))"
 	},
 	lineChart: { lineStyles: { comparison: {
 		strokeDasharray: "4 4",
@@ -6427,9 +6427,9 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 						"aria-hidden": "true",
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
 						style: {
-							"--heatmap-primary": primaryColorHex,
-							"--heatmap-bg": backgroundColor,
-							"--intensity": intensity
+							"--a8c-charts-color-heatmap-primary": primaryColorHex,
+							"--a8c-charts-color-heatmap-background": backgroundColor,
+							"--a8c-charts-heatmap-cell-intensity": intensity
 						}
 					}, index);
 				})
@@ -6587,17 +6587,17 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 			children: (0, _wordpress_i18n.__)("No data available", "jetpack-charts")
 		})
 	});
-	const columnTrack = compact ? "var(--heatmap-cell-size)" : `minmax(${minCellWidth ?? 0}px, ${maxCellWidth ? `${maxCellWidth}px` : "1fr"})`;
-	const rowTrack = compact ? "var(--heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
+	const columnTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellWidth ?? 0}px, ${maxCellWidth ? `${maxCellWidth}px` : "1fr"})`;
+	const rowTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
 	const gridStyle = {
-		"--heatmap-primary": primaryColorHex,
-		"--heatmap-bg": theme.backgroundColor,
+		"--a8c-charts-color-heatmap-primary": primaryColorHex,
+		"--a8c-charts-color-heatmap-background": theme.backgroundColor,
 		gridTemplateColumns: `auto repeat(${columns}, ${columnTrack})`,
 		gridTemplateRows: `auto repeat(${rows}, ${rowTrack})`
 	};
 	if (compact) {
-		gridStyle["--heatmap-cell-gap"] = `${compactCellGap}px`;
-		gridStyle["--heatmap-cell-size"] = `${compactCellSize}px`;
+		gridStyle["--a8c-charts-dimension-heatmap-cell-gap"] = `${compactCellGap}px`;
+		gridStyle["--a8c-charts-dimension-heatmap-cell-size"] = `${compactCellSize}px`;
 	}
 	const activeDescendant = selectedIndex !== void 0 ? `${chartId}-cell-${Math.floor(selectedIndex / rows)}-${selectedIndex % rows}` : void 0;
 	const heightCapped = !compact && Boolean(maxCellHeight);
@@ -6674,7 +6674,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 										[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: present && cellHasLightText(normalized),
 										[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
 									}),
-									style: present ? { "--intensity": normalized } : void 0,
+									style: present ? { "--a8c-charts-heatmap-cell-intensity": normalized } : void 0,
 									onMouseMove: handleCellMouseMove,
 									onMouseLeave: handleCellMouseLeave,
 									children: drawValues && present && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
@@ -9202,7 +9202,7 @@ const defaultDeltaFormatter = (value) => {
 * @param share - The bar's share of the row width, as a percentage.
 * @return A CSS width value.
 */
-const getBarWidth = (share) => `calc(${share}% - var(--a8c--charts--leaderboard--bar--hover-inset, 0px) * ${share} / 100)`;
+const getBarWidth = (share) => `calc(${share}% - var(--a8c-charts-dimension-leaderboard-bar-hover-inset, 0px) * ${share} / 100)`;
 const hasComparisonValue = (entry) => entry.previousValue != null && entry.previousShare != null && entry.delta != null;
 const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
 	className: leaderboard_chart_module_default.label,
