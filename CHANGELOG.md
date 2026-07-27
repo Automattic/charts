@@ -5,18 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.11.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [1.11.0] - 2026-07-27
 ### Added
-- Charts: add a `fitRows` prop to LeaderboardChart so a chart in a fixed-height container shows only the rows that fit instead of scrolling.
+- Charts: add a `fitRows` prop to LeaderboardChart so a chart in a fixed-height container shows only the rows that fit instead of scrolling. [#50688]
 
 ### Changed
-- Charts: standardise package CSS custom properties on the --a8c-charts-{category}-{name} naming convention and document the token catalog; existing public override variables keep working via deprecated aliases.
+- Charts: standardise package CSS custom properties on the --a8c-charts-{category}-{name} naming convention and document the token catalog; existing public override variables keep working via deprecated aliases. [#50656]
 
 ### Fixed
-- Leaderboard: Distinguish unavailable percentage changes from missing comparison data.
+- Leaderboard: Distinguish unavailable percentage changes from missing comparison data. [#50690]
 
 ## [1.10.3] - 2026-07-22
 ### Fixed
@@ -948,7 +945,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.11.0-alpha]: https://github.com/Automattic/charts/compare/v1.10.3...v1.11.0-alpha
+[1.11.0]: https://github.com/Automattic/charts/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/Automattic/charts/compare/v1.10.2...v1.10.3
 [1.10.2]: https://github.com/Automattic/charts/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/Automattic/charts/compare/v1.10.0...v1.10.1
