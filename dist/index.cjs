@@ -9203,7 +9203,8 @@ const defaultDeltaFormatter = (value) => {
 * @return A CSS width value.
 */
 const getBarWidth = (share) => `calc(${share}% - var(--a8c-charts-dimension-leaderboard-bar-hover-inset, 0px) * ${share} / 100)`;
-const hasComparisonValue = (entry) => entry.previousValue != null && entry.previousShare != null && entry.delta != null;
+const hasPreviousValue = (entry) => entry.previousValue != null && entry.previousShare != null;
+const hasDeltaValue = (entry) => hasPreviousValue(entry) && entry.delta != null;
 const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Text$2, {
 	className: leaderboard_chart_module_default.label,
 	children: label
@@ -9221,7 +9222,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 					backgroundColor: primaryColor
 				}
 			}),
-			showComparisonBar && hasComparisonValue(entry) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			showComparisonBar && hasPreviousValue(entry) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
 				style: {
 					width: getBarWidth(entry.previousShare),
@@ -9398,9 +9399,10 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					children: data.map((entry, rowIndex) => {
 						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;
 						const showComparisonColumn = withComparison && isComparisonVisible;
-						const hasDeltaValue = hasComparisonValue(entry);
-						const showComparisonValue = showComparisonColumn && hasDeltaValue;
-						const showComparisonPlaceholder = showComparisonColumn && !hasDeltaValue;
+						const hasPreviousPeriodValue = hasPreviousValue(entry);
+						const hasDelta = hasDeltaValue(entry);
+						const showComparisonValue = showComparisonColumn && hasDelta;
+						const showComparisonPlaceholder = showComparisonColumn && !hasDelta;
 						const colorIndex = showComparisonValue ? Math.sign(entry.delta) + 1 : 1;
 						const deltaColor = deltaColors[colorIndex];
 						const rowCells = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Stack, {
@@ -9432,10 +9434,10 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 									style: { color: deltaColor },
 									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 										"aria-hidden": "true",
-										children: "-"
+										children: "—"
 									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$1, {
 										as: "span",
-										children: (0, _wordpress_i18n.__)("No comparison data", "jetpack-charts")
+										children: hasPreviousPeriodValue ? (0, _wordpress_i18n.__)("Percentage change unavailable", "jetpack-charts") : (0, _wordpress_i18n.__)("No comparison data", "jetpack-charts")
 									})]
 								})
 							]
