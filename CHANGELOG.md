@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Charts: standardise package CSS custom properties on the --a8c-charts-{category}-{name} naming convention and document the token catalog; existing public override variables keep working via deprecated aliases.
+- Zoom: Render the reset control with the WordPress UI Button, fix keyboard activation, expose the selection rectangle's colors as `--a8c-charts-color-zoom-selection` and `--a8c-charts-color-zoom-selection-stroke`, and document the `zoomable` prop for the line and area charts.
 
 ### Fixed
 - Leaderboard: Distinguish unavailable percentage changes from missing comparison data.

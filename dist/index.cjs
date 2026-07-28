@@ -1816,6 +1816,30 @@ var require_dist = /* @__PURE__ */ __commonJSMin(((exports) => {
 	tslib_1.__exportStar(require_dist$1(), exports);
 }));
 //#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/error.mjs
+let set$1;
+if (process.env.NODE_ENV !== "production") set$1 = /* @__PURE__ */ new Set();
+function error(...messages) {
+	if (process.env.NODE_ENV !== "production") {
+		const messageKey = messages.join(" ");
+		if (!set$1.has(messageKey)) {
+			set$1.add(messageKey);
+			console.error(`Base UI: ${messageKey}`);
+		}
+	}
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/safeReact.mjs
+/**
+* A clone of the React namespace for reading APIs that may be missing in older
+* supported React versions. Bundlers can rewrite direct `React.someNewApi`
+* reads into named imports, which breaks React 17. Reading from this cloned
+* object keeps those lookups optional.
+*
+* @see https://github.com/mui/material-ui/issues/41190#issuecomment-2040873379
+*/
+const SafeReact = { ...react$1 };
+//#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useRefWithInit.mjs
 const UNINITIALIZED = {};
 /**
@@ -1830,6 +1854,44 @@ function useRefWithInit(init, initArg) {
 	if (ref.current === UNINITIALIZED) ref.current = init(initArg);
 	return ref;
 }
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useStableCallback.mjs
+const useInsertionEffect$1 = SafeReact.useInsertionEffect;
+const useSafeInsertionEffect = useInsertionEffect$1 && useInsertionEffect$1 !== SafeReact.useLayoutEffect ? useInsertionEffect$1 : (fn) => fn();
+/**
+* Stabilizes the function passed so it's always the same between renders.
+*
+* The function becomes non-reactive to any values it captures.
+* It can safely be passed as a dependency of `React.useMemo` and `React.useEffect` without re-triggering them if its captured values change.
+*
+* The function must only be called inside effects and event handlers, never during render (which throws an error).
+*
+* This hook is a more permissive version of React 19.2's `React.useEffectEvent` in that it can be passed through contexts and called in event handler props, not just effects.
+*/
+function useStableCallback(callback) {
+	const stable = useRefWithInit(createStableCallback).current;
+	stable.next = callback;
+	useSafeInsertionEffect(stable.effect);
+	return stable.trampoline;
+}
+function createStableCallback() {
+	const stable = {
+		next: void 0,
+		callback: assertNotCalled,
+		trampoline: (...args) => stable.callback?.(...args),
+		effect: () => {
+			stable.callback = stable.next;
+		}
+	};
+	return stable;
+}
+function assertNotCalled() {
+	if (process.env.NODE_ENV !== "production") throw new Error("Base UI: Cannot call an event handler while rendering.");
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/useIsoLayoutEffect.mjs
+const noop = () => {};
+const useIsoLayoutEffect = typeof document !== "undefined" ? react$1.useLayoutEffect : noop;
 //#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+utils@0.3.1_@types+react@18.3.28_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/utils/warn.mjs
 let set;
@@ -2270,6 +2332,190 @@ function renderTag(Tag, props) {
 	return /*#__PURE__*/ react$1.createElement(Tag, props);
 }
 //#endregion
+//#region ../../../node_modules/.pnpm/@floating-ui+utils@0.2.12/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+function hasWindow() {
+	return typeof window !== "undefined";
+}
+function getWindow(node) {
+	var _node$ownerDocument;
+	return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function isHTMLElement(value) {
+	if (!hasWindow()) return false;
+	return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs
+const CompositeRootContext = /*#__PURE__*/ react$1.createContext(void 0);
+if (process.env.NODE_ENV !== "production") CompositeRootContext.displayName = "CompositeRootContext";
+function useCompositeRootContext(optional = false) {
+	const context = react$1.useContext(CompositeRootContext);
+	if (context === void 0 && !optional) throw new Error(process.env.NODE_ENV !== "production" ? "Base UI: CompositeRootContext is missing. Composite parts must be placed within <Composite.Root>." : formatErrorMessage(16));
+	return context;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs
+function useFocusableWhenDisabled(parameters) {
+	const { focusableWhenDisabled, disabled, composite = false, tabIndex: tabIndexProp = 0, isNativeButton } = parameters;
+	const isFocusableComposite = composite && focusableWhenDisabled !== false;
+	const isNonFocusableComposite = composite && focusableWhenDisabled === false;
+	return { props: react$1.useMemo(() => {
+		const additionalProps = { onKeyDown(event) {
+			if (disabled && focusableWhenDisabled && event.key !== "Tab") event.preventDefault();
+		} };
+		if (!composite) {
+			additionalProps.tabIndex = tabIndexProp;
+			if (!isNativeButton && disabled) additionalProps.tabIndex = focusableWhenDisabled ? tabIndexProp : -1;
+		}
+		if (isNativeButton && (focusableWhenDisabled || isFocusableComposite) || !isNativeButton && disabled) additionalProps["aria-disabled"] = disabled;
+		if (isNativeButton && (!focusableWhenDisabled || isNonFocusableComposite)) additionalProps.disabled = disabled;
+		return additionalProps;
+	}, [
+		composite,
+		disabled,
+		focusableWhenDisabled,
+		isFocusableComposite,
+		isNonFocusableComposite,
+		isNativeButton,
+		tabIndexProp
+	]) };
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/internals/use-button/useButton.mjs
+function useButton(parameters = {}) {
+	const { disabled = false, focusableWhenDisabled, tabIndex = 0, native: isNativeButton = true, composite: compositeProp } = parameters;
+	const elementRef = react$1.useRef(null);
+	const compositeRootContext = useCompositeRootContext(true);
+	const isCompositeItem = compositeProp ?? compositeRootContext !== void 0;
+	const { props: focusableWhenDisabledProps } = useFocusableWhenDisabled({
+		focusableWhenDisabled,
+		disabled,
+		composite: isCompositeItem,
+		tabIndex,
+		isNativeButton
+	});
+	if (process.env.NODE_ENV !== "production") react$1.useEffect(() => {
+		if (!elementRef.current) return;
+		const isButtonTag = isButtonElement(elementRef.current);
+		if (isNativeButton) {
+			if (!isButtonTag) error(`A component that acts as a button expected a native <button> because the \`nativeButton\` prop is true. Rendering a non-<button> removes native button semantics, which can impact forms and accessibility. Use a real <button> in the \`render\` prop, or set \`nativeButton\` to \`false\`.${SafeReact.captureOwnerStack?.() || ""}`);
+		} else if (isButtonTag) error(`A component that acts as a button expected a non-<button> because the \`nativeButton\` prop is false. Rendering a <button> keeps native behavior while Base UI applies non-native attributes and handlers, which can add unintended extra attributes (such as \`role\` or \`aria-disabled\`). Use a non-<button> in the \`render\` prop, or set \`nativeButton\` to \`true\`.${SafeReact.captureOwnerStack?.() || ""}`);
+	}, [isNativeButton]);
+	const updateDisabled = react$1.useCallback(() => {
+		const element = elementRef.current;
+		if (!isButtonElement(element)) return;
+		if (isCompositeItem && disabled && focusableWhenDisabledProps.disabled === void 0 && element.disabled) element.disabled = false;
+	}, [
+		disabled,
+		focusableWhenDisabledProps.disabled,
+		isCompositeItem
+	]);
+	useIsoLayoutEffect(updateDisabled, [updateDisabled]);
+	return {
+		getButtonProps: react$1.useCallback((externalProps = {}) => {
+			const { onClick: externalOnClick, onMouseDown: externalOnMouseDown, onKeyUp: externalOnKeyUp, onKeyDown: externalOnKeyDown, onPointerDown: externalOnPointerDown, ...otherExternalProps } = externalProps;
+			return mergeProps({
+				onClick(event) {
+					if (disabled) {
+						event.preventDefault();
+						return;
+					}
+					externalOnClick?.(event);
+				},
+				onMouseDown(event) {
+					if (!disabled) externalOnMouseDown?.(event);
+				},
+				onKeyDown(event) {
+					if (disabled) return;
+					makeEventPreventable(event);
+					externalOnKeyDown?.(event);
+					if (event.baseUIHandlerPrevented) return;
+					const isCurrentTarget = event.target === event.currentTarget;
+					const currentTarget = event.currentTarget;
+					const isButton = isButtonElement(currentTarget);
+					const isLink = !isNativeButton && isValidLinkElement(currentTarget);
+					const shouldClick = isCurrentTarget && (isNativeButton ? isButton : !isLink);
+					const isEnterKey = event.key === "Enter";
+					const isSpaceKey = event.key === " ";
+					const role = currentTarget.getAttribute("role");
+					const isTextNavigationRole = role?.startsWith("menuitem") || role === "option" || role === "gridcell";
+					if (isCurrentTarget && isCompositeItem && isSpaceKey) {
+						if (event.defaultPrevented && isTextNavigationRole) return;
+						event.preventDefault();
+						if (isLink || isNativeButton && isButton) {
+							currentTarget.click();
+							event.preventBaseUIHandler();
+						} else if (shouldClick) {
+							externalOnClick?.(event);
+							event.preventBaseUIHandler();
+						}
+						return;
+					}
+					if (shouldClick) {
+						if (!isNativeButton && (isSpaceKey || isEnterKey)) event.preventDefault();
+						if (!isNativeButton && isEnterKey) externalOnClick?.(event);
+					}
+				},
+				onKeyUp(event) {
+					if (disabled) return;
+					makeEventPreventable(event);
+					externalOnKeyUp?.(event);
+					if (event.target === event.currentTarget && isNativeButton && isCompositeItem && isButtonElement(event.currentTarget) && event.key === " ") {
+						event.preventDefault();
+						return;
+					}
+					if (event.baseUIHandlerPrevented) return;
+					if (event.target === event.currentTarget && !isNativeButton && !isCompositeItem && event.key === " ") externalOnClick?.(event);
+				},
+				onPointerDown(event) {
+					if (disabled) {
+						event.preventDefault();
+						return;
+					}
+					externalOnPointerDown?.(event);
+				}
+			}, isNativeButton ? { type: "button" } : { role: "button" }, focusableWhenDisabledProps, otherExternalProps);
+		}, [
+			disabled,
+			focusableWhenDisabledProps,
+			isCompositeItem,
+			isNativeButton
+		]),
+		buttonRef: useStableCallback((element) => {
+			elementRef.current = element;
+			updateDisabled();
+		})
+	};
+}
+function isButtonElement(elem) {
+	return isHTMLElement(elem) && elem.tagName === "BUTTON";
+}
+function isValidLinkElement(elem) {
+	return Boolean(elem?.tagName === "A" && elem?.href);
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/button/Button.mjs
+/**
+* A button component that can be used to trigger actions.
+* Renders a `<button>` element.
+*
+* Documentation: [Base UI Button](https://base-ui.com/react/components/button)
+*/
+const Button$2 = /*#__PURE__*/ react$1.forwardRef(function Button(componentProps, forwardedRef) {
+	const { render, className, disabled = false, focusableWhenDisabled = false, nativeButton = true, style, ...elementProps } = componentProps;
+	const { getButtonProps, buttonRef } = useButton({
+		disabled,
+		focusableWhenDisabled,
+		native: nativeButton
+	});
+	return useRenderElement("button", componentProps, {
+		state: { disabled },
+		ref: [forwardedRef, buttonRef],
+		props: [elementProps, getButtonProps]
+	});
+});
+if (process.env.NODE_ENV !== "production") Button$2.displayName = "Button";
+//#endregion
 //#region ../../../node_modules/.pnpm/@base-ui+react@1.6.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@base-ui/react/use-render/useRender.mjs
 /**
 * Renders a Base UI element.
@@ -2281,6 +2527,311 @@ function useRender(params) {
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/text/text.mjs
+var STYLE_HASH_ATTRIBUTE$3 = "data-wp-hash";
+function getRuntime$3() {
+	const globalScope = globalThis;
+	if (globalScope.__wpStyleRuntime) return globalScope.__wpStyleRuntime;
+	globalScope.__wpStyleRuntime = {
+		documents: /* @__PURE__ */ new Map(),
+		styles: /* @__PURE__ */ new Map(),
+		injectedStyles: /* @__PURE__ */ new WeakMap()
+	};
+	if (typeof document !== "undefined") registerDocument$3(document);
+	return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash$3(targetDocument, hash) {
+	if (!targetDocument.head) return false;
+	for (const style of targetDocument.head.querySelectorAll(`style[${STYLE_HASH_ATTRIBUTE$3}]`)) if (style.getAttribute(STYLE_HASH_ATTRIBUTE$3) === hash) return true;
+	return false;
+}
+function injectStyle$3(targetDocument, hash, css) {
+	if (!targetDocument.head) return;
+	const runtime = getRuntime$3();
+	let injectedStyles = runtime.injectedStyles.get(targetDocument);
+	if (!injectedStyles) {
+		injectedStyles = /* @__PURE__ */ new Set();
+		runtime.injectedStyles.set(targetDocument, injectedStyles);
+	}
+	if (injectedStyles.has(hash)) return;
+	if (documentContainsStyleHash$3(targetDocument, hash)) {
+		injectedStyles.add(hash);
+		return;
+	}
+	const style = targetDocument.createElement("style");
+	style.setAttribute(STYLE_HASH_ATTRIBUTE$3, hash);
+	style.appendChild(targetDocument.createTextNode(css));
+	targetDocument.head.appendChild(style);
+	injectedStyles.add(hash);
+}
+function registerDocument$3(targetDocument) {
+	const runtime = getRuntime$3();
+	runtime.documents.set(targetDocument, (runtime.documents.get(targetDocument) ?? 0) + 1);
+	for (const [hash, css] of runtime.styles) injectStyle$3(targetDocument, hash, css);
+	return () => {
+		const count = runtime.documents.get(targetDocument);
+		if (count === void 0) return;
+		if (count <= 1) {
+			runtime.documents.delete(targetDocument);
+			return;
+		}
+		runtime.documents.set(targetDocument, count - 1);
+	};
+}
+function registerStyle$3(hash, css) {
+	const runtime = getRuntime$3();
+	runtime.styles.set(hash, css);
+	for (const targetDocument of runtime.documents.keys()) injectStyle$3(targetDocument, hash, css);
+}
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$3("0c5702ddca", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._83ed8a8da5dd50ea__text{margin:0}._14437cfb77831647__heading-2xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-p-line-height:var(--wpds-typography-line-height-2xl,40px);font-size:var(--wpds-typography-font-size-2xl,32px);line-height:var(--wpds-typography-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-md,24px)}.aa58f227716bcde2__heading-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-xl,32px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-lg,15px);line-height:var(--wpds-typography-line-height-md,24px)}._131101940be12424__body-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px);line-height:var(--wpds-typography-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}");
+var style_default$3 = {
+	"text": "_83ed8a8da5dd50ea__text",
+	"heading-2xl": "_14437cfb77831647__heading-2xl",
+	"heading-xl": "_3c78b7fa9b4072dd__heading-xl",
+	"heading-lg": "aa58f227716bcde2__heading-lg",
+	"heading-md": "fc4da56d8dfe52c4__heading-md",
+	"heading-sm": "a9b78c7c82e8dff7__heading-sm",
+	"body-xl": "_305ff559e52180d5__body-xl",
+	"body-lg": "ca1aa3fc2029e958__body-lg",
+	"body-md": "_131101940be12424__body-md",
+	"body-sm": "_0e8d87a42c1f75fa__body-sm"
+};
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$3("d390e935a7", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+var global_css_defense_default$1 = {
+	"button": "_6defc79820e382c6__button",
+	"input": "d2cff2e5dea83bd1__input",
+	"textarea": "_547d86373d02e108__textarea",
+	"div": "_8c15fd0ed9f28ba4__div",
+	"p": "_43cec3e1eec1066d__p",
+	"heading": "e97669c6d9a38497__heading",
+	"a": "_2c0831b0499dbd6e__a"
+};
+var Text$2 = (0, react$1.forwardRef)(function Text2({ variant = "body-md", render, className, ...props }, ref) {
+	return useRender({
+		render,
+		defaultTagName: "span",
+		ref,
+		props: mergeProps(props, { className: (0, clsx.default)(style_default$3.text, global_css_defense_default$1.heading, global_css_defense_default$1.p, style_default$3[variant], className) })
+	});
+});
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+dom-ready@4.51.0/node_modules/@wordpress/dom-ready/build-module/index.mjs
+function domReady(callback) {
+	if (typeof document === "undefined") return;
+	if (document.readyState === "complete" || document.readyState === "interactive") {
+		callback();
+		return;
+	}
+	document.addEventListener("DOMContentLoaded", callback);
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/script/add-container.mjs
+function addContainer(ariaLive = "polite") {
+	const container = document.createElement("div");
+	container.id = `a11y-speak-${ariaLive}`;
+	container.className = "a11y-speak-region";
+	container.setAttribute("style", "position:absolute;margin:-1px;padding:0;height:1px;width:1px;overflow:hidden;clip-path:inset(50%);border:0;word-wrap:normal !important;word-break:normal !important;");
+	container.setAttribute("aria-live", ariaLive);
+	container.setAttribute("aria-relevant", "additions text");
+	container.setAttribute("aria-atomic", "true");
+	const { body } = document;
+	if (body) body.appendChild(container);
+	return container;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/script/add-intro-text.mjs
+function addIntroText() {
+	const introText = document.createElement("p");
+	introText.id = "a11y-speak-intro-text";
+	introText.className = "a11y-speak-intro-text";
+	introText.textContent = (0, _wordpress_i18n.__)("Notifications");
+	introText.setAttribute("style", "position:absolute;margin:-1px;padding:0;height:1px;width:1px;overflow:hidden;clip-path:inset(50%);border:0;word-wrap:normal !important;word-break:normal !important;");
+	introText.setAttribute("hidden", "");
+	const { body } = document;
+	if (body) body.appendChild(introText);
+	return introText;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/shared/clear.mjs
+function clear() {
+	const regions = document.getElementsByClassName("a11y-speak-region");
+	const introText = document.getElementById("a11y-speak-intro-text");
+	for (let i = 0; i < regions.length; i++) regions[i].textContent = "";
+	if (introText) introText.setAttribute("hidden", "hidden");
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/shared/filter-message.mjs
+var previousMessage = "";
+function filterMessage(message) {
+	message = message.replace(/<[^<>]+>/g, " ");
+	if (previousMessage === message) message += "\xA0";
+	previousMessage = message;
+	return message;
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/shared/index.mjs
+function speak(message, ariaLive) {
+	clear();
+	message = filterMessage(message);
+	const introText = document.getElementById("a11y-speak-intro-text");
+	const containerAssertive = document.getElementById("a11y-speak-assertive");
+	const containerPolite = document.getElementById("a11y-speak-polite");
+	if (containerAssertive && ariaLive === "assertive") containerAssertive.textContent = message;
+	else if (containerPolite) containerPolite.textContent = message;
+	if (introText) introText.removeAttribute("hidden");
+}
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+a11y@4.51.0/node_modules/@wordpress/a11y/build-module/index.mjs
+function setup() {
+	const introText = document.getElementById("a11y-speak-intro-text");
+	const containerAssertive = document.getElementById("a11y-speak-assertive");
+	const containerPolite = document.getElementById("a11y-speak-polite");
+	if (introText === null) addIntroText();
+	if (containerAssertive === null) addContainer("assertive");
+	if (containerPolite === null) addContainer("polite");
+}
+domReady(setup);
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/button/button.mjs
+var STYLE_HASH_ATTRIBUTE$2 = "data-wp-hash";
+function getRuntime$2() {
+	const globalScope = globalThis;
+	if (globalScope.__wpStyleRuntime) return globalScope.__wpStyleRuntime;
+	globalScope.__wpStyleRuntime = {
+		documents: /* @__PURE__ */ new Map(),
+		styles: /* @__PURE__ */ new Map(),
+		injectedStyles: /* @__PURE__ */ new WeakMap()
+	};
+	if (typeof document !== "undefined") registerDocument$2(document);
+	return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash$2(targetDocument, hash) {
+	if (!targetDocument.head) return false;
+	for (const style of targetDocument.head.querySelectorAll(`style[${STYLE_HASH_ATTRIBUTE$2}]`)) if (style.getAttribute(STYLE_HASH_ATTRIBUTE$2) === hash) return true;
+	return false;
+}
+function injectStyle$2(targetDocument, hash, css) {
+	if (!targetDocument.head) return;
+	const runtime = getRuntime$2();
+	let injectedStyles = runtime.injectedStyles.get(targetDocument);
+	if (!injectedStyles) {
+		injectedStyles = /* @__PURE__ */ new Set();
+		runtime.injectedStyles.set(targetDocument, injectedStyles);
+	}
+	if (injectedStyles.has(hash)) return;
+	if (documentContainsStyleHash$2(targetDocument, hash)) {
+		injectedStyles.add(hash);
+		return;
+	}
+	const style = targetDocument.createElement("style");
+	style.setAttribute(STYLE_HASH_ATTRIBUTE$2, hash);
+	style.appendChild(targetDocument.createTextNode(css));
+	targetDocument.head.appendChild(style);
+	injectedStyles.add(hash);
+}
+function registerDocument$2(targetDocument) {
+	const runtime = getRuntime$2();
+	runtime.documents.set(targetDocument, (runtime.documents.get(targetDocument) ?? 0) + 1);
+	for (const [hash, css] of runtime.styles) injectStyle$2(targetDocument, hash, css);
+	return () => {
+		const count = runtime.documents.get(targetDocument);
+		if (count === void 0) return;
+		if (count <= 1) {
+			runtime.documents.delete(targetDocument);
+			return;
+		}
+		runtime.documents.set(targetDocument, count - 1);
+	};
+}
+function registerStyle$2(hash, css) {
+	const runtime = getRuntime$2();
+	runtime.styles.set(hash, css);
+	for (const targetDocument of runtime.documents.keys()) injectStyle$2(targetDocument, hash, css);
+}
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$2("4c317b0736", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._97b0fc33c028be1a__button,.abbb272e2ce49bd6__is-unstyled{appearance:none;padding:0}._97b0fc33c028be1a__button{--wp-ui-button-font-weight:var(--wpds-typography-font-weight-medium,499);--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-strong,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-strong-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 93%,#000));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand-strong,#fff);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-strong-active,#fff);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-strong-disabled,#8d8d8d);--wp-ui-button-padding-block:var(--wpds-dimension-padding-xs,4px);--wp-ui-button-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-button-height:var(--wpds-dimension-size-lg,40px);--wp-ui-button-aspect-ratio:auto;--wp-ui-button-font-size:var(--wpds-typography-font-size-md,13px);--wp-ui-button-min-width:calc(4ch + var(--wp-ui-button-padding-inline)*2);--wp-ui-button-icon-margin:calc((var(--wpds-dimension-size-2xs, 16px) - var(--wpds-dimension-size-sm, 24px))/2);--wp-ui-button-border-color:var(--wp-ui-button-background-color);--wp-ui-button-border-color-active:var(--wp-ui-button-background-color-active);--wp-ui-button-border-color-disabled:var(--wp-ui-button-background-color-disabled);--_gcd-button-font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);--_gcd-button-font-size:var(--wp-ui-button-font-size);--_gcd-button-font-weight:var(--wp-ui-button-font-weight);align-items:center;aspect-ratio:var(--wp-ui-button-aspect-ratio);background-clip:padding-box;background-color:var(--wp-ui-button-background-color);border-color:var(--wp-ui-button-border-color);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:1px;color:var(--wp-ui-button-foreground-color);display:inline-flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wp-ui-button-font-size);font-weight:var(--wp-ui-button-font-weight);gap:var(--wpds-dimension-gap-sm,8px);justify-content:center;line-height:var(--wpds-typography-line-height-sm,20px);max-width:100%;min-height:var(--wp-ui-button-height);min-width:var(--wp-ui-button-min-width);overflow-wrap:anywhere;padding-block:var(--wp-ui-button-padding-block);padding-inline:var(--wp-ui-button-padding-inline);position:relative;text-align:center;text-decoration:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}@media not (prefers-reduced-motion){transition:color .1s ease-out;*{transition:opacity .1s ease-out}}&[href]{cursor:pointer}[href]{color:inherit;text-decoration:inherit}&:not([data-disabled]):is(:hover,:active,:focus){background-color:var(--wp-ui-button-background-color-active);border-color:var(--wp-ui-button-border-color-active);color:var(--wp-ui-button-foreground-color-active)}&[data-disabled]:not(._914b42f315c0e580__is-loading){background-color:var(--wp-ui-button-background-color-disabled);border-color:var(--wp-ui-button-border-color-disabled);color:var(--wp-ui-button-foreground-color-disabled);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&:before{aspect-ratio:1;border:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid;border-block-end-color:transparent;border-block-start-color:var(--wp-ui-button-foreground-color);border-inline-end-color:var(--wp-ui-button-foreground-color);border-inline-start-color:transparent;border-radius:50%;box-sizing:border-box;content:\"\";display:block;height:var(--wp-ui-button-font-size);inset-inline-start:50%;opacity:0;pointer-events:none;position:absolute;top:50%;transform:translate(-50%,-50%);@media not (prefers-reduced-motion){transition:opacity .1s ease-out}@media (forced-colors:active){border-block-end-style:none;border-bottom-color:ButtonText;border-inline-start-style:none;border-left-color:ButtonText;border-right-color:ButtonText;border-top-color:ButtonText}}}._908205475f9f2a92__is-small{--wp-ui-button-padding-block:0;--wp-ui-button-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-button-height:var(--wpds-dimension-size-sm,24px)}._9f6fc6553aeb36fe__icon{margin:var(--wp-ui-button-icon-margin)}.dd460c965226cc77__is-brand{&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 52%,#000));--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 85%,#000));--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-brand-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000)}}.e722a8f96726aa99__is-neutral{&.ad0619a3217c6a5b__is-minimal[aria-pressed=true],&.b50b3358c5fb4d0b__is-solid{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-strong,#2d2d2d);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-strong-active,#1e1e1e);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral-strong,#f0f0f0);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-strong-active,#f0f0f0);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-strong-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-active,#1e1e1e);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e);--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000)}}.abbb272e2ce49bd6__is-unstyled{background:none;border:none;min-width:unset}.cf59cf1b69629838__is-compact{--wp-ui-button-height:var(--wpds-dimension-size-md,32px)}._914b42f315c0e580__is-loading:not(.abbb272e2ce49bd6__is-unstyled){color:transparent;&:not([data-disabled]):is(:hover,:active,:focus){color:transparent}@media (forced-colors:active){color:ButtonFace}*{opacity:0}&:before{opacity:1;transition-delay:.05s;@media not (prefers-reduced-motion){animation:_5a1d53da6f830c8d__loading-animation 1s linear infinite}}}}@keyframes _5a1d53da6f830c8d__loading-animation{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}}");
+var style_default$2 = {
+	"button": "_97b0fc33c028be1a__button",
+	"is-unstyled": "abbb272e2ce49bd6__is-unstyled",
+	"is-loading": "_914b42f315c0e580__is-loading",
+	"is-small": "_908205475f9f2a92__is-small",
+	"icon": "_9f6fc6553aeb36fe__icon",
+	"is-brand": "dd460c965226cc77__is-brand",
+	"is-outline": "_62d5a778b7b258ee__is-outline",
+	"is-minimal": "ad0619a3217c6a5b__is-minimal",
+	"is-neutral": "e722a8f96726aa99__is-neutral",
+	"is-solid": "b50b3358c5fb4d0b__is-solid",
+	"is-compact": "cf59cf1b69629838__is-compact",
+	"loading-animation": "_5a1d53da6f830c8d__loading-animation"
+};
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$2("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$2("5f8e7aa0bc", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._08e8a2e44959f892__outset-ring--focus:focus,._970d04df7376df67__outset-ring--focus-within-except-active:focus-within:not(:has(:active)),.c5cb3ee4bddaa8e4__outset-ring--focus-within-visible:focus-within:has(:focus-visible),.cd83dfc2126a0846__outset-ring--focus-within:focus-within,.d0541bc9dd9dc7b6__outset-ring--focus-visible:focus-visible,.e25b2bdd7aa21721__outset-ring--focus-except-active:focus:not(:active),:focus-visible .ecadb9e080e2dfa5__outset-ring--focus-parent-visible{--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}}}");
+var focus_default = {
+	"outset-ring--focus": "_08e8a2e44959f892__outset-ring--focus",
+	"outset-ring--focus-except-active": "e25b2bdd7aa21721__outset-ring--focus-except-active",
+	"outset-ring--focus-visible": "d0541bc9dd9dc7b6__outset-ring--focus-visible",
+	"outset-ring--focus-within": "cd83dfc2126a0846__outset-ring--focus-within",
+	"outset-ring--focus-within-except-active": "_970d04df7376df67__outset-ring--focus-within-except-active",
+	"outset-ring--focus-within-visible": "c5cb3ee4bddaa8e4__outset-ring--focus-within-visible",
+	"outset-ring--focus-parent-visible": "ecadb9e080e2dfa5__outset-ring--focus-parent-visible"
+};
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$2("d390e935a7", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+var global_css_defense_default = {
+	"button": "_6defc79820e382c6__button",
+	"input": "d2cff2e5dea83bd1__input",
+	"textarea": "_547d86373d02e108__textarea",
+	"div": "_8c15fd0ed9f28ba4__div",
+	"p": "_43cec3e1eec1066d__p",
+	"heading": "e97669c6d9a38497__heading",
+	"a": "_2c0831b0499dbd6e__a"
+};
+var Button$1 = (0, react$1.forwardRef)(function Button2({ tone = "brand", variant = "solid", size = "default", className, focusableWhenDisabled = true, disabled, loading, loadingAnnouncement = (0, _wordpress_i18n.__)("Loading"), children, ...props }, ref) {
+	const mergedClassName = (0, clsx.default)(global_css_defense_default.button, resets_default["box-sizing"], focus_default["outset-ring--focus-except-active"], variant !== "unstyled" && style_default$2.button, style_default$2[`is-${tone}`], style_default$2[`is-${variant}`], style_default$2[`is-${size}`], loading && style_default$2["is-loading"], className);
+	(0, react$1.useEffect)(() => {
+		if (loading && loadingAnnouncement) speak(loadingAnnouncement);
+	}, [loading, loadingAnnouncement]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button$2, {
+		ref,
+		className: mergedClassName,
+		focusableWhenDisabled,
+		disabled: disabled ?? loading,
+		...props,
+		children
+	});
+});
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+primitives@4.51.0_@types+react@18.3.28_react@18.3.1/node_modules/@wordpress/primitives/build-module/svg/index.mjs
+var SVG = (0, react$1.forwardRef)(
+	/**
+	* @param {SVGProps}                          props isPressed indicates whether the SVG should appear as pressed.
+	*                                                  Other props will be passed through to svg component.
+	* @param {React.ForwardedRef<SVGSVGElement>} ref   The forwarded ref to the SVG element.
+	*
+	* @return {React.JSX.Element} Stop component
+	*/
+	({ className, isPressed, ...props }, ref) => {
+		return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+			...props,
+			className: (0, clsx.default)(className, { "is-pressed": isPressed }) || void 0,
+			"aria-hidden": true,
+			focusable: false,
+			ref
+		});
+	}
+);
+SVG.displayName = "SVG";
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/icon/icon.mjs
+var Icon$2 = (0, react$1.forwardRef)(function Icon2({ icon, size = 24, ...restProps }, ref) {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SVG, {
+		ref,
+		...icon.props,
+		...restProps,
+		width: size,
+		height: size
+	});
+});
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/button/icon.mjs
 var STYLE_HASH_ATTRIBUTE$1 = "data-wp-hash";
 function getRuntime$1() {
 	const globalScope = globalThis;
@@ -2336,37 +2887,39 @@ function registerStyle$1(hash, css) {
 	runtime.styles.set(hash, css);
 	for (const targetDocument of runtime.documents.keys()) injectStyle$1(targetDocument, hash, css);
 }
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("0c5702ddca", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._83ed8a8da5dd50ea__text{margin:0}._14437cfb77831647__heading-2xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-2xl,32px);--_gcd-p-line-height:var(--wpds-typography-line-height-2xl,40px);font-size:var(--wpds-typography-font-size-2xl,32px);line-height:var(--wpds-typography-line-height-2xl,40px)}._14437cfb77831647__heading-2xl,._3c78b7fa9b4072dd__heading-xl{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499)}._3c78b7fa9b4072dd__heading-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-md,24px)}.aa58f227716bcde2__heading-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-lg,15px)}.aa58f227716bcde2__heading-lg,.fc4da56d8dfe52c4__heading-md{font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-sm,20px)}.fc4da56d8dfe52c4__heading-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px)}.a9b78c7c82e8dff7__heading-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-medium,499);--_gcd-p-font-size:var(--wpds-typography-font-size-xs,11px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-family:var(--wpds-typography-font-family-heading,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-medium,499);line-height:var(--wpds-typography-line-height-xs,16px);text-transform:uppercase}._305ff559e52180d5__body-xl{--_gcd-heading-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-xl,20px);--_gcd-p-line-height:var(--wpds-typography-line-height-xl,32px);font-size:var(--wpds-typography-font-size-xl,20px);line-height:var(--wpds-typography-line-height-xl,32px)}._305ff559e52180d5__body-xl,.ca1aa3fc2029e958__body-lg{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}.ca1aa3fc2029e958__body-lg{--_gcd-heading-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-lg,15px);--_gcd-p-line-height:var(--wpds-typography-line-height-md,24px);font-size:var(--wpds-typography-font-size-lg,15px);line-height:var(--wpds-typography-line-height-md,24px)}._131101940be12424__body-md{--_gcd-heading-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-md,13px);--_gcd-p-line-height:var(--wpds-typography-line-height-sm,20px);font-size:var(--wpds-typography-font-size-md,13px);line-height:var(--wpds-typography-line-height-sm,20px)}._0e8d87a42c1f75fa__body-sm,._131101940be12424__body-md{font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-weight:var(--wpds-typography-font-weight-regular,400)}._0e8d87a42c1f75fa__body-sm{--_gcd-heading-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-heading-font-weight:var(--wpds-typography-font-weight-regular,400);--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}");
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("4c317b0736", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._97b0fc33c028be1a__button,.abbb272e2ce49bd6__is-unstyled{appearance:none;padding:0}._97b0fc33c028be1a__button{--wp-ui-button-font-weight:var(--wpds-typography-font-weight-medium,499);--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-strong,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-strong-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 93%,#000));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand-strong,#fff);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-strong-active,#fff);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-strong-disabled,#8d8d8d);--wp-ui-button-padding-block:var(--wpds-dimension-padding-xs,4px);--wp-ui-button-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-button-height:var(--wpds-dimension-size-lg,40px);--wp-ui-button-aspect-ratio:auto;--wp-ui-button-font-size:var(--wpds-typography-font-size-md,13px);--wp-ui-button-min-width:calc(4ch + var(--wp-ui-button-padding-inline)*2);--wp-ui-button-icon-margin:calc((var(--wpds-dimension-size-2xs, 16px) - var(--wpds-dimension-size-sm, 24px))/2);--wp-ui-button-border-color:var(--wp-ui-button-background-color);--wp-ui-button-border-color-active:var(--wp-ui-button-background-color-active);--wp-ui-button-border-color-disabled:var(--wp-ui-button-background-color-disabled);--_gcd-button-font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);--_gcd-button-font-size:var(--wp-ui-button-font-size);--_gcd-button-font-weight:var(--wp-ui-button-font-weight);align-items:center;aspect-ratio:var(--wp-ui-button-aspect-ratio);background-clip:padding-box;background-color:var(--wp-ui-button-background-color);border-color:var(--wp-ui-button-border-color);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:1px;color:var(--wp-ui-button-foreground-color);display:inline-flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,\"Segoe UI\",\"Roboto\",\"Oxygen-Sans\",\"Ubuntu\",\"Cantarell\",\"Helvetica Neue\",sans-serif);font-size:var(--wp-ui-button-font-size);font-weight:var(--wp-ui-button-font-weight);gap:var(--wpds-dimension-gap-sm,8px);justify-content:center;line-height:var(--wpds-typography-line-height-sm,20px);max-width:100%;min-height:var(--wp-ui-button-height);min-width:var(--wp-ui-button-min-width);overflow-wrap:anywhere;padding-block:var(--wp-ui-button-padding-block);padding-inline:var(--wp-ui-button-padding-inline);position:relative;text-align:center;text-decoration:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}@media not (prefers-reduced-motion){transition:color .1s ease-out;*{transition:opacity .1s ease-out}}&[href]{cursor:pointer}[href]{color:inherit;text-decoration:inherit}&:not([data-disabled]):is(:hover,:active,:focus){background-color:var(--wp-ui-button-background-color-active);border-color:var(--wp-ui-button-border-color-active);color:var(--wp-ui-button-foreground-color-active)}&[data-disabled]:not(._914b42f315c0e580__is-loading){background-color:var(--wp-ui-button-background-color-disabled);border-color:var(--wp-ui-button-border-color-disabled);color:var(--wp-ui-button-foreground-color-disabled);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&:before{aspect-ratio:1;border:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid;border-block-end-color:transparent;border-block-start-color:var(--wp-ui-button-foreground-color);border-inline-end-color:var(--wp-ui-button-foreground-color);border-inline-start-color:transparent;border-radius:50%;box-sizing:border-box;content:\"\";display:block;height:var(--wp-ui-button-font-size);inset-inline-start:50%;opacity:0;pointer-events:none;position:absolute;top:50%;transform:translate(-50%,-50%);@media not (prefers-reduced-motion){transition:opacity .1s ease-out}@media (forced-colors:active){border-block-end-style:none;border-bottom-color:ButtonText;border-inline-start-style:none;border-left-color:ButtonText;border-right-color:ButtonText;border-top-color:ButtonText}}}._908205475f9f2a92__is-small{--wp-ui-button-padding-block:0;--wp-ui-button-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-button-height:var(--wpds-dimension-size-sm,24px)}._9f6fc6553aeb36fe__icon{margin:var(--wp-ui-button-icon-margin)}.dd460c965226cc77__is-brand{&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 52%,#000));--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 85%,#000));--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-brand-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000)}}.e722a8f96726aa99__is-neutral{&.ad0619a3217c6a5b__is-minimal[aria-pressed=true],&.b50b3358c5fb4d0b__is-solid{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-strong,#2d2d2d);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-strong-active,#1e1e1e);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral-strong,#f0f0f0);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-strong-active,#f0f0f0);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-strong-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-active,#1e1e1e);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e);--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000)}}.abbb272e2ce49bd6__is-unstyled{background:none;border:none;min-width:unset}.cf59cf1b69629838__is-compact{--wp-ui-button-height:var(--wpds-dimension-size-md,32px)}._914b42f315c0e580__is-loading:not(.abbb272e2ce49bd6__is-unstyled){color:transparent;&:not([data-disabled]):is(:hover,:active,:focus){color:transparent}@media (forced-colors:active){color:ButtonFace}*{opacity:0}&:before{opacity:1;transition-delay:.05s;@media not (prefers-reduced-motion){animation:_5a1d53da6f830c8d__loading-animation 1s linear infinite}}}}@keyframes _5a1d53da6f830c8d__loading-animation{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}}");
 var style_default$1 = {
-	"text": "_83ed8a8da5dd50ea__text",
-	"heading-2xl": "_14437cfb77831647__heading-2xl",
-	"heading-xl": "_3c78b7fa9b4072dd__heading-xl",
-	"heading-lg": "aa58f227716bcde2__heading-lg",
-	"heading-md": "fc4da56d8dfe52c4__heading-md",
-	"heading-sm": "a9b78c7c82e8dff7__heading-sm",
-	"body-xl": "_305ff559e52180d5__body-xl",
-	"body-lg": "ca1aa3fc2029e958__body-lg",
-	"body-md": "_131101940be12424__body-md",
-	"body-sm": "_0e8d87a42c1f75fa__body-sm"
+	"button": "_97b0fc33c028be1a__button",
+	"is-unstyled": "abbb272e2ce49bd6__is-unstyled",
+	"is-loading": "_914b42f315c0e580__is-loading",
+	"is-small": "_908205475f9f2a92__is-small",
+	"icon": "_9f6fc6553aeb36fe__icon",
+	"is-brand": "dd460c965226cc77__is-brand",
+	"is-outline": "_62d5a778b7b258ee__is-outline",
+	"is-minimal": "ad0619a3217c6a5b__is-minimal",
+	"is-neutral": "e722a8f96726aa99__is-neutral",
+	"is-solid": "b50b3358c5fb4d0b__is-solid",
+	"is-compact": "cf59cf1b69629838__is-compact",
+	"loading-animation": "_5a1d53da6f830c8d__loading-animation"
 };
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle$1("d390e935a7", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-medium,499));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
-var global_css_defense_default = {
-	"button": "_6defc79820e382c6__button",
-	"input": "d2cff2e5dea83bd1__input",
-	"textarea": "_547d86373d02e108__textarea",
-	"div": "_8c15fd0ed9f28ba4__div",
-	"p": "_43cec3e1eec1066d__p",
-	"heading": "e97669c6d9a38497__heading",
-	"a": "_2c0831b0499dbd6e__a"
-};
-var Text$2 = (0, react$1.forwardRef)(function Text2({ variant = "body-md", render, className, ...props }, ref) {
-	return useRender({
-		render,
-		defaultTagName: "span",
+var ButtonIcon = (0, react$1.forwardRef)(function ButtonIcon2({ className, icon, ...props }, ref) {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Icon$2, {
 		ref,
-		props: mergeProps(props, { className: (0, clsx.default)(style_default$1.text, global_css_defense_default.heading, global_css_defense_default.p, style_default$1[variant], className) })
+		icon,
+		className: (0, clsx.default)(style_default$1.icon, className),
+		size: 24,
+		...props
 	});
 });
+//#endregion
+//#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/button/index.mjs
+ButtonIcon.displayName = "Button.Icon";
+var Button = Object.assign(Button$1, { 
+/**
+* An icon component specifically designed to work well when rendered inside
+* a `Button` component.
+*/
+Icon: ButtonIcon });
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+ui@0.17.0_@types+react@18.3.28_date-fns@4.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@wordpress/ui/build-module/stack/stack.mjs
 var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
@@ -3288,14 +3841,13 @@ function withResponsive(WrappedComponent) {
 	};
 }
 //#endregion
-//#region src/charts/private/x-zoom.module.scss
+//#region src/charts/private/x-zoom/x-zoom.module.scss
 var x_zoom_module_default = {
-	"x-zoom__reset": "a8ccharts-y6bXNq-x-zoom__reset",
-	"x-zoom__reset-icon": "a8ccharts-y6bXNq-x-zoom__reset-icon",
-	"x-zoom__selection": "a8ccharts-y6bXNq-x-zoom__selection"
+	"x-zoom__reset": "a8ccharts-ur9dWW-x-zoom__reset",
+	"x-zoom__selection": "a8ccharts-ur9dWW-x-zoom__selection"
 };
 //#endregion
-//#region src/charts/private/x-zoom.tsx
+//#region src/charts/private/x-zoom/x-zoom.tsx
 const MIN_DRAG_PIXELS = 6;
 /**
 * Drag-to-zoom state + pointer handlers for an XY chart. Designed to be
@@ -3424,24 +3976,35 @@ function ZoomClip({ active, chartId, children }) {
 	})] });
 }
 /**
-* Visible icon-only reset button rendered as an HTML overlay on top of
-* the chart container. The host should wrap its SVG in a `position: relative`
-* container so the button anchors correctly.
+* Visible icon-only reset control rendered as an HTML overlay on top of the
+* chart container, using the WPDS `Button`. The host should wrap its SVG in a
+* `position: relative` container so the button anchors correctly.
+*
+* `IconButton` would be the natural fit, but it renders a Base UI tooltip whose
+* CommonJS `use-sync-external-store` dependency makes Rolldown emit a dynamic
+* `require()` into `dist`, which throws on evaluation in WordPress Script
+* Module consumers. `Button` gives the same treatment without that dependency;
+* the tooltip is replaced by `aria-label` + `title`.
 *
 * @param props         - Props.
 * @param props.onClick - Click handler. Typically the `reset` from `useXZoom`.
 * @return JSX element.
 */
 function ZoomResetButton({ onClick }) {
+	const stopActivationKeys = (0, react$1.useCallback)((event) => {
+		if (event.key === "Enter" || event.key === " ") event.stopPropagation();
+	}, []);
 	const label = (0, _wordpress_i18n.__)("Reset zoom", "jetpack-charts");
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
-		type: "button",
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
 		className: x_zoom_module_default["x-zoom__reset"],
-		onClick,
+		onKeyDown: stopActivationKeys,
 		"aria-label": label,
 		title: label,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
-			className: x_zoom_module_default["x-zoom__reset-icon"],
+		variant: "outline",
+		tone: "neutral",
+		size: "small",
+		onClick,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button.Icon, { icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 			viewBox: "0 0 24 24",
 			fill: "none",
 			stroke: "currentColor",
@@ -3450,26 +4013,29 @@ function ZoomResetButton({ onClick }) {
 			strokeLinejoin: "round",
 			"aria-hidden": "true",
 			focusable: "false",
-			children: [
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
-					cx: "10",
-					cy: "10",
-					r: "6"
-				}),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
-					x1: "15",
-					y1: "15",
-					x2: "20",
-					y2: "20"
-				}),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
-					x1: "7",
-					y1: "10",
-					x2: "13",
-					y2: "10"
-				})
-			]
-		})
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", {
+				transform: "translate(2.4 2.4) scale(0.8)",
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
+						cx: "10",
+						cy: "10",
+						r: "6"
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
+						x1: "15",
+						y1: "15",
+						x2: "20",
+						y2: "20"
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
+						x1: "7",
+						y1: "10",
+						x2: "13",
+						y2: "10"
+					})
+				]
+			})
+		}) })
 	});
 }
 //#endregion
