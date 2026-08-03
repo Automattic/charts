@@ -482,6 +482,21 @@ type ChartLegendConfig<T = DataPoint | DataPointDate | LeaderboardEntry> = {
   shapeStyles?: LegendShapeStyles;
 };
 /**
+ * Legend config for charts built from `SeriesData` (line, bar, area). Adds `collapseGroups` on top
+ * of the shared config. It is intentionally absent from the base `ChartLegendConfig` so point-based
+ * charts (pie, semi-circle pie) — whose data points carry `group` only to coordinate colours — can't
+ * set it.
+ */
+type SeriesChartLegendConfig = ChartLegendConfig<SeriesData[]> & {
+  /**
+   * Collapse series that share a `group` into a single legend item, labelled by the group's
+   * primary series (its first non-comparison member). Off by default, so every series keeps its
+   * own item. Combines with `interactive`: a collapsed item toggles every series in its group, an
+   * uncollapsed one toggles only its own.
+   */
+  collapseGroups?: boolean;
+};
+/**
  * Base properties shared across all chart components
  */
 type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
@@ -644,6 +659,12 @@ type BaseLegendItem = {
   glyphSize?: number;
   renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
   shapeStyle?: CSSProperties & LineStyles$1;
+  /**
+   * The series labels this legend item controls. For a grouped item this is every series
+   * sharing the group (primary first); for a single series it is just its own label. Used by
+   * the interactive legend to toggle a whole group's visibility from one item.
+   */
+  seriesLabels?: string[];
 };
 //#endregion
 //#region src/components/legend/legend.d.ts
@@ -661,6 +682,11 @@ interface ChartLegendOptions {
   showValues?: boolean;
   legendValueDisplay?: LegendValueDisplay;
   legendShape?: LegendShape<SeriesData[], number>;
+  /**
+   * Collapse series that share a `group` into a single legend item, labelled by the group's
+   * primary series. Off by default, so every series gets its own item.
+   */
+  collapseGroups?: boolean;
 }
 /**
  * Hook to transform chart data into legend items
@@ -736,6 +762,10 @@ type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
   position?: 'start' | 'end';
 };
 interface LineChartProps extends BaseChartProps<SeriesData[]> {
+  /**
+   * Legend configuration. Supports `collapseGroups` on top of the shared options.
+   */
+  legend?: SeriesChartLegendConfig;
   withGradientFill: boolean;
   smoothing?: boolean;
   curveType?: CurveType;
@@ -755,6 +785,15 @@ interface LineChartProps extends BaseChartProps<SeriesData[]> {
    * button appears in the top-right of the chart while zoomed.
    */
   zoomable?: boolean;
+  /**
+   * Whether the Y axis rescales to fit only the visible series when series are
+   * hidden or shown through the interactive legend.
+   * Defaults to `true` (the pre-existing behaviour). Set to `false` to pin the Y
+   * axis to the full data extent so hiding series does not move the chart's
+   * baseline — useful for comparison charts. Matches `AreaChart`.
+   * @default true
+   */
+  rescaleYOnVisibilityChange?: boolean;
   children?: ReactNode;
 }
 type TooltipDatum = {
@@ -764,6 +803,10 @@ type TooltipDatum = {
 //#endregion
 //#region src/charts/area-chart/types.d.ts
 interface AreaChartProps extends BaseChartProps<SeriesData[]> {
+  /**
+   * Legend configuration. Supports `collapseGroups` on top of the shared options.
+   */
+  legend?: SeriesChartLegendConfig;
   /**
    * Whether series should be stacked on top of each other.
    * When false, series are rendered as overlapping filled areas.
@@ -814,12 +857,17 @@ interface AreaChartProps extends BaseChartProps<SeriesData[]> {
    */
   zoomable?: boolean;
   /**
-   * When using an interactive legend, controls whether the Y axis rescales
-   * to fit only the visible series. Defaults to `true`, matching the
-   * intuitive default for LineChart and BarChart. Set to `false` to pin
-   * the Y axis to the full data extent so toggling legend items off does
-   * not move the chart's baseline.
+   * Whether the Y axis rescales to fit only the visible series when series are
+   * hidden or shown through the interactive legend.
+   * Defaults to `true`, matching LineChart. Set to `false` to pin the Y axis to
+   * the full data extent so hiding series does not move the chart's baseline.
    * @default true
+   */
+  rescaleYOnVisibilityChange?: boolean;
+  /**
+   * @deprecated Use `rescaleYOnVisibilityChange`. The behaviour keys off series
+   * visibility changing, not specifically a legend toggle. Still honoured when
+   * `rescaleYOnVisibilityChange` is not set.
    */
   rescaleYOnLegendToggle?: boolean;
   children?: ReactNode;
@@ -859,6 +907,10 @@ declare const AreaChartResponsive: AreaChartResponsiveComponent;
 //#endregion
 //#region src/charts/bar-chart/bar-chart.d.ts
 interface BarChartProps extends BaseChartProps<SeriesData[]> {
+  /**
+   * Legend configuration. Supports `collapseGroups` on top of the shared options.
+   */
+  legend?: SeriesChartLegendConfig;
   renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
   orientation?: 'horizontal' | 'vertical';
   withPatterns?: boolean;
@@ -2008,5 +2060,5 @@ declare const useGlobalChartsTheme: () => CompleteChartTheme;
  */
 declare const defaultTheme: CompleteChartTheme;
 //#endregion
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type CalendarHeatmapResult, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridProps, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type CalendarHeatmapResult, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridProps, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, useChartLegendItems, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 //# sourceMappingURL=index.d.ts.map

@@ -2786,8 +2786,13 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 	});
 	const domain = legendScale.domain();
 	const getShapeStyle = useCallback(({ index }) => items[index]?.shapeStyle, [items]);
-	const handleLegendClick = useCallback((seriesLabel) => {
-		if (interactive && chartId && context) context.toggleSeriesVisibility(chartId, seriesLabel);
+	const handleLegendClick = useCallback((seriesLabels) => {
+		if (interactive && chartId && context) {
+			const representativeVisible = context.isSeriesVisible(chartId, seriesLabels[0]);
+			seriesLabels.forEach((label) => {
+				if (context.isSeriesVisible(chartId, label) === representativeVisible) context.toggleSeriesVisibility(chartId, label);
+			});
+		}
 	}, [
 		interactive,
 		chartId,
@@ -2801,16 +2806,16 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 		chartId,
 		context
 	]);
-	const createClickHandler = useCallback((labelText) => {
+	const createClickHandler = useCallback((seriesLabels) => {
 		if (!interactive) return;
-		return () => handleLegendClick(labelText);
+		return () => handleLegendClick(seriesLabels);
 	}, [interactive, handleLegendClick]);
-	const createKeyDownHandler = useCallback((labelText) => {
+	const createKeyDownHandler = useCallback((seriesLabels) => {
 		if (!interactive) return;
 		return (event) => {
 			if (event.key === "Enter" || event.key === " ") {
 				event.preventDefault();
-				handleLegendClick(labelText);
+				handleLegendClick(seriesLabels);
 			}
 		};
 	}, [interactive, handleLegendClick]);
@@ -2830,10 +2835,11 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 			className: clsx(base_legend_module_default.legend, className),
 			style: theme.legend?.containerStyles,
 			children: labels.map((label, i) => {
-				const visible = isSeriesVisible(label.text);
-				const handleClick = createClickHandler(label.text);
-				const handleKeyDown = createKeyDownHandler(label.text);
 				const matchedItem = items[i];
+				const seriesLabels = matchedItem?.seriesLabels?.length ? matchedItem.seriesLabels : [label.text];
+				const visible = isSeriesVisible(seriesLabels[0]);
+				const handleClick = createClickHandler(seriesLabels);
+				const handleKeyDown = createKeyDownHandler(seriesLabels);
 				return /* @__PURE__ */ jsxs(LegendItem, {
 					className: clsx("visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
 					margin: itemMargin,
@@ -2961,31 +2967,88 @@ function applyGlyphToLegendItem(baseItem, withGlyph, glyph, renderGlyph, glyphSi
 	return baseItem;
 }
 /**
-* Processes SeriesData into legend items
-* @param seriesData       - The series data to process
+* Buckets series by their `group`, preserving first-appearance order. Series with no group — or a
+* group value unique to them — end up in a bucket of their own. Whether a multi-series bucket then
+* collapses to a single legend item is decided by the caller: with `collapseGroups` on, every
+* multi-member bucket collapses, and the comparison pattern only decides which member represents it.
+* @param seriesData - The series data to group
+* @return Ordered groups, each holding its member series with their original indices
+*/
+function groupSeriesForLegend(seriesData) {
+	const groups = [];
+	const groupIndexByKey = /* @__PURE__ */ new Map();
+	seriesData.forEach((series, index) => {
+		const member = {
+			series,
+			index
+		};
+		const key = series.group;
+		if (key === void 0) {
+			groups.push([member]);
+			return;
+		}
+		const existing = groupIndexByKey.get(key);
+		if (existing === void 0) {
+			groupIndexByKey.set(key, groups.length);
+			groups.push([member]);
+		} else groups[existing].push(member);
+	});
+	return groups;
+}
+/**
+* Builds a single legend item from a representative series, tagging it with the series it controls
+* @param member           - The series (with its original index) that provides the label/colour
+* @param seriesLabels     - Every series label this item toggles (grouped) or just its own
 * @param getElementStyles - Function to get element styles
 * @param showValues       - Whether to show values in legend
 * @param withGlyph        - Whether to include glyph rendering
 * @param glyphSize        - Size of the glyph
 * @param renderGlyph      - Component to render the glyph
 * @param legendShape      - The shape type for legend items (string literal or React component)
+* @return The processed legend item
+*/
+function buildSeriesLegendItem(member, seriesLabels, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
+	const { color, glyph, shapeStyles } = getElementStyles({
+		data: member.series,
+		index: member.index,
+		legendShape
+	});
+	return applyGlyphToLegendItem({
+		label: member.series.label,
+		value: showValues ? member.series.data?.length?.toString() || "0" : "",
+		color,
+		shapeStyle: shapeStyles,
+		seriesLabels
+	}, withGlyph, glyph, renderGlyph, glyphSize);
+}
+/**
+* Processes SeriesData into legend items. Every series keeps its own legend entry unless
+* `collapseGroups` is set, in which case series sharing a `group` collapse to one item labelled by
+* the group's primary (its first non-comparison member).
+* @param seriesData       - The series data to process
+* @param getElementStyles - Function to get element styles
+* @param showValues       - Whether to show values in legend
+* @param withGlyph        - Whether to include glyph rendering
+* @param glyphSize        - Size of the glyph
+* @param collapseGroups   - Whether series sharing a group collapse to a single item
+* @param renderGlyph      - Component to render the glyph
+* @param legendShape      - The shape type for legend items (string literal or React component)
 * @return Array of processed legend items
 */
-function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape) {
-	const mapper = (series, index) => {
-		const { color, glyph, shapeStyles } = getElementStyles({
-			data: series,
-			index,
-			legendShape
-		});
-		return applyGlyphToLegendItem({
-			label: series.label,
-			value: showValues ? series.data?.length?.toString() || "0" : "",
-			color,
-			shapeStyle: shapeStyles
-		}, withGlyph, glyph, renderGlyph, glyphSize);
-	};
-	return seriesData.map(mapper);
+function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape) {
+	const buildItem = (member, seriesLabels) => buildSeriesLegendItem(member, seriesLabels, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape);
+	if (!collapseGroups) return seriesData.map((series, index) => buildItem({
+		series,
+		index
+	}, [series.label]));
+	return groupSeriesForLegend(seriesData).flatMap((members) => {
+		if (members.length > 1) {
+			const primary = members.find(({ series }) => series.options?.type !== "comparison") ?? members[0];
+			const seriesLabels = [primary.series.label, ...members.filter((member) => member !== primary).map(({ series }) => series.label)];
+			return [buildItem(primary, seriesLabels)];
+		}
+		return members.map((member) => buildItem(member, [member.series.label]));
+	});
 }
 /**
 * Processes point data into legend items
@@ -3023,11 +3086,11 @@ function processPointData(pointData, getElementStyles, showValues, legendValueDi
 * @return Array of legend items ready for display
 */
 function useChartLegendItems(data, options = {}, legendShape) {
-	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, renderGlyph } = options;
+	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, renderGlyph } = options;
 	const { getElementStyles } = useGlobalChartsContext();
 	return useMemo(() => {
 		if (!data || !Array.isArray(data) || data.length === 0) return [];
-		if ("data" in data[0]) return processSeriesData(data, getElementStyles, showValues, withGlyph, glyphSize, renderGlyph, legendShape);
+		if ("data" in data[0]) return processSeriesData(data, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
 		return processPointData(data, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape);
 	}, [
 		data,
@@ -3036,6 +3099,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
 		legendValueDisplay,
 		withGlyph,
 		glyphSize,
+		collapseGroups,
 		renderGlyph,
 		legendShape
 	]);
@@ -4225,8 +4289,9 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, zoomable = false, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, zoomable = false, rescaleYOnVisibilityChange = true, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
+	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const providerTheme = useGlobalChartsTheme();
@@ -4281,6 +4346,23 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const allSeriesHidden = useMemo(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
+	const stableYDomain = useMemo(() => {
+		if (!legendInteractive || rescaleYOnVisibilityChange) return;
+		let min = Infinity;
+		let max = -Infinity;
+		for (const series of dataSorted) for (const point of series.data ?? []) {
+			const value = point?.value;
+			if (typeof value === "number" && Number.isFinite(value)) {
+				min = Math.min(min, value);
+				max = Math.max(max, value);
+			}
+		}
+		return min < max ? [min, max] : void 0;
+	}, [
+		legendInteractive,
+		rescaleYOnVisibilityChange,
+		dataSorted
+	]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
@@ -4317,6 +4399,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 				type: "linear",
 				nice: true,
 				zero: false,
+				...stableYDomain ? { domain: stableYDomain } : {},
 				...options?.yScale
 			}
 		};
@@ -4324,7 +4407,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		options,
 		dataSorted,
 		width,
-		zoom.domain
+		zoom.domain,
+		stableYDomain
 	]);
 	const tooltipRenderGlyph = useMemo(() => {
 		return (props) => {
@@ -4353,10 +4437,12 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		legendItems: useChartLegendItems(dataSorted, useMemo(() => ({
 			withGlyph: withLegendGlyph,
 			glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
+			collapseGroups: legendCollapseGroups,
 			renderGlyph
 		}), [
 			withLegendGlyph,
 			glyphStyle?.radius,
+			legendCollapseGroups,
 			renderGlyph
 		]), legendShape),
 		chartType: "line",
@@ -4446,12 +4532,12 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 							onPointerOut,
 							pointerEventsDataKey: "nearest",
 							children: [
-								gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
+								!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
 									columns: false,
 									numTicks: 4
 								}),
-								chartOptions.axis.x.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
-								chartOptions.axis.y.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
+								!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
+								!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
 								allSeriesHidden ? /* @__PURE__ */ jsx(SvgEmptyState, {
 									x: width / 2,
 									y: chartHeight / 2,
@@ -4659,10 +4745,11 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 };
 //#endregion
 //#region src/charts/area-chart/area-chart.tsx
-const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnLegendToggle = true, children, gridVisibility, gap = "md" }, ref) => {
+const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange, rescaleYOnLegendToggle, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
 	const legendPosition = legend.position ?? "bottom";
+	const rescaleYOnVisibility = rescaleYOnVisibilityChange ?? rescaleYOnLegendToggle ?? true;
 	const providerTheme = useGlobalChartsTheme();
 	const theme = useXYChartTheme(data);
 	const chartId = useChartId(providedChartId);
@@ -4721,7 +4808,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		totalPoints: dataSorted[0]?.data.length || 0
 	});
 	const fixedYDomain = useMemo(() => {
-		if (rescaleYOnLegendToggle || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
+		if (rescaleYOnVisibility || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
 		if (stacked) {
 			const numPoints = Math.max(...dataSorted.map((s) => s.data.length));
 			let posMax = 0;
@@ -4756,7 +4843,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		stacked,
 		stackOffset,
 		legendInteractive,
-		rescaleYOnLegendToggle
+		rescaleYOnVisibility
 	]);
 	const chartOptions = useMemo(() => {
 		const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
@@ -4805,8 +4892,9 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		chartId,
 		legendItems: useChartLegendItems(dataSorted, useMemo(() => ({
 			withGlyph: false,
-			glyphSize: 0
-		}), []), legendShape),
+			glyphSize: 0,
+			collapseGroups: legend.collapseGroups ?? false
+		}), [legend.collapseGroups]), legendShape),
 		chartType: "area",
 		isDataValid,
 		metadata: useMemo(() => ({
@@ -4943,12 +5031,12 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 							onPointerOut,
 							pointerEventsDataKey: "nearest",
 							children: [
-								gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
+								!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
 									columns: false,
 									numTicks: 4
 								}),
-								chartOptions.axis.x.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
-								chartOptions.axis.y.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
+								!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
+								!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
 								allSeriesHidden ? /* @__PURE__ */ jsx(SvgEmptyState, {
 									x: width / 2,
 									y: chartHeight / 2,
@@ -5417,6 +5505,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 });
 const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, animation, children, gap = "md" }) => {
 	const legendInteractive = legend.interactive ?? false;
+	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const horizontal = orientation === "horizontal";
 	const chartId = useChartId(providedChartId);
 	const theme = useXYChartTheme(data);
@@ -5425,7 +5514,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		enabled: showZeroValues,
 		valueAxisLength: horizontal ? width : height
 	});
-	const legendItems = useChartLegendItems(dataSorted);
+	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({ collapseGroups: legendCollapseGroups }), [legendCollapseGroups]));
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options);
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
 	const chartRef = useRef(null);
@@ -5717,7 +5806,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 							horizontal,
 							pointerEventsDataKey: "nearest",
 							children: [
-								/* @__PURE__ */ jsx(Grid, {
+								!allSeriesHidden && /* @__PURE__ */ jsx(Grid, {
 									columns: gridVisibility.includes("y"),
 									rows: gridVisibility.includes("x"),
 									numTicks: 4
@@ -5757,8 +5846,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 										colorAccessor: getBarBackground(index)
 									}, seriesData?.label))
 								}),
-								/* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }),
-								/* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y }),
+								!allSeriesHidden && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }), /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y })] }),
 								withTooltips && /* @__PURE__ */ jsx(AccessibleTooltip, {
 									detectBounds: true,
 									snapTooltipToDatumX: true,
