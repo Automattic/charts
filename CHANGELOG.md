@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: new `legend.collapseGroups` option folds series that share a `group` into a single legend item, labelled by the group's primary series; with `legend.interactive` that item toggles the whole group in one click. Off by default, so legends keep one item per series unless you opt in. Available on the bar, line and area charts. The line chart gains a `rescaleYOnVisibilityChange` prop (matching the area chart) to pin the value axis to the full data range while series are hidden; and when every series is hidden, the grid and axes are dropped so the empty state stands on its own. The area chart's `rescaleYOnLegendToggle` prop is deprecated in favour of `rescaleYOnVisibilityChange` (still honoured as an alias).
 
 ### Changed
+- Time axis: pick tick formats by bucket resolution as well as span — hour ticks (with the date at midnight boundaries) for sub-daily series spanning up to a week, and month ticks (with the year at January) instead of full dates for month-or-coarser buckets.
 - Zoom: Render the reset control with the WordPress UI Button, fix keyboard activation, expose the selection rectangle's colors as `--a8c-charts-color-zoom-selection` and `--a8c-charts-color-zoom-selection-stroke`, and document the `zoomable` prop for the line and area charts.
 
 ## [1.11.0] - 2026-07-27

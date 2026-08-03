@@ -3800,11 +3800,29 @@ const formatHourTick = (timestamp) => {
 		hour12: true
 	});
 };
+const formatDateOrHourTick = (timestamp) => {
+	const date = new Date(timestamp);
+	return date.getHours() === 0 && date.getMinutes() === 0 ? formatDateTick$1(timestamp) : formatHourTick(timestamp);
+};
+const formatMonthOrYearTick = (timestamp) => {
+	const date = new Date(timestamp);
+	return date.getMonth() === 0 ? formatYearTick(timestamp) : date.toLocaleDateString(void 0, { month: "short" });
+};
+const getPointSpacingInHours = (sortedData) => {
+	return sortedData.reduce((spacing, datom) => datom.data.reduce((seriesSpacing, point, index) => {
+		const previous = datom.data[index - 1];
+		if (previous?.date === void 0 || point?.date === void 0) return seriesSpacing;
+		return Math.min(seriesSpacing, Math.abs((0, date_fns.differenceInHours)(point.date, previous.date)));
+	}, spacing), Number.POSITIVE_INFINITY);
+};
 const getFormatter = (sortedData) => {
 	const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
 	const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
-	if (Math.abs((0, date_fns.differenceInHours)(maxX, minX)) <= 24) return formatHourTick;
-	if (Math.abs((0, date_fns.differenceInYears)(maxX, minX)) <= 1) return formatDateTick$1;
+	const diffInHours = Math.abs((0, date_fns.differenceInHours)(maxX, minX));
+	if (diffInHours <= 24) return formatHourTick;
+	const spacingInHours = getPointSpacingInHours(sortedData);
+	if (diffInHours <= 168 && spacingInHours < 23) return formatDateOrHourTick;
+	if (Math.abs((0, date_fns.differenceInYears)(maxX, minX)) <= 1) return Number.isFinite(spacingInHours) && spacingInHours >= 672 ? formatMonthOrYearTick : formatDateTick$1;
 	return formatYearTick;
 };
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
