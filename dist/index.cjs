@@ -3815,10 +3815,17 @@ const getPointSpacingInHours = (sortedData) => {
 		return Math.min(seriesSpacing, Math.abs((0, date_fns.differenceInHours)(point.date, previous.date)));
 	}, spacing), Number.POSITIVE_INFINITY);
 };
-const getFormatter = (sortedData) => {
+const SPACING_BY_RESOLUTION = {
+	hour: 1,
+	day: 24,
+	week: 168,
+	month: 672
+};
+const getFormatter = (sortedData, tickResolution) => {
+	if (tickResolution === "year") return formatYearTick;
 	const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
 	const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
-	const spacingInHours = getPointSpacingInHours(sortedData);
+	const spacingInHours = tickResolution ? SPACING_BY_RESOLUTION[tickResolution] : getPointSpacingInHours(sortedData);
 	const isSubDaily = spacingInHours < 23;
 	const diffInHours = Math.abs((0, date_fns.differenceInHours)(maxX, minX));
 	if (diffInHours <= 24 && isSubDaily) return formatHourTick;
@@ -4690,7 +4697,8 @@ const LineChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 		totalPoints: dataSorted[0]?.data.length || 0
 	});
 	const chartOptions = (0, react$1.useMemo)(() => {
-		const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
+		const { tickResolution, ...xAxisOptions } = options?.axis?.x ?? {};
+		const formatter = xAxisOptions.tickFormat || getFormatter(dataSorted, tickResolution);
 		return {
 			axis: {
 				x: {
@@ -4698,7 +4706,7 @@ const LineChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 					numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
 					tickFormat: formatter,
 					display: true,
-					...options?.axis?.x
+					...xAxisOptions
 				},
 				y: {
 					orientation: "left",
@@ -5164,7 +5172,8 @@ const AreaChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 		rescaleYOnVisibility
 	]);
 	const chartOptions = (0, react$1.useMemo)(() => {
-		const formatter = options?.axis?.x?.tickFormat || getFormatter(dataSorted);
+		const { tickResolution, ...xAxisOptions } = options?.axis?.x ?? {};
+		const formatter = xAxisOptions.tickFormat || getFormatter(dataSorted, tickResolution);
 		return {
 			axis: {
 				x: {
@@ -5172,7 +5181,7 @@ const AreaChartInternal = (0, react$1.forwardRef)(({ data, chartId: providedChar
 					numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
 					tickFormat: formatter,
 					display: true,
-					...options?.axis?.x
+					...xAxisOptions
 				},
 				y: {
 					orientation: "left",
