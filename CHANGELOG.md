@@ -16,6 +16,9 @@ This is an alpha version! The changes listed here are not final.
 - Time axis: pick tick formats by bucket resolution as well as span — hour ticks (with the date at midnight boundaries) for sub-daily series spanning up to a week, and month ticks (with the year at January) instead of full dates for month-or-coarser buckets.
 - Zoom: Render the reset control with the WordPress UI Button, fix keyboard activation, expose the selection rectangle's colors as `--a8c-charts-color-zoom-selection` and `--a8c-charts-color-zoom-selection-stroke`, and document the `zoomable` prop for the line and area charts.
 
+### Fixed
+- Time axis: show date ticks rather than hour ticks for a daily-bucket pair spanning exactly one day.
+
 ## [1.11.0] - 2026-07-27
 ### Added
 - Add a `fitRows` prop to LeaderboardChart so a chart in a fixed-height container shows only the rows that fit instead of scrolling. [#50688]

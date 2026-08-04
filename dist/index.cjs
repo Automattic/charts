@@ -3818,10 +3818,11 @@ const getPointSpacingInHours = (sortedData) => {
 const getFormatter = (sortedData) => {
 	const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
 	const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
-	const diffInHours = Math.abs((0, date_fns.differenceInHours)(maxX, minX));
-	if (diffInHours <= 24) return formatHourTick;
 	const spacingInHours = getPointSpacingInHours(sortedData);
-	if (diffInHours <= 168 && spacingInHours < 23) return formatDateOrHourTick;
+	const isSubDaily = spacingInHours < 23;
+	const diffInHours = Math.abs((0, date_fns.differenceInHours)(maxX, minX));
+	if (diffInHours <= 24 && isSubDaily) return formatHourTick;
+	if (diffInHours <= 168 && isSubDaily) return formatDateOrHourTick;
 	if (Math.abs((0, date_fns.differenceInYears)(maxX, minX)) <= 1) return Number.isFinite(spacingInHours) && spacingInHours >= 672 ? formatMonthOrYearTick : formatDateTick$1;
 	return formatYearTick;
 };
