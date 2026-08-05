@@ -14,6 +14,8 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Time axis: pick tick formats by bucket resolution as well as span — hour ticks (with the date at midnight boundaries) for sub-daily series spanning up to a week, and month ticks (with the year at January) instead of full dates for month-or-coarser buckets.
+- Update package dependencies.
+- Zoom: Expose the reset button's shadow as `--a8c-charts-elevation-xs`, replacing the `--wpds-elevation-xs` token removed in `@wordpress/theme` 1.0.0.
 
 ### Fixed
 - Time axis: show date ticks rather than hour ticks for a daily-bucket pair spanning exactly one day.
