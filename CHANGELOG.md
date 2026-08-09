@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.13.0-alpha] - unreleased
+## [2.0.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 - Time axis: pick tick formats by bucket resolution as well as span — hour ticks (with the date at midnight boundaries) for sub-daily series spanning up to a week, and month ticks (with the year at January) instead of full dates for month-or-coarser buckets.
 - Update package dependencies.
 - Zoom: Expose the reset button's shadow as `--a8c-charts-elevation-xs`, replacing the `--wpds-elevation-xs` token removed in `@wordpress/theme` 1.0.0.
+- Zoom: Restore the accessible tooltip on the reset control. `@wordpress/ui` is no longer bundled into the package output, so each consumer's bundler now resolves it. It remains a dependency and resolves from node_modules by default, but a bundler that externalizes `@wordpress/*` to `window.wp.*` must bundle `@wordpress/ui` instead — `window.wp.ui` does not exist.
 
 ### Fixed
 - Time axis: show date ticks rather than hour ticks for a daily-bucket pair spanning exactly one day.
@@ -967,7 +968,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[1.13.0-alpha]: https://github.com/Automattic/charts/compare/v1.12.0...v1.13.0-alpha
+[2.0.0-alpha]: https://github.com/Automattic/charts/compare/v1.12.0...v2.0.0-alpha
 [1.12.0]: https://github.com/Automattic/charts/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/Automattic/charts/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/Automattic/charts/compare/v1.10.2...v1.10.3

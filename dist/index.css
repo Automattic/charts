@@ -113,9 +113,6 @@
   right: var(--wpds-dimension-gap-sm, 8px);
   z-index: 2;
   box-shadow: var(--a8c-charts-elevation-xs, 0 1px 1px 0 #00000008, 0 1px 2px 0 #00000005, 0 3px 3px 0 #00000005, 0 4px 4px 0 #00000003);
-  --wp-ui-button-aspect-ratio: 1;
-  --wp-ui-button-padding-inline: 0;
-  --wp-ui-button-min-width: unset;
   position: absolute;
 }
 
