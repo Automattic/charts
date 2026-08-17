@@ -2256,6 +2256,14 @@ const formatMonthOrYearTick = (timestamp) => {
 	const date = new Date(timestamp);
 	return date.getMonth() === 0 ? formatYearTick(timestamp) : date.toLocaleDateString(void 0, { month: "short" });
 };
+const getSpan = (sortedData) => {
+	const bounds = sortedData.map((datom) => [datom.data.at(0)?.date, datom.data.at(-1)?.date]).filter(([first, last]) => first !== void 0 && last !== void 0);
+	if (!bounds.length) return null;
+	return {
+		minX: Math.min(...bounds.map(([first]) => Number(first))),
+		maxX: Math.max(...bounds.map(([, last]) => Number(last)))
+	};
+};
 const getPointSpacingInHours = (sortedData) => {
 	return sortedData.reduce((spacing, datom) => datom.data.reduce((seriesSpacing, point, index) => {
 		const previous = datom.data[index - 1];
@@ -2263,26 +2271,32 @@ const getPointSpacingInHours = (sortedData) => {
 		return Math.min(seriesSpacing, Math.abs((0, date_fns.differenceInHours)(point.date, previous.date)));
 	}, spacing), Number.POSITIVE_INFINITY);
 };
-const SPACING_BY_RESOLUTION = {
-	hour: 1,
-	day: 24,
-	week: 168,
-	month: 672
+const SUB_DAILY_SPACING_HOURS = 23;
+const MONTHLY_SPACING_HOURS = 672;
+const getBucketResolution = (sortedData, tickResolution) => {
+	if (tickResolution) return tickResolution === "week" ? "day" : tickResolution;
+	const spacingInHours = getPointSpacingInHours(sortedData);
+	if (spacingInHours < SUB_DAILY_SPACING_HOURS) return "hour";
+	if (!Number.isFinite(spacingInHours) || spacingInHours < MONTHLY_SPACING_HOURS) return "day";
+	return spacingInHours < 12 * MONTHLY_SPACING_HOURS ? "month" : "year";
 };
 const getFormatter = (sortedData, tickResolution) => {
-	if (tickResolution === "year") return formatYearTick;
-	const minX = Math.min(...sortedData.map((datom) => datom.data.at(0)?.date));
-	const maxX = Math.max(...sortedData.map((datom) => datom.data.at(-1)?.date));
-	const spacingInHours = tickResolution ? SPACING_BY_RESOLUTION[tickResolution] : getPointSpacingInHours(sortedData);
-	const isSubDaily = spacingInHours < 23;
-	const diffInHours = Math.abs((0, date_fns.differenceInHours)(maxX, minX));
-	if (diffInHours <= 24 && isSubDaily) return formatHourTick;
-	if (diffInHours <= 168 && isSubDaily) return formatDateOrHourTick;
-	if (Math.abs((0, date_fns.differenceInYears)(maxX, minX)) <= 1) return Number.isFinite(spacingInHours) && spacingInHours >= 672 ? formatMonthOrYearTick : formatDateTick$1;
-	return formatYearTick;
+	const resolution = getBucketResolution(sortedData, tickResolution);
+	if (resolution === "year") return formatYearTick;
+	if (resolution === "month") return formatMonthOrYearTick;
+	const span = getSpan(sortedData);
+	if (!span) return formatDateTick$1;
+	const diffInHours = Math.abs((0, date_fns.differenceInHours)(span.maxX, span.minX));
+	if (resolution === "hour") {
+		if (diffInHours <= 24) return formatHourTick;
+		if (diffInHours <= 168) return formatDateOrHourTick;
+	}
+	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? formatDateTick$1 : formatYearTick;
 };
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
-	const xScale = (0, _visx_scale.scaleTime)({ domain: [Math.min(...data.map((datom) => datom.data.at(0)?.date)), Math.max(...data.map((datom) => datom.data.at(-1)?.date))] });
+	const span = getSpan(data);
+	if (!span) return 1;
+	const xScale = (0, _visx_scale.scaleTime)({ domain: [span.minX, span.maxX] });
 	const upperBound = Math.min(data[0]?.data.length || 3, Math.ceil(chartWidth / X_TICK_WIDTH));
 	let secondBestGuess = 1;
 	for (let numTicks = upperBound; numTicks > 1; --numTicks) {
