@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Fixed
+- Charts: measure a horizontal chart's left margin from the labels it will actually draw, so a caller's tick formatter is applied exactly once and time-of-day labels stop reserving room for the string "Invalid Date".
+
 ## [2.0.0] - 2026-08-10
 ### Added
 - Time axis: Accept a tickResolution hint on the x-axis options so callers that know the data's bucket size can set tick formats directly instead of relying on inference. [#51017]

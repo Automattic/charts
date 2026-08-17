@@ -1138,7 +1138,7 @@ const getXAxisLabelMetrics = (theme, orientation) => {
 const useChartMargin = (height, options, data, theme, horizontal = false) => {
 	const yTicks = (0, react.useMemo)(() => {
 		const allDataPoints = data.flatMap((series) => series.data);
-		if (horizontal) return allDataPoints.map((d) => d.label || options.axis?.y?.tickFormat(d.date.getTime(), 0, []));
+		if (horizontal) return allDataPoints.map((d) => d.label || d.date?.getTime());
 		if (options.axis?.y?.tickValues?.length) return options.axis.y.tickValues;
 		const minY = Math.min(...allDataPoints.map((d) => d.value));
 		const maxY = Math.max(...allDataPoints.map((d) => d.value));
