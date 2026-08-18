@@ -13,8 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Charts: adapt bar chart time-axis tick labels to the data's bucket resolution and time span, support the `tickResolution` hint, and name each bar's bucket in its tooltip.
 
 ### Fixed
-- Charts: choose the tick values for a bar chart's time axis instead of sampling the band domain by index, so the axis stops skipping the tick that names the year or dates the day and no longer repeats a label.
+- Charts: keep the year and the day on a bar chart's time axis, which could previously skip the tick that named them, and stop the same label falling on two ticks in a row.
 - Charts: measure a horizontal chart's left margin from the labels it will actually draw, so a caller's tick formatter is applied exactly once and time-of-day labels stop reserving room for the string "Invalid Date".
+- Charts: stop a bar chart's time axis dropping to a couple of ticks when it reaches for the year, and speed up how it picks them.
 
 ## [2.0.0] - 2026-08-10
 ### Added

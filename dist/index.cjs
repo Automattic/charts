@@ -2233,28 +2233,30 @@ const getCurveType = (type, smoothing) => {
 		default: return _visx_curve.curveLinear;
 	}
 };
-const formatYearTick = (timestamp) => {
-	return new Date(timestamp).toLocaleDateString(void 0, { year: "numeric" });
+const dateTimeFormat = (options) => {
+	let formatter;
+	return (timestamp) => {
+		if (!Number.isFinite(Number(timestamp))) return new Date(timestamp).toLocaleDateString();
+		formatter = formatter ?? new Intl.DateTimeFormat(void 0, options);
+		return formatter.format(timestamp);
+	};
 };
-const formatDateTick = (timestamp) => {
-	return new Date(timestamp).toLocaleDateString(void 0, {
-		month: "short",
-		day: "numeric"
-	});
-};
-const formatHourTick = (timestamp) => {
-	return new Date(timestamp).toLocaleTimeString(void 0, {
-		hour: "numeric",
-		hour12: true
-	});
-};
+const formatYearTick = dateTimeFormat({ year: "numeric" });
+const formatDateTick = dateTimeFormat({
+	month: "short",
+	day: "numeric"
+});
+const formatHourTick = dateTimeFormat({
+	hour: "numeric",
+	hour12: true
+});
+const formatMonthTick = dateTimeFormat({ month: "short" });
 const formatDateOrHourTick = (timestamp) => {
 	const date = new Date(timestamp);
 	return date.getHours() === 0 && date.getMinutes() === 0 ? formatDateTick(timestamp) : formatHourTick(timestamp);
 };
 const formatMonthOrYearTick = (timestamp) => {
-	const date = new Date(timestamp);
-	return date.getMonth() === 0 ? formatYearTick(timestamp) : date.toLocaleDateString(void 0, { month: "short" });
+	return new Date(timestamp).getMonth() === 0 ? formatYearTick(timestamp) : formatMonthTick(timestamp);
 };
 const getSpan = (sortedData) => {
 	const bounds = sortedData.map((datom) => [datom.data.at(0)?.date, datom.data.at(-1)?.date]).filter(([first, last]) => first !== void 0 && last !== void 0);
@@ -2294,10 +2296,22 @@ const getFormatter = (sortedData, tickResolution) => {
 	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? formatDateTick : formatYearTick;
 };
 const TICK_ANCHORS = /* @__PURE__ */ new Map([[formatDateOrHourTick, (date) => date.getHours() === 0 && date.getMinutes() === 0], [formatMonthOrYearTick, (date) => date.getMonth() === 0]]);
-const getAnchorPeriod = (domain, isAnchor) => {
-	const first = domain.findIndex(isAnchor);
-	const second = domain.findIndex((date, index) => index > first && isAnchor(date));
-	return first < 0 || second < 0 ? null : second - first;
+const getAnchorIndices = (domain, isAnchor) => domain.reduce((indices, date, index) => {
+	if (isAnchor(date)) indices.push(index);
+	return indices;
+}, []);
+const getCandidateSteps = (length, maxTicks, anchorSpacing) => {
+	const steps = /* @__PURE__ */ new Set();
+	for (let count = maxTicks; count > 1; count--) {
+		steps.add(Math.max(1, Math.floor((length - 1) / (count - 1))));
+		steps.add(Math.max(1, Math.ceil((length - 1) / (count - 1))));
+	}
+	if (anchorSpacing) {
+		for (let divisor = 1; divisor <= anchorSpacing; divisor++) if (anchorSpacing % divisor === 0) steps.add(anchorSpacing / divisor);
+		const minStep = Math.floor((length - 1) / Math.max(1, maxTicks)) + 1;
+		steps.add(Math.ceil(minStep / anchorSpacing) * anchorSpacing);
+	}
+	return steps;
 };
 /**
 * Tick values for a band time axis.
@@ -2305,10 +2319,10 @@ const getAnchorPeriod = (domain, isAnchor) => {
 * visx samples a band domain by index from offset zero, blind to which labels
 * carry a boundary and without collapsing repeats — so the tick that prints the
 * year or the date often isn't sampled at all, and a long series can show the
-* same label twice. Choose the values instead: keep the even spacing, but slide
-* the offset onto the anchor buckets — stepping by whole anchor periods once the
-* span is too long to reach them any other way — and reject any step that would
-* put two identical labels side by side.
+* same label twice. Choose the values instead: sweep the evenly spaced
+* candidates, including those that step from anchor to anchor, and keep the one
+* that reaches the most anchors without thinning the axis or putting two
+* identical labels side by side.
 *
 * @param domain        - Band domain, in axis order.
 * @param tickFormatter - Formatter the axis will render these values with.
@@ -2318,33 +2332,27 @@ const getAnchorPeriod = (domain, isAnchor) => {
 const getBandTickValues = (domain, tickFormatter, maxTicks) => {
 	if (!domain.length) return [];
 	const isAnchor = TICK_ANCHORS.get(tickFormatter);
-	const steps = /* @__PURE__ */ new Set();
-	for (let count = maxTicks; count > 1; count--) steps.add(Math.max(1, Math.floor((domain.length - 1) / (count - 1))));
-	const anchorPeriod = isAnchor ? getAnchorPeriod(domain, isAnchor) : null;
-	for (let divisor = 1; divisor <= (anchorPeriod ?? 0); divisor++) if (anchorPeriod % divisor === 0) steps.add(anchorPeriod / divisor);
-	if (anchorPeriod) {
-		const minStep = Math.floor((domain.length - 1) / Math.max(1, maxTicks)) + 1;
-		steps.add(Math.ceil(minStep / anchorPeriod) * anchorPeriod);
-	}
+	const anchorIndices = isAnchor ? getAnchorIndices(domain, isAnchor) : [];
 	const domainLabels = domain.map((date) => tickFormatter(date.getTime()));
-	let best = null;
-	for (const step of steps) for (let offset = 0; offset < step; offset++) {
-		const values = [];
-		const labels = [];
-		for (let index = offset; index < domain.length; index += step) {
-			values.push(domain[index]);
-			labels.push(domainLabels[index]);
-		}
-		if (!values.length || values.length > maxTicks) continue;
-		if (labels.some((label, index) => index > 0 && label === labels[index - 1])) continue;
-		const anchors = isAnchor ? values.filter(isAnchor).length : 0;
-		const denser = anchors === best?.anchors && values.length > best.values.length;
-		if (!best || anchors > best.anchors || denser) best = {
-			values,
-			anchors
-		};
+	const candidates = [];
+	const consider = (indices) => {
+		if (!indices.length || indices.length > maxTicks) return;
+		if (!indices.some((index, position) => position > 0 && domainLabels[index] === domainLabels[indices[position - 1]])) candidates.push(indices);
+	};
+	const anchorSpacing = anchorIndices.length > 1 ? anchorIndices[1] - anchorIndices[0] : null;
+	for (const step of getCandidateSteps(domain.length, maxTicks, anchorSpacing)) for (let offset = 0; offset < step; offset++) {
+		const indices = [];
+		for (let index = offset; index < domain.length; index += step) indices.push(index);
+		consider(indices);
 	}
-	return best ? best.values : [domain[0]];
+	for (let stride = 1; stride <= anchorIndices.length; stride++) consider(anchorIndices.filter((_, position) => position % stride === 0));
+	if (!candidates.length) return [domain[0]];
+	const densest = candidates.reduce((most, indices) => Math.max(most, indices.length), 0);
+	const anchorsIn = (indices) => isAnchor ? indices.filter((index) => isAnchor(domain[index])).length : 0;
+	return candidates.filter((indices) => indices.length >= densest - 1).reduce((chosen, indices) => {
+		const gain = anchorsIn(indices) - anchorsIn(chosen);
+		return gain > 0 || gain === 0 && indices.length > chosen.length ? indices : chosen;
+	}).map((index) => domain[index]);
 };
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 	const span = getSpan(data);
