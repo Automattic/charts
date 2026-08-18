@@ -2236,7 +2236,7 @@ const getCurveType = (type, smoothing) => {
 const formatYearTick = (timestamp) => {
 	return new Date(timestamp).toLocaleDateString(void 0, { year: "numeric" });
 };
-const formatDateTick$1 = (timestamp) => {
+const formatDateTick = (timestamp) => {
 	return new Date(timestamp).toLocaleDateString(void 0, {
 		month: "short",
 		day: "numeric"
@@ -2250,7 +2250,7 @@ const formatHourTick = (timestamp) => {
 };
 const formatDateOrHourTick = (timestamp) => {
 	const date = new Date(timestamp);
-	return date.getHours() === 0 && date.getMinutes() === 0 ? formatDateTick$1(timestamp) : formatHourTick(timestamp);
+	return date.getHours() === 0 && date.getMinutes() === 0 ? formatDateTick(timestamp) : formatHourTick(timestamp);
 };
 const formatMonthOrYearTick = (timestamp) => {
 	const date = new Date(timestamp);
@@ -2285,13 +2285,13 @@ const getFormatter = (sortedData, tickResolution) => {
 	if (resolution === "year") return formatYearTick;
 	if (resolution === "month") return formatMonthOrYearTick;
 	const span = getSpan(sortedData);
-	if (!span) return formatDateTick$1;
+	if (!span) return formatDateTick;
 	const diffInHours = Math.abs((0, date_fns.differenceInHours)(span.maxX, span.minX));
 	if (resolution === "hour") {
 		if (diffInHours <= 24) return formatHourTick;
 		if (diffInHours <= 168) return formatDateOrHourTick;
 	}
-	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? formatDateTick$1 : formatYearTick;
+	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? formatDateTick : formatYearTick;
 };
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 	const span = getSpan(data);
@@ -4011,11 +4011,41 @@ const TruncatedYTickComponent = createTruncatedTickComponent("y");
 const BASE_BAND_PADDING = .2;
 /** Inner padding of the category band scale (the base gap between ticks). */
 const BASE_BAND_PADDING_INNER = .1;
-const formatDateTick = (timestamp) => {
-	return new Date(timestamp).toLocaleDateString(void 0, {
-		month: "short",
+const TOOLTIP_FORMAT_BY_RESOLUTION = {
+	hour: {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		hour: "numeric",
+		hour12: true
+	},
+	day: {
+		year: "numeric",
+		month: "long",
 		day: "numeric"
-	});
+	},
+	month: {
+		year: "numeric",
+		month: "long"
+	},
+	year: { year: "numeric" }
+};
+/**
+* Labels one bar's bucket, at the bucket's own granularity — finer than the
+* ticks whenever the overall time span coarsens the axis.
+*
+* @param data           - Date-based series, already parsed and sorted by `useChartDataTransform`.
+* @param tickResolution - Caller-declared bucket resolution, when known.
+* @return Tooltip label formatter.
+*/
+const getTooltipFormatter = (data, tickResolution) => {
+	if (tickResolution === "week") return (timestamp) => (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("Week of %s", "jetpack-charts"), new Date(timestamp).toLocaleDateString(void 0, {
+		year: "numeric",
+		month: "long",
+		day: "numeric"
+	}));
+	const format = TOOLTIP_FORMAT_BY_RESOLUTION[getBucketResolution(data, tickResolution)] ?? TOOLTIP_FORMAT_BY_RESOLUTION.day;
+	return (timestamp) => new Date(timestamp).toLocaleString(void 0, format);
 };
 /**
 * Get the group padding of a scale.
@@ -4035,6 +4065,18 @@ const getGroupPadding = (scale) => {
 * @return The merged options for the chart.
 */
 function useBarChartOptions(data, horizontal, options = {}) {
+	const axisConfig = (0, react.useMemo)(() => {
+		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, ...xAxisOptions } = options.axis?.x || {};
+		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, ...yAxisOptions } = options.axis?.y || {};
+		return {
+			xLabelOverflow,
+			yLabelOverflow,
+			xAxisOptions,
+			yAxisOptions,
+			tickResolution: horizontal ? yTickResolution : xTickResolution
+		};
+	}, [options, horizontal]);
+	const { tickResolution } = axisConfig;
 	const defaultOptions = (0, react.useMemo)(() => {
 		const bandScale = {
 			type: "band",
@@ -4046,7 +4088,9 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			nice: true,
 			zero: false
 		};
-		const labelFormatter = data?.[0]?.data?.[0]?.label ? (label) => label : formatDateTick;
+		const hasLabels = Boolean(data?.[0]?.data?.[0]?.label);
+		const labelFormatter = hasLabels ? (label) => label : getFormatter(data, tickResolution);
+		const tooltipDatumFormatter = hasLabels ? labelFormatter : getTooltipFormatter(data, tickResolution);
 		const valueFormatter = _automattic_number_formatters.formatNumberCompact;
 		const labelAccessor = (d) => d?.label || d?.date;
 		const valueAccessor = (d) => {
@@ -4057,7 +4101,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			vertical: {
 				xTickFormat: labelFormatter,
 				yTickFormat: valueFormatter,
-				tooltipLabelFormatter: labelFormatter,
+				tooltipLabelFormatter: tooltipDatumFormatter,
 				xAccessor: labelAccessor,
 				yAccessor: valueAccessor,
 				gridVisibility: "x",
@@ -4067,7 +4111,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			horizontal: {
 				xTickFormat: valueFormatter,
 				yTickFormat: labelFormatter,
-				tooltipLabelFormatter: labelFormatter,
+				tooltipLabelFormatter: tooltipDatumFormatter,
 				xAccessor: valueAccessor,
 				yAccessor: labelAccessor,
 				gridVisibility: "y",
@@ -4075,7 +4119,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 				yScale: bandScale
 			}
 		};
-	}, [data]);
+	}, [data, tickResolution]);
 	return (0, react.useMemo)(() => {
 		const { xTickFormat, yTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
 		let valueScaleDomainOverride = {};
@@ -4102,9 +4146,8 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			...options.yScale || {},
 			...!horizontal ? valueScaleDomainOverride : {}
 		};
-		const providedToolTipLabelFormatter = horizontal ? options.axis?.y?.tickFormat : options.axis?.x?.tickFormat;
-		const { labelOverflow: xLabelOverflow, ...xAxisOptions } = options.axis?.x || {};
-		const { labelOverflow: yLabelOverflow, ...yAxisOptions } = options.axis?.y || {};
+		const { xLabelOverflow, yLabelOverflow, xAxisOptions, yAxisOptions } = axisConfig;
+		const providedToolTipLabelFormatter = horizontal ? yAxisOptions.tickFormat : xAxisOptions.tickFormat;
 		return {
 			gridVisibility,
 			xScale,
@@ -4134,6 +4177,7 @@ function useBarChartOptions(data, horizontal, options = {}) {
 		};
 	}, [
 		defaultOptions,
+		axisConfig,
 		options,
 		horizontal,
 		data

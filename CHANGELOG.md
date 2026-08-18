@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Changed
+- Charts: adapt bar chart time-axis tick labels to the data's bucket resolution and time span, support the `tickResolution` hint, and name each bar's bucket in its tooltip.
+
 ### Fixed
 - Charts: measure a horizontal chart's left margin from the labels it will actually draw, so a caller's tick formatter is applied exactly once and time-of-day labels stop reserving room for the string "Invalid Date".
 
