@@ -510,15 +510,31 @@ const CSS_VAR_NAME_PATTERN = /^--[\w-]+$/;
 * @param element - Optional DOM element to resolve the variable from (defaults to document.documentElement)
 * @return The resolved value, fallback value, or null if unresolvable
 */
-const resolveCssVariable = (value, element) => {
-	if (!value) return null;
-	if (value.startsWith("var(") && value.endsWith(")")) {
-		const parsed = parseVarExpression(value);
-		if (parsed) return resolveVariableName(parsed.varName, element) || parsed.fallback;
-	}
-	if (value.startsWith("--")) return resolveVariableName(value, element);
-	return value;
-};
+const resolveCssVariable = (value, element) => createCssVariableResolver(element)(value);
+/**
+* Builds a resolver that reads every value from one `getComputedStyle` snapshot.
+*
+* `getComputedStyle` is the expensive half of resolving a token: each call can force the browser to flush pending style, and a chart theme resolves five roles at once. Taking the snapshot once per build turns that into a single query. The reads that share a snapshot happen synchronously inside one memo body, so no style change can land between them — the resolver is single-pass by design and is not meant to be held across renders.
+*
+* @param element - The element to resolve against, or null/undefined for the document root.
+* @return A resolver that resolves each value exactly as `resolveCssVariable` does.
+*/
+function createCssVariableResolver(element) {
+	let styles = null;
+	const getStyles = () => {
+		if (!styles) styles = computedStyleFor(element);
+		return styles;
+	};
+	return (value) => {
+		if (!value) return null;
+		if (value.startsWith("var(") && value.endsWith(")")) {
+			const parsed = parseVarExpression(value);
+			if (parsed) return readCustomProperty(parsed.varName, getStyles()) || parsed.fallback;
+		}
+		if (value.startsWith("--")) return readCustomProperty(value, getStyles());
+		return value;
+	};
+}
 /**
 * Parses a var() expression into its variable name and optional fallback.
 * Uses string manipulation instead of complex regex to avoid ReDoS.
@@ -546,17 +562,30 @@ function parseVarExpression(expr) {
 	};
 }
 /**
-* Resolves a plain CSS variable name to its computed value.
+* Takes one computed-style snapshot, or null where there is nothing to read (SSR, or a detached element).
 *
-* @param varName - A CSS variable name like '--my-color'
-* @param element - Optional DOM element to resolve from
-* @return The computed value or null
+* @param element - The element to read from, or null/undefined for the document root.
+* @return The computed styles, or null.
 */
-function resolveVariableName(varName, element) {
+function computedStyleFor(element) {
 	if (typeof window === "undefined" || typeof document === "undefined") return null;
 	try {
-		const targetElement = element || document.documentElement;
-		return getComputedStyle(targetElement).getPropertyValue(varName).trim() || null;
+		return getComputedStyle(element || document.documentElement);
+	} catch {
+		return null;
+	}
+}
+/**
+* Reads one custom property from a computed-style snapshot.
+*
+* @param varName - A CSS variable name like '--my-color'
+* @param styles  - The snapshot to read from, or null
+* @return The computed value or null
+*/
+function readCustomProperty(varName, styles) {
+	if (!styles) return null;
+	try {
+		return styles.getPropertyValue(varName).trim() || null;
 	} catch {
 		return null;
 	}
@@ -1025,11 +1054,13 @@ const useDeepMemo = (value) => {
 };
 //#endregion
 //#region src/hooks/use-xychart-theme.ts
-const resolveColor = (value) => value ? resolveCssVariable(value) ?? value : value;
 const useXYChartTheme = (data) => {
 	const theme = useGlobalChartsTheme();
+	const seriesColorKey = JSON.stringify((data ?? []).map((series) => series.options?.stroke).filter((color) => Boolean(color)));
 	return (0, react.useMemo)(() => {
-		const seriesColors = (data ?? []).map((series) => series.options?.stroke).filter((color) => Boolean(color));
+		const resolve = createCssVariableResolver();
+		const resolveColor = (value) => value ? resolve(value) ?? value : value;
+		const seriesColors = JSON.parse(seriesColorKey);
 		return (0, _visx_xychart.buildChartTheme)({
 			...theme,
 			colors: [...seriesColors, ...theme.colors ?? []],
@@ -1051,7 +1082,7 @@ const useXYChartTheme = (data) => {
 				fill: resolveColor(theme.svgLabelSmall.fill)
 			}
 		});
-	}, [theme, data]);
+	}, [theme, seriesColorKey]);
 };
 //#endregion
 //#region src/hooks/use-chart-data-transform.ts
@@ -3135,8 +3166,8 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const providerTheme = useGlobalChartsTheme();
-	const resolvedBackgroundColor = resolveCssVariable(providerTheme.backgroundColor) ?? providerTheme.backgroundColor;
 	const theme = useXYChartTheme(data);
+	const resolvedBackgroundColor = theme.backgroundColor ?? providerTheme.backgroundColor;
 	const chartId = useChartId(providedChartId);
 	const chartRef = (0, react.useRef)(null);
 	const [selectedIndex, setSelectedIndex] = (0, react.useState)(void 0);
@@ -3912,7 +3943,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 									stacked,
 									stackOffset,
 									getElementStyles,
-									strokeColor: resolveCssVariable(providerTheme.backgroundColor) ?? providerTheme.backgroundColor
+									strokeColor: theme.backgroundColor ?? providerTheme.backgroundColor
 								})] }),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AreaChartScalesRef, {
 									chartRef: internalChartRef,
