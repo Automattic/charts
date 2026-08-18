@@ -2291,6 +2291,59 @@ const getFormatter = (sortedData, tickResolution) => {
 	}
 	return Math.abs(differenceInYears(span.maxX, span.minX)) <= 1 ? formatDateTick : formatYearTick;
 };
+const TICK_ANCHORS = /* @__PURE__ */ new Map([[formatDateOrHourTick, (date) => date.getHours() === 0 && date.getMinutes() === 0], [formatMonthOrYearTick, (date) => date.getMonth() === 0]]);
+const getAnchorPeriod = (domain, isAnchor) => {
+	const first = domain.findIndex(isAnchor);
+	const second = domain.findIndex((date, index) => index > first && isAnchor(date));
+	return first < 0 || second < 0 ? null : second - first;
+};
+/**
+* Tick values for a band time axis.
+*
+* visx samples a band domain by index from offset zero, blind to which labels
+* carry a boundary and without collapsing repeats — so the tick that prints the
+* year or the date often isn't sampled at all, and a long series can show the
+* same label twice. Choose the values instead: keep the even spacing, but slide
+* the offset onto the anchor buckets — stepping by whole anchor periods once the
+* span is too long to reach them any other way — and reject any step that would
+* put two identical labels side by side.
+*
+* @param domain        - Band domain, in axis order.
+* @param tickFormatter - Formatter the axis will render these values with.
+* @param maxTicks      - Most ticks the axis should carry.
+* @return Values to hand the axis as `tickValues`.
+*/
+const getBandTickValues = (domain, tickFormatter, maxTicks) => {
+	if (!domain.length) return [];
+	const isAnchor = TICK_ANCHORS.get(tickFormatter);
+	const steps = /* @__PURE__ */ new Set();
+	for (let count = maxTicks; count > 1; count--) steps.add(Math.max(1, Math.floor((domain.length - 1) / (count - 1))));
+	const anchorPeriod = isAnchor ? getAnchorPeriod(domain, isAnchor) : null;
+	for (let divisor = 1; divisor <= (anchorPeriod ?? 0); divisor++) if (anchorPeriod % divisor === 0) steps.add(anchorPeriod / divisor);
+	if (anchorPeriod) {
+		const minStep = Math.floor((domain.length - 1) / Math.max(1, maxTicks)) + 1;
+		steps.add(Math.ceil(minStep / anchorPeriod) * anchorPeriod);
+	}
+	const domainLabels = domain.map((date) => tickFormatter(date.getTime()));
+	let best = null;
+	for (const step of steps) for (let offset = 0; offset < step; offset++) {
+		const values = [];
+		const labels = [];
+		for (let index = offset; index < domain.length; index += step) {
+			values.push(domain[index]);
+			labels.push(domainLabels[index]);
+		}
+		if (!values.length || values.length > maxTicks) continue;
+		if (labels.some((label, index) => index > 0 && label === labels[index - 1])) continue;
+		const anchors = isAnchor ? values.filter(isAnchor).length : 0;
+		const denser = anchors === best?.anchors && values.length > best.values.length;
+		if (!best || anchors > best.anchors || denser) best = {
+			values,
+			anchors
+		};
+	}
+	return best ? best.values : [domain[0]];
+};
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 	const span = getSpan(data);
 	if (!span) return 1;
@@ -4009,6 +4062,8 @@ const TruncatedYTickComponent = createTruncatedTickComponent("y");
 const BASE_BAND_PADDING = .2;
 /** Inner padding of the category band scale (the base gap between ticks). */
 const BASE_BAND_PADDING_INNER = .1;
+/** Ticks each axis carries unless the caller asks for a different count. */
+const DEFAULT_NUM_TICKS = 4;
 const TOOLTIP_FORMAT_BY_RESOLUTION = {
 	hour: {
 		year: "numeric",
@@ -4044,6 +4099,22 @@ const getTooltipFormatter = (data, tickResolution) => {
 	}));
 	const format = TOOLTIP_FORMAT_BY_RESOLUTION[getBucketResolution(data, tickResolution)] ?? TOOLTIP_FORMAT_BY_RESOLUTION.day;
 	return (timestamp) => new Date(timestamp).toLocaleString(void 0, format);
+};
+/**
+* The band scale's domain, as the dates the axis can put a tick on. Series are
+* individually sorted already, so a merge on the timestamp restores axis order
+* across all of them.
+*
+* @param data - Date-based series.
+* @return Distinct dates, earliest first.
+*/
+const getBandDomain = (data) => {
+	const byTimestamp = /* @__PURE__ */ new Map();
+	data.forEach((series) => series.data.forEach((point) => {
+		const { date } = point;
+		if (date && !byTimestamp.has(date.getTime())) byTimestamp.set(date.getTime(), date);
+	}));
+	return [...byTimestamp.keys()].sort((a, b) => a - b).map((timestamp) => byTimestamp.get(timestamp));
 };
 /**
 * Get the group padding of a scale.
@@ -4087,7 +4158,8 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			zero: false
 		};
 		const hasLabels = Boolean(data?.[0]?.data?.[0]?.label);
-		const labelFormatter = hasLabels ? (label) => label : getFormatter(data, tickResolution);
+		const timeTickFormatter = hasLabels ? null : getFormatter(data, tickResolution);
+		const labelFormatter = timeTickFormatter ?? ((label) => label);
 		const tooltipDatumFormatter = hasLabels ? labelFormatter : getTooltipFormatter(data, tickResolution);
 		const valueFormatter = formatNumberCompact;
 		const labelAccessor = (d) => d?.label || d?.date;
@@ -4096,6 +4168,10 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			return enhancedPoint?.visualValue !== void 0 ? enhancedPoint.visualValue : d?.value;
 		};
 		return {
+			timeAxis: timeTickFormatter && {
+				domain: getBandDomain(data),
+				tickFormatter: timeTickFormatter
+			},
 			vertical: {
 				xTickFormat: labelFormatter,
 				yTickFormat: valueFormatter,
@@ -4146,6 +4222,10 @@ function useBarChartOptions(data, horizontal, options = {}) {
 		};
 		const { xLabelOverflow, yLabelOverflow, xAxisOptions, yAxisOptions } = axisConfig;
 		const providedToolTipLabelFormatter = horizontal ? yAxisOptions.tickFormat : xAxisOptions.tickFormat;
+		const { timeAxis } = defaultOptions;
+		const dateAxisOptions = horizontal ? yAxisOptions : xAxisOptions;
+		const bandTickValues = timeAxis && !dateAxisOptions.tickFormat ? getBandTickValues(timeAxis.domain, timeAxis.tickFormatter, dateAxisOptions.numTicks ?? DEFAULT_NUM_TICKS) : null;
+		const dateAxisTickValues = bandTickValues ? { tickValues: bandTickValues } : {};
 		return {
 			gridVisibility,
 			xScale,
@@ -4157,15 +4237,17 @@ function useBarChartOptions(data, horizontal, options = {}) {
 			axis: {
 				x: {
 					orientation: "bottom",
-					numTicks: 4,
+					numTicks: DEFAULT_NUM_TICKS,
 					tickFormat: xTickFormat,
+					...horizontal ? {} : dateAxisTickValues,
 					...xLabelOverflow === "ellipsis" ? { tickComponent: TruncatedXTickComponent } : {},
 					...xAxisOptions
 				},
 				y: {
 					orientation: "left",
-					numTicks: 4,
+					numTicks: DEFAULT_NUM_TICKS,
 					tickFormat: yTickFormat,
+					...horizontal ? dateAxisTickValues : {},
 					...yLabelOverflow === "ellipsis" ? { tickComponent: TruncatedYTickComponent } : {},
 					...yAxisOptions
 				}
