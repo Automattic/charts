@@ -52,15 +52,17 @@ require("@babel/runtime/helpers/esm/extends");
 require("@babel/runtime/helpers/extends");
 let _wordpress_icons = require("@wordpress/icons");
 let _visx_shape = require("@visx/shape");
-//#region src/charts/private/chart-instance-context/chart-instance-context.ts
+//#region src/charts/private/single-chart-context/single-chart-context.tsx
 const ChartInstanceContext = (0, react.createContext)(null);
+const SingleChartContext = ChartInstanceContext;
 //#endregion
-//#region src/charts/private/chart-instance-context/use-chart-instance-context.ts
+//#region src/charts/private/single-chart-context/use-single-chart-context.ts
 const useChartInstanceContext = () => {
 	const context = (0, react.useContext)(ChartInstanceContext);
 	if (!context) throw new Error("useChartInstanceContext must be used within a Chart component");
 	return context;
 };
+const useSingleChartContext = useChartInstanceContext;
 //#endregion
 //#region src/styles/chart-scope-class.ts
 /**
@@ -1844,8 +1846,8 @@ const defaultShapeByChartType = {
 };
 const Legend = (0, react.forwardRef)(({ chartId, items, shape, ...props }, ref) => {
 	const context = (0, react.useContext)(GlobalChartsContext);
-	const chartInstanceContext = (0, react.useContext)(ChartInstanceContext);
-	const contextChartId = chartId ?? chartInstanceContext?.chartId;
+	const singleChartContext = (0, react.useContext)(SingleChartContext);
+	const contextChartId = chartId ?? singleChartContext?.chartId;
 	const chartData = (0, react.useMemo)(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
 	const contextItems = chartData?.legendItems;
 	const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
@@ -2937,7 +2939,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 //#endregion
 //#region src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 const LineChartAnnotationsOverlay = ({ children }) => {
-	const { chartRef, chartWidth, chartHeight } = useChartInstanceContext();
+	const { chartRef, chartWidth, chartHeight } = useSingleChartContext();
 	const [scales, setScales] = (0, react.useState)(null);
 	const [scalesStable, setScalesStable] = (0, react.useState)(false);
 	const createScaleSignature = (0, react.useCallback)((scaleData) => {
@@ -3519,7 +3521,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		chartId,
 		interactive: legendInteractive
 	});
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: {
 			chartId,
 			chartRef: internalChartRef,
@@ -4019,7 +4021,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 			}
 		}, seriesData?.label || index);
 	};
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: {
 			chartId,
 			chartRef: internalChartRef,
@@ -4884,7 +4886,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		chartId,
 		interactive: legendInteractive
 	});
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: {
 			chartId,
 			chartWidth: width,
@@ -6092,7 +6094,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const heightCapped = !compact && Boolean(maxCellHeight);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(HeatmapContext.Provider, {
 		value: heatmapContext,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 			value: { chartId },
 			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(ChartLayout, {
 				legendPosition: "bottom",
@@ -9183,7 +9185,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const { contentRef, fittedCount, isMeasurable } = useFittedRowCount(fitRows && !allSeriesHidden, data?.length ?? 0, data);
 	const shouldFitRows = fitRows && isMeasurable;
-	if (!data || data.length === 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	if (!data || data.length === 0) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartLayout, {
 			legendPosition,
@@ -9218,7 +9220,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		chartId,
 		interactive: legendInteractive
 	});
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartLayout, {
 			legendPosition,
@@ -9497,7 +9499,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		chartId,
 		interactive: legendInteractive
 	});
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartLayout, {
 			legendPosition,
@@ -9796,7 +9798,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		chartId,
 		interactive: legendInteractive
 	});
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartInstanceContext.Provider, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SingleChartContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartLayout, {
 			legendPosition,

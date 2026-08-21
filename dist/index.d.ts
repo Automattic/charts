@@ -680,7 +680,7 @@ interface ChartLegendOptions {
  */
 declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentageCalculated[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 //#endregion
-//#region src/charts/private/chart-instance-context/chart-instance-context.d.ts
+//#region src/charts/private/single-chart-context/single-chart-context.d.ts
 interface ChartInstanceRef {
   getScales: () => {
     xScale: unknown;
@@ -697,6 +697,7 @@ interface ChartInstanceRef {
     };
   };
 }
+type SingleChartRef = ChartInstanceRef;
 //#endregion
 //#region src/visx/types.d.ts
 type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
@@ -882,8 +883,8 @@ type AreaChartSubComponents = {
   Legend: typeof Legend;
 };
 type AreaChartBaseProps = Optional<AreaChartProps, 'width' | 'height' | 'size'>;
-type AreaChartComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & React.RefAttributes<ChartInstanceRef>> & AreaChartSubComponents;
-type AreaChartResponsiveComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & ResponsiveConfig & React.RefAttributes<ChartInstanceRef>> & AreaChartSubComponents;
+type AreaChartComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & React.RefAttributes<SingleChartRef>> & AreaChartSubComponents;
+type AreaChartResponsiveComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & ResponsiveConfig & React.RefAttributes<SingleChartRef>> & AreaChartSubComponents;
 declare const AreaChart: AreaChartComponent;
 declare const AreaChartResponsive: AreaChartResponsiveComponent;
 //#endregion
@@ -1591,8 +1592,8 @@ type LineChartAnnotationComponents = {
   Legend: typeof Legend;
 };
 type LineChartBaseProps = Optional<LineChartProps, 'width' | 'height' | 'size'>;
-type LineChartComponent = React.ForwardRefExoticComponent<LineChartBaseProps & React.RefAttributes<ChartInstanceRef>> & LineChartAnnotationComponents;
-type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<ChartInstanceRef>> & LineChartAnnotationComponents;
+type LineChartComponent = React.ForwardRefExoticComponent<LineChartBaseProps & React.RefAttributes<SingleChartRef>> & LineChartAnnotationComponents;
+type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<SingleChartRef>> & LineChartAnnotationComponents;
 declare const LineChart: LineChartComponent;
 declare const LineChartResponsive: LineChartResponsiveComponent;
 //#endregion
