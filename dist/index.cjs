@@ -5758,6 +5758,20 @@ const GeoChartWithProvider = (props) => {
 GeoChartWithProvider.displayName = "GeoChart";
 const GeoChartResponsive = withResponsive(GeoChartWithProvider);
 //#endregion
+//#region src/types.ts
+let GoogleDataTableColumnRoleType = /* @__PURE__ */ function(GoogleDataTableColumnRoleType) {
+	GoogleDataTableColumnRoleType["annotation"] = "annotation";
+	GoogleDataTableColumnRoleType["annotationText"] = "annotationText";
+	GoogleDataTableColumnRoleType["certainty"] = "certainty";
+	GoogleDataTableColumnRoleType["emphasis"] = "emphasis";
+	GoogleDataTableColumnRoleType["interval"] = "interval";
+	GoogleDataTableColumnRoleType["scope"] = "scope";
+	GoogleDataTableColumnRoleType["style"] = "style";
+	GoogleDataTableColumnRoleType["tooltip"] = "tooltip";
+	GoogleDataTableColumnRoleType["domain"] = "domain";
+	return GoogleDataTableColumnRoleType;
+}({});
+//#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.module.scss
 var heatmap_chart_module_default = {
 	"heatmap-chart": "a8ccharts-O3YMOW-heatmap-chart",
@@ -10124,6 +10138,7 @@ exports.GeoChart = GeoChartResponsive;
 exports.GeoChartUnresponsive = GeoChartWithProvider;
 exports.GlobalChartsContext = GlobalChartsContext;
 exports.GlobalChartsProvider = GlobalChartsProvider;
+exports.GoogleDataTableColumnRoleType = GoogleDataTableColumnRoleType;
 exports.HeatmapChart = HeatmapChartResponsive;
 exports.HeatmapChartUnresponsive = HeatmapChart;
 exports.LeaderboardChart = LeaderboardChartResponsive;

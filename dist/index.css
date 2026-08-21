@@ -445,6 +445,10 @@
 .a8ccharts-8hS2IW-container {
   position: relative;
 }
+
+.a8ccharts-8hS2IW-container .google-visualization-tooltip {
+  white-space: nowrap;
+}
 .a8ccharts-O3YMOW-heatmap-chart {
   width: 100%;
   height: 100%;

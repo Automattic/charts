@@ -5756,6 +5756,20 @@ const GeoChartWithProvider = (props) => {
 GeoChartWithProvider.displayName = "GeoChart";
 const GeoChartResponsive = withResponsive(GeoChartWithProvider);
 //#endregion
+//#region src/types.ts
+let GoogleDataTableColumnRoleType = /* @__PURE__ */ function(GoogleDataTableColumnRoleType) {
+	GoogleDataTableColumnRoleType["annotation"] = "annotation";
+	GoogleDataTableColumnRoleType["annotationText"] = "annotationText";
+	GoogleDataTableColumnRoleType["certainty"] = "certainty";
+	GoogleDataTableColumnRoleType["emphasis"] = "emphasis";
+	GoogleDataTableColumnRoleType["interval"] = "interval";
+	GoogleDataTableColumnRoleType["scope"] = "scope";
+	GoogleDataTableColumnRoleType["style"] = "style";
+	GoogleDataTableColumnRoleType["tooltip"] = "tooltip";
+	GoogleDataTableColumnRoleType["domain"] = "domain";
+	return GoogleDataTableColumnRoleType;
+}({});
+//#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.module.scss
 var heatmap_chart_module_default = {
 	"heatmap-chart": "a8ccharts-O3YMOW-heatmap-chart",
@@ -9744,6 +9758,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, resolveCssVariable, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, resolveCssVariable, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 
 //# sourceMappingURL=index.js.map
