@@ -1,7 +1,7 @@
 import { getStringWidth as getStringWidth$1 } from "./visx/text/index.js";
 import { formatNumber, formatNumberCompact } from "@automattic/number-formatters";
 import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, Tooltip, TooltipContext, XYChart, buildChartTheme } from "@visx/xychart";
-import { __, sprintf } from "@wordpress/i18n";
+import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
 import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
@@ -1504,12 +1504,12 @@ const useDataWithPercentages = (data) => {
 	}, [data]);
 };
 //#endregion
-//#region src/hooks/use-interactive-legend-data.ts
+//#region src/hooks/use-legend-visibility-data.ts
 /**
-* Custom hook to filter and recalculate chart data for interactive legends.
+* Custom hook to filter and recalculate chart data based on series visibility.
 *
-* When interactive legends are enabled, this hook:
-* 1. Filters data to show only visible series based on legend selection
+* Regardless of whether the legend is interactive (clickable), this hook:
+* 1. Filters data to show only visible series (visibility can also be set programmatically)
 * 2. Recalculates percentages so visible segments total 100%
 * 3. Tracks whether all segments are hidden to show empty state
 *
@@ -1518,10 +1518,9 @@ const useDataWithPercentages = (data) => {
 *
 * @example
 * ```tsx
-* const { visibleData, allSegmentsHidden, legendData } = useInteractiveLegendData({
+* const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
 *   data: chartData,
 *   chartId: 'my-pie-chart',
-*   legendInteractive: true,
 *   isSeriesVisible: (id, label) => context.isSeriesVisible(id, label),
 * });
 *
@@ -1536,16 +1535,15 @@ const useDataWithPercentages = (data) => {
 * return <PieChart data={visibleData} />;
 * ```
 *
-* @param params                   - Configuration object for the hook
-* @param params.data              - The chart data to filter
-* @param params.chartId           - Unique identifier for the chart (required for interactive mode)
-* @param params.legendInteractive - Whether to enable interactive filtering
-* @param params.isSeriesVisible   - Function to check series visibility
+* @param params                 - Configuration object for the hook
+* @param params.data            - The chart data to filter
+* @param params.chartId         - Unique identifier for the chart (required for filtering)
+* @param params.isSeriesVisible - Function to check series visibility
 * @return Object containing visibleData, allSegmentsHidden flag, and legendData with recalculated percentages
 */
-const useInteractiveLegendData = ({ data, chartId, legendInteractive, isSeriesVisible }) => {
+const useLegendVisibilityData = ({ data, chartId, isSeriesVisible }) => {
 	const visibleData = useMemo(() => {
-		if (!chartId || !legendInteractive) return data;
+		if (!chartId) return data;
 		const filtered = data.filter((segment) => isSeriesVisible(chartId, segment.label));
 		if (filtered.length === 0) return [];
 		const totalValue = filtered.reduce((sum, segment) => sum + segment.value, 0);
@@ -1556,16 +1554,15 @@ const useInteractiveLegendData = ({ data, chartId, legendInteractive, isSeriesVi
 	}, [
 		data,
 		chartId,
-		isSeriesVisible,
-		legendInteractive
+		isSeriesVisible
 	]);
 	return {
 		visibleData,
 		allSegmentsHidden: useMemo(() => {
-			return legendInteractive && visibleData.length === 0;
-		}, [legendInteractive, visibleData]),
+			return visibleData.length === 0 && data.length > 0;
+		}, [visibleData, data]),
 		legendData: useMemo(() => {
-			if (!legendInteractive || !chartId) return data;
+			if (!chartId) return data;
 			const visibleDataMap = new Map(visibleData.map((d) => [d.label, d]));
 			return data.map((segment) => {
 				if (!isSeriesVisible(chartId, segment.label)) return segment;
@@ -1574,7 +1571,6 @@ const useInteractiveLegendData = ({ data, chartId, legendInteractive, isSeriesVi
 		}, [
 			data,
 			visibleData,
-			legendInteractive,
 			chartId,
 			isSeriesVisible
 		])
@@ -1704,6 +1700,15 @@ const LegendText = ({ text, textOverflow, maxWidth }) => {
 		children: text
 	});
 };
+const getLegendItemAriaLabel = (text, value, visible, interactive) => {
+	const accessibleText = value != null && value !== "" ? sprintf(_x("%1$s, %2$s", "legend item label and value", "jetpack-charts"), text, String(value)) : text;
+	if (interactive) {
+		if (visible) return sprintf(_x("%s: visible. Toggle visibility.", "visible interactive legend item", "jetpack-charts"), accessibleText);
+		return sprintf(_x("%s: hidden. Toggle visibility.", "hidden interactive legend item", "jetpack-charts"), accessibleText);
+	}
+	if (visible) return;
+	return sprintf(_x("%s: hidden", "hidden non-interactive legend item", "jetpack-charts"), accessibleText);
+};
 const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", alignment = "center", shape = "rect", fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, itemStyles, itemClassName, labelStyles, labelClassName, shapeStyles, render, interactive = false, chartId }, ref) => {
 	const { margin: itemMargin = "0", flexDirection: itemDirection = "row" } = itemStyles ?? {};
 	const { justifyContent: labelJustifyContent = "flex-start", flex: labelFlex = "0 0 auto", margin: labelMargin = "0 4px", maxWidth, textOverflow = "wrap" } = labelStyles ?? {};
@@ -1730,13 +1735,9 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 		context
 	]);
 	const isSeriesVisible = useCallback((seriesLabel) => {
-		if (!interactive || !chartId || !context) return true;
+		if (!chartId || !context) return true;
 		return context.isSeriesVisible(chartId, seriesLabel);
-	}, [
-		interactive,
-		chartId,
-		context
-	]);
+	}, [chartId, context]);
 	const createClickHandler = useCallback((seriesLabels) => {
 		if (!interactive) return;
 		return () => handleLegendClick(seriesLabels);
@@ -1762,7 +1763,7 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 			align: orientation === "vertical" ? flexAlignment : void 0,
 			justify: orientation === "horizontal" ? flexAlignment : void 0,
 			wrap: orientation === "horizontal" ? "wrap" : void 0,
-			role: "list",
+			role: interactive ? void 0 : "list",
 			className: clsx(standaloneScopeClass, base_legend_module_default.legend, className),
 			style: theme.legend?.containerStyles,
 			children: labels.map((label, i) => {
@@ -1777,10 +1778,10 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 					flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
 					onClick: handleClick,
 					onKeyDown: handleKeyDown,
-					role: interactive ? "button" : void 0,
+					role: interactive ? "button" : "listitem",
 					tabIndex: interactive ? 0 : void 0,
 					"aria-pressed": interactive ? visible : void 0,
-					"aria-label": interactive ? `${label.text}: ${visible ? "visible" : "hidden"}. Toggle visibility.` : void 0,
+					"aria-label": getLegendItemAriaLabel(label.text, matchedItem?.value, visible, interactive),
 					children: [items[i]?.renderGlyph ? /* @__PURE__ */ jsx("svg", {
 						width: items[i]?.glyphSize * 2,
 						height: items[i]?.glyphSize * 2,
@@ -2406,6 +2407,27 @@ const SvgEmptyState = ({ x, y, width, height, children }) => {
 			children
 		})
 	});
+};
+//#endregion
+//#region src/charts/private/svg-empty-state/get-all-hidden-message.ts
+/**
+* Return the empty-state message for a chart whose items are all hidden.
+*
+* Each translation call has a distinct gettext context. This prevents Terser
+* from folding conditional calls into one call with a conditional msgid, which
+* would make the strings unavailable to static translation extraction.
+*
+* @param interactive - Whether the legend can be used to show hidden items.
+* @param itemType    - The chart-specific name for its data items.
+* @return The translated empty-state message.
+*/
+const getAllHiddenMessage = (interactive, itemType) => {
+	if (itemType === "segments") {
+		if (interactive) return _x("All segments are hidden. Click legend items to show data.", "chart empty state: interactive segments", "jetpack-charts");
+		return _x("All segments are hidden.", "chart empty state: segments", "jetpack-charts");
+	}
+	if (interactive) return _x("All series are hidden. Click legend items to show data.", "chart empty state: interactive series", "jetpack-charts");
+	return _x("All series are hidden.", "chart empty state: series", "jetpack-charts");
 };
 //#endregion
 //#region src/charts/private/time-axis.ts
@@ -3358,11 +3380,6 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const dataSorted = useChartDataTransform(data);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
 	const seriesWithVisibility = useMemo(() => {
-		if (!chartId || !legendInteractive) return dataSorted.map((series, index) => ({
-			series,
-			index,
-			isVisible: true
-		}));
 		return dataSorted.map((series, index) => ({
 			series,
 			index,
@@ -3371,14 +3388,13 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	}, [
 		dataSorted,
 		chartId,
-		isSeriesVisible,
-		legendInteractive
+		isSeriesVisible
 	]);
 	const allSeriesHidden = useMemo(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
 	const stableYDomain = useMemo(() => {
-		if (!legendInteractive || rescaleYOnVisibilityChange) return;
+		if (rescaleYOnVisibilityChange) return;
 		let min = Infinity;
 		let max = -Infinity;
 		for (const series of dataSorted) for (const point of series.data ?? []) {
@@ -3389,11 +3405,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 			}
 		}
 		return min < max ? [min, max] : void 0;
-	}, [
-		legendInteractive,
-		rescaleYOnVisibilityChange,
-		dataSorted
-	]);
+	}, [rescaleYOnVisibilityChange, dataSorted]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
@@ -3575,7 +3587,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
+									children: getAllHiddenMessage(legendInteractive, "series")
 								}) : null,
 								/* @__PURE__ */ jsx(ZoomClip, {
 									active: zoomable && !!zoom.domain,
@@ -3814,11 +3826,6 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const dataSorted = useChartDataTransform(data);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
 	const seriesWithVisibility = useMemo(() => {
-		if (!chartId || !legendInteractive) return dataSorted.map((series, index) => ({
-			series,
-			index,
-			isVisible: true
-		}));
 		return dataSorted.map((series, index) => ({
 			series,
 			index,
@@ -3827,8 +3834,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	}, [
 		dataSorted,
 		chartId,
-		isSeriesVisible,
-		legendInteractive
+		isSeriesVisible
 	]);
 	const allSeriesHidden = useMemo(() => seriesWithVisibility.every(({ isVisible }) => !isVisible), [seriesWithVisibility]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
@@ -3840,7 +3846,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		totalPoints: dataSorted[0]?.data.length || 0
 	});
 	const fixedYDomain = useMemo(() => {
-		if (rescaleYOnVisibility || !legendInteractive || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
+		if (rescaleYOnVisibility || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
 		if (stacked) {
 			const numPoints = Math.max(...dataSorted.map((s) => s.data.length));
 			let posMax = 0;
@@ -3874,7 +3880,6 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		dataSorted,
 		stacked,
 		stackOffset,
-		legendInteractive,
 		rescaleYOnVisibility
 	]);
 	const chartOptions = useMemo(() => {
@@ -3951,7 +3956,6 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const zeroYAccessor = useCallback(() => 0, []);
 	const visibleLabels = useMemo(() => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
 	const filteredRenderTooltip = useCallback((params) => {
-		if (!legendInteractive) return renderTooltip(params);
 		const datumByKey = params?.tooltipData?.datumByKey;
 		if (!datumByKey) return renderTooltip(params);
 		const filtered = Object.fromEntries(Object.entries(datumByKey).filter(([key]) => visibleLabels.has(key)));
@@ -3969,11 +3973,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 				nearestDatum: nextNearest
 			}
 		});
-	}, [
-		renderTooltip,
-		legendInteractive,
-		visibleLabels
-	]);
+	}, [renderTooltip, visibleLabels]);
 	const resolvedFillOpacity = fillOpacity ?? (stacked ? .85 : .4);
 	const resolvedWithStroke = withStroke ?? !stacked;
 	if (error) return /* @__PURE__ */ jsx("div", {
@@ -4004,7 +4004,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 			dataKey: seriesData?.label,
 			data: seriesData.data,
 			xAccessor: accessors.xAccessor,
-			yAccessor: isVisible || !legendInteractive ? accessors.yAccessor : zeroYAccessor,
+			yAccessor: isVisible ? accessors.yAccessor : zeroYAccessor,
 			fill: color,
 			fillOpacity: resolvedFillOpacity,
 			...stacked ? {} : {
@@ -4075,7 +4075,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
+									children: getAllHiddenMessage(legendInteractive, "series")
 								}) : null,
 								/* @__PURE__ */ jsxs(ZoomClip, {
 									active: zoomable,
@@ -4642,11 +4642,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	});
 	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({ collapseGroups: legendCollapseGroups }), [legendCollapseGroups]));
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
-	const isSeriesRendered = useCallback((series) => !chartId || !legendInteractive || isSeriesVisible(chartId, series.label), [
-		chartId,
-		legendInteractive,
-		isSeriesVisible
-	]);
+	const isSeriesRendered = useCallback((series) => isSeriesVisible(chartId, series.label), [chartId, isSeriesVisible]);
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
 	const chartRef = useRef(null);
@@ -4943,7 +4939,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
+									children: getAllHiddenMessage(legendInteractive, "series")
 								}) : null,
 								/* @__PURE__ */ jsx(ComparisonBars, {
 									comparisonEntries,
@@ -8789,29 +8785,25 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		legendLabels
 	});
 	const isPrimaryVisible = useMemo(() => {
-		if (!chartId || !legendInteractive || legendItems.length === 0) return true;
+		if (legendItems.length === 0) return true;
 		return isSeriesVisible(chartId, legendItems[0].label);
 	}, [
 		chartId,
-		legendInteractive,
 		legendItems,
 		isSeriesVisible
 	]);
 	const isComparisonVisible = useMemo(() => {
-		if (!chartId || !legendInteractive || legendItems.length < 2) return true;
+		if (legendItems.length < 2) return true;
 		return isSeriesVisible(chartId, legendItems[1].label);
 	}, [
 		chartId,
-		legendInteractive,
 		legendItems,
 		isSeriesVisible
 	]);
 	const allSeriesHidden = useMemo(() => {
-		if (!legendInteractive) return false;
 		if (withComparison && !withOverlayLabel) return !isPrimaryVisible && !isComparisonVisible;
 		return !isPrimaryVisible;
 	}, [
-		legendInteractive,
 		isPrimaryVisible,
 		isComparisonVisible,
 		withComparison,
@@ -8890,7 +8882,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					children: __("Not enough space to display data", "jetpack-charts")
 				}), allSeriesHidden ? /* @__PURE__ */ jsx("div", {
 					className: leaderboard_chart_module_default.emptyState,
-					children: __("All series are hidden. Click legend items to show data.", "jetpack-charts")
+					children: getAllHiddenMessage(legendInteractive, "series")
 				}) : /* @__PURE__ */ jsx(component_default, {
 					templateColumns: "minmax(0, 1fr) auto",
 					rowGap,
@@ -9080,10 +9072,9 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		hideTooltip();
 	}, [withTooltips, hideTooltip]);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
-	const { visibleData, allSegmentsHidden, legendData } = useInteractiveLegendData({
+	const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
 		data: useDataWithPercentages(data),
 		chartId,
-		legendInteractive,
 		isSeriesVisible
 	});
 	const legendItems = useChartLegendItems(legendData, useMemo(() => ({
@@ -9201,7 +9192,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 								y: 0,
 								width,
 								height,
-								children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
+								children: getAllHiddenMessage(legendInteractive, "segments")
 							}) : /* @__PURE__ */ jsx(Pie, {
 								data: dataWithIndex,
 								pieValue: accessors.value,
@@ -9373,10 +9364,9 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 	}, [handleMouseMove]);
 	const { isValid, message } = validateData(data);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
-	const { visibleData, allSegmentsHidden, legendData } = useInteractiveLegendData({
+	const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
 		data: useDataWithPercentages(data),
 		chartId,
-		legendInteractive,
 		isSeriesVisible
 	});
 	const accessors = useMemo(() => ({
@@ -9496,7 +9486,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 								y: -radius / 2,
 								width,
 								height,
-								children: __("All segments are hidden. Click legend items to show data.", "jetpack-charts")
+								children: getAllHiddenMessage(legendInteractive, "segments")
 							}) : /* @__PURE__ */ jsxs(Fragment$1, { children: [
 								/* @__PURE__ */ jsx(Pie, {
 									data: dataWithIndex,
