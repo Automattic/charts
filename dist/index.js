@@ -965,6 +965,7 @@ const GlobalChartsContext = createContext(null);
 const GlobalChartsProvider = ({ children, theme }) => {
 	const [charts, setCharts] = useState(() => /* @__PURE__ */ new Map());
 	const [hiddenSeries, setHiddenSeries] = useState(() => /* @__PURE__ */ new Map());
+	const seededCharts = useRef(/* @__PURE__ */ new Set());
 	const wrapperRef = useRef(null);
 	const [scopeNode, setScopeNode] = useState(null);
 	const setWrapperNode = useCallback((node) => {
@@ -1096,6 +1097,12 @@ const GlobalChartsProvider = ({ children, theme }) => {
 	const setChartHiddenSeries = useCallback((chartId, seriesLabels) => {
 		updateHiddenSeries(chartId, () => new Set(seriesLabels));
 	}, [updateHiddenSeries]);
+	const hasSeededChart = useCallback((chartId) => seededCharts.current.has(chartId), []);
+	const seedChartHiddenSeries = useCallback((chartId, seriesLabels) => {
+		if (seededCharts.current.has(chartId)) return;
+		seededCharts.current.add(chartId);
+		setChartHiddenSeries(chartId, seriesLabels);
+	}, [setChartHiddenSeries]);
 	const isSeriesVisible = useCallback((chartId, seriesLabel) => {
 		const chartHidden = hiddenSeries.get(chartId);
 		return !chartHidden || !chartHidden.has(seriesLabel);
@@ -1114,6 +1121,8 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
+		seedChartHiddenSeries,
+		hasSeededChart,
 		isSeriesVisible,
 		getHiddenSeries,
 		isColorPaletteResolved
@@ -1127,6 +1136,8 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
+		seedChartHiddenSeries,
+		hasSeededChart,
 		isSeriesVisible,
 		getHiddenSeries,
 		isColorPaletteResolved
@@ -2229,27 +2240,32 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 //#region src/providers/chart-context/hooks/use-default-hidden-series.ts
 const useIsomorphicLayoutEffect$1 = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 /**
-* Seeds a chart's hidden series once per mount or chart ID change.
+* Seeds a chart's hidden series once per chart ID, the first time the provider
+* sees that ID.
+*
+* The provider owns the record of what has been seeded, not this hook: a
+* mount-scoped one would re-apply the defaults on every remount, and a chart
+* remounts for reasons the reader never thinks of as a new chart — switching
+* between line and bar, tabbing away and back, a resize flipping tabs into a
+* dropdown. Each of those would throw away the series they had just revealed.
 *
 * @param chartId      - The chart ID passed to the provider's visibility methods.
-* @param seriesLabels - Labels to hide from the first defined value. Later values are ignored.
+* @param seriesLabels - Labels to hide when this chart ID is first seen. Later values are ignored.
 * @return The resolved hidden-series set.
 */
 const useDefaultHiddenSeries = (chartId, seriesLabels) => {
-	const { getHiddenSeries, setChartHiddenSeries } = useGlobalChartsContext();
-	const seededChartId = useRef(void 0);
+	const { getHiddenSeries, seedChartHiddenSeries, hasSeededChart } = useGlobalChartsContext();
 	const labelsRef = useRef(seriesLabels);
 	labelsRef.current = seriesLabels;
 	const hasSeriesLabels = seriesLabels !== void 0;
-	const shouldUseDefaults = seededChartId.current !== chartId && hasSeriesLabels;
+	const shouldUseDefaults = hasSeriesLabels && !hasSeededChart(chartId);
 	useIsomorphicLayoutEffect$1(() => {
-		if (seededChartId.current === chartId || labelsRef.current === void 0) return;
-		seededChartId.current = chartId;
-		setChartHiddenSeries(chartId, labelsRef.current);
+		if (labelsRef.current === void 0) return;
+		seedChartHiddenSeries(chartId, labelsRef.current);
 	}, [
 		chartId,
 		hasSeriesLabels,
-		setChartHiddenSeries
+		seedChartHiddenSeries
 	]);
 	return useMemo(() => shouldUseDefaults ? new Set(labelsRef.current) : getHiddenSeries(chartId), [
 		shouldUseDefaults,

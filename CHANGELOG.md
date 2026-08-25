@@ -18,6 +18,7 @@ This is an alpha version! The changes listed here are not final.
 - Charts: Draw labels at the design system's font weight and size, and follow the WordPress admin color scheme for the zoom selection.
 - GeoChart: Stop an HTML tooltip breaking its lines when it opens near a map edge.
 - Honor series visibility set programmatically, not only through the interactive legend.
+- Keep a series revealed from the legend revealed when the chart remounts, instead of re-applying defaultHiddenSeries.
 
 ## [3.0.0] - 2026-08-21
 ### Changed
