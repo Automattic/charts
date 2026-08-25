@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Export GoogleDataTableColumnRoleType as a value, so a consumer can build a GeoChart tooltip column.
 
 ### Fixed
+- Charts: Draw labels at the design system's font weight and size, and follow the WordPress admin color scheme for the zoom selection.
 - GeoChart: Stop an HTML tooltip breaking its lines when it opens near a map edge.
 - Honor series visibility set programmatically, not only through the interactive legend.
 
