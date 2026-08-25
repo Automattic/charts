@@ -1163,6 +1163,14 @@ type HeatmapCell = {
    * days completing the first/last week fall outside the covered range.
    */
   hidden?: boolean;
+  /**
+   * Paint the cell as a faded empty slot that carries no claim about the day:
+   * it is set apart from a measured day that scored zero, and skipped by
+   * hover, tooltips, keyboard navigation and the accessibility tree. For grid
+   * filler — slots drawn only so a short range still fills its container,
+   * which were never measured.
+   */
+  placeholder?: boolean;
 };
 /** A heatmap column (rendered left→right); its cells render top→bottom. */
 type HeatmapColumn = {
@@ -1228,6 +1236,19 @@ declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: {
    * blank cells even when the series has no entry for them.
    */
   hideOutOfRangeDays?: boolean;
+  /**
+   * Draw the grid over this span (`yyyy-MM-dd` bounds) instead of the
+   * series' own. Days inside the grid but outside the series become
+   * placeholder cells: painted as empty slots so a short series still
+   * fills its container, but reporting nothing, since they were never
+   * measured. A start bound is drawn from the beginning of its week, so
+   * the grid always opens on a whole column. Bounds narrower than the
+   * series are ignored — the grid never drops a day that carries data.
+   */
+  gridSpan?: {
+    start?: string;
+    end?: string;
+  };
 }) => CalendarHeatmapResult;
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.d.ts

@@ -5835,6 +5835,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__cell": "a8ccharts-O3YMOW-heatmap-chart__cell",
 	"heatmap-chart__cell--filled": "a8ccharts-O3YMOW-heatmap-chart__cell--filled",
 	"heatmap-chart__cell--hidden": "a8ccharts-O3YMOW-heatmap-chart__cell--hidden",
+	"heatmap-chart__cell--placeholder": "a8ccharts-O3YMOW-heatmap-chart__cell--placeholder",
 	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
 	"heatmap-chart__cell--strong": "a8ccharts-O3YMOW-heatmap-chart__cell--strong",
 	"heatmap-chart__cell-value": "a8ccharts-O3YMOW-heatmap-chart__cell-value",
@@ -5890,6 +5891,22 @@ const LABELLED_ROWS = [
 	2,
 	4
 ];
+/**
+* Resolve one grid bound: an unparseable or narrowing value falls back to the
+* series' own bound, so the grid can only ever be widened.
+*
+* @param bound     - Requested bound as `yyyy-MM-dd`, if any.
+* @param fallback  - The series' own bound on this side.
+* @param direction - Which way the bound is allowed to move.
+* @return The bound to draw to.
+*/
+const widenTo = (bound, fallback, direction) => {
+	if (!bound) return fallback;
+	const parsed = parseISO(bound);
+	if (isNaN(parsed.getTime())) return fallback;
+	if (direction === "earlier") return parsed < fallback ? parsed : fallback;
+	return parsed > fallback ? parsed : fallback;
+};
 const toDate = (point) => {
 	if (point.date instanceof Date && !isNaN(point.date.getTime())) return point.date;
 	if (point.dateString) {
@@ -5917,10 +5934,14 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 		if (date < minDate) minDate = date;
 		if (date > maxDate) maxDate = date;
 	}
-	const gridStart = startOfWeek(minDate, { weekStartsOn });
-	const weekCount = differenceInCalendarWeeks(maxDate, gridStart, { weekStartsOn }) + 1;
 	const minDayKey = format(minDate, "yyyy-MM-dd");
 	const maxDayKey = format(maxDate, "yyyy-MM-dd");
+	const gridMinDate = widenTo(options.gridSpan?.start, minDate, "earlier");
+	const gridMaxDate = widenTo(options.gridSpan?.end, maxDate, "later");
+	const gridMaxDayKey = format(gridMaxDate, "yyyy-MM-dd");
+	const gridStart = startOfWeek(gridMinDate, { weekStartsOn });
+	const gridMinDayKey = format(gridMinDate < minDate ? gridStart : gridMinDate, "yyyy-MM-dd");
+	const weekCount = differenceInCalendarWeeks(gridMaxDate, gridStart, { weekStartsOn }) + 1;
 	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? format(addDays(gridStart, row), "EEE") : "");
 	const MIN_FIRST_MONTH_WEEKS = 2;
 	const firstMonth = gridStart.getMonth();
@@ -5942,7 +5963,9 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 				label: format(day, "EEE, MMM d, yyyy"),
 				value: valueByDay.has(key) ? valueByDay.get(key) : null
 			};
-			if (hideOutOfRangeDays && (key < minDayKey || key > maxDayKey)) cell.hidden = true;
+			if (key < gridMinDayKey || key > gridMaxDayKey) {
+				if (hideOutOfRangeDays) cell.hidden = true;
+			} else if (key < minDayKey || key > maxDayKey) cell.placeholder = true;
 			cells.push(cell);
 		}
 		data.push({
@@ -6049,7 +6072,10 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		setSelectedIndex(void 0);
 		hideTooltip();
 	}, [hideTooltip]);
-	const isCellHidden = useCallback((col, row) => data[col]?.data[row]?.hidden === true, [data]);
+	const isCellInert = useCallback((col, row) => {
+		const cell = data[col]?.data[row];
+		return cell?.hidden === true || cell?.placeholder === true;
+	}, [data]);
 	const onChartKeyDown = useCallback((event) => {
 		if (![
 			"ArrowLeft",
@@ -6066,7 +6092,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		}
 		event.preventDefault();
 		if (selectedIndex === void 0) {
-			for (let index = 0; index < columns * rows; index++) if (!isCellHidden(Math.floor(index / rows), index % rows)) {
+			for (let index = 0; index < columns * rows; index++) if (!isCellInert(Math.floor(index / rows), index % rows)) {
 				setSelectedIndex(index);
 				return;
 			}
@@ -6083,7 +6109,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		do {
 			col += stepCol;
 			row += stepRow;
-		} while (col >= 0 && col < columns && row >= 0 && row < rows && isCellHidden(col, row));
+		} while (col >= 0 && col < columns && row >= 0 && row < rows && isCellInert(col, row));
 		if (col < 0 || col >= columns || row < 0 || row >= rows) return;
 		setSelectedIndex(col * rows + row);
 	}, [
@@ -6091,7 +6117,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		columns,
 		selectedIndex,
 		hideTooltip,
-		isCellHidden
+		isCellInert
 	]);
 	const handleCellMouseMove = useCallback((event) => {
 		if (!withTooltips) return;
@@ -6214,6 +6240,10 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 								if (cell?.hidden) return /* @__PURE__ */ jsx("div", {
 									"aria-hidden": "true",
 									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--hidden"])
+								}, `cell-${columnIndex}-${rowIndex}`);
+								if (cell?.placeholder) return /* @__PURE__ */ jsx("div", {
+									"aria-hidden": "true",
+									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--placeholder"])
 								}, `cell-${columnIndex}-${rowIndex}`);
 								const value = cell?.value ?? null;
 								const present = isPresent(value);
