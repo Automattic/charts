@@ -1067,18 +1067,35 @@ const GlobalChartsProvider = ({ children, theme }) => {
 			shapeStyles: isSeriesData ? getItemShapeStyles(data, index, providerTheme, legendShape) : {}
 		};
 	}, [providerTheme, resolveColor]);
-	const toggleSeriesVisibility = useCallback((chartId, seriesLabel) => {
+	const updateHiddenSeries = useCallback((chartId, update) => {
 		setHiddenSeries((prev) => {
+			const current = prev.get(chartId);
+			const next = update(new Set(current ?? []));
+			if (!current && next.size === 0) return prev;
+			if (current && current.size === next.size && [...next].every((label) => current.has(label))) return prev;
 			const newMap = new Map(prev);
-			const chartHidden = newMap.get(chartId) || /* @__PURE__ */ new Set();
-			const newSet = new Set(chartHidden);
-			if (newSet.has(seriesLabel)) newSet.delete(seriesLabel);
-			else newSet.add(seriesLabel);
-			if (newSet.size === 0) newMap.delete(chartId);
-			else newMap.set(chartId, newSet);
+			if (next.size === 0) newMap.delete(chartId);
+			else newMap.set(chartId, next);
 			return newMap;
 		});
 	}, []);
+	const toggleSeriesVisibility = useCallback((chartId, seriesLabel) => {
+		updateHiddenSeries(chartId, (current) => {
+			if (current.has(seriesLabel)) current.delete(seriesLabel);
+			else current.add(seriesLabel);
+			return current;
+		});
+	}, [updateHiddenSeries]);
+	const setSeriesVisibility = useCallback((chartId, seriesLabel, visible) => {
+		updateHiddenSeries(chartId, (current) => {
+			if (visible) current.delete(seriesLabel);
+			else current.add(seriesLabel);
+			return current;
+		});
+	}, [updateHiddenSeries]);
+	const setChartHiddenSeries = useCallback((chartId, seriesLabels) => {
+		updateHiddenSeries(chartId, () => new Set(seriesLabels));
+	}, [updateHiddenSeries]);
 	const isSeriesVisible = useCallback((chartId, seriesLabel) => {
 		const chartHidden = hiddenSeries.get(chartId);
 		return !chartHidden || !chartHidden.has(seriesLabel);
@@ -1095,6 +1112,8 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		theme: providerTheme,
 		getElementStyles,
 		toggleSeriesVisibility,
+		setSeriesVisibility,
+		setChartHiddenSeries,
 		isSeriesVisible,
 		getHiddenSeries,
 		isColorPaletteResolved
@@ -1106,6 +1125,8 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		providerTheme,
 		getElementStyles,
 		toggleSeriesVisibility,
+		setSeriesVisibility,
+		setChartHiddenSeries,
 		isSeriesVisible,
 		getHiddenSeries,
 		isColorPaletteResolved
@@ -1715,6 +1736,7 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 	const { width: shapeWidth = 16, height: shapeHeight = 16, margin: shapeMargin = "2px 4px 2px 0" } = shapeStyles ?? {};
 	const theme = useGlobalChartsTheme();
 	const context = useContext(GlobalChartsContext);
+	const chartInstanceContext = useContext(ChartInstanceContext);
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const legendScale = scaleOrdinal({
 		domain: items.map((item) => item.label),
@@ -1725,9 +1747,7 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 	const handleLegendClick = useCallback((seriesLabels) => {
 		if (interactive && chartId && context) {
 			const representativeVisible = context.isSeriesVisible(chartId, seriesLabels[0]);
-			seriesLabels.forEach((label) => {
-				if (context.isSeriesVisible(chartId, label) === representativeVisible) context.toggleSeriesVisibility(chartId, label);
-			});
+			seriesLabels.forEach((label) => context.setSeriesVisibility(chartId, label, !representativeVisible));
 		}
 	}, [
 		interactive,
@@ -1735,9 +1755,14 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 		context
 	]);
 	const isSeriesVisible = useCallback((seriesLabel) => {
+		if (chartInstanceContext?.isSeriesVisible) return chartInstanceContext.isSeriesVisible(seriesLabel);
 		if (!chartId || !context) return true;
 		return context.isSeriesVisible(chartId, seriesLabel);
-	}, [chartId, context]);
+	}, [
+		chartId,
+		chartInstanceContext,
+		context
+	]);
 	const createClickHandler = useCallback((seriesLabels) => {
 		if (!interactive) return;
 		return () => handleLegendClick(seriesLabels);
@@ -2084,11 +2109,16 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		}
 		return flattened;
 	}, [series, mode]);
+	const hasKeyboardSelection = useRef(false);
 	useEffect(() => {
 		if (selectedIndex === void 0) {
-			tooltipContext?.hideTooltip();
+			if (hasKeyboardSelection.current) {
+				hasKeyboardSelection.current = false;
+				tooltipContext?.hideTooltip();
+			}
 			return;
 		}
+		hasKeyboardSelection.current = true;
 		if (mode === "group") series.forEach((s, index) => {
 			if (selectedIndex < s.data.length) {
 				const datum = s.data[selectedIndex];
@@ -2194,6 +2224,38 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			chartRef
 		])
 	};
+};
+//#endregion
+//#region src/providers/chart-context/hooks/use-default-hidden-series.ts
+const useIsomorphicLayoutEffect$1 = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+/**
+* Seeds a chart's hidden series once per mount or chart ID change.
+*
+* @param chartId      - The chart ID passed to the provider's visibility methods.
+* @param seriesLabels - Labels to hide from the first defined value. Later values are ignored.
+* @return The resolved hidden-series set.
+*/
+const useDefaultHiddenSeries = (chartId, seriesLabels) => {
+	const { getHiddenSeries, setChartHiddenSeries } = useGlobalChartsContext();
+	const seededChartId = useRef(void 0);
+	const labelsRef = useRef(seriesLabels);
+	labelsRef.current = seriesLabels;
+	const hasSeriesLabels = seriesLabels !== void 0;
+	const shouldUseDefaults = seededChartId.current !== chartId && hasSeriesLabels;
+	useIsomorphicLayoutEffect$1(() => {
+		if (seededChartId.current === chartId || labelsRef.current === void 0) return;
+		seededChartId.current = chartId;
+		setChartHiddenSeries(chartId, labelsRef.current);
+	}, [
+		chartId,
+		hasSeriesLabels,
+		setChartHiddenSeries
+	]);
+	return useMemo(() => shouldUseDefaults ? new Set(labelsRef.current) : getHiddenSeries(chartId), [
+		shouldUseDefaults,
+		getHiddenSeries,
+		chartId
+	]);
 };
 //#endregion
 //#region src/charts/private/chart-composition/chart-svg.tsx
@@ -3342,7 +3404,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, zoomable = false, rescaleYOnVisibilityChange = true, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendShape = legend.shape ?? "line";
@@ -3351,6 +3413,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const theme = useXYChartTheme(data);
 	const resolvedBackgroundColor = theme.backgroundColor ?? providerTheme.backgroundColor;
 	const chartId = useChartId(providedChartId);
+	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
+	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
 	const chartRef = useRef(null);
 	const [selectedIndex, setSelectedIndex] = useState(void 0);
 	const [isNavigating, setIsNavigating] = useState(false);
@@ -3378,18 +3442,14 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		}
 	}), [internalChartRef]);
 	const dataSorted = useChartDataTransform(data);
-	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+	const { getElementStyles } = useGlobalChartsContext();
 	const seriesWithVisibility = useMemo(() => {
 		return dataSorted.map((series, index) => ({
 			series,
 			index,
-			isVisible: isSeriesVisible(chartId, series.label)
+			isVisible: !hiddenSeries.has(series.label)
 		}));
-	}, [
-		dataSorted,
-		chartId,
-		isSeriesVisible
-	]);
+	}, [dataSorted, hiddenSeries]);
 	const allSeriesHidden = useMemo(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
@@ -3533,6 +3593,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		value: {
 			chartId,
 			chartRef: internalChartRef,
+			isSeriesVisible,
 			chartWidth: width,
 			chartHeight: measuredChartHeight || 0
 		},
@@ -3789,7 +3850,7 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 };
 //#endregion
 //#region src/charts/area-chart/area-chart.tsx
-const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange, rescaleYOnLegendToggle, children, gridVisibility, gap = "md" }, ref) => {
+const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange, rescaleYOnLegendToggle, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
 	const legendPosition = legend.position ?? "bottom";
@@ -3797,6 +3858,8 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const providerTheme = useGlobalChartsTheme();
 	const theme = useXYChartTheme(data);
 	const chartId = useChartId(providedChartId);
+	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
+	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
 	const chartRef = useRef(null);
 	const [selectedIndex, setSelectedIndex] = useState(void 0);
 	const [isNavigating, setIsNavigating] = useState(false);
@@ -3824,18 +3887,14 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		}
 	}), [internalChartRef]);
 	const dataSorted = useChartDataTransform(data);
-	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+	const { getElementStyles } = useGlobalChartsContext();
 	const seriesWithVisibility = useMemo(() => {
 		return dataSorted.map((series, index) => ({
 			series,
 			index,
-			isVisible: isSeriesVisible(chartId, series.label)
+			isVisible: !hiddenSeries.has(series.label)
 		}));
-	}, [
-		dataSorted,
-		chartId,
-		isSeriesVisible
-	]);
+	}, [dataSorted, hiddenSeries]);
 	const allSeriesHidden = useMemo(() => seriesWithVisibility.every(({ isVisible }) => !isVisible), [seriesWithVisibility]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
@@ -4021,6 +4080,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		value: {
 			chartId,
 			chartRef: internalChartRef,
+			isSeriesVisible,
 			chartWidth: width,
 			chartHeight: measuredChartHeight || 0
 		},
@@ -4629,11 +4689,13 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, animation, children, gap = "md" }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, defaultHiddenSeries, animation, children, gap = "md" }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const horizontal = orientation === "horizontal";
 	const chartId = useChartId(providedChartId);
+	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
+	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
 	const theme = useXYChartTheme(data);
 	const dataSorted = useChartDataTransform(data);
 	const dataWithVisibleZeros = useZeroValueDisplay(dataSorted, {
@@ -4641,8 +4703,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		valueAxisLength: horizontal ? width : height
 	});
 	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({ collapseGroups: legendCollapseGroups }), [legendCollapseGroups]));
-	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
-	const isSeriesRendered = useCallback((series) => isSeriesVisible(chartId, series.label), [chartId, isSeriesVisible]);
+	const { getElementStyles } = useGlobalChartsContext();
+	const isSeriesRendered = useCallback((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
 	const chartRef = useRef(null);
@@ -4881,6 +4943,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	return /* @__PURE__ */ jsx(ChartInstanceContext.Provider, {
 		value: {
 			chartId,
+			isSeriesVisible,
 			chartWidth: width,
 			chartHeight: measuredChartHeight || 0
 		},

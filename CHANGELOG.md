@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Add defaultHiddenSeries to seed a series hidden on load, plus absolute visibility setters. Keep the keyboard tooltip open when the chart re-renders under it.
 - Export GoogleDataTableColumnRoleType as a value, so a consumer can build a GeoChart tooltip column.
 
 ### Fixed
