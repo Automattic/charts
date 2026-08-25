@@ -3491,8 +3491,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		totalPoints: dataSorted[0]?.data.length || 0
 	});
 	const chartOptions = useMemo(() => {
-		const { tickResolution, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = xAxisOptions.tickFormat || getFormatter(dataSorted, tickResolution);
+		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
+		const formatter = tickFormat || getFormatter(dataSorted, tickResolution);
 		return {
 			axis: {
 				x: {
@@ -3958,8 +3958,8 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		rescaleYOnVisibility
 	]);
 	const chartOptions = useMemo(() => {
-		const { tickResolution, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = xAxisOptions.tickFormat || getFormatter(dataSorted, tickResolution);
+		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
+		const formatter = tickFormat || getFormatter(dataSorted, tickResolution);
 		return {
 			axis: {
 				x: {
@@ -4428,11 +4428,13 @@ const getGroupPadding = (scale) => {
 function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = ALL_RENDERED) {
 	const stableOptions = useDeepMemo(options);
 	const axisConfig = useMemo(() => {
-		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, ...xAxisOptions } = stableOptions.axis?.x || {};
-		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, ...yAxisOptions } = stableOptions.axis?.y || {};
+		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, tickFormat: xTickFormat, ...xAxisOptions } = stableOptions.axis?.x || {};
+		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, tickFormat: yTickFormat, ...yAxisOptions } = stableOptions.axis?.y || {};
 		return {
 			xLabelOverflow,
 			yLabelOverflow,
+			xTickFormat,
+			yTickFormat,
 			xAxisOptions,
 			yAxisOptions,
 			tickResolution: horizontal ? yTickResolution : xTickResolution
@@ -4492,7 +4494,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		isSeriesRendered
 	]);
 	return useMemo(() => {
-		const { xTickFormat, yTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
+		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
 		let valueScaleDomainOverride = {};
 		if (data.some((s) => s.options?.type === "comparison")) {
 			if (!(!horizontal ? stableOptions.yScale?.domain : stableOptions.xScale?.domain)) {
@@ -4517,11 +4519,11 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 			...stableOptions.yScale || {},
 			...!horizontal ? valueScaleDomainOverride : {}
 		};
-		const { xLabelOverflow, yLabelOverflow, xAxisOptions, yAxisOptions } = axisConfig;
-		const providedToolTipLabelFormatter = horizontal ? yAxisOptions.tickFormat : xAxisOptions.tickFormat;
+		const { xLabelOverflow, yLabelOverflow, xTickFormat, yTickFormat, xAxisOptions, yAxisOptions } = axisConfig;
+		const dateAxisTickFormat = horizontal ? yTickFormat : xTickFormat;
 		const { timeAxis } = defaultOptions;
 		const dateAxisOptions = horizontal ? yAxisOptions : xAxisOptions;
-		const bandTickValues = timeAxis && !dateAxisOptions.tickFormat ? getBandTickValues(timeAxis.domain, timeAxis.tickFormatter, dateAxisOptions.numTicks ?? DEFAULT_NUM_TICKS) : null;
+		const bandTickValues = timeAxis && !dateAxisTickFormat ? getBandTickValues(timeAxis.domain, timeAxis.tickFormatter, dateAxisOptions.numTicks ?? DEFAULT_NUM_TICKS) : null;
 		const dateAxisTickValues = bandTickValues ? { tickValues: bandTickValues } : {};
 		return {
 			gridVisibility,
@@ -4535,7 +4537,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 				x: {
 					orientation: "bottom",
 					numTicks: DEFAULT_NUM_TICKS,
-					tickFormat: xTickFormat,
+					tickFormat: xTickFormat || defaultXTickFormat,
 					...horizontal ? {} : dateAxisTickValues,
 					...xLabelOverflow === "ellipsis" ? { tickComponent: TruncatedXTickComponent } : {},
 					...xAxisOptions
@@ -4543,14 +4545,14 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 				y: {
 					orientation: "left",
 					numTicks: DEFAULT_NUM_TICKS,
-					tickFormat: yTickFormat,
+					tickFormat: yTickFormat || defaultYTickFormat,
 					...horizontal ? dateAxisTickValues : {},
 					...yLabelOverflow === "ellipsis" ? { tickComponent: TruncatedYTickComponent } : {},
 					...yAxisOptions
 				}
 			},
 			barGroup: { padding: getGroupPadding(horizontal ? yScale : xScale) },
-			tooltip: { labelFormatter: providedToolTipLabelFormatter || defaultTooltipLabelFormatter }
+			tooltip: { labelFormatter: dateAxisTickFormat || defaultTooltipLabelFormatter }
 		};
 	}, [
 		defaultOptions,
