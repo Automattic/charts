@@ -2187,7 +2187,7 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		renderTooltip: focusableRenderTooltip
 	});
 };
-const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints }) => {
+const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate }) => {
 	return {
 		tooltipRef: (0, react.useCallback)((element) => {
 			if (element && selectedIndex !== void 0) element.focus();
@@ -2228,13 +2228,14 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
 				chartRef.current?.focus();
-			}
+			} else if ((event.key === "Enter" || event.key === " ") && selectedIndex !== void 0) onActivate?.(selectedIndex);
 		}, [
 			totalPoints,
 			selectedIndex,
 			setSelectedIndex,
 			setIsNavigating,
-			chartRef
+			chartRef,
+			onActivate
 		])
 	};
 };
@@ -3422,7 +3423,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendShape = legend.shape ?? "line";
@@ -3484,13 +3485,23 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		}
 		return min < max ? [min, max] : void 0;
 	}, [rescaleYOnVisibilityChange, dataSorted]);
+	const activateSelectedPoint = (0, react.useCallback)((index) => {
+		const series = dataSorted[0];
+		const datum = series?.data[index];
+		if (series && datum) onDatumActivate?.({
+			datum,
+			index,
+			key: series.label
+		});
+	}, [dataSorted, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints: dataSorted[0]?.data.length || 0
+		totalPoints: dataSorted[0]?.data.length || 0,
+		onActivate: activateSelectedPoint
 	});
 	const chartOptions = (0, react.useMemo)(() => {
 		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
@@ -4709,7 +4720,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ (0, react_jsx_runtime
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, defaultHiddenSeries, animation, children, gap = "md" }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const horizontal = orientation === "horizontal";
@@ -4736,14 +4747,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	const [selectedIndex, setSelectedIndex] = (0, react.useState)(void 0);
 	const [isNavigating, setIsNavigating] = (0, react.useState)(false);
 	const primarySeriesForNav = dataWithVisibleZeros.filter((s) => s.options?.type !== "comparison");
-	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
-		selectedIndex,
-		setSelectedIndex,
-		isNavigating,
-		setIsNavigating,
-		chartRef,
-		totalPoints: Math.max(0, ...primarySeriesForNav.map((s) => s.data?.length || 0)) * primarySeriesForNav.length
-	});
+	const totalPoints = Math.max(0, ...primarySeriesForNav.map((s) => s.data?.length || 0)) * primarySeriesForNav.length;
 	const seriesWithVisibility = (0, react.useMemo)(() => dataWithVisibleZeros.map((series, index) => ({
 		series,
 		index,
@@ -4755,6 +4759,26 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	const primaryEntries = (0, react.useMemo)(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
 	const primaryKeys = (0, react.useMemo)(() => primaryEntries.map(({ series }) => series.label), [primaryEntries]);
 	const primarySeries = (0, react.useMemo)(() => primaryEntries.map(({ series }) => series), [primaryEntries]);
+	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
+		selectedIndex,
+		setSelectedIndex,
+		isNavigating,
+		setIsNavigating,
+		chartRef,
+		totalPoints,
+		onActivate: (0, react.useCallback)((index) => {
+			const primaryCount = primaryEntries.length;
+			if (!primaryCount) return;
+			const dataPointIndex = Math.floor(index / primaryCount);
+			const series = primaryEntries[index % primaryCount]?.series;
+			const datum = series?.data[dataPointIndex];
+			if (series && datum) onDatumActivate?.({
+				datum,
+				index: dataPointIndex,
+				key: series.label
+			});
+		}, [primaryEntries, onDatumActivate])
+	});
 	const comparisonEntries = (0, react.useMemo)(() => {
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
 			label: series.label,
@@ -5002,6 +5026,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 							xScale,
 							yScale,
 							horizontal,
+							onPointerDown,
+							onPointerUp,
 							pointerEventsDataKey: "nearest",
 							children: [
 								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {

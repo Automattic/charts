@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Added
+- Bar and line charts: Report a click through the pointer event handlers and Enter or Space through an activation callback, so a chart can open the point under the pointer or the keyboard selection.
+
 ## [3.1.1] - 2026-08-26
 ### Fixed
 - LineChart, AreaChart, BarChart: Keep the derived date tick labels when a consumer passes an undefined tickFormat. [#51531]
@@ -1007,6 +1014,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[3.2.0-alpha]: https://github.com/Automattic/charts/compare/v3.1.1...v3.2.0-alpha
 [3.1.1]: https://github.com/Automattic/charts/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/Automattic/charts/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/Automattic/charts/compare/v2.0.1...v3.0.0
