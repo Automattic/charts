@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Bar and line charts: Report a click through the pointer event handlers and Enter or Space through an activation callback, so a chart can open the point under the pointer or the keyboard selection.
 
+### Changed
+- Update package dependencies.
+
 ## [3.1.1] - 2026-08-26
 ### Fixed
 - LineChart, AreaChart, BarChart: Keep the derived date tick labels when a consumer passes an undefined tickFormat. [#51531]
