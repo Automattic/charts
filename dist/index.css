@@ -1,4 +1,9 @@
 :where(.a8c-charts-scope) {
+  --a8c-charts-color-series-1: var(--a8c-charts-color-series-1-theme, var(--wp-admin-theme-color, var(--wpds-color-foreground-interactive-brand, var(--wp-admin-theme-color, #3858e9))));
+  --a8c-charts-color-series-2: var(--a8c-charts-color-series-2-theme);
+  --a8c-charts-color-series-3: var(--a8c-charts-color-series-3-theme);
+  --a8c-charts-color-series-4: var(--a8c-charts-color-series-4-theme);
+  --a8c-charts-color-series-5: var(--a8c-charts-color-series-5-theme);
   --a8c-charts-color-grid: var(--a8c-charts-color-grid-theme, var(--wpds-color-stroke-surface-neutral, #dbdbdb));
   --a8c-charts-color-axis: var(--a8c-charts-color-axis-theme, var(--wpds-color-stroke-surface-neutral, #dbdbdb));
   --a8c-charts-color-tick: var(--a8c-charts-color-tick-theme, var(--wpds-color-stroke-surface-neutral, #dbdbdb));

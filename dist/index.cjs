@@ -762,6 +762,16 @@ const getChartColor = (index, colorCache) => {
 	const fallbackLightness = BASE_LIGHTNESS + index % LIGHTNESS_VARIATION_STEPS * LIGHTNESS_INCREMENT;
 	return (0, _visx_vendor_d3_color.hsl)(Math.round(fallbackHue), fallbackSaturation / 100, fallbackLightness / 100).formatHex();
 };
+/**
+* The catalog role holding one series-palette slot.
+*
+* @param slot - The one-based slot number.
+* @return The role name.
+*/
+const seriesRole = (slot) => `--a8c-charts-color-series-${slot}`;
+const SERIES_SLOT_1_FALLBACK = "#3858e9";
+/** The catalog pointer for every slot, in slot order. */
+const SERIES_PALETTE_POINTERS = Array.from({ length: 5 }, (_, index) => index === 0 ? `var(${seriesRole(1)}, ${SERIES_SLOT_1_FALLBACK})` : `var(${seriesRole(index + 1)})`);
 //#endregion
 //#region src/providers/chart-context/private/theme-override-vars.ts
 const ROLE_FOR_FIELD = [
@@ -769,8 +779,20 @@ const ROLE_FOR_FIELD = [
 	["--a8c-charts-color-grid", (theme) => theme.gridStyles?.stroke],
 	["--a8c-charts-color-axis", (theme) => theme.xAxisLineStyles?.stroke],
 	["--a8c-charts-color-tick", (theme) => theme.xTickLineStyles?.stroke],
-	["--a8c-charts-color-label-axis", (theme) => theme.svgLabelSmall?.fill]
+	["--a8c-charts-color-label-axis", (theme) => theme.svgLabelSmall?.fill],
+	...Array.from({ length: 5 }, (_, index) => [seriesRole(index + 1), (theme) => theme.colors?.[index]])
 ];
+let warnedAboutExtraColors = false;
+/**
+* Warns once when a consumer passes more colors than there are slots to publish them into.
+*
+* @param count - How many entries `theme.colors` holds.
+*/
+function warnOnceAboutExtraColors(count) {
+	if (warnedAboutExtraColors || process.env.NODE_ENV === "production") return;
+	warnedAboutExtraColors = true;
+	console.warn(`[Charts] theme.colors holds ${count} colors and the palette has 5 slots, so entries past the 5th are ignored. Set a per-series color with \`options.stroke\` instead.`);
+}
 /**
 * The variable a `theme` prop override is published as, one layer outside the role itself.
 *
@@ -784,7 +806,7 @@ ROLE_FOR_FIELD.map(([role]) => role);
 /**
 * Whether a value reads the role it is being published for, which would make the catalog entry depend on itself.
 *
-* The dependency runs `<role>: var(<role>-theme, …)`, so a value naming `<role>` closes a cycle through the catalog entry. CSS marks every custom property in a cycle invalid at computed-value time — the role's own fallback is *not* used, so the token resolves to nothing and every chart loses that colour. Verified in Chrome: `--role-theme: var(--role, blue); --role: var(--role-theme, green)` leaves `--role` empty, not `green`.
+* The dependency runs `<role>: var(<role>-theme, …)`, so a value naming `<role>` closes a cycle through the catalog entry. CSS marks every custom property in a cycle invalid at computed-value time — the role's own fallback is *not* used, so the token resolves to nothing and every chart loses that color. Verified in Chrome: `--role-theme: var(--role, blue); --role: var(--role-theme, green)` leaves `--role` empty, not `green`.
 *
 * Three things this has to get right, none of which a plain substring test gets:
 *
@@ -800,9 +822,11 @@ ROLE_FOR_FIELD.map(([role]) => role);
 */
 const readsOwnRole = (value, role) => value.trim() === role || new RegExp(`var\\(\\s*${role.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`).test(value);
 /**
-* Maps a sparse consumer theme onto the theme-layer variables its overridden catalog roles read, so CSS-painted and JS-resolved colours read one source.
+* Maps a sparse consumer theme onto the theme-layer variables its overridden catalog roles read, so CSS-painted and JS-resolved colors read one source.
 *
 * A value that reads the role it would override is left unpublished — that is the default theme's own pointer surviving `mergeThemes`, and publishing it would invalidate the role. The role is still reported in `roles`: `withCatalogPointers` restores its theme field to the catalog pointer either way, so CSS and visx agree on the catalog default rather than visx painting a literal CSS never sees.
+*
+* `theme.colors` publishes through the same mechanism, one slot per entry, so a CSS declaration of `--a8c-charts-color-series-N` still beats it and a short array leaves the later slots unset rather than blank.
 *
 * @param theme - The consumer's `theme` prop, before merging with the default theme.
 * @return The wrapper's custom properties, and the roles the consumer overrode.
@@ -812,6 +836,7 @@ const themeOverrideVars = (theme) => {
 		vars: {},
 		roles: []
 	};
+	if (Array.isArray(theme.colors) && theme.colors.length > 5) warnOnceAboutExtraColors(theme.colors.length);
 	const vars = {};
 	const roles = [];
 	for (const [role, read] of ROLE_FOR_FIELD) {
@@ -834,13 +859,7 @@ const defaultTheme = {
 	backgroundColor: "var(--a8c-charts-color-background, #fff)",
 	labelBackgroundColor: "transparent",
 	labelTextColor: "var(--a8c-charts-color-label-on-fill, #FFFFFF)",
-	colors: [
-		"#98C8DF",
-		"#006DAB",
-		"#A6DC80",
-		"#1F9828",
-		"#FF8C8F"
-	],
+	colors: [...SERIES_PALETTE_POINTERS],
 	gridStyles: {
 		stroke: "var(--a8c-charts-color-grid, #dbdbdb)",
 		strokeWidth: 1
@@ -920,7 +939,23 @@ const defaultTheme = {
 };
 //#endregion
 //#region src/providers/chart-context/private/with-catalog-pointers.ts
+/**
+* The pointer one palette slot is restored to.
+*
+* Unlike the other roles, this keeps the consumer's own color as the pointer's terminal literal instead of the catalog's. The literal is only ever reached where `getComputedStyle` resolves nothing — SSR and jsdom — and there the palette is the one field where falling back to the catalog default would be visible: every series would paint the same seeded blue. In a browser the slot resolves first, so a CSS declaration of it still outranks the consumer's `theme.colors`.
+*
+* @param index - The slot's zero-based index in `colors`.
+* @param value - The merged theme's entry for it.
+* @return The catalog pointer for that slot.
+*/
+const seriesPointer = (index, value) => {
+	const role = seriesRole(index + 1);
+	if (typeof value === "string" && value.startsWith(`var(${role}`)) return value;
+	if (typeof value !== "string" || value === "") return SERIES_PALETTE_POINTERS[index];
+	return `var(${role}, ${value})`;
+};
 const CATALOG_RESTORE_FOR_ROLE = {
+	...Object.fromEntries(Array.from({ length: 5 }, (_, index) => [seriesRole(index + 1), (theme) => ({ colors: SERIES_PALETTE_POINTERS.map((_pointer, slot) => seriesPointer(slot, theme.colors?.[slot])) })])),
 	"--a8c-charts-color-background": () => ({ backgroundColor: defaultTheme.backgroundColor }),
 	"--a8c-charts-color-grid": (theme) => ({ gridStyles: {
 		...theme.gridStyles,
@@ -944,7 +979,7 @@ const CATALOG_RESTORE_FOR_ROLE = {
 *
 * This covers roles `themeOverrideVars` deliberately left unpublished as well as the ones it published. A value that reads its own role is not publishable, but leaving visx the consumer's literal is what the whole mechanism exists to prevent: `theme={ { gridStyles: { stroke: 'var(--brand, var(--a8c-charts-color-grid, red))' } } }` would have CSS paint the catalog default while visx painted `--brand`.
 *
-* Every field outside the five mapped roles is left exactly as `merged` provided it: those aren't published as theme-layer vars, so rewriting them would erase a consumer's override with no replacement carrier.
+* Every field outside the mapped roles is left exactly as `merged` provided it: those aren't published as theme-layer vars, so rewriting them would erase a consumer's override with no replacement carrier.
 *
 * @param merged          - The consumer theme merged onto `defaultTheme` (`mergeThemes` output).
 * @param overriddenRoles - The catalog roles the consumer overrode, from `themeOverrideVars`.
@@ -989,29 +1024,26 @@ const GlobalChartsProvider = ({ children, theme }) => {
 	const [isColorPaletteResolved, setIsColorPaletteResolved] = (0, react.useState)(false);
 	(0, react.useLayoutEffect)(() => {
 		setIsColorPaletteResolved(false);
-		const { colors } = providerTheme;
 		const resolvedColors = [];
 		const hues = [];
 		const existingHslColors = [];
 		let minHue = 360;
 		let maxHue = 0;
-		if (Array.isArray(colors)) {
-			for (const color of colors) if (color && typeof color === "string") {
-				const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
-				if (normalizedColor.startsWith("#")) {
-					resolvedColors.push(normalizedColor);
-					const hslColor = (0, _visx_vendor_d3_color.hsl)(normalizedColor);
-					if (!isNaN(hslColor.h)) {
-						const hslTuple = [
-							hslColor.h,
-							hslColor.s * 100,
-							hslColor.l * 100
-						];
-						hues.push(hslTuple[0]);
-						existingHslColors.push(hslTuple);
-						minHue = Math.min(minHue, hslTuple[0]);
-						maxHue = Math.max(maxHue, hslTuple[0]);
-					}
+		for (const color of providerTheme.colors ?? SERIES_PALETTE_POINTERS) {
+			const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
+			if (normalizedColor.startsWith("#")) {
+				resolvedColors.push(normalizedColor);
+				const hslColor = (0, _visx_vendor_d3_color.hsl)(normalizedColor);
+				if (!isNaN(hslColor.h)) {
+					const hslTuple = [
+						hslColor.h,
+						hslColor.s * 100,
+						hslColor.l * 100
+					];
+					hues.push(hslTuple[0]);
+					existingHslColors.push(hslTuple);
+					minHue = Math.min(minHue, hslTuple[0]);
+					maxHue = Math.max(maxHue, hslTuple[0]);
 				}
 			}
 		}
@@ -1029,7 +1061,7 @@ const GlobalChartsProvider = ({ children, theme }) => {
 	const [groupToColorMap, setGroupToColorMap] = (0, react.useState)(() => /* @__PURE__ */ new Map());
 	(0, react.useEffect)(() => {
 		setGroupToColorMap(/* @__PURE__ */ new Map());
-	}, [providerTheme.colors]);
+	}, [colorCache.colors.join(",")]);
 	const registerChart = (0, react.useCallback)((id, data) => {
 		setCharts((prev) => new Map(prev).set(id, data));
 	}, []);
@@ -1242,10 +1274,10 @@ const useXYChartTheme = (data) => {
 	return (0, react.useMemo)(() => {
 		const resolve = createCssVariableResolver(scopeElement);
 		const resolveColor = (value) => value ? resolve(value) ?? value : value;
-		const seriesColors = JSON.parse(seriesColorKey);
+		const paletteColors = [...JSON.parse(seriesColorKey), ...theme.colors ?? []].map((color) => resolveColor(color)).filter((color) => Boolean(color) && !color.includes("var("));
 		return (0, _visx_xychart.buildChartTheme)({
 			...theme,
-			colors: [...seriesColors, ...theme.colors ?? []],
+			colors: paletteColors,
 			backgroundColor: resolveColor(theme.backgroundColor),
 			gridStyles: theme.gridStyles && {
 				...theme.gridStyles,
@@ -5177,12 +5209,32 @@ const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
 	});
 	return -(getScaleBandwidth(groupScale) + 6);
 };
+const BAR_TINT_TOWARD_SERIES = .4;
 const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	left: 0,
 	right: 20,
 	bottom: 0,
 	top: 0
 }, ...rest }) => {
+	const { getElementStyles } = useGlobalChartsContext();
+	const tintedData = (0, react.useMemo)(() => {
+		if (data.length > 1) return data;
+		return data.map((series, index) => {
+			if (series.options?.stroke) return series;
+			const { color } = getElementStyles({
+				data: series,
+				index
+			});
+			if (!isValidHexColor(color)) return series;
+			return {
+				...series,
+				options: {
+					...series.options,
+					stroke: lightenHexColor(color, 1 - BAR_TINT_TOWARD_SERIES)
+				}
+			};
+		});
+	}, [data, getElementStyles]);
 	const chartOptions = (0, react.useMemo)(() => {
 		const isMultiSeries = data.length > 1;
 		const defaultYScale = {
@@ -5215,7 +5267,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarChart, {
 		orientation: "horizontal",
 		gridVisibility: "none",
-		data,
+		data: tintedData,
 		width,
 		height,
 		margin,
@@ -10085,6 +10137,7 @@ const transformToSeriesData = (data, color, strokeWidth) => {
 };
 const SparklineComponent = (0, react.forwardRef)(({ data, width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT, color, strokeWidth: strokeWidthProp, withGradientFill = true, gradient, className, chartId, margin: marginProp, animation }, ref) => {
 	const theme = useGlobalChartsTheme();
+	const chartsContext = (0, react.useContext)(GlobalChartsContext);
 	const themeStrokeWidth = theme.sparkline?.strokeWidth ?? 1.5;
 	const strokeWidth = strokeWidthProp ?? themeStrokeWidth;
 	const seriesData = (0, react.useMemo)(() => {
@@ -10138,7 +10191,7 @@ const SparklineComponent = (0, react.forwardRef)(({ data, width = DEFAULT_WIDTH,
 	if (data.length === 1) {
 		const cx = width / 2;
 		const cy = height / 2;
-		const resolvedColor = color || "#000000";
+		const resolvedColor = color || chartsContext?.getElementStyles({ index: 0 }).color || "#000000";
 		return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			ref,
 			className: (0, clsx.default)("sparkline", sparkline_module_default.sparkline, sparkline_module_default["sparkline--single-point"], className),

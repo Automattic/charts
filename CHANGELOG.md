@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Bar and line charts: Report a click through the pointer event handlers and Enter or Space through an activation callback, so a chart can open the point under the pointer or the keyboard selection.
 
 ### Changed
+- Follow the WordPress admin color scheme for series colors, and move the palette to five --a8c-charts-color-series-* custom properties. theme.colors is deprecated.
 - Update package dependencies.
 
 ## [3.1.1] - 2026-08-26
