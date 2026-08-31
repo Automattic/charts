@@ -17,7 +17,7 @@ var __copyProps = (to, from, except, desc) => {
 	}
 	return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule || !__hasOwnProp.call(mod, "default") ? __defProp(target, "default", {
 	value: mod,
 	enumerable: true
 }) : target, mod));
@@ -28,7 +28,7 @@ let _wordpress_i18n = require("@wordpress/i18n");
 let clsx = require("clsx");
 clsx = __toESM(clsx, 1);
 let react = require("react");
-react = __toESM(react, 1);
+react = __toESM(react);
 let _visx_vendor_d3_color = require("@visx/vendor/d3-color");
 let date_fns = require("date-fns");
 let _visx_text = require("@visx/text");
@@ -252,7 +252,8 @@ const formatPercentage = (value) => {
 */
 const getLongestTickWidth = (ticks, formatTick, labelStyle) => {
 	const formattedTicks = ticks.map((tick) => formatTick(tick, 0, []));
-	return (0, _visx_text.getStringWidth)(formattedTicks.reduce((longest, current) => longest.length >= current.length ? longest : current, formattedTicks[0]), labelStyle);
+	const longestTick = formattedTicks.reduce((longest, current) => longest.length >= current.length ? longest : current, formattedTicks[0]);
+	return (0, _visx_text.getStringWidth)(longestTick, labelStyle);
 };
 //#endregion
 //#region src/utils/get-styles.ts
@@ -1059,9 +1060,10 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		if (colorCache.colors.length > 0) setIsColorPaletteResolved(true);
 	}, [colorCache]);
 	const [groupToColorMap, setGroupToColorMap] = (0, react.useState)(() => /* @__PURE__ */ new Map());
+	const paletteKey = colorCache.colors.join(",");
 	(0, react.useEffect)(() => {
 		setGroupToColorMap(/* @__PURE__ */ new Map());
-	}, [colorCache.colors.join(",")]);
+	}, [paletteKey]);
 	const registerChart = (0, react.useCallback)((id, data) => {
 		setCharts((prev) => new Map(prev).set(id, data));
 	}, []);
@@ -1391,11 +1393,12 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		if (options.axis?.y?.tickValues?.length) return options.axis.y.tickValues;
 		const minY = Math.min(...allDataPoints.map((d) => d.value));
 		const maxY = Math.max(...allDataPoints.map((d) => d.value));
-		return (0, _visx_scale.getTicks)((0, _visx_scale.createScale)({
+		const yScale = (0, _visx_scale.createScale)({
 			...options.yScale,
 			domain: [minY, maxY],
 			range: [height, 0]
-		}), options.axis?.y?.numTicks);
+		});
+		return (0, _visx_scale.getTicks)(yScale, options.axis?.y?.numTicks);
 	}, [
 		options,
 		data,
@@ -1520,7 +1523,7 @@ const MIN_PIXEL_SIZE = 3;
 /**
 * Pixel size for zero-value bars (1px less than near-zero to be visually distinguishable).
 */
-const ZERO_PIXEL_SIZE = MIN_PIXEL_SIZE - 1;
+const ZERO_PIXEL_SIZE = 2;
 const useZeroValueDisplay = (data, options = { enabled: false }) => {
 	const { enabled, valueAxisLength } = options;
 	return (0, react.useMemo)(() => {
@@ -3034,7 +3037,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 			style: {
 				width: `44px`,
 				height: `44px`,
-				transform: `translate(${44 / 2}px, 0)`
+				transform: `translate(22px, 0)`
 			},
 			"aria-label": title || (0, _wordpress_i18n.__)("View details", "jetpack-charts"),
 			children: renderLabel({
@@ -3597,36 +3600,38 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
 	const error = validateData$4(dataSorted);
 	const isDataValid = !error;
+	const legendItems = useChartLegendItems(dataSorted, (0, react.useMemo)(() => ({
+		withGlyph: withLegendGlyph,
+		glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
+		collapseGroups: legendCollapseGroups,
+		renderGlyph
+	}), [
+		withLegendGlyph,
+		glyphStyle?.radius,
+		legendCollapseGroups,
+		renderGlyph
+	]), legendShape);
+	const chartMetadata = (0, react.useMemo)(() => ({
+		withGradientFill,
+		smoothing,
+		curveType,
+		withStartGlyphs,
+		withEndGlyphs,
+		withLegendGlyph
+	}), [
+		withGradientFill,
+		smoothing,
+		curveType,
+		withStartGlyphs,
+		withEndGlyphs,
+		withLegendGlyph
+	]);
 	useChartRegistration({
 		chartId,
-		legendItems: useChartLegendItems(dataSorted, (0, react.useMemo)(() => ({
-			withGlyph: withLegendGlyph,
-			glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
-			collapseGroups: legendCollapseGroups,
-			renderGlyph
-		}), [
-			withLegendGlyph,
-			glyphStyle?.radius,
-			legendCollapseGroups,
-			renderGlyph
-		]), legendShape),
+		legendItems,
 		chartType: "line",
 		isDataValid,
-		metadata: (0, react.useMemo)(() => ({
-			withGradientFill,
-			smoothing,
-			curveType,
-			withStartGlyphs,
-			withEndGlyphs,
-			withLegendGlyph
-		}), [
-			withGradientFill,
-			smoothing,
-			curveType,
-			withStartGlyphs,
-			withEndGlyphs,
-			withLegendGlyph
-		])
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const accessors = {
@@ -4046,26 +4051,28 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
 	const error = validateData$3(dataSorted);
 	const isDataValid = !error;
+	const legendItems = useChartLegendItems(dataSorted, (0, react.useMemo)(() => ({
+		withGlyph: false,
+		glyphSize: 0,
+		collapseGroups: legend.collapseGroups ?? false
+	}), [legend.collapseGroups]), legendShape);
+	const chartMetadata = (0, react.useMemo)(() => ({
+		stacked,
+		stackOffset,
+		smoothing,
+		curveType
+	}), [
+		stacked,
+		stackOffset,
+		smoothing,
+		curveType
+	]);
 	useChartRegistration({
 		chartId,
-		legendItems: useChartLegendItems(dataSorted, (0, react.useMemo)(() => ({
-			withGlyph: false,
-			glyphSize: 0,
-			collapseGroups: legend.collapseGroups ?? false
-		}), [legend.collapseGroups]), legendShape),
+		legendItems,
 		chartType: "area",
 		isDataValid,
-		metadata: (0, react.useMemo)(() => ({
-			stacked,
-			stackOffset,
-			smoothing,
-			curveType
-		}), [
-			stacked,
-			stackOffset,
-			smoothing,
-			curveType
-		])
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const animationEnabled = !!animation && !prefersReducedMotion;
@@ -4660,11 +4667,6 @@ function computeComparisonRect(params) {
 	};
 }
 /**
-* Fraction of each per-series step left as a gap between bars within a single tick.
-* Larger = more space between adjacent series; the shadow spans `1 - COMPARISON_INNER_GAP` of the step.
-*/
-const COMPARISON_INNER_GAP = .1;
-/**
 * Upper clamp on the computed group padding, so bars can never collapse to zero width
 * even at very large `widthFactor` values.
 */
@@ -4791,6 +4793,18 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	const primaryEntries = (0, react.useMemo)(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
 	const primaryKeys = (0, react.useMemo)(() => primaryEntries.map(({ series }) => series.label), [primaryEntries]);
 	const primarySeries = (0, react.useMemo)(() => primaryEntries.map(({ series }) => series), [primaryEntries]);
+	const activateSelectedBar = (0, react.useCallback)((index) => {
+		const primaryCount = primaryEntries.length;
+		if (!primaryCount) return;
+		const dataPointIndex = Math.floor(index / primaryCount);
+		const series = primaryEntries[index % primaryCount]?.series;
+		const datum = series?.data[dataPointIndex];
+		if (series && datum) onDatumActivate?.({
+			datum,
+			index: dataPointIndex,
+			key: series.label
+		});
+	}, [primaryEntries, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
@@ -4798,18 +4812,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		setIsNavigating,
 		chartRef,
 		totalPoints,
-		onActivate: (0, react.useCallback)((index) => {
-			const primaryCount = primaryEntries.length;
-			if (!primaryCount) return;
-			const dataPointIndex = Math.floor(index / primaryCount);
-			const series = primaryEntries[index % primaryCount]?.series;
-			const datum = series?.data[dataPointIndex];
-			if (series && datum) onDatumActivate?.({
-				datum,
-				index: dataPointIndex,
-				key: series.label
-			});
-		}, [primaryEntries, onDatumActivate])
+		onActivate: activateSelectedBar
 	});
 	const comparisonEntries = (0, react.useMemo)(() => {
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
@@ -4847,7 +4850,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	const groupPadding = (0, react.useMemo)(() => {
 		const basePadding = chartOptions.barGroup.padding;
 		if (!comparisonWidthFactor || comparisonWidthFactor <= 1) return basePadding;
-		const p = 1 - (1 - COMPARISON_INNER_GAP) / comparisonWidthFactor;
+		const p = 1 - .9 / comparisonWidthFactor;
 		return Math.min(Math.max(p, basePadding), MAX_GROUP_PADDING);
 	}, [chartOptions.barGroup.padding, comparisonWidthFactor]);
 	const { xScale, yScale } = (0, react.useMemo)(() => {
@@ -4985,15 +4988,17 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		chartId
 	]);
 	const error = validateData$2(dataSorted);
+	const isDataValid = !error;
+	const chartMetadata = (0, react.useMemo)(() => ({
+		orientation,
+		withPatterns
+	}), [orientation, withPatterns]);
 	useChartRegistration({
 		chartId,
 		legendItems,
 		chartType: "bar",
-		isDataValid: !error,
-		metadata: (0, react.useMemo)(() => ({
-			orientation,
-			withPatterns
-		}), [orientation, withPatterns])
+		isDataValid,
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	if (error) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
@@ -5209,7 +5214,6 @@ const getDefaultYOffset = (data, yScaleConfig, height, isMultiSeries) => {
 	});
 	return -(getScaleBandwidth(groupScale) + 6);
 };
-const BAR_TINT_TOWARD_SERIES = .4;
 const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	left: 0,
 	right: 20,
@@ -5230,7 +5234,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 				...series,
 				options: {
 					...series.options,
-					stroke: lightenHexColor(color, 1 - BAR_TINT_TOWARD_SERIES)
+					stroke: lightenHexColor(color, .6)
 				}
 			};
 		});
@@ -5528,20 +5532,21 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		})]
 	});
 	const isDataValid = Boolean(steps && steps.length > 0);
+	const chartMetadata = (0, react.useMemo)(() => ({
+		mainRate,
+		changeIndicator,
+		stepsCount: steps?.length || 0
+	}), [
+		mainRate,
+		changeIndicator,
+		steps?.length
+	]);
 	useChartRegistration({
 		chartId,
 		legendItems: [],
 		chartType: "conversion-funnel",
 		isDataValid,
-		metadata: (0, react.useMemo)(() => ({
-			mainRate,
-			changeIndicator,
-			stepsCount: steps?.length || 0
-		}), [
-			mainRate,
-			changeIndicator,
-			steps?.length
-		])
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	if (!isDataValid) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_ui.Stack, {
@@ -6145,7 +6150,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	});
 	const chartBackgroundHex = normalizeColorToHex(theme.backgroundColor, scopeElement, resolveCssVariable);
 	const primaryHex = normalizeColorToHex(primaryColorHex);
-	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) && prefersLightText(mixHexColors(primaryHex, chartBackgroundHex, 1 - (CELL_MIX_FLOOR + (1 - CELL_MIX_FLOOR) * intensity)));
+	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) && prefersLightText(mixHexColors(primaryHex, chartBackgroundHex, 1 - (CELL_MIX_FLOOR + .85 * intensity)));
 	const extent = (0, react.useMemo)(() => getValueExtent(data), [data]);
 	const heatmapContext = (0, react.useMemo)(() => ({
 		extent,
@@ -6796,10 +6801,11 @@ var StyleSheet = /*#__PURE__*/ function() {
 		var _this = this;
 		this._insertTag = function(tag) {
 			var before;
-			if (_this.tags.length === 0) if (_this.insertionPoint) before = _this.insertionPoint.nextSibling;
-			else if (_this.prepend) before = _this.container.firstChild;
-			else before = _this.before;
-			else before = _this.tags[_this.tags.length - 1].nextSibling;
+			if (_this.tags.length === 0) {
+				if (_this.insertionPoint) before = _this.insertionPoint.nextSibling;
+				else if (_this.prepend) before = _this.container.firstChild;
+				else before = _this.before;
+			} else before = _this.tags[_this.tags.length - 1].nextSibling;
 			_this.container.insertBefore(tag, before);
 			_this.tags.push(tag);
 		};
@@ -7118,9 +7124,7 @@ function delimiter(type) {
 		case 40:
 			if (type === 41) delimiter(type);
 			break;
-		case 92:
-			next();
-			break;
+		case 92: next();
 	}
 	return position;
 }
@@ -8143,14 +8147,12 @@ function handleInterpolation(mergedProps, registered, interpolation) {
 				return serializedStyles.styles + ";";
 			}
 			return createStringFromObject(mergedProps, registered, interpolation);
-		case "function":
-			if (mergedProps !== void 0) {
-				var previousCursor = cursor;
-				var result = interpolation(mergedProps);
-				cursor = previousCursor;
-				return handleInterpolation(mergedProps, registered, result);
-			}
-			break;
+		case "function": if (mergedProps !== void 0) {
+			var previousCursor = cursor;
+			var result = interpolation(mergedProps);
+			cursor = previousCursor;
+			return handleInterpolation(mergedProps, registered, result);
+		}
 	}
 	var asString = interpolation;
 	if (registered == null) return asString;
@@ -8895,9 +8897,10 @@ function filterIntrinsicElementProps(props, element) {
 }
 function UnforwardedPolymorphicElement({ as, ...props }, ref) {
 	const Element = as || "div";
+	const forwardedProps = typeof Element === "string" ? filterIntrinsicElementProps(props, Element) : props;
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Element, {
 		ref,
-		...typeof Element === "string" ? filterIntrinsicElementProps(props, Element) : props
+		...forwardedProps
 	});
 }
 var PolymorphicElement = (0, react.forwardRef)(UnforwardedPolymorphicElement);
@@ -9052,8 +9055,9 @@ function useGrid(props) {
 //#endregion
 //#region ../../../node_modules/.pnpm/@wordpress+components@37.0.0_@types+react-dom@18.3.7_@types+react@18.3.28__@types+react_2885e30fd825c84555acae924d792a75/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
+	const gridProps = useGrid(props);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
-		...useGrid(props),
+		...gridProps,
 		ref: forwardedRef
 	});
 }
@@ -9365,15 +9369,17 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		withComparison,
 		withOverlayLabel
 	]);
+	const isDataValid = Boolean(data && data.length > 0);
+	const chartMetadata = (0, react.useMemo)(() => ({
+		withComparison,
+		withOverlayLabel
+	}), [withComparison, withOverlayLabel]);
 	useChartRegistration({
 		chartId,
 		legendItems,
 		chartType: "leaderboard",
-		isDataValid: Boolean(data && data.length > 0),
-		metadata: (0, react.useMemo)(() => ({
-			withComparison,
-			withOverlayLabel
-		}), [withComparison, withOverlayLabel])
+		isDataValid,
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const { contentRef, fittedCount, isMeasurable } = useFittedRowCount(fitRows && !allSeriesHidden, data?.length ?? 0, data);
@@ -9628,8 +9634,9 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		hideTooltip();
 	}, [withTooltips, hideTooltip]);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+	const dataWithPercentages = useDataWithPercentages(data);
 	const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
-		data: useDataWithPercentages(data),
+		data: dataWithPercentages,
 		chartId,
 		isSeriesVisible
 	});
@@ -9639,20 +9646,21 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 	}), [legendValueDisplay]));
 	const { isValid, message } = validateData$1(data);
 	const { svgChildren, htmlChildren, legendChildren, otherChildren } = useChartChildren(children, "PieChart");
+	const chartMetadata = (0, react.useMemo)(() => ({
+		thickness,
+		gapScale,
+		cornerScale
+	}), [
+		thickness,
+		gapScale,
+		cornerScale
+	]);
 	useChartRegistration({
 		chartId,
 		legendItems,
 		chartType: "pie",
 		isDataValid: isValid,
-		metadata: (0, react.useMemo)(() => ({
-			thickness,
-			gapScale,
-			cornerScale
-		}), [
-			thickness,
-			gapScale,
-			cornerScale
-		])
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	if (!isValid) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
@@ -9781,14 +9789,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 										}
 										const svgLabelSmall = providerTheme.svgLabelSmall;
 										const fontSize = resolveFontSize(svgLabelSmall?.fontSize) ?? 12;
-										const estimatedTextWidth = (0, _visx_text.getStringWidth)(arc.data.label, {
+										const backgroundWidth = (0, _visx_text.getStringWidth)(arc.data.label, {
 											fontSize,
 											fontFamily: svgLabelSmall?.fontFamily,
 											fontWeight: svgLabelSmall?.fontWeight
-										});
-										const labelPadding = 6;
-										const backgroundWidth = estimatedTextWidth + labelPadding * 2;
-										const backgroundHeight = fontSize + labelPadding * 2;
+										}) + 12;
+										const backgroundHeight = fontSize + 12;
 										return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", {
 											...groupProps,
 											children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { ...pathProps }), showLabels && hasSpaceForLabel && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", { children: [providerTheme.labelBackgroundColor && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("rect", {
@@ -9920,8 +9926,9 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 	}, [handleMouseMove]);
 	const { isValid, message } = validateData(data);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+	const dataWithPercentages = useDataWithPercentages(data);
 	const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
-		data: useDataWithPercentages(data),
+		data: dataWithPercentages,
 		chartId,
 		isSeriesVisible
 	});
@@ -9938,15 +9945,16 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		legendValueDisplay
 	}), [legendValueDisplay]));
 	const { svgChildren, htmlChildren, legendChildren, otherChildren } = useChartChildren(children, "PieSemiCircleChart");
+	const chartMetadata = (0, react.useMemo)(() => ({
+		thickness,
+		clockwise
+	}), [thickness, clockwise]);
 	useChartRegistration({
 		chartId,
 		legendItems,
 		chartType: "pie-semi-circle",
 		isDataValid: isValid,
-		metadata: (0, react.useMemo)(() => ({
-			thickness,
-			clockwise
-		}), [thickness, clockwise])
+		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const effectiveWidth = propWidth || DEFAULT_WIDTH$1;
@@ -10294,8 +10302,9 @@ const Icon = ({ direction }) => {
 */
 function TrendIndicator({ direction, value, className, style, showIcon = true }) {
 	const ariaLabel = `${DIRECTION_LABELS[direction]}: ${value}`;
+	const standaloneScopeClass = useStandaloneScopeClass();
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
-		className: (0, clsx.default)(useStandaloneScopeClass(), trend_indicator_module_default["trend-indicator"], trend_indicator_module_default[`trend-indicator--${direction}`], className),
+		className: (0, clsx.default)(standaloneScopeClass, trend_indicator_module_default["trend-indicator"], trend_indicator_module_default[`trend-indicator--${direction}`], className),
 		style,
 		"aria-label": ariaLabel,
 		children: [showIcon && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Icon, { direction }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {

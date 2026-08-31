@@ -63,7 +63,7 @@
 		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.2.7",
+		"@automattic/number-formatters": "^1.2.8-alpha",
 		"@babel/runtime": "7.29.7",
 		"@react-spring/web": "10.1.1",
 		"@visx/annotation": "^4.0.0",
@@ -103,7 +103,7 @@
 		"@testing-library/jest-dom": "^6.0.0",
 		"@testing-library/react": "^16.0.0",
 		"@testing-library/user-event": "^14.4.3",
-		"@tsdown/css": "0.22.2",
+		"@tsdown/css": "0.22.14",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^24.12.0",
 		"@types/react": "18.3.28",
@@ -122,7 +122,7 @@
 		"react-dom": "18.3.1",
 		"sass-embedded": "1.97.3",
 		"storybook": "10.4.6",
-		"tsdown": "0.22.2",
+		"tsdown": "0.22.14",
 		"typescript": "6.0.3"
 	},
 	"peerDependencies": {

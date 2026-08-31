@@ -7,7 +7,6 @@ import { LegendOrdinal } from "@visx/legend";
 import { CircleSubjectProps, ConnectorProps, LabelProps, LineSubjectProps } from "@visx/annotation";
 import { PieProvidedProps } from "@visx/shape";
 import { AxisRendererProps, AxisScale, Orientation, TickFormatter } from "@visx/axis";
-
 //#region src/types.d.ts
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -262,8 +261,11 @@ type DataPointPercentageCalculated = DataPointPercentage & {
  * Base theme configuration for chart components with optional properties
  */
 type ChartTheme = {
-  /** Background color for chart components */backgroundColor: string; /** Background color for labels */
-  labelBackgroundColor?: string; /** Text color for labels */
+  /** Background color for chart components */
+  backgroundColor: string;
+  /** Background color for labels */
+  labelBackgroundColor?: string;
+  /** Text color for labels */
   labelTextColor?: string;
   /**
    * Series palette seeds. Entry N publishes `--a8c-charts-color-series-{N+1}`; entries past the fifth are ignored.
@@ -272,38 +274,66 @@ type ChartTheme = {
    *
    * @deprecated Set the `--a8c-charts-color-series-1` … `-5` custom properties inside the provider tree instead, or `options.stroke` on a series for a single one. See `TOKENS.md`. Removed in CHARTS-227.
    */
-  colors?: string[]; /** Optional CSS styles for grid lines */
-  gridStyles?: GridStyles$1; /** Length of axis ticks in pixels */
-  tickLength: number; /** Color of the grid lines */
-  gridColor: string; /** Color of the grid lines in dark mode */
-  gridColorDark: string; /** Styles for x-axis tick lines */
-  xTickLineStyles?: LineStyles$1; /** Styles for x-axis line */
-  xAxisLineStyles?: LineStyles$1; /** Styles for series lines */
-  seriesLineStyles?: LineStyles$1[]; /** Array of render functions for glyphs */
-  glyphs?: Array<(<Datum extends object>(props: GlyphProps<Datum>) => ReactNode)>; /** Legend specific settings */
+  colors?: string[];
+  /** Optional CSS styles for grid lines */
+  gridStyles?: GridStyles$1;
+  /** Length of axis ticks in pixels */
+  tickLength: number;
+  /** Color of the grid lines */
+  gridColor: string;
+  /** Color of the grid lines in dark mode */
+  gridColorDark: string;
+  /** Styles for x-axis tick lines */
+  xTickLineStyles?: LineStyles$1;
+  /** Styles for x-axis line */
+  xAxisLineStyles?: LineStyles$1;
+  /** Styles for series lines */
+  seriesLineStyles?: LineStyles$1[];
+  /** Array of render functions for glyphs */
+  glyphs?: Array<(<Datum extends object>(props: GlyphProps<Datum>) => ReactNode)>;
+  /** Legend specific settings */
   legend?: {
-    /** Styles for legend shapes */shapeStyles?: Record<string, unknown>[]; /** Styles for legend labels */
-    labelStyles?: CSSProperties; /** Styles for legend container */
+    /** Styles for legend shapes */
+    shapeStyles?: Record<string, unknown>[];
+    /** Styles for legend labels */
+    labelStyles?: CSSProperties;
+    /** Styles for legend container */
     containerStyles?: CSSProperties;
-  }; /** Styles for small SVG text (eg. axis tick labels), passed through to the XYChart theme. */
-  svgLabelSmall?: TextProps; /** Styles for large SVG text (eg. axis titles), passed through to the XYChart theme. */
+  };
+  /** Styles for small SVG text (eg. axis tick labels), passed through to the XYChart theme. */
+  svgLabelSmall?: TextProps;
+  /** Styles for large SVG text (eg. axis titles), passed through to the XYChart theme. */
   svgLabelBig?: TextProps;
-  annotationStyles?: AnnotationStyles; /** GeoChart specific settings */
+  annotationStyles?: AnnotationStyles;
+  /** GeoChart specific settings */
   geoChart?: {
-    /** Default fill color for a geo chart feature (e.g. country) with no data */featureFillColor?: string;
-  }; /** LeaderboardChart specific settings */
+    /** Default fill color for a geo chart feature (e.g. country) with no data */
+    featureFillColor?: string;
+  };
+  /** LeaderboardChart specific settings */
   leaderboardChart?: {
-    /** Gap between rows in the leaderboard grid */rowGap?: number; /** Gap between columns in the leaderboard grid */
-    columnGap?: number; /** Spacing between label and progress bars */
-    labelSpacing?: GapSize; /** Primary color for current period bars */
-    primaryColor?: string; /** Secondary color for comparison period bars */
-    secondaryColor?: string; /** Delta colors: [negative, neutral, positive] */
+    /** Gap between rows in the leaderboard grid */
+    rowGap?: number;
+    /** Gap between columns in the leaderboard grid */
+    columnGap?: number;
+    /** Spacing between label and progress bars */
+    labelSpacing?: GapSize;
+    /** Primary color for current period bars */
+    primaryColor?: string;
+    /** Secondary color for comparison period bars */
+    secondaryColor?: string;
+    /** Delta colors: [negative, neutral, positive] */
     deltaColors?: [string, string, string];
-  }; /** ConversionFunnelChart specific settings */
+  };
+  /** ConversionFunnelChart specific settings */
   conversionFunnelChart?: {
-    /** Primary color for funnel bars */primaryColor?: string; /** Background color for chart container */
-    backgroundColor?: string; /** Color for positive change indicators */
-    positiveChangeColor?: string; /** Color for negative change indicators */
+    /** Primary color for funnel bars */
+    primaryColor?: string;
+    /** Background color for chart container */
+    backgroundColor?: string;
+    /** Color for positive change indicators */
+    positiveChangeColor?: string;
+    /** Color for negative change indicators */
     negativeChangeColor?: string;
   };
   lineChart?: {
@@ -311,14 +341,17 @@ type ChartTheme = {
   };
   barChart?: {
     barStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, BarStyles>>;
-  }; /** Sparkline specific settings */
+  };
+  /** Sparkline specific settings */
   sparkline?: {
-    /** Margin around the sparkline chart */margin?: {
+    /** Margin around the sparkline chart */
+    margin?: {
       top?: number;
       right?: number;
       bottom?: number;
       left?: number;
-    }; /** Stroke width for the sparkline line */
+    };
+    /** Stroke width for the sparkline line */
     strokeWidth?: number;
   };
   /**
@@ -330,8 +363,10 @@ type ChartTheme = {
      * Color the cell scale interpolates toward at the highest value (prop > this >
      * palette `colors[0]`), fed to CSS `color-mix`. Omit to use the palette color.
      */
-    primaryColor?: string; /** Gap in px between cells in compact mode */
-    compactCellGap?: number; /** Fixed square cell size in px for compact mode */
+    primaryColor?: string;
+    /** Gap in px between cells in compact mode */
+    compactCellGap?: number;
+    /** Fixed square cell size in px for compact mode */
     compactCellSize?: number;
   };
 };
@@ -433,7 +468,9 @@ type ScaleOptions = {
   paddingOuter?: number;
 };
 type LegendItemStyles = {
-  /** Margin around each legend item. */margin?: CSSProperties['margin']; /** Flex direction for items within each legend entry. */
+  /** Margin around each legend item. */
+  margin?: CSSProperties['margin'];
+  /** Flex direction for items within each legend entry. */
   flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
 };
 type LegendLabelStyles = Pick<CSSProperties, 'justifyContent' | 'flex' | 'margin'> & {
@@ -450,8 +487,11 @@ type LegendLabelStyles = Pick<CSSProperties, 'justifyContent' | 'flex' | 'margin
   textOverflow?: 'ellipsis' | 'wrap';
 };
 type LegendShapeStyles = {
-  /** Width of the legend shape in pixels. */width?: number; /** Height of the legend shape in pixels. */
-  height?: number; /** Margin around the legend shape. */
+  /** Width of the legend shape in pixels. */
+  width?: number;
+  /** Height of the legend shape in pixels. */
+  height?: number;
+  /** Margin around the legend shape. */
   margin?: CSSProperties['margin'];
 };
 /** Position of the legend relative to chart content. */
@@ -639,11 +679,16 @@ type BaseLegendProps = VisxLegendProps & {
   items: BaseLegendItem[];
   orientation?: 'horizontal' | 'vertical';
   position?: LegendPosition;
-  alignment?: 'start' | 'center' | 'end'; /** Additional CSS class name for legend items. */
-  itemClassName?: string; /** CSS styles for each legend item (margin, flexDirection). */
-  itemStyles?: LegendItemStyles; /** Additional CSS class name for legend labels. */
-  labelClassName?: string; /** CSS styles for legend labels (justifyContent, flex, margin). */
-  labelStyles?: LegendLabelStyles; /** Styles for legend shapes (width, height, margin). */
+  alignment?: 'start' | 'center' | 'end';
+  /** Additional CSS class name for legend items. */
+  itemClassName?: string;
+  /** CSS styles for each legend item (margin, flexDirection). */
+  itemStyles?: LegendItemStyles;
+  /** Additional CSS class name for legend labels. */
+  labelClassName?: string;
+  /** CSS styles for legend labels (justifyContent, flex, margin). */
+  labelStyles?: LegendLabelStyles;
+  /** Styles for legend shapes (width, height, margin). */
   shapeStyles?: LegendShapeStyles;
   /**
    * Function for rendering a custom legend layout.
@@ -1000,15 +1045,7 @@ interface RenderValueProps {
   formatter: (value: number) => string;
 }
 declare const BarListChart: FC<BarListChartProps>;
-declare const BarListChartResponsive: ({
-  resizeDebounceTime,
-  maxWidth,
-  aspectRatio,
-  size,
-  width,
-  height,
-  ...chartProps
-}: Omit<BarListChartProps, "height" | "size" | "width"> & {
+declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<BarListChartProps, "height" | "size" | "width"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1154,15 +1191,7 @@ interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | '
 //#endregion
 //#region src/charts/geo-chart/geo-chart.d.ts
 declare const GeoChartWithProvider: FC<GeoChartProps>;
-declare const GeoChartResponsive: ({
-  resizeDebounceTime,
-  maxWidth,
-  aspectRatio,
-  size,
-  width,
-  height,
-  ...chartProps
-}: Omit<GeoChartProps, "height" | "size" | "width"> & {
+declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<GeoChartProps, "height" | "size" | "width"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1171,7 +1200,8 @@ declare const GeoChartResponsive: ({
 //#region src/charts/heatmap-chart/types.d.ts
 /** A single heatmap cell. `value: null` marks an empty cell. */
 type HeatmapCell = {
-  /** Per-cell label used in the tooltip / accessible name. */label?: string;
+  /** Per-cell label used in the tooltip / accessible name. */
+  label?: string;
   value: number | null;
   /**
    * Leave the cell's grid slot empty: nothing is painted and the cell is
@@ -1191,7 +1221,8 @@ type HeatmapCell = {
 };
 /** A heatmap column (rendered left→right); its cells render top→bottom. */
 type HeatmapColumn = {
-  /** x-axis label for this column. Empty/omitted renders blank. */label?: string;
+  /** x-axis label for this column. Empty/omitted renders blank. */
+  label?: string;
   data: HeatmapCell[];
 };
 type HeatmapTooltipData = {
@@ -1355,15 +1386,7 @@ declare const LeaderboardChart: FC<LeaderboardChartProps> & {
     chartId?: string;
   } & import("react").RefAttributes<HTMLDivElement>>;
 };
-declare const LeaderboardChartResponsive: (({
-  resizeDebounceTime,
-  maxWidth,
-  aspectRatio,
-  size,
-  width,
-  height,
-  ...chartProps
-}: Omit<LeaderboardChartProps, "height" | "size" | "width"> & {
+declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<LeaderboardChartProps, "height" | "size" | "width"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1455,11 +1478,7 @@ type FormatMetricValueOptions = {
  * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
  * @return Formatted string
  */
-declare const formatMetricValue: (value: string | number, type?: MetricValueType, {
-  decimals,
-  useMultipliers,
-  signDisplay
-}?: FormatMetricValueOptions) => string;
+declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
 //#endregion
 //#region src/utils/format-percentage.d.ts
 /**
@@ -1605,14 +1624,7 @@ declare const resolveCssVariable: (value: string, element?: HTMLElement | null) 
  * @param root0.legendLabels.comparison - Label for comparison period data
  * @return Array of legend items for the leaderboard chart
  */
-declare function useLeaderboardLegendItems({
-  data,
-  primaryColor,
-  secondaryColor,
-  withComparison,
-  withOverlayLabel,
-  legendLabels
-}: {
+declare function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withComparison, withOverlayLabel, legendLabels }: {
   data: LeaderboardEntry[];
   primaryColor?: string;
   secondaryColor?: string;
@@ -1903,15 +1915,7 @@ declare const SparklineUnresponsive: import("react").ForwardRefExoticComponent<S
 /**
  * Responsive Sparkline chart component
  */
-declare const Sparkline: ({
-  resizeDebounceTime,
-  maxWidth,
-  aspectRatio,
-  size,
-  width,
-  height,
-  ...chartProps
-}: Omit<SparklineProps, "height" | "size" | "width"> & {
+declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<SparklineProps, "height" | "size" | "width"> & {
   width?: number;
   height?: number;
   size?: number;
@@ -1950,16 +1954,7 @@ type CustomTooltip = {
   component?: never;
 };
 type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip);
-declare const BaseTooltip: ({
-  data,
-  top,
-  left,
-  component: Component,
-  children,
-  className,
-  style,
-  renderContainer
-}: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
+declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
@@ -2039,13 +2034,7 @@ type TrendIndicatorProps = {
  * @param {TrendIndicatorProps} props - Component props
  * @return {JSX.Element} The rendered trend indicator
  */
-declare function TrendIndicator({
-  direction,
-  value,
-  className,
-  style,
-  showIcon
-}: TrendIndicatorProps): import("react/jsx-runtime").JSX.Element;
+declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): import("react/jsx-runtime").JSX.Element;
 //#endregion
 //#region src/providers/chart-context/types.d.ts
 interface ChartRegistration {
@@ -2097,13 +2086,7 @@ declare const GlobalChartsProvider: FC<GlobalChartsProviderProps>;
 declare const useGlobalChartsContext: () => GlobalChartsContextValue;
 //#endregion
 //#region src/providers/chart-context/hooks/use-chart-registration.d.ts
-declare const useChartRegistration: ({
-  chartId,
-  legendItems,
-  chartType,
-  isDataValid,
-  metadata
-}: {
+declare const useChartRegistration: ({ chartId, legendItems, chartType, isDataValid, metadata }: {
   chartId: string;
   legendItems: BaseLegendItem[];
   chartType: ChartType;
