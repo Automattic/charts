@@ -1145,7 +1145,7 @@ declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRat
   width?: number;
   height?: number;
   size?: number;
-} & ResponsiveConfig) => import("react/jsx-runtime").JSX.Element;
+} & ResponsiveConfig) => import("react").JSX.Element;
 //#endregion
 //#region src/charts/conversion-funnel-chart/types.d.ts
 /**
@@ -1291,7 +1291,7 @@ declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, 
   width?: number;
   height?: number;
   size?: number;
-} & ResponsiveConfig) => import("react/jsx-runtime").JSX.Element;
+} & ResponsiveConfig) => import("react").JSX.Element;
 //#endregion
 //#region src/charts/heatmap-chart/types.d.ts
 /** A single heatmap cell. `value: null` marks an empty cell. */
@@ -1486,7 +1486,7 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
   width?: number;
   height?: number;
   size?: number;
-} & ResponsiveConfig) => import("react/jsx-runtime").JSX.Element) & {
+} & ResponsiveConfig) => import("react").JSX.Element) & {
   Legend: import("react").ForwardRefExoticComponent<Omit<BaseLegendProps, "items"> & {
     items?: BaseLegendItem[];
     chartId?: string;
@@ -2015,7 +2015,7 @@ declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, size, wid
   width?: number;
   height?: number;
   size?: number;
-} & ResponsiveConfig) => import("react/jsx-runtime").JSX.Element;
+} & ResponsiveConfig) => import("react").JSX.Element;
 //#endregion
 //#region src/components/tooltip/base-tooltip.d.ts
 type TooltipData = {
@@ -2050,7 +2050,7 @@ type CustomTooltip = {
   component?: never;
 };
 type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip);
-declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | true | import("react/jsx-runtime").JSX.Element | Iterable<ReactNode>;
+declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | true | import("react").JSX.Element | Iterable<ReactNode>;
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.d.ts
 type FlattenedTooltipData = {
@@ -2130,7 +2130,7 @@ type TrendIndicatorProps = {
  * @param {TrendIndicatorProps} props - Component props
  * @return {JSX.Element} The rendered trend indicator
  */
-declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): import("react/jsx-runtime").JSX.Element;
+declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): import("react").JSX.Element;
 //#endregion
 //#region src/providers/chart-context/types.d.ts
 interface ChartRegistration {
