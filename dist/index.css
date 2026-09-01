@@ -10,7 +10,8 @@
   --a8c-charts-color-label: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   --a8c-charts-color-label-secondary: var(--wpds-color-foreground-content-neutral-weak, #707070);
   --a8c-charts-color-label-inverse: var(--wpds-color-foreground-interactive-neutral-strong, #f0f0f0);
-  --a8c-charts-color-label-on-fill: #fff;
+  --a8c-charts-color-label-on-fill: var(--a8c-charts-color-label-on-fill-theme, #fff);
+  --a8c-charts-color-label-background: var(--a8c-charts-color-label-background-theme, transparent);
   --a8c-charts-color-label-axis: var(--a8c-charts-color-label-axis-theme, var(--a8c-charts-color-label));
   --a8c-charts-color-annotation: var(--wpds-color-foreground-content-neutral, #1e1e1e);
   --a8c-charts-color-trend-up: var(--wpds-color-foreground-content-success-weak, #008030);

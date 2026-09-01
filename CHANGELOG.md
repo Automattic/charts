@@ -14,6 +14,9 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Follow the WordPress admin color scheme for series colors, and move the palette to five --a8c-charts-color-series-* custom properties. theme.colors is deprecated.
+- Stop resolving the grid, axis, tick and label colors in JavaScript and let their `--a8c-charts-color-*` chain reach the element instead, so an override set on a chart's own element applies to it and a theme change repaints with no re-render. Add `--a8c-charts-color-label-background` for the plate behind a pie-slice label.
+  
+  Deprecate every color field on the chart theme — each one now has a `--a8c-charts-color-*` role, a component prop, or both. They all still work. Where a field mixes a color with something else, only the color member is deprecated: `gridStyles.strokeWidth`, `svgLabelSmall.fontFamily` and the annotation geometry are unaffected.
 - Update package dependencies.
 
 ## [3.1.1] - 2026-08-26

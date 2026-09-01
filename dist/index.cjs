@@ -781,6 +781,8 @@ const ROLE_FOR_FIELD = [
 	["--a8c-charts-color-axis", (theme) => theme.xAxisLineStyles?.stroke],
 	["--a8c-charts-color-tick", (theme) => theme.xTickLineStyles?.stroke],
 	["--a8c-charts-color-label-axis", (theme) => theme.svgLabelSmall?.fill],
+	["--a8c-charts-color-label-background", (theme) => theme.labelBackgroundColor],
+	["--a8c-charts-color-label-on-fill", (theme) => theme.labelTextColor],
 	...Array.from({ length: 5 }, (_, index) => [seriesRole(index + 1), (theme) => theme.colors?.[index]])
 ];
 let warnedAboutExtraColors = false;
@@ -858,7 +860,7 @@ const themeOverrideVars = (theme) => {
 */
 const defaultTheme = {
 	backgroundColor: "var(--a8c-charts-color-background, #fff)",
-	labelBackgroundColor: "transparent",
+	labelBackgroundColor: "var(--a8c-charts-color-label-background, transparent)",
 	labelTextColor: "var(--a8c-charts-color-label-on-fill, #FFFFFF)",
 	colors: [...SERIES_PALETTE_POINTERS],
 	gridStyles: {
@@ -973,7 +975,9 @@ const CATALOG_RESTORE_FOR_ROLE = {
 	"--a8c-charts-color-label-axis": (theme) => ({ svgLabelSmall: {
 		...theme.svgLabelSmall,
 		fill: defaultTheme.svgLabelSmall.fill
-	} })
+	} }),
+	"--a8c-charts-color-label-background": () => ({ labelBackgroundColor: defaultTheme.labelBackgroundColor }),
+	"--a8c-charts-color-label-on-fill": () => ({ labelTextColor: defaultTheme.labelTextColor })
 };
 /**
 * Restores the mapped theme fields of `overriddenRoles` to their catalog pointer, so the theme-layer variable `themeOverrideVars` writes on the provider wrapper is the only carrier for an overridden role — CSS and the JS bridge (`useXYChartTheme`) then resolve it through the same cascade instead of visx reading a baked literal that can disagree with a closer CSS override.
@@ -1277,26 +1281,12 @@ const useXYChartTheme = (data) => {
 		const resolve = createCssVariableResolver(scopeElement);
 		const resolveColor = (value) => value ? resolve(value) ?? value : value;
 		const paletteColors = [...JSON.parse(seriesColorKey), ...theme.colors ?? []].map((color) => resolveColor(color)).filter((color) => Boolean(color) && !color.includes("var("));
+		const htmlLabelColor = resolveColor(theme.svgLabelSmall?.fill);
 		return (0, _visx_xychart.buildChartTheme)({
 			...theme,
 			colors: paletteColors,
 			backgroundColor: resolveColor(theme.backgroundColor),
-			gridStyles: theme.gridStyles && {
-				...theme.gridStyles,
-				stroke: resolveColor(theme.gridStyles.stroke)
-			},
-			xAxisLineStyles: theme.xAxisLineStyles && {
-				...theme.xAxisLineStyles,
-				stroke: resolveColor(theme.xAxisLineStyles.stroke)
-			},
-			xTickLineStyles: theme.xTickLineStyles && {
-				...theme.xTickLineStyles,
-				stroke: resolveColor(theme.xTickLineStyles.stroke)
-			},
-			svgLabelSmall: theme.svgLabelSmall && {
-				...theme.svgLabelSmall,
-				fill: resolveColor(theme.svgLabelSmall.fill)
-			}
+			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : void 0
 		});
 	}, [
 		theme,
@@ -2139,8 +2129,14 @@ const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipCon
 };
 //#endregion
 //#region src/components/tooltip/accessible-tooltip.tsx
-const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", ...props }) => {
+const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
 	const tooltipContext = (0, react.useContext)(_visx_xychart.TooltipContext);
+	const scopeElement = useChartScopeElement();
+	const gridStroke = useGlobalChartsTheme().gridStyles?.stroke;
+	const crosshairStroke = (0, react.useMemo)(() => {
+		const stroke = gridStroke ? resolveCssVariable(gridStroke, scopeElement) : null;
+		return stroke ? { stroke } : void 0;
+	}, [gridStroke, scopeElement]);
 	const tooltipData = (0, react.useMemo)(() => {
 		if (mode !== "individual") return [];
 		if (series.length === 0) return [];
@@ -2219,6 +2215,14 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 	]);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Tooltip, {
 		...props,
+		verticalCrosshairStyle: {
+			...crosshairStroke,
+			...verticalCrosshairStyle
+		},
+		horizontalCrosshairStyle: {
+			...crosshairStroke,
+			...horizontalCrosshairStyle
+		},
 		renderTooltip: focusableRenderTooltip
 	});
 };
