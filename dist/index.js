@@ -902,8 +902,6 @@ const defaultTheme = {
 	},
 	geoChart: { featureFillColor: "var(--a8c-charts-color-surface-secondary, #f4f4f4)" },
 	leaderboardChart: {
-		rowGap: 12,
-		columnGap: 4,
 		labelSpacing: "xs",
 		deltaColors: [
 			"var(--a8c-charts-color-trend-down, #cc1818)",
@@ -8713,8 +8711,8 @@ const SUBPIXEL_TOLERANCE = .5;
 * Counts how many leading rows fit inside the content container.
 *
 * Rows are read from the DOM rather than derived from constants: row height
-* depends on the theme's row gap, label wrapping, and whatever a caller renders
-* as a label, so any restated number would drift.
+* depends on `--a8c-charts-dimension-leaderboard-row-gap`, label wrapping, and
+* whatever a caller renders as a label, so any restated number would drift.
 *
 * Every row is a direct grid child marked with `data-row-index`; interactive rows
 * use a button wrapper and non-interactive rows use a div wrapper.
@@ -8861,6 +8859,8 @@ var leaderboard_chart_module_default = {
 };
 //#endregion
 //#region src/charts/leaderboard-chart/leaderboard-chart.tsx
+const ROW_GAP = "var(--a8c-charts-dimension-leaderboard-row-gap, 12px)";
+const COLUMN_GAP = "var(--a8c-charts-dimension-leaderboard-column-gap, 4px)";
 /**
 * Default value formatter using formatMetricValue
 *
@@ -9084,8 +9084,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					children: getAllHiddenMessage(legendInteractive, "series")
 				}) : /* @__PURE__ */ jsx(component_default, {
 					templateColumns: "minmax(0, 1fr) auto",
-					rowGap,
-					columnGap,
+					rowGap: rowGap ?? ROW_GAP,
+					columnGap: columnGap ?? COLUMN_GAP,
 					"data-leaderboard-grid": true,
 					children: data.map((entry, rowIndex) => {
 						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;

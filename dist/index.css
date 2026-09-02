@@ -39,6 +39,8 @@
   --a8c-charts-border-radius-bar: var(--wpds-border-radius-md, 4px);
   --a8c-charts-border-radius-cell: var(--wpds-border-radius-sm, 2px);
   --a8c-charts-border-radius-leaderboard-bar: 9999px;
+  --a8c-charts-dimension-leaderboard-row-gap: var(--wpds-dimension-gap-md, 12px);
+  --a8c-charts-dimension-leaderboard-column-gap: var(--wpds-dimension-gap-xs, 4px);
 }
 .a8ccharts-04TogW-legend {
   align-self: stretch;
