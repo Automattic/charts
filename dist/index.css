@@ -21,21 +21,19 @@
   --a8c-charts-color-surface: var(--wpds-color-background-surface-neutral-strong, #fff);
   --a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-neutral-weak, #f4f4f4);
   --a8c-charts-color-track: var(--wpds-color-background-track-neutral-weak, #f0f0f0);
-  --a8c-charts-color-tooltip-surface: rgb(0 0 0 / 85%);
+  --a8c-charts-color-tooltip-surface: #000000d9;
   --a8c-charts-color-zoom-selection: var(--wpds-color-background-interactive-brand-strong, var(--wp-admin-theme-color, #3858e9));
   --a8c-charts-color-zoom-selection-stroke: var(--wpds-color-stroke-interactive-brand, var(--wp-admin-theme-color, #3858e9));
-  --a8c-charts-elevation-xs:
-  	0 1px 1px 0 #00000008,
+  --a8c-charts-elevation-xs: 0 1px 1px 0 #00000008,
   	0 1px 2px 0 #00000005,
   	0 3px 3px 0 #00000005,
   	0 4px 4px 0 #00000003;
-  --a8c-charts-elevation-sm:
-  	0 1px 2px 0 #0000000d,
+  --a8c-charts-elevation-sm: 0 1px 2px 0 #0000000d,
   	0 2px 3px 0 #0000000a,
   	0 6px 6px 0 #00000008,
   	0 8px 8px 0 #00000005;
-  --a8c-charts-motion-duration-entrance: var(--wpds-motion-duration-xl, 400ms);
-  --a8c-charts-motion-easing-entrance: var(--wpds-motion-easing-expressive, cubic-bezier(0.25, 0, 0, 1));
+  --a8c-charts-motion-duration-entrance: var(--wpds-motion-duration-xl, .4s);
+  --a8c-charts-motion-easing-entrance: var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1));
   --a8c-charts-border-radius-bar: var(--wpds-border-radius-md, 4px);
   --a8c-charts-border-radius-cell: var(--wpds-border-radius-sm, 2px);
   --a8c-charts-border-radius-leaderboard-bar: 9999px;
