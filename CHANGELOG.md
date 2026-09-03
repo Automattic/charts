@@ -15,6 +15,9 @@ This is an alpha version! The changes listed here are not final.
 - Render time-axis and tooltip dates in a host-supplied locale and time zone, set on GlobalChartsProvider. Both default to the browser's, as before.
 - Update package dependencies.
 
+### Fixed
+- Place line and area chart date ticks on the host time zone's calendar boundaries, name the hour in tooltips on hourly data, let the locale rather than a forced 12-hour clock choose how every chart's hour labels read, and hand a custom tooltip the chart's date bucket classification.
+
 ## [3.2.0] - 2026-09-01
 ### Added
 - Bar and line charts: Report a click through the pointer event handlers and Enter or Space through an activation callback, so a chart can open the point under the pointer or the keyboard selection. [#51544]

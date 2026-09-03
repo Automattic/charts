@@ -174,6 +174,39 @@ const parseAsLocalDate = (dateString) => {
 	return /* @__PURE__ */ new Date(NaN);
 };
 //#endregion
+//#region src/utils/bucket-info.ts
+const getInstant = (point) => {
+	if (!point) return;
+	if ("date" in point && point.date) return point.date.getTime();
+	if ("dateString" in point && point.dateString) return parseAsLocalDate(point.dateString).getTime();
+};
+const getPointSpacingInHours = (data) => {
+	return data.reduce((spacing, datom) => {
+		const instants = [...new Set(datom.data.map((point) => getInstant(point)))].filter((time) => time !== void 0 && Number.isFinite(time)).sort((a, b) => a - b);
+		return instants.reduce((seriesSpacing, time, index) => index === 0 ? seriesSpacing : Math.min(seriesSpacing, Math.abs((0, date_fns.differenceInHours)(time, instants[index - 1]))), spacing);
+	}, Number.POSITIVE_INFINITY);
+};
+const SUB_DAILY_SPACING_HOURS = 23;
+const MONTHLY_SPACING_HOURS = 672;
+const getBucketResolution = (data, tickResolution) => {
+	if (tickResolution) return tickResolution === "week" ? "day" : tickResolution;
+	const spacingInHours = getPointSpacingInHours(data);
+	if (spacingInHours < SUB_DAILY_SPACING_HOURS) return "hour";
+	if (!Number.isFinite(spacingInHours) || spacingInHours < MONTHLY_SPACING_HOURS) return "day";
+	return spacingInHours < 12 * MONTHLY_SPACING_HOURS ? "month" : "year";
+};
+/**
+* How this data was classified, for consumers that render their own labels.
+*
+* @param data           - The series the chart draws, in any order, dated by `date` or `dateString`.
+* @param tickResolution - Caller-declared bucket resolution, when known.
+* @return The declared or inferred bucket, and the resolution formats key on.
+*/
+const getBucketInfo = (data, tickResolution) => ({
+	bucket: tickResolution ?? getBucketResolution(data),
+	displayResolution: getBucketResolution(data, tickResolution)
+});
+//#endregion
 //#region src/utils/format-metric-value.ts
 /**
 * Format a numeric metric value based on type, precision and scale.
@@ -2691,10 +2724,7 @@ const DATE_TICK = {
 	month: "short",
 	day: "numeric"
 };
-const HOUR_TICK = {
-	hour: "numeric",
-	hour12: true
-};
+const HOUR_TICK = { hour: "numeric" };
 const MONTH_TICK = { month: "short" };
 const boundaryFormat = (isAnchor, atBoundary, between) => {
 	const format = (timestamp) => isAnchor(new Date(timestamp)) ? atBoundary(timestamp) : between(timestamp);
@@ -2707,56 +2737,72 @@ const tickFormats = (formatting) => {
 	const date = createDateFormatter(DATE_TICK, formatting);
 	const hour = createDateFormatter(HOUR_TICK, formatting);
 	const month = createDateFormatter(MONTH_TICK, formatting);
+	const datedTick = (timestamp) => date(timestamp);
+	datedTick.anchorsAtLabelChange = true;
 	return {
 		year,
-		date,
+		date: datedTick,
 		dateOrHour: boundaryFormat((value) => clock(value).hour === 0, date, hour),
 		hour,
 		monthOrYear: boundaryFormat((value) => clock(value).month === 1, year, month)
 	};
 };
 const getSpan = (sortedData) => {
-	const bounds = sortedData.map((datom) => [datom.data.at(0)?.date, datom.data.at(-1)?.date]).filter(([first, last]) => first !== void 0 && last !== void 0);
+	const bounds = sortedData.map((datom) => [datom.data.at(0)?.date, datom.data.at(-1)?.date]).filter(([first, last]) => Number.isFinite(Number(first)) && Number.isFinite(Number(last)));
 	if (!bounds.length) return null;
 	return {
 		minX: Math.min(...bounds.map(([first]) => Number(first))),
 		maxX: Math.max(...bounds.map(([, last]) => Number(last)))
 	};
 };
-const getPointSpacingInHours = (sortedData) => {
-	return sortedData.reduce((spacing, datom) => datom.data.reduce((seriesSpacing, point, index) => {
-		const previous = datom.data[index - 1];
-		if (previous?.date === void 0 || point?.date === void 0) return seriesSpacing;
-		return Math.min(seriesSpacing, Math.abs((0, date_fns.differenceInHours)(point.date, previous.date)));
-	}, spacing), Number.POSITIVE_INFINITY);
-};
-const SUB_DAILY_SPACING_HOURS = 23;
-const MONTHLY_SPACING_HOURS = 672;
-const getBucketResolution = (sortedData, tickResolution) => {
-	if (tickResolution) return tickResolution === "week" ? "day" : tickResolution;
-	const spacingInHours = getPointSpacingInHours(sortedData);
-	if (spacingInHours < SUB_DAILY_SPACING_HOURS) return "hour";
-	if (!Number.isFinite(spacingInHours) || spacingInHours < MONTHLY_SPACING_HOURS) return "day";
-	return spacingInHours < 12 * MONTHLY_SPACING_HOURS ? "month" : "year";
-};
-const getFormatter = (sortedData, tickResolution, formatting = {}) => {
+/**
+* The most informative tick format for a bucket resolution and the span on screen.
+*
+* @param sortedData     - Series as returned by `useChartDataTransform`.
+* @param tickResolution - Caller-declared bucket resolution, when known.
+* @param formatting     - Host locale and time zone.
+* @param domain         - The effective scale domain, or undefined for the data's own extent.
+* @return The formatter the axis labels its ticks with.
+*/
+const getFormatter = (sortedData, tickResolution, formatting = {}, domain) => {
 	const format = tickFormats(formatting);
 	const resolution = getBucketResolution(sortedData, tickResolution);
 	if (resolution === "year") return format.year;
 	if (resolution === "month") return format.monthOrYear;
-	const span = getSpan(sortedData);
+	const span = domain ? {
+		minX: domain[0].getTime(),
+		maxX: domain[1].getTime()
+	} : getSpan(sortedData);
 	if (!span) return format.date;
 	const diffInHours = Math.abs((0, date_fns.differenceInHours)(span.maxX, span.minX));
 	if (resolution === "hour") {
-		if (diffInHours <= 24) return format.hour;
+		if (diffInHours < 24) return format.hour;
 		if (diffInHours <= 168) return format.dateOrHour;
 	}
 	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? format.date : format.year;
 };
-const getAnchorIndices = (domain, isAnchor) => domain.reduce((indices, date, index) => {
-	if (isAnchor(date)) indices.push(index);
-	return indices;
-}, []);
+/**
+* The instants a set of series spans, as a scale domain.
+*
+* @param sortedData - Series as returned by `useChartDataTransform`.
+* @return Earliest and latest dated point, or undefined when nothing is dated.
+*/
+const getSeriesExtent = (sortedData) => {
+	const span = getSpan(sortedData);
+	return span ? [new Date(span.minX), new Date(span.maxX)] : void 0;
+};
+const getAnchorIndices = (domain, tickFormatter, labels) => {
+	if (tickFormatter.anchorsAtLabelChange) return labels.reduce((indices, label, index) => {
+		if (index === 0 || label !== labels[index - 1]) indices.push(index);
+		return indices;
+	}, []);
+	const { isAnchor } = tickFormatter;
+	if (!isAnchor) return [];
+	return domain.reduce((indices, date, index) => {
+		if (isAnchor(date)) indices.push(index);
+		return indices;
+	}, []);
+};
 const getCandidateSteps = (length, maxTicks, anchorSpacing) => {
 	const steps = /* @__PURE__ */ new Set();
 	for (let count = maxTicks; count > 1; count--) {
@@ -2771,26 +2817,25 @@ const getCandidateSteps = (length, maxTicks, anchorSpacing) => {
 	return steps;
 };
 /**
-* Tick values for a band time axis.
+* Tick values sampled by index, for the bar chart's band axis and for evenly
+* spaced points on a continuous one.
 *
-* visx samples a band domain by index from offset zero, blind to which labels
-* carry a boundary and without collapsing repeats — so the tick that prints the
-* year or the date often isn't sampled at all, and a long series can show the
-* same label twice. Choose the values instead: sweep the evenly spaced
-* candidates, including those that step from anchor to anchor, and keep the one
-* that reaches the most anchors without thinning the axis or putting two
-* identical labels side by side.
+* visx samples by index from offset zero, blind to which labels carry a boundary
+* and without collapsing repeats — so the tick that prints the year or the date
+* often isn't sampled at all, and a long series can show the same label twice.
+* Choose the values instead: sweep the evenly spaced candidates, including those
+* that step from anchor to anchor, and keep the one that reaches the most anchors
+* without thinning the axis or putting two identical labels side by side.
 *
-* @param domain        - Band domain, in axis order.
+* @param domain        - Buckets in axis order.
 * @param tickFormatter - Formatter the axis will render these values with.
 * @param maxTicks      - Most ticks the axis should carry.
 * @return Values to hand the axis as `tickValues`.
 */
 const getBandTickValues = (domain, tickFormatter, maxTicks) => {
 	if (!domain.length) return [];
-	const { isAnchor } = tickFormatter;
-	const anchorIndices = isAnchor ? getAnchorIndices(domain, isAnchor) : [];
 	const domainLabels = domain.map((date) => tickFormatter(date.getTime()));
+	const anchorIndices = getAnchorIndices(domain, tickFormatter, domainLabels);
 	const candidates = [];
 	const consider = (indices) => {
 		if (!indices.length || indices.length > maxTicks) return;
@@ -2802,7 +2847,12 @@ const getBandTickValues = (domain, tickFormatter, maxTicks) => {
 		for (let index = offset; index < domain.length; index += step) indices.push(index);
 		consider(indices);
 	}
-	for (let stride = 1; stride <= anchorIndices.length; stride++) consider(anchorIndices.filter((_, position) => position % stride === 0));
+	const minStride = Math.max(1, Math.ceil(anchorIndices.length / maxTicks));
+	for (let stride = minStride; stride <= anchorIndices.length; stride++) {
+		const stepped = [];
+		for (let position = 0; position < anchorIndices.length; position += stride) stepped.push(anchorIndices[position]);
+		consider(stepped);
+	}
 	if (!candidates.length) return [domain[0]];
 	const densest = candidates.reduce((most, indices) => Math.max(most, indices.length), 0);
 	const anchorIndexSet = new Set(anchorIndices);
@@ -2811,6 +2861,93 @@ const getBandTickValues = (domain, tickFormatter, maxTicks) => {
 		const gain = anchorsIn(indices) - anchorsIn(chosen);
 		return gain > 0 || gain === 0 && indices.length > chosen.length ? indices : chosen;
 	}).map((index) => domain[index]);
+};
+/**
+* The most x-axis ticks a chart of this width has room for.
+*
+* @param chartWidth - Chart width in pixels.
+* @return A tick budget of at least one.
+*/
+const getMaxTicksForWidth = (chartWidth) => Math.max(1, Math.floor(chartWidth / X_TICK_WIDTH));
+const MIN_GAP_IN_LABELS = .9;
+const nearestValue = (sorted, target) => {
+	let low = 0;
+	let high = sorted.length - 1;
+	while (low < high) {
+		const middle = Math.floor((low + high) / 2);
+		if (sorted[middle] < target) low = middle + 1;
+		else high = middle;
+	}
+	const above = sorted[low];
+	const below = low > 0 ? sorted[low - 1] : above;
+	return Math.abs(above - target) <= Math.abs(below - target) ? above : below;
+};
+const getPositionTickValues = (points, tickFormatter, maxTicks, axis) => {
+	const times = points.map((point) => point.getTime());
+	const { first, last } = axis;
+	if (maxTicks <= 1 || times.length === 1 || first === last) return [points[0]];
+	const step = (last - first) / (maxTicks - 1);
+	const labels = points.map((point) => tickFormatter(point.getTime()));
+	const minGap = (last - first) / maxTicks * MIN_GAP_IN_LABELS;
+	const anchors = getAnchorIndices(points, tickFormatter, labels).map((index) => times[index]);
+	const chosen = [];
+	let lastLabel = null;
+	for (let index = 0; index < maxTicks; index++) {
+		const target = first + index * step;
+		const anchor = anchors.length ? nearestValue(anchors, target) : null;
+		let tick = anchor !== null && Math.abs(anchor - target) <= step / 2 ? anchor : null;
+		if (tick === null) {
+			const point = nearestValue(times, target);
+			tick = Math.abs(point - target) <= step / 2 ? point : target;
+		}
+		const previous = chosen[chosen.length - 1];
+		if (previous !== void 0 && (tick <= previous || tick - previous < minGap)) continue;
+		const label = tickFormatter(tick);
+		if (label === lastLabel) continue;
+		chosen.push(tick);
+		lastLabel = label;
+	}
+	return chosen.map((timestamp) => new Date(timestamp));
+};
+const isIndexSamplingUnusable = (ticks, points, maxTicks, axis) => {
+	if (ticks.length < 2 || points.length < 2) return false;
+	const span = axis.last - axis.first;
+	if (!span) return false;
+	return ticks.slice(1).reduce((nearest, tick, index) => Math.min(nearest, tick.getTime() - ticks[index].getTime()), Infinity) < span / maxTicks * MIN_GAP_IN_LABELS || ticks.length < Math.min(maxTicks, points.length) / 3;
+};
+/**
+* Tick values for a continuous time axis, chosen from the points it draws.
+*
+* Sampled by index while the points are evenly spaced, which keeps the axis on
+* the calendar boundaries `getBandTickValues` steers towards, and by position
+* once they are not, where an index stride crowds one end of the scale.
+*
+* Values are taken from the data wherever there is one to take, so a local time
+* that does not exist cannot become a tick and DST needs no special case. Only a
+* target stranded in a gap is constructed, as a plain instant.
+*
+* @param sortedData    - Series as returned by `useChartDataTransform`.
+* @param domain        - The effective scale domain, or undefined for all data.
+* @param tickFormatter - The formatter the ticks will be labeled with.
+* @param maxTicks      - The most ticks the axis has room for.
+* @return Tick dates, or null when no series carries a usable date.
+*/
+const getTimeAxisTickValues = (sortedData, domain, tickFormatter, maxTicks) => {
+	const byTimestamp = /* @__PURE__ */ new Map();
+	for (const series of sortedData) for (const point of series.data) {
+		const date = point.date;
+		if (date instanceof Date && Number.isFinite(date.getTime())) byTimestamp.set(date.getTime(), date);
+	}
+	if (!byTimestamp.size) return null;
+	const min = domain?.[0]?.getTime();
+	const max = domain?.[1]?.getTime();
+	const visible = [...byTimestamp.keys()].sort((a, b) => a - b).filter((timestamp) => (min === void 0 || timestamp >= min) && (max === void 0 || timestamp <= max)).map((timestamp) => byTimestamp.get(timestamp));
+	const axis = {
+		first: min ?? visible[0].getTime(),
+		last: max ?? visible[visible.length - 1].getTime()
+	};
+	const ticks = getBandTickValues(visible, tickFormatter, maxTicks);
+	return isIndexSamplingUnusable(ticks, visible, maxTicks, axis) ? getPositionTickValues(visible, tickFormatter, maxTicks, axis) : ticks;
 };
 const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 	const span = getSpan(data);
@@ -2826,7 +2963,43 @@ const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 		if (ticks.some((tick, idx) => idx > 0 && tick === ticks[idx - 1])) continue;
 		return ticks.length;
 	}
-	return secondBestGuess;
+	return Math.max(1, secondBestGuess);
+};
+//#endregion
+//#region src/charts/private/time-axis-options.ts
+const toDateDomain = (domain) => domain ? [new Date(domain[0]), new Date(domain[1])] : void 0;
+/**
+* The x-axis options for a continuous time chart, shared by LineChart and AreaChart.
+*
+* Kept in one place so the tick-selection logic isn't duplicated between them.
+*
+* @param args                  - Named arguments.
+* @param args.dataSorted       - Series as returned by `useChartDataTransform`.
+* @param args.width            - Chart width in pixels, which bounds how many ticks fit.
+* @param args.axisOptions      - The caller's `options.axis.x`.
+* @param args.scaleDomain      - The caller's `options.xScale.domain`.
+* @param args.zoomDomain       - The chart's current zoom window, when zoomed.
+* @param args.formatting       - Host locale and time zone.
+* @param args.isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it. Defaults to all of them.
+* @return Options ready to spread into the chart's `axis.x`; `orientation` is always set.
+*/
+const buildTimeAxisOptions = ({ dataSorted, width, axisOptions, scaleDomain, zoomDomain, formatting, isSeriesRendered }) => {
+	const { tickResolution, tickFormat, tickValues: callerTickValues, numTicks: callerNumTicks, orientation: callerOrientation, display: callerDisplay, ...rest } = axisOptions ?? {};
+	const rendered = isSeriesRendered ? dataSorted.filter(isSeriesRendered) : dataSorted;
+	const effectiveDomain = zoomDomain ?? toDateDomain(scaleDomain) ?? getSeriesExtent(rendered);
+	const ownFormatter = getFormatter(rendered, tickResolution, formatting, effectiveDomain);
+	const formatter = tickFormat || ownFormatter;
+	const ownTickValues = tickFormat || callerTickValues ? null : getTimeAxisTickValues(rendered, effectiveDomain, ownFormatter, callerNumTicks ?? getMaxTicksForWidth(width));
+	const tickValues = callerTickValues ?? (ownTickValues?.length ? ownTickValues : void 0);
+	const numTicks = callerNumTicks ?? (tickValues ? void 0 : guessOptimalNumTicks(rendered, width, formatter));
+	return {
+		orientation: callerOrientation ?? "bottom",
+		tickFormat: formatter,
+		display: callerDisplay ?? true,
+		...rest,
+		...tickValues ? { tickValues } : {},
+		...numTicks === void 0 ? {} : { numTicks }
+	};
 };
 //#endregion
 //#region src/charts/private/with-responsive/with-responsive.module.scss
@@ -3530,9 +3703,20 @@ const toNumber = (val) => {
 	return isNaN(num) ? void 0 : num;
 };
 const TOOLTIP_DATE = {};
-const TooltipDate = ({ date }) => {
+const TOOLTIP_FORMAT_BY_RESOLUTION$1 = {
+	hour: {
+		year: "numeric",
+		month: "numeric",
+		day: "numeric",
+		hour: "numeric"
+	},
+	day: TOOLTIP_DATE,
+	month: TOOLTIP_DATE,
+	year: TOOLTIP_DATE
+};
+const TooltipDate = ({ date, displayResolution }) => {
 	const formatting = useChartFormatting();
-	const format = (0, react.useMemo)(() => createDateFormatter(TOOLTIP_DATE, formatting), [formatting]);
+	const format = (0, react.useMemo)(() => createDateFormatter(TOOLTIP_FORMAT_BY_RESOLUTION$1[displayResolution], formatting), [displayResolution, formatting]);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: date ? format(date) : null });
 };
 /**
@@ -3540,11 +3724,11 @@ const TooltipDate = ({ date }) => {
 * one row per visible series (label + formatted value), sorted descending by
 * value. Reused by AreaChart, which has the same multi-series shape.
 *
-* @param params - visx `RenderTooltipParams< DataPointDate >`.
+* @param params - visx `RenderTooltipParams< DataPointDate >`, plus the chart's optional `bucketInfo`.
 * @return Tooltip JSX, or `null` when no datum is hovered.
 */
 const renderDefaultTooltip = (params) => {
-	const { tooltipData } = params;
+	const { tooltipData, bucketInfo } = params;
 	const nearestDatum = tooltipData?.nearestDatum?.datum;
 	if (!nearestDatum) return null;
 	const tooltipPoints = Object.entries(tooltipData?.datumByKey || {}).map(([key, { datum }]) => ({
@@ -3555,7 +3739,10 @@ const renderDefaultTooltip = (params) => {
 		className: line_chart_module_default["line-chart__tooltip"],
 		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: line_chart_module_default["line-chart__tooltip-date"],
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipDate, { date: nearestDatum.date })
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipDate, {
+				date: nearestDatum.date,
+				displayResolution: bucketInfo?.displayResolution ?? "day"
+			})
 		}), tooltipPoints.map((point) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_wordpress_ui.Stack, {
 			direction: "row",
 			align: "center",
@@ -3681,17 +3868,17 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		onActivate: activateSelectedPoint
 	});
 	const chartOptions = (0, react.useMemo)(() => {
-		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = tickFormat || getFormatter(dataSorted, tickResolution, formatting);
 		return {
 			axis: {
-				x: {
-					orientation: "bottom",
-					numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
-					tickFormat: formatter,
-					display: true,
-					...xAxisOptions
-				},
+				x: buildTimeAxisOptions({
+					dataSorted,
+					width,
+					axisOptions: options?.axis?.x,
+					scaleDomain: options?.xScale?.domain,
+					zoomDomain: zoom.domain,
+					formatting,
+					isSeriesRendered: (series) => isSeriesVisible(series.label)
+				}),
 				y: {
 					orientation: "left",
 					numTicks: 4,
@@ -3719,7 +3906,13 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		width,
 		zoom.domain,
 		stableYDomain,
-		formatting
+		formatting,
+		isSeriesVisible
+	]);
+	const bucketInfo = (0, react.useMemo)(() => getBucketInfo(dataSorted.filter((series) => isSeriesVisible(series.label)), options?.axis?.x?.tickResolution), [
+		dataSorted,
+		isSeriesVisible,
+		options?.axis?.x?.tickResolution
 	]);
 	const tooltipRenderGlyph = (0, react.useMemo)(() => {
 		return (props) => {
@@ -3781,6 +3974,10 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		xAccessor: (d) => d?.date,
 		yAccessor: (d) => d?.value
 	};
+	const tooltipRenderer = (0, react.useMemo)(() => (params) => renderTooltip({
+		...params,
+		bucketInfo
+	}), [renderTooltip, bucketInfo]);
 	if (error) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		className: (0, clsx.default)("line-chart", line_chart_module_default["line-chart"]),
 		children: error
@@ -3921,7 +4118,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: true,
 									showSeriesGlyphs: true,
-									renderTooltip,
+									renderTooltip: tooltipRenderer,
 									renderGlyph: tooltipRenderGlyph,
 									glyphStyle,
 									showVerticalCrosshair: withTooltipCrosshairs?.showVertical,
@@ -4152,17 +4349,16 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		rescaleYOnVisibility
 	]);
 	const chartOptions = (0, react.useMemo)(() => {
-		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = tickFormat || getFormatter(dataSorted, tickResolution, formatting);
 		return {
 			axis: {
-				x: {
-					orientation: "bottom",
-					numTicks: guessOptimalNumTicks(dataSorted, width, formatter),
-					tickFormat: formatter,
-					display: true,
-					...xAxisOptions
-				},
+				x: buildTimeAxisOptions({
+					dataSorted,
+					width,
+					axisOptions: options?.axis?.x,
+					scaleDomain: options?.xScale?.domain,
+					zoomDomain: zoom.domain,
+					formatting
+				}),
 				y: {
 					orientation: "left",
 					numTicks: 4,
@@ -4227,9 +4423,17 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	};
 	const zeroYAccessor = (0, react.useCallback)(() => 0, []);
 	const visibleLabels = (0, react.useMemo)(() => new Set(seriesWithVisibility.filter((s) => s.isVisible).map((s) => s.series.label)), [seriesWithVisibility]);
+	const bucketInfo = (0, react.useMemo)(() => getBucketInfo(dataSorted.filter((series) => visibleLabels.has(series.label)), options?.axis?.x?.tickResolution), [
+		dataSorted,
+		visibleLabels,
+		options?.axis?.x?.tickResolution
+	]);
 	const filteredRenderTooltip = (0, react.useCallback)((params) => {
 		const datumByKey = params?.tooltipData?.datumByKey;
-		if (!datumByKey) return renderTooltip(params);
+		if (!datumByKey) return renderTooltip({
+			...params,
+			bucketInfo
+		});
 		const filtered = Object.fromEntries(Object.entries(datumByKey).filter(([key]) => visibleLabels.has(key)));
 		if (Object.keys(filtered).length === 0) return null;
 		const nearestDatum = params?.tooltipData?.nearestDatum;
@@ -4239,13 +4443,18 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		};
 		return renderTooltip({
 			...params,
+			bucketInfo,
 			tooltipData: {
 				...params.tooltipData,
 				datumByKey: filtered,
 				nearestDatum: nextNearest
 			}
 		});
-	}, [renderTooltip, visibleLabels]);
+	}, [
+		renderTooltip,
+		visibleLabels,
+		bucketInfo
+	]);
 	const resolvedFillOpacity = fillOpacity ?? (stacked ? .85 : .4);
 	const resolvedWithStroke = withStroke ?? !stacked;
 	if (error) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
@@ -4544,8 +4753,7 @@ const TOOLTIP_FORMAT_BY_RESOLUTION = {
 		year: "numeric",
 		month: "long",
 		day: "numeric",
-		hour: "numeric",
-		hour12: true
+		hour: "numeric"
 	},
 	day: {
 		year: "numeric",
@@ -10492,6 +10700,7 @@ exports.buildCalendarHeatmapData = buildCalendarHeatmapData;
 exports.defaultTheme = defaultTheme;
 exports.formatMetricValue = formatMetricValue;
 exports.formatPercentage = formatPercentage;
+exports.getBucketInfo = getBucketInfo;
 exports.getColorDistance = getColorDistance;
 exports.hexToRgba = hexToRgba;
 exports.isValidHexColor = isValidHexColor;
