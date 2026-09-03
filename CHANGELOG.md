@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Inject WPDS design-token fallbacks at build time via @wordpress/theme's LightningCSS plugin.
 - LeaderboardChart: Set the row and column gaps in CSS. Declare `--a8c-charts-dimension-leaderboard-row-gap` or `--a8c-charts-dimension-leaderboard-column-gap` inside the provider tree; they map to `--wpds-dimension-gap-md` and `--wpds-dimension-gap-xs`, so the default spacing now follows the design system. `theme.leaderboardChart.rowGap` and `.columnGap` are deprecated and still win where they are set, but no longer carry a default, so reading either off `defaultTheme` or `useGlobalChartsTheme()` now gives `undefined` rather than `12` and `4`. `TOKENS.md` lists both roles.
+- Render time-axis and tooltip dates in a host-supplied locale and time zone, set on GlobalChartsProvider. Both default to the browser's, as before.
 - Update package dependencies.
 
 ## [3.2.0] - 2026-09-01

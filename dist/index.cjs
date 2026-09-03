@@ -627,6 +627,112 @@ const resolveFontSize = (val) => {
 	}
 };
 //#endregion
+//#region src/utils/date-formatting.ts
+const formatters = /* @__PURE__ */ new Map();
+const getFormatter$1 = (options, { locale, timeZone }) => {
+	const key = `${locale ?? ""}|${timeZone ?? ""}|${JSON.stringify(options)}`;
+	let formatter = formatters.get(key);
+	if (!formatter) {
+		formatter = new Intl.DateTimeFormat(locale, {
+			...options,
+			timeZone
+		});
+		formatters.set(key, formatter);
+	}
+	return formatter;
+};
+const warned = /* @__PURE__ */ new Set();
+const warnOnce = (key, message) => {
+	if (warned.has(key) || process.env.NODE_ENV === "production") return;
+	warned.add(key);
+	console.warn(`[Charts] ${message}`);
+};
+const isUsable = (formatting) => {
+	try {
+		Intl.DateTimeFormat(formatting.locale, { timeZone: formatting.timeZone });
+		return true;
+	} catch {
+		return false;
+	}
+};
+const toBcp47 = (locale) => locale?.replace(/_/g, "-");
+/**
+* Repairs a host locale for `Intl`, dropping either half it still cannot use.
+*
+* Every formatter below is built during render, so an unusable string would throw
+* where React unmounts the whole host tree rather than one chart. WordPress hands
+* out the likeliest one either way: `timezone_string` is `''` on a site set to a
+* raw UTC offset, and has no repair.
+*
+* @param formatting - Locale and time zone as the host supplied them.
+* @return The usable halves, each `undefined` where the host's value was not.
+*/
+const sanitizeFormatting = (formatting) => {
+	const repaired = {
+		...formatting,
+		locale: toBcp47(formatting.locale)
+	};
+	if (isUsable(repaired)) return repaired;
+	const locale = isUsable({ locale: repaired.locale }) ? repaired.locale : void 0;
+	const timeZone = isUsable({ timeZone: repaired.timeZone }) ? repaired.timeZone : void 0;
+	if (locale === void 0 && formatting.locale !== void 0) warnOnce(`locale:${formatting.locale}`, `locale ${JSON.stringify(formatting.locale)} is not a BCP-47 tag Intl accepts, so dates render in the browser's locale.`);
+	if (timeZone === void 0 && formatting.timeZone !== void 0) warnOnce(`timeZone:${formatting.timeZone}`, `timeZone ${JSON.stringify(formatting.timeZone)} is not a zone Intl accepts, so dates render in the browser's zone. Pass an IANA name or a UTC offset such as "+05:30".`);
+	return {
+		locale,
+		timeZone
+	};
+};
+/**
+* A date formatter bound to the host's locale and time zone.
+*
+* @param options    - Date-part options, as for `Intl.DateTimeFormat`.
+* @param formatting - Host locale and time zone; either half absent leaves the runtime's own.
+* @return Formatter taking a timestamp or a `Date`.
+*/
+const createDateFormatter = (options, formatting) => {
+	return (value) => {
+		if (!Number.isFinite(Number(value))) return new Date(Number(value)).toLocaleDateString();
+		return getFormatter$1(options, formatting).format(value);
+	};
+};
+const CLOCK_OPTIONS = {
+	month: "numeric",
+	hour: "numeric",
+	hourCycle: "h23"
+};
+const NO_FIELDS = {
+	month: NaN,
+	hour: NaN
+};
+/**
+* A clock reading calendar fields in the host's time zone.
+*
+* `Date`'s own getters read the browser's zone, so a chart viewed from another
+* country anchors its ticks to the wrong midnights and the wrong January
+* without this.
+*
+* @param timeZone - IANA zone name; absent leaves the runtime's own.
+* @return Reader taking a `Date`.
+*/
+const createZonedClock = (timeZone) => {
+	if (!timeZone) return (date) => ({
+		month: date.getMonth() + 1,
+		hour: date.getHours()
+	});
+	return (date) => {
+		if (!Number.isFinite(Number(date))) return NO_FIELDS;
+		const parts = getFormatter$1(CLOCK_OPTIONS, {
+			locale: "en-US",
+			timeZone
+		}).formatToParts(date);
+		const read = (type) => Number(parts.find((part) => part.type === type)?.value);
+		return {
+			month: read("month"),
+			hour: read("hour")
+		};
+	};
+};
+//#endregion
 //#region src/providers/chart-scope/chart-scope-context.ts
 /**
 * The nearest chart element, published so JS token resolution reads the same CSS cascade that paints the chart's own colours.
@@ -1002,7 +1108,7 @@ const withCatalogPointers = (merged, overriddenRoles) => {
 //#endregion
 //#region src/providers/chart-context/global-charts-provider.tsx
 const GlobalChartsContext = (0, react.createContext)(null);
-const GlobalChartsProvider = ({ children, theme }) => {
+const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 	const [charts, setCharts] = (0, react.useState)(() => /* @__PURE__ */ new Map());
 	const [hiddenSeries, setHiddenSeries] = (0, react.useState)(() => /* @__PURE__ */ new Map());
 	const seededCharts = (0, react.useRef)(/* @__PURE__ */ new Set());
@@ -1149,12 +1255,17 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		const set = hiddenSeries.get(chartId);
 		return set ? new Set(set) : /* @__PURE__ */ new Set();
 	}, [hiddenSeries]);
+	const formatting = (0, react.useMemo)(() => sanitizeFormatting({
+		locale,
+		timeZone
+	}), [locale, timeZone]);
 	const value = (0, react.useMemo)(() => ({
 		charts,
 		registerChart,
 		unregisterChart,
 		getChartData,
 		theme: providerTheme,
+		formatting,
 		getElementStyles,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
@@ -1170,6 +1281,7 @@ const GlobalChartsProvider = ({ children, theme }) => {
 		unregisterChart,
 		getChartData,
 		providerTheme,
+		formatting,
 		getElementStyles,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
@@ -1687,6 +1799,21 @@ const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, me
 */
 const useGlobalChartsTheme = () => {
 	return (0, react.useContext)(GlobalChartsContext)?.theme ?? defaultTheme;
+};
+//#endregion
+//#region src/providers/chart-context/hooks/use-chart-formatting.ts
+const RUNTIME_FORMATTING = {};
+/**
+* The locale and time zone dates are rendered in, as set on `GlobalChartsProvider`.
+*
+* Falls back to the runtime's own rather than throwing: charts render outside a
+* provider, and a host that sets neither gets exactly the browser-default
+* behavior this package had before the context existed.
+*
+* @return The host's formatting context.
+*/
+const useChartFormatting = () => {
+	return (0, react.useContext)(GlobalChartsContext)?.formatting ?? RUNTIME_FORMATTING;
 };
 //#endregion
 //#region src/components/legend/utils/value-or-identity.ts
@@ -2559,31 +2686,35 @@ const getCurveType = (type, smoothing) => {
 		default: return _visx_curve.curveLinear;
 	}
 };
-const dateTimeFormat = (options) => {
-	let formatter;
-	return (timestamp) => {
-		if (!Number.isFinite(Number(timestamp))) return new Date(timestamp).toLocaleDateString();
-		formatter = formatter ?? new Intl.DateTimeFormat(void 0, options);
-		return formatter.format(timestamp);
-	};
-};
-const formatYearTick = dateTimeFormat({ year: "numeric" });
-const formatDateTick = dateTimeFormat({
+const YEAR_TICK = { year: "numeric" };
+const DATE_TICK = {
 	month: "short",
 	day: "numeric"
-});
-const formatHourTick = dateTimeFormat({
+};
+const HOUR_TICK = {
 	hour: "numeric",
 	hour12: true
-});
-const formatMonthTick = dateTimeFormat({ month: "short" });
+};
+const MONTH_TICK = { month: "short" };
 const boundaryFormat = (isAnchor, atBoundary, between) => {
 	const format = (timestamp) => isAnchor(new Date(timestamp)) ? atBoundary(timestamp) : between(timestamp);
 	format.isAnchor = isAnchor;
 	return format;
 };
-const formatDateOrHourTick = boundaryFormat((date) => date.getHours() === 0 && date.getMinutes() === 0, formatDateTick, formatHourTick);
-const formatMonthOrYearTick = boundaryFormat((date) => date.getMonth() === 0, formatYearTick, formatMonthTick);
+const tickFormats = (formatting) => {
+	const clock = createZonedClock(formatting.timeZone);
+	const year = createDateFormatter(YEAR_TICK, formatting);
+	const date = createDateFormatter(DATE_TICK, formatting);
+	const hour = createDateFormatter(HOUR_TICK, formatting);
+	const month = createDateFormatter(MONTH_TICK, formatting);
+	return {
+		year,
+		date,
+		dateOrHour: boundaryFormat((value) => clock(value).hour === 0, date, hour),
+		hour,
+		monthOrYear: boundaryFormat((value) => clock(value).month === 1, year, month)
+	};
+};
 const getSpan = (sortedData) => {
 	const bounds = sortedData.map((datom) => [datom.data.at(0)?.date, datom.data.at(-1)?.date]).filter(([first, last]) => first !== void 0 && last !== void 0);
 	if (!bounds.length) return null;
@@ -2608,18 +2739,19 @@ const getBucketResolution = (sortedData, tickResolution) => {
 	if (!Number.isFinite(spacingInHours) || spacingInHours < MONTHLY_SPACING_HOURS) return "day";
 	return spacingInHours < 12 * MONTHLY_SPACING_HOURS ? "month" : "year";
 };
-const getFormatter = (sortedData, tickResolution) => {
+const getFormatter = (sortedData, tickResolution, formatting = {}) => {
+	const format = tickFormats(formatting);
 	const resolution = getBucketResolution(sortedData, tickResolution);
-	if (resolution === "year") return formatYearTick;
-	if (resolution === "month") return formatMonthOrYearTick;
+	if (resolution === "year") return format.year;
+	if (resolution === "month") return format.monthOrYear;
 	const span = getSpan(sortedData);
-	if (!span) return formatDateTick;
+	if (!span) return format.date;
 	const diffInHours = Math.abs((0, date_fns.differenceInHours)(span.maxX, span.minX));
 	if (resolution === "hour") {
-		if (diffInHours <= 24) return formatHourTick;
-		if (diffInHours <= 168) return formatDateOrHourTick;
+		if (diffInHours <= 24) return format.hour;
+		if (diffInHours <= 168) return format.dateOrHour;
 	}
-	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? formatDateTick : formatYearTick;
+	return Math.abs((0, date_fns.differenceInYears)(span.maxX, span.minX)) <= 1 ? format.date : format.year;
 };
 const getAnchorIndices = (domain, isAnchor) => domain.reduce((indices, date, index) => {
 	if (isAnchor(date)) indices.push(index);
@@ -2673,7 +2805,8 @@ const getBandTickValues = (domain, tickFormatter, maxTicks) => {
 	for (let stride = 1; stride <= anchorIndices.length; stride++) consider(anchorIndices.filter((_, position) => position % stride === 0));
 	if (!candidates.length) return [domain[0]];
 	const densest = candidates.reduce((most, indices) => Math.max(most, indices.length), 0);
-	const anchorsIn = (indices) => isAnchor ? indices.filter((index) => isAnchor(domain[index])).length : 0;
+	const anchorIndexSet = new Set(anchorIndices);
+	const anchorsIn = (indices) => indices.filter((index) => anchorIndexSet.has(index)).length;
 	return candidates.filter((indices) => indices.length >= densest - 1).reduce((chosen, indices) => {
 		const gain = anchorsIn(indices) - anchorsIn(chosen);
 		return gain > 0 || gain === 0 && indices.length > chosen.length ? indices : chosen;
@@ -3396,6 +3529,12 @@ const toNumber = (val) => {
 	const num = typeof val === "number" ? val : parseFloat(val);
 	return isNaN(num) ? void 0 : num;
 };
+const TOOLTIP_DATE = {};
+const TooltipDate = ({ date }) => {
+	const formatting = useChartFormatting();
+	const format = (0, react.useMemo)(() => createDateFormatter(TOOLTIP_DATE, formatting), [formatting]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: date ? format(date) : null });
+};
 /**
 * Default visx-tooltip render that prints the hovered date as a heading and
 * one row per visible series (label + formatted value), sorted descending by
@@ -3416,7 +3555,7 @@ const renderDefaultTooltip = (params) => {
 		className: line_chart_module_default["line-chart__tooltip"],
 		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: line_chart_module_default["line-chart__tooltip-date"],
-			children: nearestDatum.date?.toLocaleDateString()
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipDate, { date: nearestDatum.date })
 		}), tooltipPoints.map((point) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_wordpress_ui.Stack, {
 			direction: "row",
 			align: "center",
@@ -3466,6 +3605,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const providerTheme = useGlobalChartsTheme();
+	const formatting = useChartFormatting();
 	const theme = useXYChartTheme(data);
 	const resolvedBackgroundColor = theme.backgroundColor ?? providerTheme.backgroundColor;
 	const chartId = useChartId(providedChartId);
@@ -3542,7 +3682,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	});
 	const chartOptions = (0, react.useMemo)(() => {
 		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = tickFormat || getFormatter(dataSorted, tickResolution);
+		const formatter = tickFormat || getFormatter(dataSorted, tickResolution, formatting);
 		return {
 			axis: {
 				x: {
@@ -3578,7 +3718,8 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		dataSorted,
 		width,
 		zoom.domain,
-		stableYDomain
+		stableYDomain,
+		formatting
 	]);
 	const tooltipRenderGlyph = (0, react.useMemo)(() => {
 		return (props) => {
@@ -3924,6 +4065,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	const legendPosition = legend.position ?? "bottom";
 	const rescaleYOnVisibility = rescaleYOnVisibilityChange ?? rescaleYOnLegendToggle ?? true;
 	const providerTheme = useGlobalChartsTheme();
+	const formatting = useChartFormatting();
 	const theme = useXYChartTheme(data);
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
@@ -4011,7 +4153,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 	]);
 	const chartOptions = (0, react.useMemo)(() => {
 		const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
-		const formatter = tickFormat || getFormatter(dataSorted, tickResolution);
+		const formatter = tickFormat || getFormatter(dataSorted, tickResolution, formatting);
 		return {
 			axis: {
 				x: {
@@ -4048,7 +4190,8 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		width,
 		stacked,
 		fixedYDomain,
-		zoom.domain
+		zoom.domain,
+		formatting
 	]);
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
 	const error = validateData$3(dataSorted);
@@ -4421,16 +4564,16 @@ const TOOLTIP_FORMAT_BY_RESOLUTION = {
 *
 * @param data           - Date-based series, already parsed and sorted by `useChartDataTransform`.
 * @param tickResolution - Caller-declared bucket resolution, when known.
+* @param formatting     - Host locale and time zone.
 * @return Tooltip label formatter.
 */
-const getTooltipFormatter = (data, tickResolution) => {
-	if (tickResolution === "week") return (timestamp) => (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("Week of %s", "jetpack-charts"), new Date(timestamp).toLocaleDateString(void 0, {
-		year: "numeric",
-		month: "long",
-		day: "numeric"
-	}));
+const getTooltipFormatter = (data, tickResolution, formatting) => {
+	if (tickResolution === "week") {
+		const formatDay = createDateFormatter(TOOLTIP_FORMAT_BY_RESOLUTION.day, formatting);
+		return (timestamp) => (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("Week of %s", "jetpack-charts"), formatDay(timestamp));
+	}
 	const format = TOOLTIP_FORMAT_BY_RESOLUTION[getBucketResolution(data, tickResolution)] ?? TOOLTIP_FORMAT_BY_RESOLUTION.day;
-	return (timestamp) => new Date(timestamp).toLocaleString(void 0, format);
+	return createDateFormatter(format, formatting);
 };
 const identity = (label) => label;
 const byBucket = (format) => (bucket) => typeof bucket === "string" ? bucket : format(Number(bucket));
@@ -4481,6 +4624,7 @@ const getGroupPadding = (scale) => {
 */
 function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = ALL_RENDERED) {
 	const stableOptions = useDeepMemo(options);
+	const formatting = useChartFormatting();
 	const axisConfig = (0, react.useMemo)(() => {
 		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, tickFormat: xTickFormat, ...xAxisOptions } = stableOptions.axis?.x || {};
 		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, tickFormat: yTickFormat, ...yAxisOptions } = stableOptions.axis?.y || {};
@@ -4507,9 +4651,9 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 			zero: false
 		};
 		const hasLabels = Boolean(data?.[0]?.data?.[0]?.label);
-		const timeTickFormatter = hasLabels ? null : getFormatter(data, tickResolution);
+		const timeTickFormatter = hasLabels ? null : getFormatter(data, tickResolution, formatting);
 		const labelFormatter = timeTickFormatter ? byBucket(timeTickFormatter) : identity;
-		const tooltipDatumFormatter = hasLabels ? labelFormatter : byBucket(getTooltipFormatter(data, tickResolution));
+		const tooltipDatumFormatter = hasLabels ? labelFormatter : byBucket(getTooltipFormatter(data, tickResolution, formatting));
 		const valueFormatter = _automattic_number_formatters.formatNumberCompact;
 		const bandDomain = timeTickFormatter ? getBandDomain(data, isSeriesRendered) : null;
 		const valueAccessor = (d) => {
@@ -4545,7 +4689,8 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 	}, [
 		data,
 		tickResolution,
-		isSeriesRendered
+		isSeriesRendered,
+		formatting
 	]);
 	return (0, react.useMemo)(() => {
 		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
@@ -10360,6 +10505,7 @@ exports.parseRgbString = parseRgbString;
 exports.prefersLightText = prefersLightText;
 exports.relativeLuminance = relativeLuminance;
 exports.resolveCssVariable = resolveCssVariable;
+exports.useChartFormatting = useChartFormatting;
 exports.useChartLegendItems = useChartLegendItems;
 exports.useChartRegistration = useChartRegistration;
 exports.useChartScopeElement = useChartScopeElement;
