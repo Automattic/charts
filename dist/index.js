@@ -1,6 +1,6 @@
 import { getStringWidth as getStringWidth$1 } from "./visx/text/index.js";
 import { formatNumber, formatNumberCompact } from "@automattic/number-formatters";
-import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, Tooltip, TooltipContext, XYChart, buildChartTheme } from "@visx/xychart";
+import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, TooltipContext, XYChart, buildChartTheme } from "@visx/xychart";
 import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
@@ -10,11 +10,12 @@ import { addDays, differenceInCalendarWeeks, differenceInHours, differenceInYear
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
+import { Tooltip, defaultStyles, useTooltip } from "@visx/tooltip";
 import { createScale, getTicks, scaleBand, scaleOrdinal, scaleTime } from "@visx/scale";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { IconButton, Stack, Text as Text$1 } from "@wordpress/ui";
+import { createPortal } from "react-dom";
 import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { useParentSize } from "@visx/responsive";
@@ -2284,6 +2285,302 @@ const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipCon
 	});
 };
 //#endregion
+//#region src/components/tooltip/private/bounded-tooltip.tsx
+const DEFAULT_OFFSET = 10;
+const isClipping = (element) => {
+	const { overflow, overflowX, overflowY } = getComputedStyle(element);
+	return [
+		overflow,
+		overflowX,
+		overflowY
+	].some((value) => value && value !== "visible");
+};
+const findClippingAncestor = (wrapper) => {
+	let element = wrapper.parentElement;
+	while (element && element !== document.body) {
+		if (isClipping(element)) return element;
+		element = element.parentElement;
+	}
+	return null;
+};
+/**
+* Where the box goes, in wrapper coordinates. Below and to the right of the
+* anchor; flipped to the other side when that side clips less, as visx's
+* `TooltipWithBounds` decides it; then clamped so the box stays inside
+* `bounds` whenever it fits at all.
+*
+* @param params            - Anchor, offsets, the box size and the bounds to keep inside.
+* @param params.left       - Anchor x, in wrapper coordinates.
+* @param params.top        - Anchor y, in wrapper coordinates.
+* @param params.offsetLeft - Gap between the anchor and the box, horizontally.
+* @param params.offsetTop  - Gap between the anchor and the box, vertically.
+* @param params.box        - Rendered size of the box.
+* @param params.bounds     - Edges the box must keep inside, in wrapper coordinates.
+* @return The box's top-left corner, rounded to whole pixels.
+*/
+const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, bounds }) => {
+	const rightX = left + offsetLeft;
+	const leftX = left - offsetLeft - box.width;
+	const rightOverflow = rightX + box.width - bounds.right;
+	const leftOverflow = bounds.left - leftX;
+	let x = rightOverflow > 0 && rightOverflow > leftOverflow ? leftX : rightX;
+	const downY = top + offsetTop;
+	const upY = top - offsetTop - box.height;
+	const downOverflow = downY + box.height - bounds.bottom;
+	const upOverflow = bounds.top - upY;
+	let y = downOverflow > 0 && downOverflow > upOverflow ? upY : downY;
+	x = Math.min(Math.max(x, bounds.left), Math.max(bounds.left, bounds.right - box.width));
+	y = Math.min(Math.max(y, bounds.top), Math.max(bounds.top, bounds.bottom - box.height));
+	return {
+		x: Math.round(x),
+		y: Math.round(y)
+	};
+};
+/**
+* visx's `Tooltip`, positioned like its `TooltipWithBounds` but kept inside the
+* nearest clipping ancestor — or the viewport when there is none — rather than
+* inside its own parent. Rendered in-tree, a tooltip's parent is the chart
+* wrapper, which is often narrower than the box; measuring against the parent
+* alone would let the box spill into an `overflow: hidden` card and be cut off.
+*
+* Re-measures on every render, so a box whose content changes width between
+* two hovers is placed for its current size.
+*
+* @param props            - visx `Tooltip` props.
+* @param props.left       - Anchor x, in wrapper coordinates.
+* @param props.top        - Anchor y, in wrapper coordinates.
+* @param props.offsetLeft - Gap between the anchor and the box, horizontally.
+* @param props.offsetTop  - Gap between the anchor and the box, vertically.
+* @param props.style      - Box styles; visx's defaults unless `unstyled`.
+* @param props.unstyled   - Skip `style` and leave the box bare.
+* @param props.children   - Box content.
+* @return The tooltip box.
+*/
+const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style = defaultStyles, unstyled = false, children, ...rest }) => {
+	const nodeRef = useRef(null);
+	const clipRef = useRef(null);
+	const [position, setPosition] = useState(null);
+	useLayoutEffect(() => {
+		const node = nodeRef.current;
+		const wrapper = node?.parentElement;
+		if (!node || !wrapper) return;
+		if (clipRef.current?.wrapper !== wrapper) clipRef.current = {
+			wrapper,
+			clip: findClippingAncestor(wrapper)
+		};
+		const own = node.getBoundingClientRect();
+		const wrapperRect = wrapper.getBoundingClientRect();
+		const clipRect = clipRef.current.clip?.getBoundingClientRect() ?? {
+			left: 0,
+			top: 0,
+			right: window.innerWidth,
+			bottom: window.innerHeight
+		};
+		const next = getBoundedPosition({
+			left,
+			top,
+			offsetLeft,
+			offsetTop,
+			box: {
+				width: own.width,
+				height: own.height
+			},
+			bounds: {
+				left: clipRect.left - wrapperRect.left,
+				top: clipRect.top - wrapperRect.top,
+				right: clipRect.right - wrapperRect.left,
+				bottom: clipRect.bottom - wrapperRect.top
+			}
+		});
+		setPosition((current) => current && current.x === next.x && current.y === next.y ? current : next);
+	}, [
+		left,
+		top,
+		offsetLeft,
+		offsetTop,
+		children
+	]);
+	const x = position?.x ?? left + offsetLeft;
+	const y = position?.y ?? top + offsetTop;
+	return /* @__PURE__ */ jsx(Tooltip, {
+		ref: nodeRef,
+		style: {
+			position: "absolute",
+			left: 0,
+			top: 0,
+			transform: `translate(${x}px, ${y}px)`,
+			...!unstyled && style
+		},
+		...rest,
+		children
+	});
+};
+//#endregion
+//#region src/components/tooltip/xy-chart-tooltip.tsx
+const CROSSHAIR_STROKE_WIDTH = 1.5;
+const DEFAULT_GLYPH_RADIUS = 4;
+const FALLBACK_COLOR = "#222";
+const DEFAULT_TOOLTIP_Z_INDEX = 3;
+const PORTAL_OPTIONS = /* @__PURE__ */ new Set([
+	"scroll",
+	"debounce",
+	"resizeObserverPolyfill"
+]);
+const isValidNumber = (value) => typeof value === "number" && Number.isFinite(value);
+const scaleBandwidth = (scale) => {
+	const bandwidth = scale?.bandwidth;
+	return typeof bandwidth === "function" ? Number(bandwidth()) : 0;
+};
+const DefaultGlyph$1 = ({ x, y, size, color, glyphStyle, seriesKey }) => {
+	const { theme } = useContext(DataContext) || {};
+	return /* @__PURE__ */ jsx("circle", {
+		cx: x,
+		cy: y,
+		r: size,
+		fill: color,
+		stroke: theme?.backgroundColor,
+		strokeWidth: CROSSHAIR_STROKE_WIDTH,
+		paintOrder: "fill",
+		...glyphStyle
+	});
+};
+const defaultRenderGlyph$1 = ({ key, ...props }) => /* @__PURE__ */ jsx(DefaultGlyph$1, {
+	seriesKey: key,
+	...props
+}, key);
+const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, zIndex = DEFAULT_TOOLTIP_Z_INDEX, ...rest }) => {
+	const tooltipProps = Object.fromEntries(Object.entries(rest).filter(([key]) => !PORTAL_OPTIONS.has(key)));
+	const { colorScale, theme, innerHeight = 0, innerWidth = 0, margin, xScale, yScale, dataRegistry } = useContext(DataContext) || {};
+	const tooltipContent = renderTooltip ? renderTooltip({
+		...tooltipContext,
+		colorScale
+	}) : null;
+	if (tooltipContent == null) return null;
+	const scaleX = xScale;
+	const scaleY = yScale;
+	const getDatumLeftTop = (key, datum) => {
+		const entry = dataRegistry?.get(key);
+		return {
+			left: scaleX && entry?.xAccessor ? Number(scaleX(entry.xAccessor(datum))) + scaleBandwidth(xScale) / 2 : void 0,
+			top: scaleY && entry?.yAccessor ? Number(scaleY(entry.yAccessor(datum))) + scaleBandwidth(yScale) / 2 : void 0
+		};
+	};
+	const nearestDatum = tooltipContext.tooltipData?.nearestDatum;
+	let { tooltipLeft, tooltipTop } = tooltipContext;
+	if (nearestDatum && (snapTooltipToDatumX || snapTooltipToDatumY)) {
+		const { left, top } = getDatumLeftTop(nearestDatum.key, nearestDatum.datum);
+		if (snapTooltipToDatumX && isValidNumber(left)) tooltipLeft = left;
+		if (snapTooltipToDatumY && isValidNumber(top)) tooltipTop = top;
+	}
+	const glyphs = [];
+	if (showDatumGlyph || showSeriesGlyphs) {
+		const size = Number(glyphStyle?.radius ?? DEFAULT_GLYPH_RADIUS);
+		const labelColor = theme?.htmlLabel?.color ?? FALLBACK_COLOR;
+		const fallbackColor = showSeriesGlyphs ? labelColor : theme?.gridStyles?.stroke ?? labelColor;
+		let entries = [];
+		if (showSeriesGlyphs) entries = Object.values(tooltipContext.tooltipData?.datumByKey ?? {});
+		else if (nearestDatum) entries = [nearestDatum];
+		for (const { key, datum, index } of entries) {
+			const { left, top } = getDatumLeftTop(key, datum);
+			if (!isValidNumber(left) || !isValidNumber(top)) continue;
+			glyphs.push(/* @__PURE__ */ jsx("g", {
+				className: "visx-tooltip-glyph",
+				transform: `translate(${left}, ${top})`,
+				children: renderGlyph({
+					key,
+					color: colorScale?.(key) ?? fallbackColor,
+					datum,
+					index,
+					size,
+					x: 0,
+					y: 0,
+					glyphStyle,
+					isNearestDatum: nearestDatum?.key === key
+				})
+			}, key));
+		}
+	}
+	const crosshairStroke = theme?.gridStyles?.stroke ?? theme?.htmlLabel?.color ?? FALLBACK_COLOR;
+	const marginTop = margin?.top ?? 0;
+	const marginLeft = margin?.left ?? 0;
+	const TooltipComponent = detectBounds ? BoundedTooltip : Tooltip;
+	const boxStyle = {
+		...defaultStyles,
+		zIndex,
+		background: theme?.backgroundColor ?? "white",
+		boxShadow: `0 1px 2px ${theme?.htmlLabel?.color ? `${theme.htmlLabel.color}55` : "#22222255"}`,
+		...theme?.htmlLabel
+	};
+	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsxs("g", {
+		className: "visx-tooltip-overlay",
+		pointerEvents: "none",
+		children: [
+			showVerticalCrosshair && isValidNumber(tooltipLeft) && /* @__PURE__ */ jsx("line", {
+				className: "visx-crosshair visx-crosshair-vertical",
+				x1: tooltipLeft,
+				x2: tooltipLeft,
+				y1: marginTop,
+				y2: marginTop + innerHeight,
+				stroke: crosshairStroke,
+				strokeWidth: CROSSHAIR_STROKE_WIDTH,
+				...verticalCrosshairStyle
+			}),
+			showHorizontalCrosshair && isValidNumber(tooltipTop) && /* @__PURE__ */ jsx("line", {
+				className: "visx-crosshair visx-crosshair-horizontal",
+				x1: marginLeft,
+				x2: marginLeft + innerWidth,
+				y1: tooltipTop,
+				y2: tooltipTop,
+				stroke: crosshairStroke,
+				strokeWidth: CROSSHAIR_STROKE_WIDTH,
+				...horizontalCrosshairStyle
+			}),
+			glyphs
+		]
+	}), container && createPortal(/* @__PURE__ */ jsx(TooltipComponent, {
+		left: tooltipLeft,
+		top: tooltipTop,
+		style: boxStyle,
+		applyPositionStyle: true,
+		...tooltipProps,
+		children: tooltipContent
+	}), container)] });
+};
+/**
+* In-tree replacement for `@visx/xychart`'s `Tooltip`.
+*
+* visx renders its tooltip box, glyphs and crosshairs through portals appended
+* to `document.body`. That puts them in the page's root stacking context, where
+* they paint above every sticky or fixed element that lives inside a nested
+* stacking context, and no z-index on that element can change the order. This
+* component draws the glyphs and crosshairs straight into the chart SVG and
+* renders the tooltip box into the SVG's parent element, so all of them stack
+* as ordinary descendants of the chart.
+*
+* Render it as a child of `XYChart`. The element wrapping that `XYChart` must
+* be `position: relative` with the SVG at its origin, and `isolation: isolate`:
+* the box is placed with the SVG-local coordinates visx reports, and the
+* isolation keeps the box's `zIndex` from competing with page chrome. The box
+* flips and clamps to stay inside the nearest ancestor that clips its overflow
+* (or the viewport), so it may extend past the chart wrapper but is never cut
+* off unless that ancestor is smaller than the box itself.
+*
+* @param props - visx's `Tooltip` options. `scroll`, `debounce` and `resizeObserverPolyfill` are accepted and ignored.
+* @return An anchor in the SVG, plus the overlay and the tooltip box while the tooltip is open.
+*/
+const XyChartTooltip = (props) => {
+	const tooltipContext = useContext(TooltipContext);
+	const [container, setContainer] = useState(null);
+	const anchorRef = useCallback((node) => {
+		setContainer(node?.ownerSVGElement?.parentElement ?? null);
+	}, []);
+	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("g", { ref: anchorRef }), tooltipContext?.tooltipOpen && /* @__PURE__ */ jsx(XyChartTooltipContent, {
+		...props,
+		tooltipContext,
+		container
+	})] });
+};
+//#endregion
 //#region src/components/tooltip/accessible-tooltip.tsx
 const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
 	const tooltipContext = useContext(TooltipContext);
@@ -2293,6 +2590,7 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		const stroke = gridStroke ? resolveCssVariable(gridStroke, scopeElement) : null;
 		return stroke ? { stroke } : void 0;
 	}, [gridStroke, scopeElement]);
+	const standaloneScopeClass = useStandaloneScopeClass();
 	const tooltipData = useMemo(() => {
 		if (mode !== "individual") return [];
 		if (series.length === 0) return [];
@@ -2353,11 +2651,11 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 				tabIndex: -1,
 				role: "tooltip",
 				"aria-atomic": "true",
-				className: clsx(CHART_SCOPE_CLASS, keyboardFocusedClassName),
+				className: clsx(standaloneScopeClass, keyboardFocusedClassName),
 				children: tooltipContent
 			}, `chart-tooltip-${selectedIndex}`);
 			return /* @__PURE__ */ jsx("div", {
-				className: CHART_SCOPE_CLASS,
+				className: standaloneScopeClass,
 				role: "tooltip",
 				"aria-live": "polite",
 				children: tooltipContent
@@ -2367,9 +2665,10 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		renderTooltip,
 		selectedIndex,
 		tooltipRef,
-		keyboardFocusedClassName
+		keyboardFocusedClassName,
+		standaloneScopeClass
 	]);
-	return /* @__PURE__ */ jsx(Tooltip, {
+	return /* @__PURE__ */ jsx(XyChartTooltip, {
 		...props,
 		verticalCrosshairStyle: {
 			...crosshairStroke,
@@ -3278,6 +3577,9 @@ function ZoomResetButton({ onClick }) {
 	});
 }
 //#endregion
+//#region src/charts/private/xy-plot/xy-plot.module.scss
+var xy_plot_module_default = { "xy-plot": "a8ccharts-bIyhgG-xy-plot" };
+//#endregion
 //#region src/charts/line-chart/line-chart.module.scss
 var line_chart_module_default = {
 	"line-chart": "a8ccharts-inuQka-line-chart",
@@ -4024,7 +4326,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsxs("div", {
 						ref: chartRef,
-						style: { position: "relative" },
+						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ jsx(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ jsxs(XYChart, {
 							theme,
 							width,
@@ -4527,7 +4829,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsxs("div", {
 						ref: chartRef,
-						style: { position: "relative" },
+						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ jsx(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ jsxs(XYChart, {
 							theme,
 							width,
@@ -5405,6 +5707,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsx("div", {
 						ref: chartRef,
+						className: xy_plot_module_default["xy-plot"],
 						children: /* @__PURE__ */ jsxs(XYChart, {
 							theme,
 							width,
@@ -5660,6 +5963,7 @@ const BarListChartResponsive = withResponsive(BarListChart);
 var conversion_funnel_chart_module_default = {
 	"bar-container": "a8ccharts-mGEVca-bar-container",
 	"change-indicator": "a8ccharts-mGEVca-change-indicator",
+	"conversion-funnel-chart": "a8ccharts-mGEVca-conversion-funnel-chart",
 	"conversion-funnel-chart--loading": "a8ccharts-mGEVca-conversion-funnel-chart--loading",
 	"empty-state": "a8ccharts-mGEVca-empty-state",
 	"funnel-bar": "a8ccharts-mGEVca-funnel-bar",
@@ -5747,16 +6051,8 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 	const [scopeNode, setScopeNode] = useState(null);
 	const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
 	const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
-	const { containerRef: portalContainerRef, TooltipInPortal, containerBounds } = useTooltipInPortal({
-		detectBounds: true,
-		scroll: true
-	});
-	const portalContainerRefRef = useRef(portalContainerRef);
-	useEffect(() => {
-		portalContainerRefRef.current = portalContainerRef;
-	}, [portalContainerRef]);
+	const standaloneScopeClass = useStandaloneScopeClass();
 	const setChartRef = useCallback((node) => {
-		portalContainerRefRef.current(node);
 		chartRef.current = node;
 		setScopeNode(node);
 	}, []);
@@ -5773,30 +6069,22 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		});
 	}, [showTooltip]);
 	const getMouseTooltipCoords = useCallback((event) => {
-		if (containerBounds.width === 0 || containerBounds.height === 0) return null;
+		const bounds = chartRef.current?.getBoundingClientRect();
+		if (!bounds) return null;
 		return {
-			x: event.clientX - containerBounds.left,
-			y: event.clientY - containerBounds.top
+			x: event.clientX - bounds.left,
+			y: event.clientY - bounds.top
 		};
-	}, [
-		containerBounds.width,
-		containerBounds.height,
-		containerBounds.left,
-		containerBounds.top
-	]);
+	}, []);
 	const getKeyboardTooltipCoords = useCallback((event) => {
-		if (containerBounds.width === 0 || containerBounds.height === 0) return null;
+		const bounds = chartRef.current?.getBoundingClientRect();
+		if (!bounds) return null;
 		const rect = event.currentTarget.getBoundingClientRect();
 		return {
-			x: rect.left + rect.width / 2 - containerBounds.left,
-			y: rect.top - containerBounds.top
+			x: rect.left + rect.width / 2 - bounds.left,
+			y: rect.top - bounds.top
 		};
-	}, [
-		containerBounds.width,
-		containerBounds.height,
-		containerBounds.left,
-		containerBounds.top
-	]);
+	}, []);
 	const handleStepInteraction = useCallback((step, event, interactionType) => {
 		selectedBarRef.current = event.currentTarget;
 		const { isClicked } = getStepState(step.id);
@@ -5918,7 +6206,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		})
 	});
 	const maxRate = Math.max(...steps.map((step) => step.rate));
-	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Stack, {
+	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "column",
 		gap: "xl",
 		ref: setChartRef,
@@ -5927,7 +6215,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 			...style,
 			height: resolvedHeight
 		},
-		children: /* @__PURE__ */ jsxs(ChartScopeContext.Provider, {
+		children: [/* @__PURE__ */ jsxs(ChartScopeContext.Provider, {
 			value: scopeNode,
 			children: [renderMainMetric ? renderMainMetric({
 				mainRate,
@@ -5991,23 +6279,23 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 					}, step.id);
 				})
 			})]
-		})
-	}), tooltipOpen && tooltipData && (() => {
-		const tooltipContent = renderTooltip ? renderTooltip({
-			step: tooltipData,
-			index: steps.findIndex((s) => s.id === tooltipData.id),
-			top: tooltipTop,
-			left: tooltipLeft,
-			className: conversion_funnel_chart_module_default["tooltip-wrapper"]
-		}) : renderDefaultTooltip(tooltipData);
-		if (!tooltipContent) return null;
-		return /* @__PURE__ */ jsx(TooltipInPortal, {
-			top: tooltipTop,
-			left: tooltipLeft,
-			className: clsx("a8c-charts-scope", conversion_funnel_chart_module_default["tooltip-wrapper"]),
-			children: tooltipContent
-		}, Math.random());
-	})()] });
+		}), tooltipOpen && tooltipData && (() => {
+			const tooltipContent = renderTooltip ? renderTooltip({
+				step: tooltipData,
+				index: steps.findIndex((s) => s.id === tooltipData.id),
+				top: tooltipTop,
+				left: tooltipLeft,
+				className: conversion_funnel_chart_module_default["tooltip-wrapper"]
+			}) : renderDefaultTooltip(tooltipData);
+			if (!tooltipContent) return null;
+			return /* @__PURE__ */ jsx(BoundedTooltip, {
+				top: tooltipTop,
+				left: tooltipLeft,
+				className: clsx(standaloneScopeClass, conversion_funnel_chart_module_default["tooltip-wrapper"]),
+				children: tooltipContent
+			});
+		})()]
+	});
 };
 /**
 * ConversionFunnelChart component with provider wrapper
@@ -6491,12 +6779,9 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const { nonLegendChildren } = useChartChildren(children, "HeatmapChart");
 	const [selectedIndex, setSelectedIndex] = useState();
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, showTooltip, hideTooltip } = useTooltip();
-	const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal({
-		detectBounds: true,
-		scroll: true
-	});
-	const containerBoundsRef = useRef(containerBounds);
-	containerBoundsRef.current = containerBounds;
+	const standaloneScopeClass = useStandaloneScopeClass();
+	const containerRef = useRef(null);
+	const getTooltipOrigin = useCallback(() => containerRef.current?.closest(`[data-chart-id="heatmap-chart-${chartId}"]`)?.getBoundingClientRect() ?? null, [chartId]);
 	const { color: primaryColorHex } = getElementStyles({
 		index: 0,
 		overrideColor: primaryColor || heatmapChartSettings.primaryColor
@@ -6577,19 +6862,21 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	]);
 	const handleCellMouseMove = useCallback((event) => {
 		if (!withTooltips) return;
+		const origin = getTooltipOrigin();
+		if (!origin) return;
 		const target = event.currentTarget;
 		const columnIndex = Number(target.dataset.column);
 		const rowIndex = Number(target.dataset.row);
-		const bounds = containerBoundsRef.current;
 		showTooltip({
-			tooltipLeft: event.clientX - bounds.left,
-			tooltipTop: event.clientY - bounds.top,
+			tooltipLeft: event.clientX - origin.left,
+			tooltipTop: event.clientY - origin.top,
 			tooltipData: buildTooltipData(columnIndex, rowIndex)
 		});
 	}, [
 		withTooltips,
 		showTooltip,
-		buildTooltipData
+		buildTooltipData,
+		getTooltipOrigin
 	]);
 	const handleCellMouseLeave = useCallback(() => {
 		if (withTooltips && selectedIndex === void 0) hideTooltip();
@@ -6600,13 +6887,14 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	]);
 	useEffect(() => {
 		if (!withTooltips || selectedIndex === void 0) return;
+		const origin = getTooltipOrigin();
+		if (!origin) return;
 		const col = Math.floor(selectedIndex / rows);
 		const row = selectedIndex % rows;
 		const rect = (typeof document !== "undefined" ? document.getElementById(`${chartId}-cell-${col}-${row}`) : null)?.getBoundingClientRect();
-		const bounds = containerBoundsRef.current;
 		showTooltip({
-			tooltipLeft: rect ? rect.left + rect.width / 2 - bounds.left : 0,
-			tooltipTop: rect ? rect.top + rect.height / 2 - bounds.top : 0,
+			tooltipLeft: rect ? rect.left + rect.width / 2 - origin.left : 0,
+			tooltipTop: rect ? rect.top + rect.height / 2 - origin.top : 0,
 			tooltipData: buildTooltipData(col, row)
 		});
 	}, [
@@ -6615,7 +6903,8 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		rows,
 		chartId,
 		buildTooltipData,
-		showTooltip
+		showTooltip,
+		getTooltipOrigin
 	]);
 	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim() }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
 	if (!columns || !rows) return /* @__PURE__ */ jsx(Center, {
@@ -6731,11 +7020,11 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 							})]
 						}, `row-${rowIndex}`);
 					})]
-				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, {
+				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
 					top: tooltipTop,
 					left: tooltipLeft,
 					children: /* @__PURE__ */ jsx("div", {
-						className: "a8c-charts-scope",
+						className: standaloneScopeClass,
 						role: "tooltip",
 						tabIndex: -1,
 						children: (renderTooltip ?? defaultRenderTooltip)(tooltipData)
@@ -9555,7 +9844,7 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 //#endregion
 //#region src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
-	"pie-chart": "a8ccharts-gnszbG-pie-chart",
+	"pie-chart__plot": "a8ccharts-gnszbG-pie-chart__plot",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
 //#endregion
@@ -9610,11 +9899,8 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 	const providerTheme = useGlobalChartsTheme();
 	const chartId = useChartId(providedChartId);
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
-	const { containerRef, TooltipInPortal, containerBounds } = useTooltipInPortal({
-		detectBounds: true,
-		scroll: true,
-		debounce: 0
-	});
+	const standaloneScopeClass = useStandaloneScopeClass();
+	const containerRef = useRef(null);
 	const onMouseLeave = useCallback(() => {
 		if (!withTooltips) return;
 		hideTooltip();
@@ -9697,19 +9983,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 				width: propWidth || void 0,
 				height: propHeight || void 0
 			},
-			trailingContent: /* @__PURE__ */ jsxs(Fragment$1, { children: [
-				withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, {
-					top: tooltipTop || 0,
-					left: tooltipLeft || 0,
-					children: /* @__PURE__ */ jsx("div", {
-						className: "a8c-charts-scope",
-						role: "tooltip",
-						children: renderTooltip({ tooltipData })
-					})
-				}),
-				htmlChildren,
-				otherChildren
-			] }),
+			trailingContent: /* @__PURE__ */ jsxs(Fragment$1, { children: [htmlChildren, otherChildren] }),
 			children: ({ contentWidth, contentHeight }) => {
 				const availableSize = Math.min(contentWidth > 0 ? contentWidth : 300, contentHeight > 0 ? contentHeight : 300);
 				const actualSize = size ? Math.min(size, availableSize) : availableSize;
@@ -9722,9 +9996,10 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 				const innerRadius = thickness === 0 ? 0 : outerRadius * (1 - thickness);
 				const maxCornerRadius = (outerRadius - innerRadius) / 2;
 				const cornerRadius = cornerScale ? Math.min(cornerScale * outerRadius, maxCornerRadius) : 0;
-				return /* @__PURE__ */ jsx(Center, {
+				return /* @__PURE__ */ jsxs(Center, {
 					ref: containerRef,
-					children: /* @__PURE__ */ jsxs("svg", {
+					className: pie_chart_module_default["pie-chart__plot"],
+					children: [/* @__PURE__ */ jsxs("svg", {
 						viewBox: `0 0 ${width} ${height}`,
 						preserveAspectRatio: "xMidYMid meet",
 						width,
@@ -9756,11 +10031,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 										const hasSpaceForLabel = arc.endAngle - arc.startAngle >= .25;
 										const handleMouseMove = (event) => {
 											if (!withTooltips) return;
-											if (containerBounds.width === 0 || containerBounds.height === 0) return;
+											const bounds = containerRef.current?.getBoundingClientRect();
+											if (!bounds) return;
 											showTooltip({
 												tooltipData: arc.data,
-												tooltipLeft: event.clientX - containerBounds.left + tooltipOffsetX,
-												tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
+												tooltipLeft: event.clientX - bounds.left + tooltipOffsetX,
+												tooltipTop: event.clientY - bounds.top + tooltipOffsetY
 											});
 										};
 										const pathProps = {
@@ -9807,7 +10083,15 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 								}
 							}), !allSegmentsHidden && svgChildren]
 						})]
-					})
+					}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
+						top: tooltipTop || 0,
+						left: tooltipLeft || 0,
+						children: /* @__PURE__ */ jsx("div", {
+							className: standaloneScopeClass,
+							role: "tooltip",
+							children: renderTooltip({ tooltipData })
+						})
+					})]
 				});
 			}
 		})
@@ -9834,6 +10118,7 @@ var pie_semi_circle_chart_module_default = {
 	"label": "a8ccharts-YtTOxW-label",
 	"note": "a8ccharts-YtTOxW-note",
 	"pie-semi-circle-chart": "a8ccharts-YtTOxW-pie-semi-circle-chart",
+	"pie-semi-circle-chart__plot": "a8ccharts-YtTOxW-pie-semi-circle-chart__plot",
 	"pie-semi-circle-chart--responsive": "a8ccharts-YtTOxW-pie-semi-circle-chart--responsive"
 };
 //#endregion
@@ -9883,23 +10168,17 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 	const legendPosition = legend.position ?? "bottom";
 	const chartId = useChartId(providedChartId);
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip();
-	const { containerRef, TooltipInPortal, containerBounds } = useTooltipInPortal({
-		detectBounds: true,
-		scroll: true,
-		debounce: 0
-	});
+	const standaloneScopeClass = useStandaloneScopeClass();
+	const containerRef = useRef(null);
 	const handleMouseMove = useCallback((event, arc) => {
-		if (containerBounds.width === 0 || containerBounds.height === 0) return;
+		const bounds = containerRef.current?.getBoundingClientRect();
+		if (!bounds) return;
 		showTooltip({
 			tooltipData: arc.data,
-			tooltipLeft: event.clientX - containerBounds.left + tooltipOffsetX,
-			tooltipTop: event.clientY - containerBounds.top + tooltipOffsetY
+			tooltipLeft: event.clientX - bounds.left + tooltipOffsetX,
+			tooltipTop: event.clientY - bounds.top + tooltipOffsetY
 		});
 	}, [
-		containerBounds.width,
-		containerBounds.height,
-		containerBounds.left,
-		containerBounds.top,
 		showTooltip,
 		tooltipOffsetX,
 		tooltipOffsetY
@@ -9995,19 +10274,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 				width: propWidth || void 0,
 				height: propHeight || void 0
 			},
-			trailingContent: /* @__PURE__ */ jsxs(Fragment$1, { children: [
-				withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(TooltipInPortal, {
-					top: tooltipTop || 0,
-					left: tooltipLeft || 0,
-					children: /* @__PURE__ */ jsx("div", {
-						className: "a8c-charts-scope",
-						role: "tooltip",
-						children: renderTooltip({ tooltipData })
-					})
-				}),
-				htmlChildren,
-				otherChildren
-			] }),
+			trailingContent: /* @__PURE__ */ jsxs(Fragment$1, { children: [htmlChildren, otherChildren] }),
 			children: ({ contentWidth, contentHeight }) => {
 				const availableWidth = contentWidth > 0 ? contentWidth : effectiveWidth;
 				const availableHeight = contentHeight > 0 ? contentHeight : propHeight || effectiveWidth / 2;
@@ -10015,9 +10282,10 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 				const height = width / 2;
 				const radius = height;
 				const innerRadius = radius * (1 - thickness);
-				return /* @__PURE__ */ jsx(Center, {
+				return /* @__PURE__ */ jsxs(Center, {
 					ref: containerRef,
-					children: /* @__PURE__ */ jsxs("svg", {
+					className: pie_semi_circle_chart_module_default["pie-semi-circle-chart__plot"],
+					children: [/* @__PURE__ */ jsxs("svg", {
 						width,
 						height,
 						viewBox: `0 0 ${width} ${height}`,
@@ -10075,7 +10343,15 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 								!allSegmentsHidden && svgChildren
 							] })
 						})]
-					})
+					}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
+						top: tooltipTop || 0,
+						left: tooltipLeft || 0,
+						children: /* @__PURE__ */ jsx("div", {
+							className: standaloneScopeClass,
+							role: "tooltip",
+							children: renderTooltip({ tooltipData })
+						})
+					})]
 				});
 			}
 		})

@@ -111,7 +111,7 @@
   min-height: 0;
 }
 
-.a8ccharts-fpNVAq-chart-layout__content svg {
+.a8ccharts-fpNVAq-chart-layout__content svg:not(.visx-tooltip svg) {
   display: block;
 }
 .a8ccharts-w3qxlG-center {
@@ -160,6 +160,10 @@
 
 .a8ccharts-ur9dWW-x-zoom__reset:not(:hover, :active, :focus) {
   background-color: var(--a8c-charts-color-surface);
+}
+.a8ccharts-bIyhgG-xy-plot {
+  isolation: isolate;
+  position: relative;
 }
 .a8ccharts-inuQka-line-chart {
   position: relative;
@@ -253,11 +257,6 @@
   display: flex;
 }
 
-.visx-tooltip-glyph svg {
-  width: 10px;
-  height: 10px;
-}
-
 @keyframes a8ccharts-inuQka-rise {
   from {
     transform: scaleY(0);
@@ -324,6 +323,10 @@
     transform: scaleX(1);
   }
 }
+.a8ccharts-mGEVca-conversion-funnel-chart {
+  position: relative;
+}
+
 .a8ccharts-mGEVca-conversion-funnel-chart--loading {
   opacity: .6;
   pointer-events: none;
@@ -460,6 +463,7 @@
   height: 100%;
   min-height: 0;
   font-size: var(--wpds-typography-font-size-sm, 12px);
+  position: relative;
 }
 
 .a8ccharts-O3YMOW-heatmap-chart--height-capped {
@@ -744,14 +748,18 @@
     transition: none;
   }
 }
-.a8ccharts-gnszbG-pie-chart {
-  overflow: hidden;
+.a8ccharts-gnszbG-pie-chart__plot {
+  position: relative;
 }
 
 .a8ccharts-gnszbG-pie-chart--responsive {
   width: 100%;
   height: 100%;
 }
+.a8ccharts-YtTOxW-pie-semi-circle-chart__plot {
+  position: relative;
+}
+
 .a8ccharts-YtTOxW-pie-semi-circle-chart--responsive {
   width: 100%;
   height: 100%;
