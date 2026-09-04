@@ -60,27 +60,32 @@ type GoogleDataTableRow = GoogleDataTableCell[];
 type ChartType = 'area' | 'bar' | 'conversion-funnel' | 'leaderboard' | 'line' | 'pie' | 'pie-semi-circle';
 type OrientationType = ValueOf<typeof Orientation>;
 /**
- * Annotation styling.
- *
- * Each color member is deprecated on its own rather than the field it sits in: `radius`, `stroke` widths and the label geometry alongside them have no catalog role behind them and still apply.
+ * Styling for one annotation, as its `styles` prop. Colors belong here because
+ * `--a8c-charts-color-annotation` moves every annotation on the page at once and no
+ * selector narrows it to one.
  */
 type AnnotationStyles = {
   circleSubject?: Omit<CircleSubjectProps, 'x' | 'y' | 'fill'> & {
-    /** @deprecated Set the `--a8c-charts-color-annotation` custom property inside the provider tree instead. See `TOKENS.md`. */
     fill?: string;
   };
   lineSubject?: Omit<LineSubjectProps, 'x' | 'y'>;
-  connector?: Omit<ConnectorProps, 'x' | 'y' | 'dx' | 'dy' | 'stroke'> & {
-    /** @deprecated Set the `--a8c-charts-color-annotation` custom property inside the provider tree instead. See `TOKENS.md`. */
-    stroke?: ConnectorProps['stroke'];
+  connector?: Omit<ConnectorProps, 'x' | 'y' | 'dx' | 'dy'>;
+  label?: Omit<LabelProps, 'title' | 'subtitle' | 'x' | 'y'> & {
+    x?: number | 'start' | 'end';
+    y?: number | 'start' | 'end';
   };
+};
+/**
+ * Annotation styling on the theme: geometry only. Colors come from
+ * `--a8c-charts-color-annotation` and `--a8c-charts-color-surface`.
+ */
+type ThemeAnnotationStyles = {
+  circleSubject?: Omit<CircleSubjectProps, 'x' | 'y' | 'fill' | 'stroke'>;
+  lineSubject?: Omit<LineSubjectProps, 'x' | 'y' | 'stroke'>;
+  connector?: Omit<ConnectorProps, 'x' | 'y' | 'dx' | 'dy' | 'stroke'>;
   label?: Omit<LabelProps, 'title' | 'subtitle' | 'x' | 'y' | 'anchorLineStroke' | 'backgroundFill'> & {
     x?: number | 'start' | 'end';
     y?: number | 'start' | 'end';
-    /** @deprecated Set the `--a8c-charts-color-annotation` custom property inside the provider tree instead. See `TOKENS.md`. */
-    anchorLineStroke?: LabelProps['anchorLineStroke'];
-    /** @deprecated Set the `--a8c-charts-color-surface` custom property inside the provider tree instead. See `TOKENS.md`. */
-    backgroundFill?: LabelProps['backgroundFill'];
   };
 };
 type DataPoint = {
@@ -271,173 +276,53 @@ type DataPointPercentageCalculated = DataPointPercentage & {
   percentage: number;
 };
 /**
- * Base theme configuration for chart components with optional properties
+ * Base theme configuration for chart components: shape and spacing. Chart colors are
+ * `--a8c-charts-color-*` roles set in CSS inside the provider tree, catalogued in
+ * `TOKENS.md`.
  */
 type ChartTheme = {
-  /**
-   * Background color for chart components.
-   *
-   * Still resolved in JS — gradient stops, the glyph stroke and `GeoChart`'s Google Charts config each need a concrete string — but that is about where the value is *consumed*, not where it is *set*. `withCatalogPointers` parks a consumer's value in the catalog role and restores the pointer, so the field is only ever a carrier for `--a8c-charts-color-background`, and setting the role directly does the same job.
-   *
-   * Optional so the deprecation is actionable: a consumer writing a full theme literal can now stop setting it. `CompleteChartTheme` is `Required< ChartTheme >`, so `defaultTheme` must still carry one.
-   *
-   * @deprecated Set the `--a8c-charts-color-background` custom property inside the provider tree instead. See `TOKENS.md`.
-   */
-  backgroundColor?: string;
-  /**
-   * Background color for labels.
-   *
-   * @deprecated Set the `--a8c-charts-color-label-background` custom property inside the provider tree instead. See `TOKENS.md`.
-   */
-  labelBackgroundColor?: string;
-  /**
-   * Text color for labels.
-   *
-   * @deprecated Set the `--a8c-charts-color-label-on-fill` custom property inside the provider tree instead. See `TOKENS.md`.
-   */
-  labelTextColor?: string;
-  /**
-   * Series palette seeds. Entry N publishes `--a8c-charts-color-series-{N+1}`; entries past the fifth are ignored.
-   *
-   * Optional so the deprecation is actionable: a consumer writing a full theme literal can now stop setting it. `CompleteChartTheme` is `Required< ChartTheme >`, so `defaultTheme` must still carry one.
-   *
-   * @deprecated Set the `--a8c-charts-color-series-1` … `-5` custom properties inside the provider tree instead, or `options.stroke` on a series for a single one. See `TOKENS.md`.
-   */
-  colors?: string[];
-  /**
-   * Optional CSS styles for grid lines.
-   *
-   * `stroke` is deprecated on its own, not the whole field: `strokeWidth` has no CSS role behind it and still applies. The same shape is used for the other fields whose color moved to CSS — annotating the field itself would strike through the half that stays.
-   */
-  gridStyles?: Omit<GridStyles$1, 'stroke'> & {
-    /** @deprecated Set the `--a8c-charts-color-grid` custom property inside the provider tree instead. See `TOKENS.md`. */
-    stroke?: GridStyles$1['stroke'];
-  };
+  /** Optional CSS styles for grid lines. */
+  gridStyles?: Omit<GridStyles$1, 'stroke'>;
   /** Length of axis ticks in pixels */
   tickLength: number;
-  /**
-   * Set `--a8c-charts-color-grid` for the gridlines.
-   *
-   * @deprecated Do not drop this field without replacing it. Nothing in this package consults it, but `buildChartTheme` seeds `y.left/right.axisLine.stroke` and `y.*.tickLine.stroke` from it, and `defaultTheme`'s empty string is the only thing leaving the y axis unpainted — deleting the field hands those a black `#222` instead. CHARTS-263 replaces it with visx's own `yAxisLineStyles`/`yTickLineStyles` and a pair of catalog roles.
-   */
-  gridColor?: string;
-  /**
-   * @deprecated Paints nothing, and unlike `gridColor` is safe to delete: `buildChartTheme` seeds `x.*.axisLine.stroke` from it, but spreads `xAxisLineStyles` over the top and `defaultTheme` always carries that stroke. Charts follow the host's theme through the catalog rather than a dark-mode field of their own.
-   */
-  gridColorDark?: string;
   /** Styles for x-axis tick lines */
-  xTickLineStyles?: Omit<LineStyles$1, 'stroke'> & {
-    /** @deprecated Set the `--a8c-charts-color-tick` custom property inside the provider tree instead. See `TOKENS.md`. */
-    stroke?: LineStyles$1['stroke'];
-  };
+  xTickLineStyles?: Omit<LineStyles$1, 'stroke'>;
   /** Styles for x-axis line */
-  xAxisLineStyles?: Omit<LineStyles$1, 'stroke'> & {
-    /** @deprecated Set the `--a8c-charts-color-axis` custom property inside the provider tree instead. See `TOKENS.md`. */
-    stroke?: LineStyles$1['stroke'];
-  };
-  /** Styles for series lines */
-  seriesLineStyles?: LineStyles$1[];
+  xAxisLineStyles?: Omit<LineStyles$1, 'stroke'>;
+  /**
+   * Per-series line styling — dash pattern, width, cap. These spread on top of the
+   * palette-derived stroke, so a color here would override it; a single series takes
+   * one through `options.seriesLineStyle`.
+   */
+  seriesLineStyles?: Array<Omit<LineStyles$1, 'stroke'>>;
   /** Array of render functions for glyphs */
   glyphs?: Array<(<Datum extends object>(props: GlyphProps<Datum>) => ReactNode)>;
   /** Legend specific settings */
   legend?: {
     /** Styles for legend shapes */
     shapeStyles?: Record<string, unknown>[];
-    /**
-     * Styles for legend labels.
-     *
-     * `color` is deprecated on its own, not the whole field: everything else a consumer sets here — font size, weight, spacing — has no catalog role behind it and still applies.
-     */
-    labelStyles?: Omit<CSSProperties, 'color'> & {
-      /** @deprecated Set the `--a8c-charts-color-label` custom property inside the provider tree instead. See `TOKENS.md`. */
-      color?: CSSProperties['color'];
-    };
+    /** Styles for legend labels. */
+    labelStyles?: Omit<CSSProperties, 'color'>;
     /** Styles for legend container */
     containerStyles?: CSSProperties;
   };
   /**
    * Styles for small SVG text (eg. axis tick labels), passed through to the XYChart theme.
    *
-   * `fontFamily: 'inherit'` is load-bearing here — it overrides the font stack `buildChartTheme` injects inline on SVG `<text>` — so only `fill` is deprecated.
+   * `fontFamily: 'inherit'` is load-bearing here — it overrides the font stack
+   * `buildChartTheme` injects inline on SVG `<text>`.
    */
-  svgLabelSmall?: Omit<TextProps, 'fill'> & {
-    /** @deprecated Set the `--a8c-charts-color-label-axis` custom property inside the provider tree instead, or `--a8c-charts-color-label` to move every label at once. See `TOKENS.md`. */
-    fill?: TextProps['fill'];
-  };
+  svgLabelSmall?: Omit<TextProps, 'fill'>;
   /** Styles for large SVG text (eg. axis titles), passed through to the XYChart theme. */
   svgLabelBig?: TextProps;
-  annotationStyles?: AnnotationStyles;
-  /** GeoChart specific settings */
-  geoChart?: {
-    /**
-     * Default fill color for a geo chart feature (e.g. country) with no data.
-     *
-     * @deprecated Set the `--a8c-charts-color-surface-secondary` custom property inside the provider tree instead. Google Charts still takes a resolved hex, but the value is read from the role. See `TOKENS.md`.
-     */
-    featureFillColor?: string;
-  };
+  annotationStyles?: ThemeAnnotationStyles;
   /** LeaderboardChart specific settings */
   leaderboardChart?: {
-    /**
-     * @deprecated Declare `--a8c-charts-dimension-leaderboard-row-gap` in CSS instead. This
-     * still wins where it is set, and is removed in the next major.
-     */
-    rowGap?: number;
-    /**
-     * @deprecated Declare `--a8c-charts-dimension-leaderboard-column-gap` in CSS instead. This
-     * still wins where it is set, and is removed in the next major.
-     */
-    columnGap?: number;
     /** Spacing between label and progress bars */
     labelSpacing?: GapSize;
-    /**
-     * Primary color for current period bars.
-     *
-     * @deprecated Use the `primaryColor` prop on `LeaderboardChart` for one chart, or set `--a8c-charts-color-series-1` to move the palette this falls back to. See `TOKENS.md`.
-     */
-    primaryColor?: string;
-    /**
-     * Secondary color for comparison period bars.
-     *
-     * @deprecated Use the `secondaryColor` prop on `LeaderboardChart` for one chart, or set `--a8c-charts-color-series-2` to move the palette this falls back to. See `TOKENS.md`.
-     */
-    secondaryColor?: string;
-    /**
-     * Delta colors: [negative, neutral, positive].
-     *
-     * @deprecated Set the `--a8c-charts-color-trend-down`, `-trend-neutral` and `-trend-up` custom properties inside the provider tree instead. See `TOKENS.md`.
-     */
-    deltaColors?: [string, string, string];
-  };
-  /** ConversionFunnelChart specific settings */
-  conversionFunnelChart?: {
-    /**
-     * Primary color for funnel bars.
-     *
-     * @deprecated Set `--a8c-charts-color-series-1` to move the palette this falls back to. See `TOKENS.md`.
-     */
-    primaryColor?: string;
-    /**
-     * Background color for chart container.
-     *
-     * @deprecated Set the `--a8c-charts-color-surface-secondary` custom property inside the provider tree instead. See `TOKENS.md`.
-     */
-    backgroundColor?: string;
-    /**
-     * Color for positive change indicators.
-     *
-     * @deprecated Set the `--a8c-charts-color-trend-up` custom property inside the provider tree instead. See `TOKENS.md`.
-     */
-    positiveChangeColor?: string;
-    /**
-     * Color for negative change indicators.
-     *
-     * @deprecated Set the `--a8c-charts-color-trend-down` custom property inside the provider tree instead. See `TOKENS.md`.
-     */
-    negativeChangeColor?: string;
   };
   lineChart?: {
-    lineStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, LineStyles$1>>;
+    lineStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, Omit<LineStyles$1, 'stroke'>>>;
   };
   barChart?: {
     barStyles?: Partial<Record<NonNullable<SeriesDataOptions['type']>, BarStyles>>;
@@ -456,16 +341,9 @@ type ChartTheme = {
   };
   /**
    * HeatmapChart settings. Cell gap, radius, value size and the selection ring come from
-   * WPDS tokens in CSS, so only the scale color and the compact sizing live here.
+   * WPDS tokens in CSS, so only the compact sizing lives here.
    */
   heatmapChart?: {
-    /**
-     * Color the cell scale interpolates toward at the highest value (prop > this >
-     * palette `colors[0]`), fed to CSS `color-mix`. Omit to use the palette color.
-     *
-     * @deprecated Use the `primaryColor` prop on `HeatmapChart` for one chart, or set `--a8c-charts-color-series-1` to move the palette this falls back to. See `TOKENS.md`.
-     */
-    primaryColor?: string;
     /** Gap in px between cells in compact mode */
     compactCellGap?: number;
     /** Fixed square cell size in px for compact mode */
@@ -477,10 +355,9 @@ type ChartTheme = {
  * Useful for merged themes where defaults are provided for all optional properties.
  */
 type CompleteChartTheme = Required<ChartTheme> & {
-  leaderboardChart: Omit<Required<NonNullable<ChartTheme['leaderboardChart']>>, 'primaryColor' | 'secondaryColor' | 'rowGap' | 'columnGap'> & Pick<NonNullable<ChartTheme['leaderboardChart']>, 'primaryColor' | 'secondaryColor' | 'rowGap' | 'columnGap'>;
-  conversionFunnelChart: Omit<Required<NonNullable<ChartTheme['conversionFunnelChart']>>, 'primaryColor'> & Pick<NonNullable<ChartTheme['conversionFunnelChart']>, 'primaryColor'>;
+  leaderboardChart: Required<NonNullable<ChartTheme['leaderboardChart']>>;
   lineChart: {
-    lineStyles: Record<NonNullable<SeriesDataOptions['type']>, LineStyles$1>;
+    lineStyles: Record<NonNullable<SeriesDataOptions['type']>, Omit<LineStyles$1, 'stroke'>>;
   };
   barChart: {
     barStyles: Record<NonNullable<SeriesDataOptions['type']>, BarStyles>;
@@ -489,7 +366,7 @@ type CompleteChartTheme = Required<ChartTheme> & {
   sparkline: Required<NonNullable<ChartTheme['sparkline']>> & {
     margin: Required<NonNullable<ChartTheme['sparkline']>['margin']>;
   };
-  heatmapChart: Omit<Required<NonNullable<ChartTheme['heatmapChart']>>, 'primaryColor'> & Pick<NonNullable<ChartTheme['heatmapChart']>, 'primaryColor'>;
+  heatmapChart: Required<NonNullable<ChartTheme['heatmapChart']>>;
 };
 /**
  * Bucket resolution of time-series data, as known by the caller (e.g. a
@@ -1087,12 +964,6 @@ interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityP
    * @default true
    */
   rescaleYOnVisibilityChange?: boolean;
-  /**
-   * @deprecated Use `rescaleYOnVisibilityChange`. The behaviour keys off series
-   * visibility changing, not specifically a legend toggle. Still honoured when
-   * `rescaleYOnVisibilityChange` is not set.
-   */
-  rescaleYOnLegendToggle?: boolean;
   children?: ReactNode;
 }
 //#endregion
@@ -1430,8 +1301,8 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
   /** Floor a cell's height (px) in non-compact mode; see `minCellWidth`. */
   minCellHeight?: number;
   /**
-   * Color the cell scale interpolates toward at the highest value
-   * (this prop > theme `heatmapChart.primaryColor` > palette `colors[0]`).
+   * Color the cell scale interpolates toward at the highest value. Defaults to the
+   * first series palette slot, `--a8c-charts-color-series-1`.
    */
   primaryColor?: string;
   renderTooltip?: (data: HeatmapTooltipData) => ReactNode;
@@ -1718,14 +1589,6 @@ declare const getColorDistance: (hsl1: [number, number, number], hsl2: [number, 
  */
 declare const parseHslString: (hslString: string) => [number, number, number] | null;
 /**
- * Parse an RGB string like 'rgb(255, 0, 0)' into a hex color.
- *
- * @deprecated    Use normalizeColorToHex() instead, which handles all color formats including rgb() and rgba().
- * @param      rgbString - RGB color string (not RGBA)
- * @return        hex color string or null if invalid
- */
-declare const parseRgbString: (rgbString: string) => string | null;
-/**
  * Normalize any CSS color value to a hex color string.
  * Handles hex, HSL, HSLA, RGB, RGBA, named CSS colors, and CSS variables.
  *
@@ -1997,7 +1860,7 @@ type GradientConfig = {
    */
   from?: string;
   /**
-   * End color for gradient (defaults to theme backgroundColor)
+   * End color for gradient (defaults to `--a8c-charts-color-background`)
    */
   to?: string;
   /**
@@ -2306,7 +2169,10 @@ declare const useChartFormatting: () => ChartFormatting;
 //#endregion
 //#region src/providers/chart-context/themes.d.ts
 /**
- * Default theme configuration
+ * Default theme configuration: the shape and spacing a consumer can override.
+ *
+ * For a color, set the matching `--a8c-charts-color-*` role in CSS instead; the `var()`
+ * chains that deliver those live in `private/catalog-pointers.ts`.
  */
 declare const defaultTheme: CompleteChartTheme;
 //#endregion
@@ -2318,5 +2184,5 @@ declare const defaultTheme: CompleteChartTheme;
  */
 declare const useChartScopeElement: () => HTMLElement | null;
 //#endregion
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 //# sourceMappingURL=index.d.cts.map

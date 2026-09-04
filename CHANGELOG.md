@@ -5,19 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.3.0-alpha] - unreleased
+## [4.0.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Inject WPDS design-token fallbacks at build time via @wordpress/theme's LightningCSS plugin.
-- LeaderboardChart: Set the row and column gaps in CSS. Declare `--a8c-charts-dimension-leaderboard-row-gap` or `--a8c-charts-dimension-leaderboard-column-gap` inside the provider tree; they map to `--wpds-dimension-gap-md` and `--wpds-dimension-gap-xs`, so the default spacing now follows the design system. `theme.leaderboardChart.rowGap` and `.columnGap` are deprecated and still win where they are set, but no longer carry a default, so reading either off `defaultTheme` or `useGlobalChartsTheme()` now gives `undefined` rather than `12` and `4`. `TOKENS.md` lists both roles.
 - Render chart tooltips inside the chart instead of a document.body portal, so they stack correctly under sticky and fixed page elements. `detectBounds` now keeps the box inside the nearest ancestor that clips its overflow, or the viewport. The tooltip's `scroll`, `debounce` and `resizeObserverPolyfill` options are deprecated and ignored.
 - Render time-axis and tooltip dates in a host-supplied locale and time zone, set on GlobalChartsProvider. Both default to the browser's, as before.
 - Update package dependencies.
 
+### Removed
+- Remove every color field from the chart theme. Set the matching `--a8c-charts-color-*` custom property inside the provider tree instead — every removed field named one, and they were deprecated in the previous release. `TOKENS.md` lists the catalog. `LeaderboardChart`'s `primaryColor` and `secondaryColor` props and `HeatmapChart`'s `primaryColor` prop are unaffected, and a single annotation still takes colors through its own `styles` prop.
+  
+  Remove `gridColor` and `gridColorDark`, which were undocumented visx passthroughs. `gridColor` painted the y axis line and y tick marks, which no other field could reach. Add `--a8c-charts-color-axis-y` and `--a8c-charts-color-tick-y` to replace it: both resolve to `none`, so the y axis still carries labels only by default, and a chart that wants a painted y axis declares them.
+  
+  Rename `--a8c-charts-color-axis` to `--a8c-charts-color-axis-x` and `--a8c-charts-color-tick` to `--a8c-charts-color-tick-x`. Both only ever painted the x axis; now that the y axis has roles of its own, the names say which one they move.
+  
+  Add `leaderboard-chart`, `conversion-funnel-chart` and `bar-list-chart` classes to those charts' roots, and add the `pie-semi-circle-chart` class to that chart's error state, which was missing it. This matches the `bar-chart`, `line-chart` and `pie-chart` classes the other charts already carry, and gives a consumer somewhere to scope a role to one chart — which matters for a role more than one chart reads, since `--a8c-charts-color-surface-secondary` paints the funnel's track and `GeoChart`'s dataless regions, and the trend pair paints the funnel's change indicator and the leaderboard's deltas.
+  
+  `BarListChart` and `PieSemiCircleChart`'s error state now also pass a caller's own `className` through, which they previously dropped.
+  
+  Remove `--a8c-charts-color-label-on-fill`. Set `--a8c-charts-color-label-inverse` instead: both meant label text on a filled surface, and one role covers the pie segment labels and the heatmap cell values together. Pie labels follow that role's `--wpds-color-foreground-interactive-neutral-strong` mapping now, so they are off-white rather than pure white until a consumer sets the role.
+  
+  Remove `theme.leaderboardChart.rowGap` and `.columnGap`. Declare `--a8c-charts-dimension-leaderboard-row-gap` or `--a8c-charts-dimension-leaderboard-column-gap` inside the provider tree instead; they map to `--wpds-dimension-gap-md` and `--wpds-dimension-gap-xs`, so the default spacing follows the design system. `TOKENS.md` lists both roles.
+  
+  Remove the two remaining deprecated APIs, so this major carries every removal at once rather than spending a second one later. `AreaChart`'s `rescaleYOnLegendToggle` prop goes — use `rescaleYOnVisibilityChange`, which is the same setting under a name that matches when it applies. The `parseRgbString` helper goes — use `normalizeColorToHex`, which handles `rgb()` alongside every other format.
+
 ### Fixed
 - Place line and area chart date ticks on the host time zone's calendar boundaries, name the hour in tooltips on hourly data, let the locale rather than a forced 12-hour clock choose how every chart's hour labels read, and hand a custom tooltip the chart's date bucket classification.
+- Tooltip: Keep the drop shadow when `--a8c-charts-color-label-axis` resolves to something other than a 6-digit hex. visx appends an alpha suffix to that color to build the shadow, which only parses after a hex, so an `rgb()` or `hsl()` value silently dropped the shadow entirely.
 
 ## [3.2.0] - 2026-09-01
 ### Added
@@ -1032,7 +1049,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[3.3.0-alpha]: https://github.com/Automattic/charts/compare/v3.2.0...v3.3.0-alpha
+[4.0.0-alpha]: https://github.com/Automattic/charts/compare/v3.2.0...v4.0.0-alpha
 [3.2.0]: https://github.com/Automattic/charts/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/Automattic/charts/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/Automattic/charts/compare/v3.0.0...v3.1.0

@@ -418,20 +418,6 @@ const parseHslString = (hslString) => {
 	];
 };
 /**
-* Parse an RGB string like 'rgb(255, 0, 0)' into a hex color.
-*
-* @deprecated    Use normalizeColorToHex() instead, which handles all color formats including rgb() and rgba().
-* @param      rgbString - RGB color string (not RGBA)
-* @return        hex color string or null if invalid
-*/
-const parseRgbString = (rgbString) => {
-	const lower = rgbString.toLowerCase().trim();
-	if (!lower.startsWith("rgb(") || lower.startsWith("rgba(")) return null;
-	const parsed = color(lower);
-	if (!parsed) return null;
-	return parsed.formatHex();
-};
-/**
 * Normalize any CSS color value to a hex color string.
 * Handles hex, HSL, HSLA, RGB, RGBA, named CSS colors, and CSS variables.
 *
@@ -912,148 +898,29 @@ const SERIES_SLOT_1_FALLBACK = "#3858e9";
 /** The catalog pointer for every slot, in slot order. */
 const SERIES_PALETTE_POINTERS = Array.from({ length: 5 }, (_, index) => index === 0 ? `var(${seriesRole(1)}, ${SERIES_SLOT_1_FALLBACK})` : `var(${seriesRole(index + 1)})`);
 //#endregion
-//#region src/providers/chart-context/private/theme-override-vars.ts
-const ROLE_FOR_FIELD = [
-	["--a8c-charts-color-background", (theme) => theme.backgroundColor],
-	["--a8c-charts-color-grid", (theme) => theme.gridStyles?.stroke],
-	["--a8c-charts-color-axis", (theme) => theme.xAxisLineStyles?.stroke],
-	["--a8c-charts-color-tick", (theme) => theme.xTickLineStyles?.stroke],
-	["--a8c-charts-color-label-axis", (theme) => theme.svgLabelSmall?.fill],
-	["--a8c-charts-color-label-background", (theme) => theme.labelBackgroundColor],
-	["--a8c-charts-color-label-on-fill", (theme) => theme.labelTextColor],
-	...Array.from({ length: 5 }, (_, index) => [seriesRole(index + 1), (theme) => theme.colors?.[index]])
-];
-let warnedAboutExtraColors = false;
-/**
-* Warns once when a consumer passes more colors than there are slots to publish them into.
-*
-* @param count - How many entries `theme.colors` holds.
-*/
-function warnOnceAboutExtraColors(count) {
-	if (warnedAboutExtraColors || process.env.NODE_ENV === "production") return;
-	warnedAboutExtraColors = true;
-	console.warn(`[Charts] theme.colors holds ${count} colors and the palette has 5 slots, so entries past the 5th are ignored. Set a per-series color with \`options.stroke\` instead.`);
-}
-/**
-* The variable a `theme` prop override is published as, one layer outside the role itself.
-*
-* `chart-scope.scss` declares each of these roles as `var(<role>-theme, <catalog default>)`, so an override that is invalid at computed-value time — a fallback-less `var()` naming a token the host never set — only invalidates this variable, and the role still resolves its mapped `--wpds-*` token. Published as the role directly, such a value took the role and every bare `var(<role>)` read site down with it.
-*
-* @param role - The catalog role being overridden.
-* @return The custom property carrying the consumer's value.
-*/
-const themeLayerVar = (role) => `${role}-theme`;
-ROLE_FOR_FIELD.map(([role]) => role);
-/**
-* Whether a value reads the role it is being published for, which would make the catalog entry depend on itself.
-*
-* The dependency runs `<role>: var(<role>-theme, …)`, so a value naming `<role>` closes a cycle through the catalog entry. CSS marks every custom property in a cycle invalid at computed-value time — the role's own fallback is *not* used, so the token resolves to nothing and every chart loses that color. Verified in Chrome: `--role-theme: var(--role, blue); --role: var(--role-theme, green)` leaves `--role` empty, not `green`.
-*
-* Three things this has to get right, none of which a plain substring test gets:
-*
-* `var()` permits whitespace after the opening paren, so testing for `var(<role>` misses `var( --a8c-charts-color-grid, … )`.
-*
-* Several roles are prefixes of others (`--a8c-charts-color-label` of `--a8c-charts-color-label-secondary`), and every role is a prefix of its own theme layer. A prefix match would read a legitimate cross-role pointer as a self-reference and silently drop the override, so the role must be followed by something that cannot continue an identifier — `-` included. A value naming `<role>-theme` is therefore not treated as a self-reference: that cycle is confined to the theme layer, which leaves the role free to fall back to the catalog default.
-*
-* `resolveCssVariable` also accepts a bare custom-property name with no `var()` wrapper (`--a8c-charts-color-grid`), so that is legal `theme` input too. It forms no cycle — custom properties accept arbitrary token streams — so it survives as a literal string and drops silently at the use site instead of falling back to the catalog default.
-*
-* @param value - The consumer's value for the field.
-* @param role  - The catalog role this value would override.
-* @return True when the value reads `role`, so it must not be published.
-*/
-const readsOwnRole = (value, role) => value.trim() === role || new RegExp(`var\\(\\s*${role.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`).test(value);
-/**
-* Maps a sparse consumer theme onto the theme-layer variables its overridden catalog roles read, so CSS-painted and JS-resolved colors read one source.
-*
-* A value that reads the role it would override is left unpublished — that is the default theme's own pointer surviving `mergeThemes`, and publishing it would invalidate the role. The role is still reported in `roles`: `withCatalogPointers` restores its theme field to the catalog pointer either way, so CSS and visx agree on the catalog default rather than visx painting a literal CSS never sees.
-*
-* `theme.colors` publishes through the same mechanism, one slot per entry, so a CSS declaration of `--a8c-charts-color-series-N` still beats it and a short array leaves the later slots unset rather than blank.
-*
-* @param theme - The consumer's `theme` prop, before merging with the default theme.
-* @return The wrapper's custom properties, and the roles the consumer overrode.
-*/
-const themeOverrideVars = (theme) => {
-	if (!theme) return {
-		vars: {},
-		roles: []
-	};
-	if (Array.isArray(theme.colors) && theme.colors.length > 5) warnOnceAboutExtraColors(theme.colors.length);
-	const vars = {};
-	const roles = [];
-	for (const [role, read] of ROLE_FOR_FIELD) {
-		const value = read(theme);
-		if (typeof value !== "string" || value === "") continue;
-		roles.push(role);
-		if (!readsOwnRole(value, role)) vars[themeLayerVar(role)] = value;
-	}
-	return {
-		vars,
-		roles
-	};
-};
-//#endregion
 //#region src/providers/chart-context/themes.ts
 /**
-* Default theme configuration
+* Default theme configuration: the shape and spacing a consumer can override.
+*
+* For a color, set the matching `--a8c-charts-color-*` role in CSS instead; the `var()`
+* chains that deliver those live in `private/catalog-pointers.ts`.
 */
 const defaultTheme = {
-	backgroundColor: "var(--a8c-charts-color-background, #fff)",
-	labelBackgroundColor: "var(--a8c-charts-color-label-background, transparent)",
-	labelTextColor: "var(--a8c-charts-color-label-on-fill, #FFFFFF)",
-	colors: [...SERIES_PALETTE_POINTERS],
-	gridStyles: {
-		stroke: "var(--a8c-charts-color-grid, #dbdbdb)",
-		strokeWidth: 1
-	},
+	gridStyles: { strokeWidth: 1 },
 	tickLength: 4,
-	gridColor: "",
-	gridColorDark: "",
-	xTickLineStyles: {
-		stroke: "var(--a8c-charts-color-tick, #dbdbdb)",
-		strokeWidth: 1
-	},
-	xAxisLineStyles: {
-		stroke: "var(--a8c-charts-color-axis, #dbdbdb)",
-		strokeWidth: 1
-	},
+	xTickLineStyles: { strokeWidth: 1 },
+	xAxisLineStyles: { strokeWidth: 1 },
 	legend: {
-		labelStyles: { color: "var(--a8c-charts-color-label, #1e1e1e)" },
+		labelStyles: {},
 		containerStyles: {},
 		shapeStyles: []
 	},
 	seriesLineStyles: [],
 	glyphs: [],
-	svgLabelSmall: {
-		fill: "var(--a8c-charts-color-label-axis, #1e1e1e)",
-		fontFamily: "inherit"
-	},
+	svgLabelSmall: { fontFamily: "inherit" },
 	svgLabelBig: { fontFamily: "inherit" },
-	annotationStyles: {
-		label: {
-			anchorLineStroke: "var(--a8c-charts-color-annotation, #1e1e1e)",
-			backgroundFill: "var(--a8c-charts-color-surface, #fff)"
-		},
-		connector: { stroke: "var(--a8c-charts-color-annotation, #1e1e1e)" },
-		circleSubject: {
-			stroke: "transparent",
-			fill: "var(--a8c-charts-color-annotation, #1e1e1e)",
-			radius: 5
-		}
-	},
-	geoChart: { featureFillColor: "var(--a8c-charts-color-surface-secondary, #f4f4f4)" },
-	leaderboardChart: {
-		labelSpacing: "xs",
-		deltaColors: [
-			"var(--a8c-charts-color-trend-down, #cc1818)",
-			"var(--a8c-charts-color-trend-neutral, #707070)",
-			"var(--a8c-charts-color-trend-up, #008030)"
-		]
-	},
-	conversionFunnelChart: {
-		backgroundColor: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
-		positiveChangeColor: "var(--a8c-charts-color-trend-up, #008030)",
-		negativeChangeColor: "var(--a8c-charts-color-trend-down, #cc1818)"
-	},
+	annotationStyles: {},
+	leaderboardChart: { labelSpacing: "xs" },
 	lineChart: { lineStyles: { comparison: {
 		strokeDasharray: "4 4",
 		strokeLinecap: "square"
@@ -1077,67 +944,6 @@ const defaultTheme = {
 	}
 };
 //#endregion
-//#region src/providers/chart-context/private/with-catalog-pointers.ts
-/**
-* The pointer one palette slot is restored to.
-*
-* Unlike the other roles, this keeps the consumer's own color as the pointer's terminal literal instead of the catalog's. The literal is only ever reached where `getComputedStyle` resolves nothing — SSR and jsdom — and there the palette is the one field where falling back to the catalog default would be visible: every series would paint the same seeded blue. In a browser the slot resolves first, so a CSS declaration of it still outranks the consumer's `theme.colors`.
-*
-* @param index - The slot's zero-based index in `colors`.
-* @param value - The merged theme's entry for it.
-* @return The catalog pointer for that slot.
-*/
-const seriesPointer = (index, value) => {
-	const role = seriesRole(index + 1);
-	if (typeof value === "string" && value.startsWith(`var(${role}`)) return value;
-	if (typeof value !== "string" || value === "") return SERIES_PALETTE_POINTERS[index];
-	return `var(${role}, ${value})`;
-};
-const CATALOG_RESTORE_FOR_ROLE = {
-	...Object.fromEntries(Array.from({ length: 5 }, (_, index) => [seriesRole(index + 1), (theme) => ({ colors: SERIES_PALETTE_POINTERS.map((_pointer, slot) => seriesPointer(slot, theme.colors?.[slot])) })])),
-	"--a8c-charts-color-background": () => ({ backgroundColor: defaultTheme.backgroundColor }),
-	"--a8c-charts-color-grid": (theme) => ({ gridStyles: {
-		...theme.gridStyles,
-		stroke: defaultTheme.gridStyles.stroke
-	} }),
-	"--a8c-charts-color-axis": (theme) => ({ xAxisLineStyles: {
-		...theme.xAxisLineStyles,
-		stroke: defaultTheme.xAxisLineStyles.stroke
-	} }),
-	"--a8c-charts-color-tick": (theme) => ({ xTickLineStyles: {
-		...theme.xTickLineStyles,
-		stroke: defaultTheme.xTickLineStyles.stroke
-	} }),
-	"--a8c-charts-color-label-axis": (theme) => ({ svgLabelSmall: {
-		...theme.svgLabelSmall,
-		fill: defaultTheme.svgLabelSmall.fill
-	} }),
-	"--a8c-charts-color-label-background": () => ({ labelBackgroundColor: defaultTheme.labelBackgroundColor }),
-	"--a8c-charts-color-label-on-fill": () => ({ labelTextColor: defaultTheme.labelTextColor })
-};
-/**
-* Restores the mapped theme fields of `overriddenRoles` to their catalog pointer, so the theme-layer variable `themeOverrideVars` writes on the provider wrapper is the only carrier for an overridden role — CSS and the JS bridge (`useXYChartTheme`) then resolve it through the same cascade instead of visx reading a baked literal that can disagree with a closer CSS override.
-*
-* This covers roles `themeOverrideVars` deliberately left unpublished as well as the ones it published. A value that reads its own role is not publishable, but leaving visx the consumer's literal is what the whole mechanism exists to prevent: `theme={ { gridStyles: { stroke: 'var(--brand, var(--a8c-charts-color-grid, red))' } } }` would have CSS paint the catalog default while visx painted `--brand`.
-*
-* Every field outside the mapped roles is left exactly as `merged` provided it: those aren't published as theme-layer vars, so rewriting them would erase a consumer's override with no replacement carrier.
-*
-* @param merged          - The consumer theme merged onto `defaultTheme` (`mergeThemes` output).
-* @param overriddenRoles - The catalog roles the consumer overrode, from `themeOverrideVars`.
-* @return A new theme object; `merged` is not mutated.
-*/
-const withCatalogPointers = (merged, overriddenRoles) => {
-	let result = merged;
-	for (const role of overriddenRoles) {
-		const restore = CATALOG_RESTORE_FOR_ROLE[role];
-		if (restore) result = {
-			...result,
-			...restore(result)
-		};
-	}
-	return result;
-};
-//#endregion
 //#region src/providers/chart-context/global-charts-provider.tsx
 const GlobalChartsContext = createContext(null);
 const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
@@ -1150,11 +956,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		wrapperRef.current = node;
 		setScopeNode(node);
 	}, []);
-	const { vars: overrideVars, roles: overriddenRoles } = useMemo(() => themeOverrideVars(theme), [theme]);
-	const providerTheme = useMemo(() => {
-		if (!theme) return defaultTheme;
-		return withCatalogPointers(mergeThemes(defaultTheme, theme), overriddenRoles);
-	}, [theme, overriddenRoles]);
+	const providerTheme = useMemo(() => theme ? mergeThemes(defaultTheme, theme) : defaultTheme, [theme]);
 	const [colorCache, setColorCache] = useState(() => ({
 		colors: [],
 		hues: [],
@@ -1170,7 +972,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		const existingHslColors = [];
 		let minHue = 360;
 		let maxHue = 0;
-		for (const color of providerTheme.colors ?? SERIES_PALETTE_POINTERS) {
+		for (const color of SERIES_PALETTE_POINTERS) {
 			const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
 			if (normalizedColor.startsWith("#")) {
 				resolvedColors.push(normalizedColor);
@@ -1195,7 +997,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 			minHue,
 			maxHue
 		});
-	}, [providerTheme]);
+	}, []);
 	useEffect(() => {
 		if (colorCache.colors.length > 0) setIsColorPaletteResolved(true);
 	}, [colorCache]);
@@ -1329,10 +1131,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		children: /* @__PURE__ */ jsx("div", {
 			ref: setWrapperNode,
 			className: CHART_SCOPE_CLASS,
-			style: {
-				display: "contents",
-				...overrideVars
-			},
+			style: { display: "contents" },
 			children: /* @__PURE__ */ jsx(ChartScopeContext.Provider, {
 				value: scopeNode,
 				children
@@ -1396,6 +1195,39 @@ const useDeepMemo = (value) => {
 	return ref.current;
 };
 //#endregion
+//#region src/providers/chart-context/private/catalog-pointers.ts
+const CATALOG_POINTERS = {
+	background: "var(--a8c-charts-color-background, #fff)",
+	labelAxis: "var(--a8c-charts-color-label-axis, #1e1e1e)",
+	grid: "var(--a8c-charts-color-grid, #dbdbdb)",
+	axisX: "var(--a8c-charts-color-axis-x, #dbdbdb)",
+	tickX: "var(--a8c-charts-color-tick-x, #dbdbdb)",
+	axisY: "var(--a8c-charts-color-axis-y, none)",
+	tickY: "var(--a8c-charts-color-tick-y, none)",
+	annotation: "var(--a8c-charts-color-annotation, #1e1e1e)",
+	surface: "var(--a8c-charts-color-surface, #fff)",
+	surfaceSecondary: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
+	trendUp: "var(--a8c-charts-color-trend-up, #008030)",
+	trendDown: "var(--a8c-charts-color-trend-down, #cc1818)",
+	series: SERIES_PALETTE_POINTERS
+};
+/**
+* The annotation parts visx paints, in the shape `@visx/annotation` takes. `radius`
+* rides along as the base the theme and the per-datum styles merge onto.
+*/
+const ANNOTATION_POINTERS = {
+	label: {
+		anchorLineStroke: CATALOG_POINTERS.annotation,
+		backgroundFill: CATALOG_POINTERS.surface
+	},
+	connector: { stroke: CATALOG_POINTERS.annotation },
+	circleSubject: {
+		stroke: "transparent",
+		fill: CATALOG_POINTERS.annotation,
+		radius: 5
+	}
+};
+//#endregion
 //#region src/providers/chart-scope/use-chart-scope-element.ts
 /**
 * Returns the nearest chart scope element, or `null` when rendered outside any scope (and during SSR, before the ref is attached).
@@ -1422,13 +1254,34 @@ const useXYChartTheme = (data) => {
 	return useMemo(() => {
 		const resolve = createCssVariableResolver(scopeElement);
 		const resolveColor = (value) => value ? resolve(value) ?? value : value;
-		const paletteColors = [...JSON.parse(seriesColorKey), ...theme.colors ?? []].map((color) => resolveColor(color)).filter((color) => Boolean(color) && !color.includes("var("));
-		const htmlLabelColor = resolveColor(theme.svgLabelSmall?.fill);
+		const paletteColors = [...JSON.parse(seriesColorKey), ...CATALOG_POINTERS.series].map((color) => resolveColor(color)).filter((color) => Boolean(color) && !color.includes("var("));
+		const resolvedLabelColor = resolveColor(CATALOG_POINTERS.labelAxis);
+		const htmlLabelColor = resolvedLabelColor ? normalizeColorToHex(resolvedLabelColor) || resolvedLabelColor : resolvedLabelColor;
 		return buildChartTheme({
 			...theme,
+			gridColor: "",
+			gridColorDark: "",
 			colors: paletteColors,
-			backgroundColor: resolveColor(theme.backgroundColor),
-			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : void 0
+			backgroundColor: resolveColor(CATALOG_POINTERS.background),
+			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : void 0,
+			gridStyles: {
+				...theme.gridStyles,
+				stroke: CATALOG_POINTERS.grid
+			},
+			xAxisLineStyles: {
+				...theme.xAxisLineStyles,
+				stroke: CATALOG_POINTERS.axisX
+			},
+			xTickLineStyles: {
+				...theme.xTickLineStyles,
+				stroke: CATALOG_POINTERS.tickX
+			},
+			yAxisLineStyles: { stroke: CATALOG_POINTERS.axisY },
+			yTickLineStyles: { stroke: CATALOG_POINTERS.tickY },
+			svgLabelSmall: {
+				...theme.svgLabelSmall,
+				fill: CATALOG_POINTERS.labelAxis
+			}
 		});
 	}, [
 		theme,
@@ -2585,11 +2438,10 @@ const XyChartTooltip = (props) => {
 const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
 	const tooltipContext = useContext(TooltipContext);
 	const scopeElement = useChartScopeElement();
-	const gridStroke = useGlobalChartsTheme().gridStyles?.stroke;
 	const crosshairStroke = useMemo(() => {
-		const stroke = gridStroke ? resolveCssVariable(gridStroke, scopeElement) : null;
+		const stroke = resolveCssVariable(CATALOG_POINTERS.grid, scopeElement);
 		return stroke ? { stroke } : void 0;
-	}, [gridStroke, scopeElement]);
+	}, [scopeElement]);
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const tooltipData = useMemo(() => {
 		if (mode !== "individual") return [];
@@ -3820,12 +3672,14 @@ const getVerticalAnchor = (subjectType, isFlippedVertically, y, yMax, height) =>
 };
 const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", styles: datumStyles, testId, renderLabel, renderLabelPopover }) => {
 	const providerTheme = useGlobalChartsTheme();
-	const scopeElement = useChartScopeElement();
 	const { xScale, yScale } = useContext(DataContext) || {};
 	const labelRef = useRef(null);
 	const [height, setHeight] = useState(null);
-	const styles = deepmerge(providerTheme.annotationStyles ?? {}, datumStyles ?? {});
-	const resolveColor = (value) => value ? resolveCssVariable(value, scopeElement) ?? value : value;
+	const styles = useMemo(() => deepmerge.all([
+		ANNOTATION_POINTERS,
+		providerTheme.annotationStyles ?? {},
+		datumStyles ?? {}
+	]), [providerTheme.annotationStyles, datumStyles]);
 	useEffect(() => {
 		if (labelRef.current?.getBBox) {
 			const bbox = labelRef.current.getBBox();
@@ -3911,15 +3765,8 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 		dx,
 		dy,
 		children: [
-			/* @__PURE__ */ jsx(Connector, {
-				...styles?.connector,
-				stroke: resolveColor(styles?.connector?.stroke)
-			}),
-			subjectType === "circle" && /* @__PURE__ */ jsx(CircleSubject, {
-				...styles?.circleSubject,
-				fill: resolveColor(styles?.circleSubject?.fill),
-				stroke: resolveColor(styles?.circleSubject?.stroke)
-			}),
+			/* @__PURE__ */ jsx(Connector, { ...styles?.connector }),
+			subjectType === "circle" && /* @__PURE__ */ jsx(CircleSubject, { ...styles?.circleSubject }),
 			subjectType === "line-vertical" && /* @__PURE__ */ jsx(LineSubject, {
 				min: yMax,
 				max: yMin,
@@ -3953,8 +3800,6 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 					title,
 					subtitle,
 					...styles?.label,
-					anchorLineStroke: resolveColor(styles?.label?.anchorLineStroke),
-					backgroundFill: resolveColor(styles?.label?.backgroundFill),
 					...labelPosition,
 					horizontalAnchor: getHorizontalAnchor(subjectType, isFlippedHorizontally),
 					verticalAnchor: getVerticalAnchor(subjectType, isFlippedVertically, y, yMax, height ?? ANNOTATION_INIT_HEIGHT)
@@ -4091,10 +3936,9 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
-	const providerTheme = useGlobalChartsTheme();
 	const formatting = useChartFormatting();
 	const theme = useXYChartTheme(data);
-	const resolvedBackgroundColor = theme.backgroundColor ?? providerTheme.backgroundColor;
+	const resolvedBackgroundColor = theme.backgroundColor;
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
 	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
@@ -4556,12 +4400,10 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 };
 //#endregion
 //#region src/charts/area-chart/area-chart.tsx
-const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange, rescaleYOnLegendToggle, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
 	const legendPosition = legend.position ?? "bottom";
-	const rescaleYOnVisibility = rescaleYOnVisibilityChange ?? rescaleYOnLegendToggle ?? true;
-	const providerTheme = useGlobalChartsTheme();
 	const formatting = useChartFormatting();
 	const theme = useXYChartTheme(data);
 	const chartId = useChartId(providedChartId);
@@ -4612,7 +4454,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		totalPoints: dataSorted[0]?.data.length || 0
 	});
 	const fixedYDomain = useMemo(() => {
-		if (rescaleYOnVisibility || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
+		if (rescaleYOnVisibilityChange || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
 		if (stacked) {
 			const numPoints = Math.max(...dataSorted.map((s) => s.data.length));
 			let posMax = 0;
@@ -4646,7 +4488,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		dataSorted,
 		stacked,
 		stackOffset,
-		rescaleYOnVisibility
+		rescaleYOnVisibilityChange
 	]);
 	const chartOptions = useMemo(() => {
 		return {
@@ -4885,7 +4727,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 									stacked,
 									stackOffset,
 									getElementStyles,
-									strokeColor: theme.backgroundColor ?? providerTheme.backgroundColor
+									strokeColor: theme.backgroundColor
 								})] }),
 								/* @__PURE__ */ jsx(AreaChartScalesRef, {
 									chartRef: internalChartRef,
@@ -5875,7 +5717,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	right: 20,
 	bottom: 0,
 	top: 0
-}, ...rest }) => {
+}, className, ...rest }) => {
 	const { getElementStyles } = useGlobalChartsContext();
 	const tintedData = useMemo(() => {
 		if (data.length > 1) return data;
@@ -5927,6 +5769,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	return /* @__PURE__ */ jsx(BarChart, {
 		orientation: "horizontal",
 		gridVisibility: "none",
+		className: clsx("bar-list-chart", className),
 		data: tintedData,
 		width,
 		height,
@@ -5963,6 +5806,8 @@ const BarListChartResponsive = withResponsive(BarListChart);
 var conversion_funnel_chart_module_default = {
 	"bar-container": "a8ccharts-mGEVca-bar-container",
 	"change-indicator": "a8ccharts-mGEVca-change-indicator",
+	"change-indicator--negative": "a8ccharts-mGEVca-change-indicator--negative",
+	"change-indicator--positive": "a8ccharts-mGEVca-change-indicator--positive",
 	"conversion-funnel-chart": "a8ccharts-mGEVca-conversion-funnel-chart",
 	"conversion-funnel-chart--loading": "a8ccharts-mGEVca-conversion-funnel-chart--loading",
 	"empty-state": "a8ccharts-mGEVca-empty-state",
@@ -6044,7 +5889,6 @@ const useFunnelSelection = (hideTooltip) => {
 */
 const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip }) => {
 	const chartId = useChartId(providedChartId);
-	const { conversionFunnelChart: conversionFunnelChartSettings } = useGlobalChartsTheme();
 	const { getElementStyles, isColorPaletteResolved } = useGlobalChartsContext();
 	const chartRef = useRef(null);
 	const selectedBarRef = useRef(null);
@@ -6145,19 +5989,14 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		};
 	}, [clearSelectionAndRef]);
 	const resolvedHeight = height ?? style?.height ?? "100%";
-	const { primaryColor, backgroundColor, positiveChangeColor, negativeChangeColor } = conversionFunnelChartSettings;
-	const { color: barColor } = getElementStyles ? getElementStyles({
-		index: 0,
-		overrideColor: primaryColor
-	}) : { color: primaryColor || "#000000" };
-	const changeColor = changeIndicator?.startsWith("+") ? positiveChangeColor : negativeChangeColor;
-	const barBackgroundColor = backgroundColor || hexToRgba(barColor, .08) || "rgba(0, 0, 0, 0.08)";
+	const { color: barColor } = getElementStyles ? getElementStyles({ index: 0 }) : { color: "#000000" };
+	const isPositiveChange = changeIndicator?.startsWith("+");
+	const changeColor = isPositiveChange ? CATALOG_POINTERS.trendUp : CATALOG_POINTERS.trendDown;
 	const renderDefaultMainMetric = () => /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("span", {
 		className: conversion_funnel_chart_module_default["main-rate"],
 		children: formatPercentage(mainRate)
 	}), changeIndicator && /* @__PURE__ */ jsx("span", {
-		className: conversion_funnel_chart_module_default["change-indicator"],
-		style: { color: changeColor },
+		className: clsx(conversion_funnel_chart_module_default["change-indicator"], conversion_funnel_chart_module_default[isPositiveChange ? "change-indicator--positive" : "change-indicator--negative"]),
 		children: changeIndicator
 	})] });
 	const renderDefaultTooltip = (step) => /* @__PURE__ */ jsxs(Stack, {
@@ -6195,7 +6034,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		align: "center",
 		justify: "center",
 		ref: setScopeNode,
-		className: clsx(conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
+		className: clsx("conversion-funnel-chart", conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
 		style: {
 			...style,
 			height: resolvedHeight
@@ -6210,7 +6049,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		direction: "column",
 		gap: "xl",
 		ref: setChartRef,
-		className: clsx(conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
+		className: clsx("conversion-funnel-chart", conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
 		style: {
 			...style,
 			height: resolvedHeight
@@ -6267,7 +6106,6 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 							role: "button",
 							tabIndex: isBlurred ? -1 : 0,
 							"aria-label": step.label,
-							style: { backgroundColor: barBackgroundColor },
 							children: /* @__PURE__ */ jsx("div", {
 								className: clsx(conversion_funnel_chart_module_default["funnel-bar"], { [conversion_funnel_chart_module_default["funnel-bar--animated"]]: animation && !loading && !prefersReducedMotion }),
 								style: {
@@ -6441,7 +6279,7 @@ function normalizeGeoChartError(eventArgs) {
 * @return A React component displaying an interactive map with data visualization
 */
 const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", onError, renderPlaceholder }) => {
-	const { getElementStyles, theme: { geoChart: { featureFillColor }, backgroundColor } } = useGlobalChartsContext();
+	const { getElementStyles } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const containerRef = useRef(null);
 	const reportedErrorIdsRef = useRef(/* @__PURE__ */ new Set());
@@ -6475,8 +6313,8 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 	});
 	const fullColorHex = getElementStyles({ index: 0 }).color;
 	const lightColorHex = lightenHexColor(fullColorHex, .8);
-	const backgroundColorHex = normalizeColorToHex(backgroundColor, scopeElement, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
-	const defaultFillColorHex = normalizeColorToHex(featureFillColor, scopeElement, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
+	const backgroundColorHex = normalizeColorToHex(CATALOG_POINTERS.background, scopeElement, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
+	const defaultFillColorHex = normalizeColorToHex(CATALOG_POINTERS.surfaceSecondary, scopeElement, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
 	const sanitizedData = useMemo(() => {
 		if (data.length === 0) return {
 			data,
@@ -6537,8 +6375,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 		className: clsx("geo-chart", geo_chart_module_default.container, className),
 		style: {
 			width,
-			height,
-			backgroundColor
+			height
 		},
 		children: /* @__PURE__ */ jsx(Chart, {
 			chartType: "GeoChart",
@@ -6588,6 +6425,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__grid": "a8ccharts-O3YMOW-heatmap-chart__grid",
 	"heatmap-chart__grid--compact": "a8ccharts-O3YMOW-heatmap-chart__grid--compact",
 	"heatmap-chart__grid--height-capped": "a8ccharts-O3YMOW-heatmap-chart__grid--height-capped",
+	"heatmap-chart__legend-label": "a8ccharts-O3YMOW-heatmap-chart__legend-label",
 	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
 	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
 	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label",
@@ -6730,7 +6568,7 @@ const HeatmapContext = createContext(null);
 //#region src/charts/heatmap-chart/private/heatmap-legend.tsx
 const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 	const context = useContext(HeatmapContext);
-	const { legend, backgroundColor } = useGlobalChartsTheme();
+	const { legend } = useGlobalChartsTheme();
 	if (!context) return null;
 	const { primaryColorHex } = context;
 	const labelStyle = legend.labelStyles;
@@ -6741,6 +6579,7 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 		children: [
 			/* @__PURE__ */ jsx(Text$1, {
 				variant: "body-sm",
+				className: heatmap_chart_module_default["heatmap-chart__legend-label"],
 				style: labelStyle,
 				children: lessLabel ?? __("Less", "jetpack-charts")
 			}),
@@ -6754,7 +6593,6 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
 						style: {
 							"--a8c-charts-color-heatmap-primary": primaryColorHex,
-							"--a8c-charts-color-heatmap-background": backgroundColor,
 							"--a8c-charts-heatmap-cell-intensity": intensity
 						}
 					}, index);
@@ -6762,6 +6600,7 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 			}),
 			/* @__PURE__ */ jsx(Text$1, {
 				variant: "body-sm",
+				className: heatmap_chart_module_default["heatmap-chart__legend-label"],
 				style: labelStyle,
 				children: moreLabel ?? __("More", "jetpack-charts")
 			})
@@ -6784,9 +6623,9 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const getTooltipOrigin = useCallback(() => containerRef.current?.closest(`[data-chart-id="heatmap-chart-${chartId}"]`)?.getBoundingClientRect() ?? null, [chartId]);
 	const { color: primaryColorHex } = getElementStyles({
 		index: 0,
-		overrideColor: primaryColor || heatmapChartSettings.primaryColor
+		overrideColor: primaryColor
 	});
-	const chartBackgroundHex = normalizeColorToHex(theme.backgroundColor, scopeElement, resolveCssVariable);
+	const chartBackgroundHex = normalizeColorToHex(CATALOG_POINTERS.background, scopeElement, resolveCssVariable);
 	const primaryHex = normalizeColorToHex(primaryColorHex);
 	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) && prefersLightText(mixHexColors(primaryHex, chartBackgroundHex, 1 - (CELL_MIX_FLOOR + .85 * intensity)));
 	const extent = useMemo(() => getValueExtent(data), [data]);
@@ -6922,7 +6761,6 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const rowTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
 	const gridStyle = {
 		"--a8c-charts-color-heatmap-primary": primaryColorHex,
-		"--a8c-charts-color-heatmap-background": theme.backgroundColor,
 		gridTemplateColumns: `auto repeat(${columns}, ${columnTrack})`,
 		gridTemplateRows: `auto repeat(${rows}, ${rowTrack})`
 	};
@@ -9435,14 +9273,13 @@ function useFittedRowCount(enabled, rowCount, data) {
 * @return Array of legend items for the leaderboard chart
 */
 function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withComparison = false, withOverlayLabel = false, legendLabels }) {
-	const { leaderboardChart: leaderboardChartSettings } = useGlobalChartsTheme();
 	const { getElementStyles } = useGlobalChartsContext();
 	return useMemo(() => {
 		if (!data || data.length === 0) return [];
 		const items = [];
 		const { color: resolvedPrimaryColor } = getElementStyles({
 			index: 0,
-			overrideColor: primaryColor || leaderboardChartSettings.primaryColor
+			overrideColor: primaryColor
 		});
 		items.push({
 			label: legendLabels?.primary || __("Current period", "jetpack-charts"),
@@ -9451,7 +9288,7 @@ function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withCom
 		if (withComparison && !withOverlayLabel) {
 			const { color: resolvedSecondaryColor } = getElementStyles({
 				index: 1,
-				overrideColor: secondaryColor || leaderboardChartSettings.secondaryColor
+				overrideColor: secondaryColor
 			});
 			items.push({
 				label: legendLabels?.comparison || __("Previous period", "jetpack-charts"),
@@ -9465,7 +9302,6 @@ function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withCom
 		secondaryColor,
 		withComparison,
 		legendLabels,
-		leaderboardChartSettings,
 		getElementStyles,
 		withOverlayLabel
 	]);
@@ -9479,6 +9315,9 @@ var leaderboard_chart_module_default = {
 	"chevron": "a8ccharts-GovfoW-chevron",
 	"deltaPlaceholder": "a8ccharts-GovfoW-deltaPlaceholder",
 	"deltaValue": "a8ccharts-GovfoW-deltaValue",
+	"deltaValue--down": "a8ccharts-GovfoW-deltaValue--down",
+	"deltaValue--neutral": "a8ccharts-GovfoW-deltaValue--neutral",
+	"deltaValue--up": "a8ccharts-GovfoW-deltaValue--up",
 	"emptyState": "a8ccharts-GovfoW-emptyState",
 	"fitEmptyState": "a8ccharts-GovfoW-fitEmptyState",
 	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
@@ -9499,6 +9338,12 @@ var leaderboard_chart_module_default = {
 //#region src/charts/leaderboard-chart/leaderboard-chart.tsx
 const ROW_GAP = "var(--a8c-charts-dimension-leaderboard-row-gap, 12px)";
 const COLUMN_GAP = "var(--a8c-charts-dimension-leaderboard-column-gap, 4px)";
+/** Indexed by `Math.sign( delta ) + 1`, so [negative, neutral, positive]. */
+const DELTA_TREND_CLASS = [
+	"deltaValue--down",
+	"deltaValue--neutral",
+	"deltaValue--up"
+];
 /**
 * Default value formatter using formatMetricValue
 *
@@ -9601,15 +9446,15 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		...legend.shapeStyles
 	};
 	const { legendChildren, nonLegendChildren } = useChartChildren(children, "LeaderboardChart");
-	const { labelSpacing, rowGap, columnGap, primaryColor: settingsPrimaryColor, secondaryColor: settingsSecondaryColor, deltaColors } = leaderboardChartSettings;
+	const { labelSpacing } = leaderboardChartSettings;
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
 	const { color: resolvedPrimaryColor } = getElementStyles({
 		index: 0,
-		overrideColor: primaryColor || settingsPrimaryColor
+		overrideColor: primaryColor
 	});
 	const { color: resolvedSecondaryColor } = getElementStyles({
 		index: 1,
-		overrideColor: secondaryColor || settingsSecondaryColor
+		overrideColor: secondaryColor
 	});
 	const legendItems = useLeaderboardLegendItems({
 		data: data || [],
@@ -9665,7 +9510,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 			legendPosition,
 			legendElement: false,
 			legendChildren,
-			className: clsx(leaderboard_chart_module_default.leaderboardChart, {
+			className: clsx("leaderboard-chart", leaderboard_chart_module_default.leaderboardChart, {
 				[leaderboard_chart_module_default["leaderboardChart--responsive"]]: !propWidth && !propHeight,
 				[leaderboard_chart_module_default["leaderboardChart--loading"]]: loading
 			}, className),
@@ -9700,7 +9545,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 			legendPosition,
 			legendElement,
 			legendChildren,
-			className: clsx(leaderboard_chart_module_default.leaderboardChart, {
+			className: clsx("leaderboard-chart", leaderboard_chart_module_default.leaderboardChart, {
 				[leaderboard_chart_module_default["leaderboardChart--responsive"]]: !propWidth && !propHeight,
 				[leaderboard_chart_module_default["leaderboardChart--loading"]]: loading
 			}, className),
@@ -9722,8 +9567,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					children: getAllHiddenMessage(legendInteractive, "series")
 				}) : /* @__PURE__ */ jsx(component_default, {
 					templateColumns: "minmax(0, 1fr) auto",
-					rowGap: rowGap ?? ROW_GAP,
-					columnGap: columnGap ?? COLUMN_GAP,
+					rowGap: ROW_GAP,
+					columnGap: COLUMN_GAP,
 					"data-leaderboard-grid": true,
 					children: data.map((entry, rowIndex) => {
 						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;
@@ -9732,8 +9577,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						const hasDelta = hasDeltaValue(entry);
 						const showComparisonValue = showComparisonColumn && hasDelta;
 						const showComparisonPlaceholder = showComparisonColumn && !hasDelta;
-						const colorIndex = showComparisonValue ? Math.sign(entry.delta) + 1 : 1;
-						const deltaColor = deltaColors[colorIndex];
+						const deltaTrendClass = leaderboard_chart_module_default[DELTA_TREND_CLASS[showComparisonValue ? Math.sign(entry.delta) + 1 : 1]];
 						const rowCells = /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Stack, {
 							direction: "column",
 							gap: labelSpacing,
@@ -9754,13 +9598,11 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 							children: [
 								isPrimaryVisible && /* @__PURE__ */ jsx(Text$1, { children: valueFormatter(entry.currentValue) }),
 								showComparisonValue && /* @__PURE__ */ jsx(Text$1, {
-									className: leaderboard_chart_module_default.deltaValue,
-									style: { color: deltaColor },
+									className: clsx(leaderboard_chart_module_default.deltaValue, deltaTrendClass),
 									children: deltaFormatter(entry.delta)
 								}),
 								showComparisonPlaceholder && /* @__PURE__ */ jsxs(Text$1, {
-									className: clsx(leaderboard_chart_module_default.deltaValue, leaderboard_chart_module_default.deltaPlaceholder),
-									style: { color: deltaColor },
+									className: clsx(leaderboard_chart_module_default.deltaValue, leaderboard_chart_module_default.deltaPlaceholder, deltaTrendClass),
 									children: [/* @__PURE__ */ jsx("span", {
 										"aria-hidden": "true",
 										children: "—"
@@ -9844,6 +9686,8 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 //#endregion
 //#region src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
+	"pie-chart__label-plate": "a8ccharts-gnszbG-pie-chart__label-plate",
+	"pie-chart__label-text": "a8ccharts-gnszbG-pie-chart__label-text",
 	"pie-chart__plot": "a8ccharts-gnszbG-pie-chart__plot",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
@@ -10059,20 +9903,20 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 										const backgroundHeight = fontSize + 12;
 										return /* @__PURE__ */ jsxs("g", {
 											...groupProps,
-											children: [/* @__PURE__ */ jsx("path", { ...pathProps }), showLabels && hasSpaceForLabel && /* @__PURE__ */ jsxs("g", { children: [providerTheme.labelBackgroundColor && /* @__PURE__ */ jsx("rect", {
+											children: [/* @__PURE__ */ jsx("path", { ...pathProps }), showLabels && hasSpaceForLabel && /* @__PURE__ */ jsxs("g", { children: [/* @__PURE__ */ jsx("rect", {
+												className: pie_chart_module_default["pie-chart__label-plate"],
 												x: centroidX - backgroundWidth / 2,
 												y: centroidY - backgroundHeight / 2,
 												width: backgroundWidth,
 												height: backgroundHeight,
-												fill: providerTheme.labelBackgroundColor,
 												rx: 4,
 												ry: 4,
 												pointerEvents: "none"
 											}), /* @__PURE__ */ jsx("text", {
+												className: pie_chart_module_default["pie-chart__label-text"],
 												x: centroidX,
 												y: centroidY,
 												dy: ".33em",
-												fill: providerTheme.labelTextColor || "#333",
 												fontSize,
 												textAnchor: "middle",
 												pointerEvents: "none",
@@ -10227,7 +10071,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		const errorWidth = propHeight ? Math.min(propWidth || propHeight * 2, propHeight * 2) : effectiveWidth;
 		const errorHeight = errorWidth / 2;
 		return /* @__PURE__ */ jsx("div", {
-			className: pie_semi_circle_chart_module_default["pie-semi-circle-chart"],
+			className: clsx("pie-semi-circle-chart", pie_semi_circle_chart_module_default["pie-semi-circle-chart"], className),
 			children: /* @__PURE__ */ jsx("svg", {
 				width: errorWidth,
 				height: errorHeight,
@@ -10576,6 +10420,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, parseRgbString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 
 //# sourceMappingURL=index.js.map
