@@ -5,15 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [4.0.0] - 2026-09-04
 ### Changed
-- Inject WPDS design-token fallbacks at build time via @wordpress/theme's LightningCSS plugin.
-- Render chart tooltips inside the chart instead of a document.body portal, so they stack correctly under sticky and fixed page elements. `detectBounds` now keeps the box inside the nearest ancestor that clips its overflow, or the viewport. The tooltip's `scroll`, `debounce` and `resizeObserverPolyfill` options are deprecated and ignored.
-- Render time-axis and tooltip dates in a host-supplied locale and time zone, set on GlobalChartsProvider. Both default to the browser's, as before.
-- Update package dependencies.
+- Inject WPDS design-token fallbacks at build time via @wordpress/theme's LightningCSS plugin. [#51722]
+- Render chart tooltips inside the chart instead of a document.body portal, so they stack correctly under sticky and fixed page elements. `detectBounds` now keeps the box inside the nearest ancestor that clips its overflow, or the viewport. The tooltip's `scroll`, `debounce` and `resizeObserverPolyfill` options are deprecated and ignored. [#51640]
+- Render time-axis and tooltip dates in a host-supplied locale and time zone, set on GlobalChartsProvider. Both default to the browser's, as before. [#51812]
+- Update package dependencies. [#51701]
 
 ### Removed
 - Remove every color field from the chart theme. Set the matching `--a8c-charts-color-*` custom property inside the provider tree instead — every removed field named one, and they were deprecated in the previous release. `TOKENS.md` lists the catalog. `LeaderboardChart`'s `primaryColor` and `secondaryColor` props and `HeatmapChart`'s `primaryColor` prop are unaffected, and a single annotation still takes colors through its own `styles` prop.
@@ -30,11 +27,11 @@ This is an alpha version! The changes listed here are not final.
   
   Remove `theme.leaderboardChart.rowGap` and `.columnGap`. Declare `--a8c-charts-dimension-leaderboard-row-gap` or `--a8c-charts-dimension-leaderboard-column-gap` inside the provider tree instead; they map to `--wpds-dimension-gap-md` and `--wpds-dimension-gap-xs`, so the default spacing follows the design system. `TOKENS.md` lists both roles.
   
-  Remove the two remaining deprecated APIs, so this major carries every removal at once rather than spending a second one later. `AreaChart`'s `rescaleYOnLegendToggle` prop goes — use `rescaleYOnVisibilityChange`, which is the same setting under a name that matches when it applies. The `parseRgbString` helper goes — use `normalizeColorToHex`, which handles `rgb()` alongside every other format.
+  Remove the two remaining deprecated APIs, so this major carries every removal at once rather than spending a second one later. `AreaChart`'s `rescaleYOnLegendToggle` prop goes — use `rescaleYOnVisibilityChange`, which is the same setting under a name that matches when it applies. The `parseRgbString` helper goes — use `normalizeColorToHex`, which handles `rgb()` alongside every other format. [#51748]
 
 ### Fixed
-- Place line and area chart date ticks on the host time zone's calendar boundaries, name the hour in tooltips on hourly data, let the locale rather than a forced 12-hour clock choose how every chart's hour labels read, and hand a custom tooltip the chart's date bucket classification.
-- Tooltip: Keep the drop shadow when `--a8c-charts-color-label-axis` resolves to something other than a 6-digit hex. visx appends an alpha suffix to that color to build the shadow, which only parses after a hex, so an `rgb()` or `hsl()` value silently dropped the shadow entirely.
+- Place line and area chart date ticks on the host time zone's calendar boundaries, name the hour in tooltips on hourly data, let the locale rather than a forced 12-hour clock choose how every chart's hour labels read, and hand a custom tooltip the chart's date bucket classification. [#51813]
+- Tooltip: Keep the drop shadow when `--a8c-charts-color-label-axis` resolves to something other than a 6-digit hex. visx appends an alpha suffix to that color to build the shadow, which only parses after a hex, so an `rgb()` or `hsl()` value silently dropped the shadow entirely. [#51748]
 
 ## [3.2.0] - 2026-09-01
 ### Added
@@ -1049,7 +1046,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.0.0-alpha]: https://github.com/Automattic/charts/compare/v3.2.0...v4.0.0-alpha
+[4.0.0]: https://github.com/Automattic/charts/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/Automattic/charts/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/Automattic/charts/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/Automattic/charts/compare/v3.0.0...v3.1.0
