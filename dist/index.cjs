@@ -275,6 +275,31 @@ const formatPercentage = (value) => {
 	} });
 };
 //#endregion
+//#region src/utils/get-edge-tick-widths.ts
+/**
+* Rendered widths of the first and last tick labels on an axis.
+*
+* An unmeasurable label reserves nothing, which is what a width of 0 already
+* means to every caller, so it is reported as 0 rather than as its own case.
+*
+* @param          ticks      - Tick values, in axis order.
+* @param          formatTick - Function to format a tick.
+* @param {object} labelStyle - Style object for the label.
+* @return {object} - Widths in pixels.
+*/
+const getEdgeTickWidths = (ticks, formatTick, labelStyle) => {
+	if (!ticks.length) return {
+		first: 0,
+		last: 0
+	};
+	const lastIndex = ticks.length - 1;
+	const label = (tick, index) => String(formatTick ? formatTick(tick, index, []) ?? "" : tick);
+	return {
+		first: (0, _visx_text.getStringWidth)(label(ticks[0], 0), labelStyle) ?? 0,
+		last: (0, _visx_text.getStringWidth)(label(ticks[lastIndex], lastIndex), labelStyle) ?? 0
+	};
+};
+//#endregion
 //#region src/utils/get-longest-tick-width.ts
 /**
 * Returns the width of the longest tick.
@@ -1366,11 +1391,32 @@ const DEFAULT_TICK_LENGTH = 8;
 * measure them via getLongestTickWidth.
 */
 const DEFAULT_Y_TICK_WIDTH = 40;
+/**
+* Copy a label style with its lengths spelled out in px.
+*
+* `getStringWidth` applies the style through CSSOM. Blink resolves a bare number
+* on an SVG `<text>`, but that is its own leniency rather than the CSS rule, and
+* `buildChartTheme` hands us bare numbers.
+*
+* @param style - Raw label style from the theme.
+* @return The same style with px-qualified lengths.
+*/
+const toMeasurableStyle = (style) => {
+	if (!style) return style;
+	const fontSize = resolveFontSize(style.fontSize);
+	const { letterSpacing } = style;
+	return {
+		...style,
+		...fontSize === void 0 ? {} : { fontSize: `${fontSize}px` },
+		...typeof letterSpacing === "number" ? { letterSpacing: `${letterSpacing}px` } : {}
+	};
+};
 const getXAxisLabelMetrics = (theme, orientation) => {
 	const xAxisStyles = orientation === "top" ? theme.axisStyles?.x?.top : theme.axisStyles?.x?.bottom;
 	return {
 		fontSize: resolveFontSize(xAxisStyles?.axisLabel?.fontSize) || resolveFontSize(theme.svgLabelSmall?.fontSize) || DEFAULT_FONT_SIZE,
-		tickLength: xAxisStyles?.tickLength ?? DEFAULT_TICK_LENGTH
+		tickLength: xAxisStyles?.tickLength ?? DEFAULT_TICK_LENGTH,
+		tickLabelStyle: toMeasurableStyle(xAxisStyles?.tickLabel)
 	};
 };
 const useChartMargin = (height, options, data, theme, horizontal = false) => {
@@ -1382,7 +1428,7 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		const maxY = Math.max(...allDataPoints.map((d) => d.value));
 		const yScale = (0, _visx_scale.createScale)({
 			...options.yScale,
-			domain: [minY, maxY],
+			domain: options.yScale?.domain ?? [minY, maxY],
 			range: [height, 0]
 		});
 		return (0, _visx_scale.getTicks)(yScale, options.axis?.y?.numTicks);
@@ -1401,18 +1447,25 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		};
 		const yAxisOrientation = options.axis?.y?.orientation;
 		const yAxisStyles = yAxisOrientation === "right" ? theme.axisStyles.y.right : theme.axisStyles.y.left;
-		const yTickWidth = getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, yAxisStyles.axisLabel);
+		const yTickWidth = getLongestTickWidth(yTicks, options.axis?.y?.tickFormat, toMeasurableStyle(yAxisStyles.axisLabel));
 		const yTickLabelFontSize = resolveFontSize(yAxisStyles?.tickLabel?.fontSize) || DEFAULT_FONT_SIZE;
 		const yMarginValue = (yTickWidth ?? DEFAULT_Y_TICK_WIDTH) + (yAxisStyles?.tickLength ?? 0) + Math.ceil(yTickLabelFontSize * .25);
-		if (yAxisOrientation === "right") defaultMargin.right = yMarginValue;
-		else defaultMargin.left = yMarginValue;
+		if (options.axis?.y?.display !== false) {
+			if (yAxisOrientation === "right") defaultMargin.right = yMarginValue;
+			else defaultMargin.left = yMarginValue;
+		}
 		const xOrientation = options.axis?.x?.orientation === "top" ? "top" : "bottom";
-		const { fontSize, tickLength } = getXAxisLabelMetrics(theme, xOrientation);
+		const { fontSize, tickLength, tickLabelStyle } = getXAxisLabelMetrics(theme, xOrientation);
 		const computedXMargin = fontSize + tickLength;
 		if (xOrientation === "top") {
 			defaultMargin.top = Math.max(defaultMargin.top, computedXMargin);
 			defaultMargin.bottom = DEFAULT_BOTTOM_FOR_TOP_AXIS;
 		} else defaultMargin.bottom = Math.max(defaultMargin.bottom, computedXMargin);
+		if (options.axis?.x?.display !== false) {
+			const { first, last } = getEdgeTickWidths(options.axis?.x?.tickValues ?? [], options.axis?.x?.tickFormat, tickLabelStyle);
+			defaultMargin.left = Math.max(defaultMargin.left, Math.ceil(first / 2));
+			defaultMargin.right = Math.max(defaultMargin.right, Math.ceil(last / 2));
+		}
 		return defaultMargin;
 	}, [
 		options,
