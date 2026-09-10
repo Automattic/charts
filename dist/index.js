@@ -6486,9 +6486,13 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__cell--placeholder": "a8ccharts-O3YMOW-heatmap-chart__cell--placeholder",
 	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
 	"heatmap-chart__cell--strong": "a8ccharts-O3YMOW-heatmap-chart__cell--strong",
+	"heatmap-chart__cell--summary": "a8ccharts-O3YMOW-heatmap-chart__cell--summary",
 	"heatmap-chart__cell-value": "a8ccharts-O3YMOW-heatmap-chart__cell-value",
 	"heatmap-chart__col-label": "a8ccharts-O3YMOW-heatmap-chart__col-label",
+	"heatmap-chart__col-label--summary": "a8ccharts-O3YMOW-heatmap-chart__col-label--summary",
 	"heatmap-chart__empty": "a8ccharts-O3YMOW-heatmap-chart__empty",
+	"heatmap-chart__gap-end": "a8ccharts-O3YMOW-heatmap-chart__gap-end",
+	"heatmap-chart__gap-start": "a8ccharts-O3YMOW-heatmap-chart__gap-start",
 	"heatmap-chart__grid": "a8ccharts-O3YMOW-heatmap-chart__grid",
 	"heatmap-chart__grid--compact": "a8ccharts-O3YMOW-heatmap-chart__grid--compact",
 	"heatmap-chart__grid--height-capped": "a8ccharts-O3YMOW-heatmap-chart__grid--height-capped",
@@ -6502,17 +6506,21 @@ var heatmap_chart_module_default = {
 //#region src/charts/heatmap-chart/private/use-heatmap-colors.ts
 const isPresent = (value) => value !== null && value !== void 0 && !isNaN(value);
 /**
-* Get the min and max values from heatmap data, ignoring null/NaN.
+* Get the min and max values from heatmap data, ignoring null/NaN. Summary
+* columns stay out: a roll-up on the scale would flatten every real cell.
 * @param data - The heatmap columns
 * @return Tuple of [min, max] values
 */
 const getValueExtent = (data) => {
 	let min = Infinity;
 	let max = -Infinity;
-	for (const column of data) for (const cell of column.data) {
-		if (!isPresent(cell.value)) continue;
-		if (cell.value < min) min = cell.value;
-		if (cell.value > max) max = cell.value;
+	for (const column of data) {
+		if (column.summary) continue;
+		for (const cell of column.data) {
+			if (!isPresent(cell.value)) continue;
+			if (cell.value < min) min = cell.value;
+			if (cell.value > max) max = cell.value;
+		}
 	}
 	if (min === Infinity) return [0, 0];
 	return [min, max];
@@ -6677,7 +6685,8 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_MIX_FLOOR = .15;
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = [], primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
+const NO_ROW_LABELS = [];
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, theme } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
@@ -6828,13 +6837,20 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const rowTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
 	const gridStyle = {
 		"--a8c-charts-color-heatmap-primary": primaryColorHex,
-		gridTemplateColumns: `auto repeat(${columns}, ${columnTrack})`,
+		gridTemplateColumns: `auto ${data.some((column) => column.summary) ? data.map((column) => column.summary ? "minmax(auto, max-content)" : columnTrack).join(" ") : `repeat(${columns}, ${columnTrack})`}`,
 		gridTemplateRows: `auto repeat(${rows}, ${rowTrack})`
 	};
 	if (compact) {
 		gridStyle["--a8c-charts-dimension-heatmap-cell-gap"] = `${compactCellGap}px`;
 		gridStyle["--a8c-charts-dimension-heatmap-cell-size"] = `${compactCellSize}px`;
 	}
+	const summaryGaps = (columnIndex) => {
+		if (!data[columnIndex]?.summary) return {};
+		return {
+			[heatmap_chart_module_default["heatmap-chart__gap-start"]]: columnIndex > 0 && !data[columnIndex - 1]?.summary,
+			[heatmap_chart_module_default["heatmap-chart__gap-end"]]: columnIndex < columns - 1 && !data[columnIndex + 1]?.summary
+		};
+	};
 	const activeDescendant = selectedIndex !== void 0 ? `${chartId}-cell-${Math.floor(selectedIndex / rows)}-${selectedIndex % rows}` : void 0;
 	const heightCapped = !compact && Boolean(maxCellHeight);
 	return /* @__PURE__ */ jsx(HeatmapContext.Provider, {
@@ -6872,7 +6888,10 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 						"aria-hidden": "true",
 						className: heatmap_chart_module_default["heatmap-chart__row"],
 						children: [/* @__PURE__ */ jsx("span", {}), data.map((column, columnIndex) => /* @__PURE__ */ jsx("span", {
-							className: heatmap_chart_module_default["heatmap-chart__col-label"],
+							className: clsx(heatmap_chart_module_default["heatmap-chart__col-label"], {
+								[heatmap_chart_module_default["heatmap-chart__col-label--summary"]]: column.summary,
+								...summaryGaps(columnIndex)
+							}),
 							children: column.label
 						}, `col-${columnIndex}`))]
 					}), Array.from({ length: rows }).map((_row, rowIndex) => {
@@ -6897,7 +6916,8 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 								}, `cell-${columnIndex}-${rowIndex}`);
 								const value = cell?.value ?? null;
 								const present = isPresent(value);
-								const normalized = present ? getNormalizedValue(value, extent) : 0;
+								const filled = present && !column.summary;
+								const normalized = filled ? getNormalizedValue(value, extent) : 0;
 								const flatIndex = columnIndex * rows + rowIndex;
 								const info = buildTooltipData(columnIndex, rowIndex);
 								const accessibleLabel = `${info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim()}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
@@ -6910,14 +6930,16 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 									"data-column": columnIndex,
 									"data-row": rowIndex,
 									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], {
-										[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: present,
-										[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: present && cellHasLightText(normalized),
+										[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: filled,
+										[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: filled && cellHasLightText(normalized),
+										[heatmap_chart_module_default["heatmap-chart__cell--summary"]]: column.summary,
+										...summaryGaps(columnIndex),
 										[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
 									}),
-									style: present ? { "--a8c-charts-heatmap-cell-intensity": normalized } : void 0,
+									style: filled ? { "--a8c-charts-heatmap-cell-intensity": normalized } : void 0,
 									onMouseMove: handleCellMouseMove,
 									onMouseLeave: handleCellMouseLeave,
-									children: drawValues && present && /* @__PURE__ */ jsx("span", {
+									children: (drawValues || column.summary) && present && /* @__PURE__ */ jsx("span", {
 										className: heatmap_chart_module_default["heatmap-chart__cell-value"],
 										children: formatNumberCompact(value)
 									})
