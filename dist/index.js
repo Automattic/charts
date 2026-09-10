@@ -2207,6 +2207,8 @@ const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipCon
 //#endregion
 //#region src/components/tooltip/private/bounded-tooltip.tsx
 const DEFAULT_OFFSET = 10;
+const POINTER_HEIGHT = 6;
+const clamp = (position, min, max, size) => Math.min(Math.max(position, min), Math.max(min, max - size));
 const isClipping = (element) => {
 	const { overflow, overflowX, overflowY } = getComputedStyle(element);
 	return [
@@ -2224,10 +2226,9 @@ const findClippingAncestor = (wrapper) => {
 	return null;
 };
 /**
-* Where the box goes, in wrapper coordinates. Below and to the right of the
-* anchor; flipped to the other side when that side overflows less, as visx's
-* `TooltipWithBounds` decides it; then clamped so the box stays inside
-* `bounds` whenever it fits at all.
+* Where the box goes, in wrapper coordinates. Automatic placement flips to
+* the side that clips less, then clamps inside `bounds`; below-axis placement
+* is centered on the anchor and clamped horizontally.
 *
 * The flip measures against the visible part of the wrapper, its intersection
 * with `bounds`. Only the clamp is bound by the page: a box that fits inside the
@@ -2241,10 +2242,15 @@ const findClippingAncestor = (wrapper) => {
 * @param params.offsetTop  - Gap between the anchor and the box, vertically.
 * @param params.box        - Rendered size of the box.
 * @param params.wrapper    - The wrapper's own edges, in wrapper coordinates.
+* @param params.placement  - Fixed below-axis placement or automatic flipping.
 * @param params.bounds     - Edges the box must keep inside, in wrapper coordinates.
-* @return The box's top-left corner, rounded to whole pixels.
+* @return The box's top-left corner; fixed placement preserves the axis's subpixel y.
 */
-const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bounds }) => {
+const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bounds, placement = "auto" }) => {
+	if (placement === "below-axis") return {
+		x: Math.round(clamp(left - box.width / 2, bounds.left, bounds.right, box.width)),
+		y: top + POINTER_HEIGHT
+	};
 	const fit = {
 		left: Math.max(wrapper.left, bounds.left),
 		top: Math.max(wrapper.top, bounds.top),
@@ -2261,22 +2267,23 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 	const downOverflow = downY + box.height - fit.bottom;
 	const upOverflow = fit.top - upY;
 	let y = downOverflow > 0 && downOverflow > upOverflow ? upY : downY;
-	x = Math.min(Math.max(x, bounds.left), Math.max(bounds.left, bounds.right - box.width));
-	y = Math.min(Math.max(y, bounds.top), Math.max(bounds.top, bounds.bottom - box.height));
+	x = clamp(x, bounds.left, bounds.right, box.width);
+	y = clamp(y, bounds.top, bounds.bottom, box.height);
 	return {
 		x: Math.round(x),
 		y: Math.round(y)
 	};
 };
 /**
-* visx's `Tooltip`, positioned like its `TooltipWithBounds` but clamped inside
-* the nearest clipping ancestor — or the viewport when there is none — rather
-* than inside its own parent. Rendered in-tree, a tooltip's parent is the chart
-* wrapper, which is often narrower than the box; clamping to the parent alone
-* would let the box spill into an `overflow: hidden` card and be cut off.
+* visx's `Tooltip`, positioned like its `TooltipWithBounds` but kept inside the
+* nearest clipping ancestor — or the viewport when there is none — rather than
+* inside its own parent. Rendered in-tree, a tooltip's parent is the chart
+* wrapper, which is often narrower than the box; measuring against the parent
+* alone would let the box spill into an `overflow: hidden` card and be cut off.
 *
 * Re-measures on every render, so a box whose content changes width between
-* two hovers is placed for its current size.
+* two hovers is placed for its current size. See `getBoundedPosition` for the
+* below-axis exception.
 *
 * @param props            - visx `Tooltip` props.
 * @param props.left       - Anchor x, in wrapper coordinates.
@@ -2286,9 +2293,10 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * @param props.style      - Box styles; visx's defaults unless `unstyled`.
 * @param props.unstyled   - Skip `style` and leave the box bare.
 * @param props.children   - Box content.
+* @param props.placement  - Fixed below-axis placement or automatic flipping.
 * @return The tooltip box.
 */
-const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style = defaultStyles, unstyled = false, children, ...rest }) => {
+const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style = defaultStyles, unstyled = false, children, placement = "auto", ...rest }) => {
 	const nodeRef = useRef(null);
 	const clipRef = useRef(null);
 	const [position, setPosition] = useState(null);
@@ -2313,6 +2321,7 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 			top,
 			offsetLeft,
 			offsetTop,
+			placement,
 			box: {
 				width: own.width,
 				height: own.height
@@ -2336,11 +2345,12 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 		top,
 		offsetLeft,
 		offsetTop,
-		children
+		children,
+		placement
 	]);
 	const x = position?.x ?? left + offsetLeft;
-	const y = position?.y ?? top + offsetTop;
-	return /* @__PURE__ */ jsx(Tooltip, {
+	const y = position?.y ?? top + (placement === "below-axis" ? POINTER_HEIGHT : offsetTop);
+	return /* @__PURE__ */ jsxs(Tooltip, {
 		ref: nodeRef,
 		style: {
 			position: "absolute",
@@ -2350,12 +2360,40 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 			...!unstyled && style
 		},
 		...rest,
-		children
+		children: [placement === "below-axis" && /* @__PURE__ */ jsx("span", {
+			"aria-hidden": "true",
+			style: {
+				position: "absolute",
+				left: left - x - POINTER_HEIGHT,
+				top: -6,
+				width: 12,
+				height: POINTER_HEIGHT,
+				background: "inherit",
+				clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
+				pointerEvents: "none"
+			}
+		}), children]
 	});
 };
 //#endregion
 //#region src/components/tooltip/xy-chart-tooltip.tsx
 const CROSSHAIR_STROKE_WIDTH = 1.5;
+const CROSSHAIR_PAINT_PROPERTIES = /* @__PURE__ */ new Set([
+	"stroke",
+	"strokeWidth",
+	"strokeOpacity",
+	"strokeDasharray",
+	"strokeLinecap",
+	"opacity"
+]);
+const crosshairPaintProps = (props = {}) => {
+	const pickPaint = (value) => Object.fromEntries(Object.entries(value).filter(([key]) => CROSSHAIR_PAINT_PROPERTIES.has(key)));
+	return {
+		...pickPaint(props),
+		...props.className === void 0 ? {} : { className: props.className },
+		...props.style === void 0 ? {} : { style: pickPaint(props.style) }
+	};
+};
 const DEFAULT_GLYPH_RADIUS = 4;
 const FALLBACK_COLOR = "#222";
 const DEFAULT_TOOLTIP_Z_INDEX = 3;
@@ -2386,7 +2424,7 @@ const defaultRenderGlyph$1 = ({ key, ...props }) => /* @__PURE__ */ jsx(DefaultG
 	seriesKey: key,
 	...props
 }, key);
-const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, zIndex = DEFAULT_TOOLTIP_Z_INDEX, ...rest }) => {
+const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, tooltipPlacement = "auto", zIndex = DEFAULT_TOOLTIP_Z_INDEX, style, ...rest }) => {
 	const tooltipProps = Object.fromEntries(Object.entries(rest).filter(([key]) => !PORTAL_OPTIONS.has(key)));
 	const { colorScale, theme, innerHeight = 0, innerWidth = 0, margin, xScale, yScale, dataRegistry } = useContext(DataContext) || {};
 	const tooltipContent = renderTooltip ? renderTooltip({
@@ -2405,9 +2443,9 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 	};
 	const nearestDatum = tooltipContext.tooltipData?.nearestDatum;
 	let { tooltipLeft, tooltipTop } = tooltipContext;
-	if (nearestDatum && (snapTooltipToDatumX || snapTooltipToDatumY)) {
+	if (nearestDatum && (snapTooltipToDatumX || snapTooltipToDatumY || tooltipPlacement === "below-axis")) {
 		const { left, top } = getDatumLeftTop(nearestDatum.key, nearestDatum.datum);
-		if (snapTooltipToDatumX && isValidNumber(left)) tooltipLeft = left;
+		if ((snapTooltipToDatumX || tooltipPlacement === "below-axis") && isValidNumber(left)) tooltipLeft = left;
 		if (snapTooltipToDatumY && isValidNumber(top)) tooltipTop = top;
 	}
 	const glyphs = [];
@@ -2441,13 +2479,14 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 	const crosshairStroke = theme?.gridStyles?.stroke ?? theme?.htmlLabel?.color ?? FALLBACK_COLOR;
 	const marginTop = margin?.top ?? 0;
 	const marginLeft = margin?.left ?? 0;
-	const TooltipComponent = detectBounds ? BoundedTooltip : Tooltip;
+	const TooltipComponent = detectBounds || tooltipPlacement === "below-axis" ? BoundedTooltip : Tooltip;
 	const boxStyle = {
 		...defaultStyles,
 		zIndex,
-		background: theme?.backgroundColor ?? "white",
+		backgroundColor: theme?.backgroundColor ?? "white",
 		boxShadow: `0 1px 2px ${theme?.htmlLabel?.color ? `${theme.htmlLabel.color}55` : "#22222255"}`,
-		...theme?.htmlLabel
+		...theme?.htmlLabel,
+		...style
 	};
 	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsxs("g", {
 		className: "visx-tooltip-overlay",
@@ -2455,32 +2494,33 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 		children: [
 			showVerticalCrosshair && isValidNumber(tooltipLeft) && /* @__PURE__ */ jsx("line", {
 				className: "visx-crosshair visx-crosshair-vertical",
+				stroke: crosshairStroke,
+				strokeWidth: CROSSHAIR_STROKE_WIDTH,
+				...crosshairPaintProps(verticalCrosshairStyle),
 				x1: tooltipLeft,
 				x2: tooltipLeft,
 				y1: marginTop,
-				y2: marginTop + innerHeight,
-				stroke: crosshairStroke,
-				strokeWidth: CROSSHAIR_STROKE_WIDTH,
-				...verticalCrosshairStyle
+				y2: marginTop + innerHeight
 			}),
 			showHorizontalCrosshair && isValidNumber(tooltipTop) && /* @__PURE__ */ jsx("line", {
 				className: "visx-crosshair visx-crosshair-horizontal",
+				stroke: crosshairStroke,
+				strokeWidth: CROSSHAIR_STROKE_WIDTH,
+				...crosshairPaintProps(horizontalCrosshairStyle),
 				x1: marginLeft,
 				x2: marginLeft + innerWidth,
 				y1: tooltipTop,
-				y2: tooltipTop,
-				stroke: crosshairStroke,
-				strokeWidth: CROSSHAIR_STROKE_WIDTH,
-				...horizontalCrosshairStyle
+				y2: tooltipTop
 			}),
 			glyphs
 		]
 	}), container && createPortal(/* @__PURE__ */ jsx(TooltipComponent, {
 		left: tooltipLeft,
-		top: tooltipTop,
+		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipTop,
 		style: boxStyle,
 		applyPositionStyle: true,
 		...tooltipProps,
+		...tooltipPlacement === "below-axis" && { placement: tooltipPlacement },
 		children: tooltipContent
 	}), container)] });
 };
@@ -2501,7 +2541,8 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 * isolation keeps the box's `zIndex` from competing with page chrome. The box
 * flips and clamps to stay inside the nearest ancestor that clips its overflow
 * (or the viewport), so it may extend past the chart wrapper but is never cut
-* off unless that ancestor is smaller than the box itself.
+* off unless that ancestor is smaller than the box itself. Below-axis placement
+* pins it beneath the x-axis and applies horizontal bounds only.
 *
 * @param props - visx's `Tooltip` options. `scroll`, `debounce` and `resizeObserverPolyfill` are accepted and ignored.
 * @return An anchor in the SVG, plus the overlay and the tooltip box while the tooltip is open.
@@ -2618,11 +2659,14 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		renderTooltip: focusableRenderTooltip
 	});
 };
-const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate }) => {
+const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate, preventTooltipScroll = false }) => {
 	return {
 		tooltipRef: useCallback((element) => {
-			if (element && selectedIndex !== void 0) element.focus();
-		}, [selectedIndex]),
+			if (element && selectedIndex !== void 0) {
+				if (preventTooltipScroll) element.focus({ preventScroll: true });
+				else element.focus();
+			}
+		}, [preventTooltipScroll, selectedIndex]),
 		onChartFocus: useCallback(() => {
 			if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
 		}, [
@@ -3954,10 +3998,11 @@ const TooltipDate = ({ date, displayResolution }) => {
 * one row per visible series (label + formatted value), sorted descending by
 * value. Reused by AreaChart, which has the same multi-series shape.
 *
-* @param params - visx `RenderTooltipParams< DataPointDate >`, plus the chart's optional `bucketInfo`.
+* @param params       - visx tooltip data and the chart's optional `bucketInfo`.
+* @param contentStyle - Explicit tooltip content color overrides.
 * @return Tooltip JSX, or `null` when no datum is hovered.
 */
-const renderDefaultTooltip = (params) => {
+const renderDefaultTooltip = (params, contentStyle) => {
 	const { tooltipData, bucketInfo } = params;
 	const nearestDatum = tooltipData?.nearestDatum?.datum;
 	if (!nearestDatum) return null;
@@ -3967,6 +4012,7 @@ const renderDefaultTooltip = (params) => {
 	})).sort((a, b) => b.value - a.value);
 	return /* @__PURE__ */ jsxs("div", {
 		className: line_chart_module_default["line-chart__tooltip"],
+		style: contentStyle,
 		children: [/* @__PURE__ */ jsx("div", {
 			className: line_chart_module_default["line-chart__tooltip-date"],
 			children: /* @__PURE__ */ jsx(TooltipDate, {
@@ -4016,7 +4062,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendShape = legend.shape ?? "line";
@@ -4094,7 +4140,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		setIsNavigating,
 		chartRef,
 		totalPoints: dataSorted[0]?.data.length || 0,
-		onActivate: activateSelectedPoint
+		onActivate: activateSelectedPoint,
+		preventTooltipScroll: tooltipPlacement === "below-axis"
 	});
 	const chartOptions = useMemo(() => {
 		return {
@@ -4203,10 +4250,29 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		xAccessor: (d) => d?.date,
 		yAccessor: (d) => d?.value
 	};
-	const tooltipRenderer = useMemo(() => (params) => renderTooltip({
+	const resolvedTooltipStyle = useMemo(() => {
+		if (renderTooltip !== renderDefaultTooltip || !tooltipStyle) return tooltipStyle;
+		if (!tooltipStyle.color || tooltipStyle.background || tooltipStyle.backgroundColor) return tooltipStyle;
+		return {
+			backgroundColor: "var(--a8c-charts-color-tooltip-surface, rgb(0 0 0 / 85%))",
+			...tooltipStyle
+		};
+	}, [renderTooltip, tooltipStyle]);
+	const tooltipRenderer = useMemo(() => (params) => renderTooltip === renderDefaultTooltip ? renderDefaultTooltip({
 		...params,
 		bucketInfo
-	}), [renderTooltip, bucketInfo]);
+	}, {
+		color: tooltipStyle?.color,
+		background: tooltipStyle?.background,
+		backgroundColor: tooltipStyle?.backgroundColor
+	}) : renderTooltip({
+		...params,
+		bucketInfo
+	}), [
+		renderTooltip,
+		bucketInfo,
+		tooltipStyle
+	]);
 	if (error) return /* @__PURE__ */ jsx("div", {
 		className: clsx("line-chart", line_chart_module_default["line-chart"]),
 		children: error
@@ -4345,6 +4411,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 								withTooltips && /* @__PURE__ */ jsx(AccessibleTooltip, {
 									detectBounds: true,
 									snapTooltipToDatumX: true,
+									tooltipPlacement,
+									style: resolvedTooltipStyle,
 									snapTooltipToDatumY: true,
 									showSeriesGlyphs: true,
 									renderTooltip: tooltipRenderer,
@@ -4352,6 +4420,8 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 									glyphStyle,
 									showVerticalCrosshair: withTooltipCrosshairs?.showVertical,
 									showHorizontalCrosshair: withTooltipCrosshairs?.showHorizontal,
+									verticalCrosshairStyle: withTooltipCrosshairs?.verticalStyle,
+									horizontalCrosshairStyle: withTooltipCrosshairs?.horizontalStyle,
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],

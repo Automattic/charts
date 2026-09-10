@@ -792,23 +792,38 @@ interface RenderTooltipGlyphProps<Datum extends object> extends GlyphProps<Datum
   glyphStyle?: SVGProps<SVGCircleElement>;
   isNearestDatum: boolean;
 }
+type TooltipPlacement = 'auto' | 'below-axis';
+type CrosshairPaintProperty = 'stroke' | 'strokeWidth' | 'strokeOpacity' | 'strokeDasharray' | 'strokeLinecap' | 'opacity';
+type CrosshairStyle = Pick<SVGProps<SVGLineElement>, CrosshairPaintProperty> & {
+  className?: string;
+  style?: Pick<CSSProperties, CrosshairPaintProperty>;
+};
 type XyChartTooltipProps<Datum extends object> = {
   renderTooltip: (params: RenderTooltipParams<Datum>) => ReactNode;
   renderGlyph?: (params: RenderTooltipGlyphProps<Datum>) => ReactNode;
+  /**
+   * Keep the panel below the x-axis label band, centered at the datum x and horizontally clamped.
+   * Vertical bounds do not move this placement; clipping ancestors can still cut it off.
+   * @default 'auto'
+   */
+  tooltipPlacement?: TooltipPlacement;
+  /** Merge overrides with the default box styles; use `unstyled` to strip the box styling. */
+  style?: TooltipProps$1['style'];
   snapTooltipToDatumX?: boolean;
   snapTooltipToDatumY?: boolean;
   showVerticalCrosshair?: boolean;
   showHorizontalCrosshair?: boolean;
   showDatumGlyph?: boolean;
   showSeriesGlyphs?: boolean;
-  verticalCrosshairStyle?: SVGProps<SVGLineElement>;
-  horizontalCrosshairStyle?: SVGProps<SVGLineElement>;
+  verticalCrosshairStyle?: CrosshairStyle;
+  horizontalCrosshairStyle?: CrosshairStyle;
   glyphStyle?: SVGProps<SVGCircleElement>;
   /**
    * Flip and clamp the tooltip box so it stays inside the nearest ancestor
    * that clips its overflow, or the viewport when there is none. The box may
    * leave the chart wrapper. (It used to keep a body-level portal inside the
    * viewport.)
+   * Ignored by `below-axis`.
    * @default true
    */
   detectBounds?: boolean;
@@ -868,6 +883,15 @@ interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityP
   renderTooltip?: (params: RenderTooltipParams<DataPointDate> & {
     bucketInfo?: BucketInfo;
   }) => ReactNode;
+  /**
+   * Place the panel below the x-axis tick labels with a pointer at the datum x; horizontal bounds still apply.
+   * @default 'auto'
+   */
+  tooltipPlacement?: XyChartTooltipProps<DataPointDate>['tooltipPlacement'];
+  /**
+   * Inline container styles; see Below-Axis Tooltips in stories/index.docs.mdx for content color overrides.
+   */
+  tooltipStyle?: CSSProperties;
   withStartGlyphs?: boolean;
   withEndGlyphs?: boolean;
   renderGlyph?: <Datum extends object>(props: GlyphProps<Datum>) => ReactNode;
@@ -876,6 +900,8 @@ interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityP
   withTooltipCrosshairs?: {
     showVertical?: boolean;
     showHorizontal?: boolean;
+    verticalStyle?: CrosshairStyle;
+    horizontalStyle?: CrosshairStyle;
   };
   /**
    * Enable drag-to-zoom on the X axis. The user drags horizontally to
@@ -2159,5 +2185,5 @@ declare const defaultTheme: CompleteChartTheme;
  */
 declare const useChartScopeElement: () => HTMLElement | null;
 //#endregion
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 //# sourceMappingURL=index.d.cts.map

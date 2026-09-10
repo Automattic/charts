@@ -11,6 +11,11 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - HeatmapChart: Add summary columns, per-row roll-ups drawn outside the color scale.
+- Line chart: Add options to place tooltips below the x-axis label band and customize tooltip and crosshair styles.
+
+### Changed
+- AccessibleTooltip: Merge supplied styles with the default box styles instead of replacing them; use unstyled to remove the box styles.
+- Line chart: Keep the page from scrolling when keyboard focus moves to a below-axis tooltip.
 
 ### Fixed
 - Flip the tooltip to the side of the anchor that stays inside the chart wrapper, so a box that fits in the chart no longer reaches past it into page content that paints over it.
