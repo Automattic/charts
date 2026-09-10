@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Fixed
+- LineChart, AreaChart, BarChart: Date a naive dateString point in the provider's time zone, so every viewer reads the same day.
 - Reserve room for the first and last labels on a time axis, size the y-axis gutter from a pinned domain, and reserve nothing for a hidden y axis.
 
 ## [4.0.0] - 2026-09-04

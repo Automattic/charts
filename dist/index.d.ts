@@ -1448,62 +1448,31 @@ declare const getBucketInfo: (data: SeriesData[], tickResolution?: TickResolutio
 //#endregion
 //#region src/utils/date-parsing.d.ts
 /**
- * @file Date parsing utilities using date-fns for local timezone handling
+ * @file Date parsing: a naive string is dated in a supplied IANA zone, or the runtime's own
  *
- * This module provides utilities for parsing various date string formats and converting
- * them to local timezone dates using the battle-tested date-fns library. For formats
- * without timezone info, they're treated as local. For formats with timezone info,
- * they're converted to the equivalent local time.
+ * A string carrying an offset is already an instant and parses the same everywhere. A string
+ * without one is only a wall-clock reading, so it means nothing until a zone is named. See
+ * `parseAsLocalDate` for the supported formats.
  *
- * Note: And specifically it prevents format `YYYY-MM-DD` being parsed as UTC date.
- *
- * Key Features:
- * - All parsed dates are in local timezone
- * - Converts timezone-aware strings to local equivalent
- * - Robust input validation and error handling using date-fns
- * - TypeScript type safety
- * - Much smaller codebase than custom parsing
- *
- * Supported Formats:
- * - YYYY-MM-DD (treated as local)
- * - YYYY-MM-DD HH:mm:ss (treated as local)
- * - YYYY-MM-DD HH:mm (treated as local)
- * - YYYY-MM-DDTHH:mm:ss (treated as local)
- * - YYYY-MM-DDTHH:mm:ss.SSS (treated as local)
- * - YYYY-MM-DDTHH:mm (treated as local)
- * - YYYY-MM-DDTHH:mm:ssZ (converted to local)
- * - YYYY-MM-DDTHH:mm:ss±HH:mm (converted to local)
- *
- * @example
- * ```typescript
- * parseAsLocalDate("2025-01-01");                     // Local timezone
- * parseAsLocalDate("2025-01-01 14:30:00");            // Local timezone
- * parseAsLocalDate("2025-01-01 14:30");               // Local timezone
- * parseAsLocalDate("2025-01-01T14:30:45.123");        // Local timezone
- * parseAsLocalDate("2025-01-01T14:30:00Z");           // UTC 14:30 → Local equivalent
- * parseAsLocalDate("2025-01-01T14:30:00+05:00");      // +05:00 14:30 → Local equivalent
- * ```
+ * Note: this specifically avoids date-fns's default of parsing `YYYY-MM-DD` as a UTC date.
  */
 /**
- * Parses any supported date string format and returns a local timezone date
+ * Parses any supported date string format into an instant, dated in `timeZone` or the runtime's own
  *
- * Uses date-fns for robust parsing and validation. For strings without timezone
- * info, treats as local timezone. For strings with timezone info, converts to
- * local timezone equivalent.
+ * Uses date-fns for robust parsing and validation. A string carrying timezone info
+ * is already an instant and is returned as one, whatever `timeZone` says. A string
+ * without it is a wall-clock reading, dated in `timeZone` when one is supplied and
+ * in the runtime's own zone when none is.
  *
- * Supports:
- * - YYYY-MM-DD (local)
- * - YYYY-MM-DD HH:mm:ss (local)
- * - YYYY-MM-DD HH:mm (local)
- * - YYYY-MM-DDTHH:mm:ss (local)
- * - YYYY-MM-DDTHH:mm:ss.SSS (local)
- * - YYYY-MM-DDTHH:mm (local)
- * - YYYY-MM-DDTHH:mm:ssZ (UTC → local)
- * - YYYY-MM-DDTHH:mm:ss±HH:mm (offset → local)
- * @param {string} dateString - The date string to parse into a local timezone date
- * @return {Date} A Date object representing the parsed date in local timezone, or an invalid Date if parsing fails
+ * A wall clock a DST gap deleted is moved forward past the gap; one a fall-back repeated
+ * resolves to a single instant. Neither policy is selectable. A zone `Intl` rejects falls
+ * back to the runtime's own, and warns once outside production.
+ *
+ * @param {string} dateString - The date string to parse into a date
+ * @param {string} [timeZone] - IANA zone a naive string is read in; the runtime's own when absent, and ignored by a string that carries its own offset
+ * @return {Date} A Date object representing the parsed instant, or an invalid Date if parsing fails
  */
-declare const parseAsLocalDate: (dateString: string) => Date;
+declare const parseAsLocalDate: (dateString: string, timeZone?: string) => Date;
 //#endregion
 //#region src/utils/format-metric-value.d.ts
 /**

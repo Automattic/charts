@@ -31,6 +31,7 @@ let react = require("react");
 react = __toESM(react);
 let _visx_vendor_d3_color = require("@visx/vendor/d3-color");
 let date_fns = require("date-fns");
+let _date_fns_tz = require("@date-fns/tz");
 let _visx_text = require("@visx/text");
 let deepmerge = require("deepmerge");
 deepmerge = __toESM(deepmerge, 1);
@@ -86,43 +87,29 @@ function attachSubComponents(Chart, subComponents) {
 	return Object.assign(Chart, subComponents);
 }
 //#endregion
+//#region src/utils/warn-once.ts
+const warned = /* @__PURE__ */ new Set();
+/**
+* Warns about a host-supplied value once per process, and never in production.
+*
+* @param key     - Identifies the value, so a bad prop on every point warns once.
+* @param message - What the host got wrong and what happens instead.
+*/
+const warnOnce = (key, message) => {
+	if (warned.has(key) || process.env.NODE_ENV === "production") return;
+	warned.add(key);
+	console.warn(`[Charts] ${message}`);
+};
+//#endregion
 //#region src/utils/date-parsing.ts
 /**
-* @file Date parsing utilities using date-fns for local timezone handling
+* @file Date parsing: a naive string is dated in a supplied IANA zone, or the runtime's own
 *
-* This module provides utilities for parsing various date string formats and converting
-* them to local timezone dates using the battle-tested date-fns library. For formats
-* without timezone info, they're treated as local. For formats with timezone info,
-* they're converted to the equivalent local time.
+* A string carrying an offset is already an instant and parses the same everywhere. A string
+* without one is only a wall-clock reading, so it means nothing until a zone is named. See
+* `parseAsLocalDate` for the supported formats.
 *
-* Note: And specifically it prevents format `YYYY-MM-DD` being parsed as UTC date.
-*
-* Key Features:
-* - All parsed dates are in local timezone
-* - Converts timezone-aware strings to local equivalent
-* - Robust input validation and error handling using date-fns
-* - TypeScript type safety
-* - Much smaller codebase than custom parsing
-*
-* Supported Formats:
-* - YYYY-MM-DD (treated as local)
-* - YYYY-MM-DD HH:mm:ss (treated as local)
-* - YYYY-MM-DD HH:mm (treated as local)
-* - YYYY-MM-DDTHH:mm:ss (treated as local)
-* - YYYY-MM-DDTHH:mm:ss.SSS (treated as local)
-* - YYYY-MM-DDTHH:mm (treated as local)
-* - YYYY-MM-DDTHH:mm:ssZ (converted to local)
-* - YYYY-MM-DDTHH:mm:ss±HH:mm (converted to local)
-*
-* @example
-* ```typescript
-* parseAsLocalDate("2025-01-01");                     // Local timezone
-* parseAsLocalDate("2025-01-01 14:30:00");            // Local timezone
-* parseAsLocalDate("2025-01-01 14:30");               // Local timezone
-* parseAsLocalDate("2025-01-01T14:30:45.123");        // Local timezone
-* parseAsLocalDate("2025-01-01T14:30:00Z");           // UTC 14:30 → Local equivalent
-* parseAsLocalDate("2025-01-01T14:30:00+05:00");      // +05:00 14:30 → Local equivalent
-* ```
+* Note: this specifically avoids date-fns's default of parsing `YYYY-MM-DD` as a UTC date.
 */
 /**
 * Checks if a date string contains timezone information
@@ -135,26 +122,55 @@ const hasTimezone = (dateString) => {
 	if (dateString.endsWith("Z")) return true;
 	return /[+-]\d{2}:?\d{2}$/.test(dateString.slice(tIndex + 1));
 };
+const NAIVE = /^(\d{1,4})-(\d{1,2})-(\d{1,2})(?:[T ](\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.(\d{1,3}))?)?)?$/;
+const asUtcMs = ([, ...fields]) => {
+	const [year, month, day, hour, minute, second, ms] = fields.map((field) => Number(field ?? 0));
+	const date = /* @__PURE__ */ new Date(0);
+	date.setUTCFullYear(year, month - 1, day);
+	date.setUTCHours(hour, minute, second, ms);
+	return date.getTime();
+};
 /**
-* Parses any supported date string format and returns a local timezone date
+* The instant a wall-clock reading names in a given zone.
 *
-* Uses date-fns for robust parsing and validation. For strings without timezone
-* info, treats as local timezone. For strings with timezone info, converts to
-* local timezone equivalent.
+* A reading a spring-forward gap deleted moves forward past the gap, and one a fall-back
+* repeated resolves to a single instant. Neither is configurable: see CHARTS-268.
 *
-* Supports:
-* - YYYY-MM-DD (local)
-* - YYYY-MM-DD HH:mm:ss (local)
-* - YYYY-MM-DD HH:mm (local)
-* - YYYY-MM-DDTHH:mm:ss (local)
-* - YYYY-MM-DDTHH:mm:ss.SSS (local)
-* - YYYY-MM-DDTHH:mm (local)
-* - YYYY-MM-DDTHH:mm:ssZ (UTC → local)
-* - YYYY-MM-DDTHH:mm:ss±HH:mm (offset → local)
-* @param {string} dateString - The date string to parse into a local timezone date
-* @return {Date} A Date object representing the parsed date in local timezone, or an invalid Date if parsing fails
+* @param wallClock - The reading, as the milliseconds it would be if it were UTC.
+* @param timeZone  - IANA zone the reading is dated in.
+* @return The instant, or `null` where `timeZone` is not a zone Intl accepts.
 */
-const parseAsLocalDate = (dateString) => {
+const wallClockToInstant = (wallClock, timeZone) => {
+	const first = (0, _date_fns_tz.tzOffset)(timeZone, new Date(wallClock));
+	if (Number.isNaN(first)) {
+		warnOnce(`parse:timeZone:${timeZone}`, `timeZone ${JSON.stringify(timeZone)} is not a zone Intl accepts, so dates are read in the browser's zone. Pass an IANA name or a UTC offset such as "+05:30".`);
+		return null;
+	}
+	const guess = wallClock - first * 6e4;
+	const second = (0, _date_fns_tz.tzOffset)(timeZone, new Date(guess));
+	if (first === second) return new Date(guess);
+	const corrected = wallClock - second * 6e4;
+	const third = (0, _date_fns_tz.tzOffset)(timeZone, new Date(corrected));
+	if (second === third) return new Date(corrected);
+	return /* @__PURE__ */ new Date(wallClock - Math.min(second, third) * 6e4);
+};
+/**
+* Parses any supported date string format into an instant, dated in `timeZone` or the runtime's own
+*
+* Uses date-fns for robust parsing and validation. A string carrying timezone info
+* is already an instant and is returned as one, whatever `timeZone` says. A string
+* without it is a wall-clock reading, dated in `timeZone` when one is supplied and
+* in the runtime's own zone when none is.
+*
+* A wall clock a DST gap deleted is moved forward past the gap; one a fall-back repeated
+* resolves to a single instant. Neither policy is selectable. A zone `Intl` rejects falls
+* back to the runtime's own, and warns once outside production.
+*
+* @param {string} dateString - The date string to parse into a date
+* @param {string} [timeZone] - IANA zone a naive string is read in; the runtime's own when absent, and ignored by a string that carries its own offset
+* @return {Date} A Date object representing the parsed instant, or an invalid Date if parsing fails
+*/
+const parseAsLocalDate = (dateString, timeZone) => {
 	const trimmedString = dateString.trim();
 	if (hasTimezone(trimmedString)) {
 		const isoDate = (0, date_fns.parseISO)(trimmedString);
@@ -170,7 +186,10 @@ const parseAsLocalDate = (dateString) => {
 		"yyyy-MM-dd'T'HH:mm"
 	]) {
 		const result = (0, date_fns.parse)(trimmedString, format, /* @__PURE__ */ new Date());
-		if ((0, date_fns.isValid)(result)) return result;
+		if (!(0, date_fns.isValid)(result)) continue;
+		if (!timeZone) return result;
+		const fields = NAIVE.exec(trimmedString);
+		return (fields && wallClockToInstant(asUtcMs(fields), timeZone)) ?? result;
 	}
 	return /* @__PURE__ */ new Date(NaN);
 };
@@ -685,12 +704,6 @@ const getFormatter$1 = (options, { locale, timeZone }) => {
 		formatters.set(key, formatter);
 	}
 	return formatter;
-};
-const warned = /* @__PURE__ */ new Set();
-const warnOnce = (key, message) => {
-	if (warned.has(key) || process.env.NODE_ENV === "production") return;
-	warned.add(key);
-	console.warn(`[Charts] ${message}`);
 };
 const isUsable = (formatting) => {
 	try {
@@ -1317,13 +1330,28 @@ const useXYChartTheme = (data) => {
 	]);
 };
 //#endregion
+//#region src/providers/chart-context/hooks/use-chart-formatting.ts
+const RUNTIME_FORMATTING = {};
+/**
+* The locale and time zone dates are rendered in, as set on `GlobalChartsProvider`.
+*
+* Falls back to the runtime's own rather than throwing: charts render outside a
+* provider, and a host that sets neither gets exactly the browser-default
+* behavior this package had before the context existed.
+*
+* @return The host's formatting context.
+*/
+const useChartFormatting = () => {
+	return (0, react.useContext)(GlobalChartsContext)?.formatting ?? RUNTIME_FORMATTING;
+};
+//#endregion
 //#region src/hooks/use-chart-data-transform.ts
 /**
 * Hook that transforms and sorts chart data, handling date parsing and sorting
 *
 * This hook extracts the common data transformation logic used in both line-chart
 * and bar-chart components. It:
-* 1. Parses date strings into Date objects using parseAsLocalDate
+* 1. Parses date strings into Date objects, dated in the provider's time zone
 * 2. Sorts data points by date when date properties are present
 * 3. Returns the original data unchanged when no date properties are found
 *
@@ -1331,6 +1359,7 @@ const useXYChartTheme = (data) => {
 * @return {SeriesData[]} The transformed and sorted data
 */
 const useChartDataTransform = (data) => {
+	const { timeZone } = useChartFormatting();
 	return (0, react.useMemo)(() => {
 		const firstPoint = data?.[0]?.data?.[0];
 		if (!(firstPoint && ("date" in firstPoint || "dateString" in firstPoint))) return data;
@@ -1339,7 +1368,7 @@ const useChartDataTransform = (data) => {
 			data: series.data.map((point) => {
 				let date;
 				if ("date" in point && point.date) date = point.date;
-				else if ("dateString" in point && point.dateString) date = parseAsLocalDate(point.dateString);
+				else if ("dateString" in point && point.dateString) date = parseAsLocalDate(point.dateString, timeZone);
 				return {
 					...point,
 					date
@@ -1349,7 +1378,7 @@ const useChartDataTransform = (data) => {
 				return a.date.getTime() - b.date.getTime();
 			})
 		}));
-	}, [data]);
+	}, [data, timeZone]);
 };
 //#endregion
 //#region src/hooks/use-chart-margin.tsx
@@ -1739,21 +1768,6 @@ const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, me
 */
 const useGlobalChartsTheme = () => {
 	return (0, react.useContext)(GlobalChartsContext)?.theme ?? defaultTheme;
-};
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-formatting.ts
-const RUNTIME_FORMATTING = {};
-/**
-* The locale and time zone dates are rendered in, as set on `GlobalChartsProvider`.
-*
-* Falls back to the runtime's own rather than throwing: charts render outside a
-* provider, and a host that sets neither gets exactly the browser-default
-* behavior this package had before the context existed.
-*
-* @return The host's formatting context.
-*/
-const useChartFormatting = () => {
-	return (0, react.useContext)(GlobalChartsContext)?.formatting ?? RUNTIME_FORMATTING;
 };
 //#endregion
 //#region src/components/legend/utils/value-or-identity.ts
@@ -7304,7 +7318,7 @@ var require_dist = /* @__PURE__ */ __commonJSMin(((exports) => {
 	tslib_1.__exportStar(require_dist$1(), exports);
 }));
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
 	const mountedRef = (0, react.useRef)(false);
 	(0, react.useEffect)(() => {
@@ -8942,7 +8956,7 @@ _createEmotion.css;
 _createEmotion.sheet;
 _createEmotion.cache;
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
 	const cache = __unsafe_useEmotionCache();
@@ -9049,7 +9063,7 @@ function memize(fn, options) {
 	return memoized;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
 var white = "#fff";
 var GRAY = {
 	900: "#1e1e1e",
@@ -9128,7 +9142,7 @@ var COLORS = Object.freeze({
 	ui: UI
 });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/config-values.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/config-values.mjs
 var CONTROL_HEIGHT = "36px";
 var CONTROL_PROPS = {
 	controlPaddingX: 12,
@@ -9246,7 +9260,7 @@ function warning(message) {
 	logged.add(message);
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = /* @__PURE__ */ __toESM(require_es6(), 1);
 var ComponentsContext = (0, react.createContext)(
 	/** @type {Record<string, any>} */
@@ -9273,19 +9287,19 @@ var BaseContextSystemProvider = ({ children, value }) => {
 };
 (0, react.memo)(BaseContextSystemProvider);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/constants.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 var import_dist = require_dist();
 function getStyledClassName(namespace) {
 	return `components-${(0, import_dist.paramCase)(namespace)}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/context-connect.mjs
 function contextConnect(Component, namespace) {
 	return _contextConnect(Component, namespace, { forwardsRef: true });
 }
@@ -9302,7 +9316,7 @@ function _contextConnect(Component, namespace, options) {
 	});
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
 	return { [COMPONENT_NAMESPACE]: componentName };
 }
@@ -9310,7 +9324,7 @@ function getConnectedNamespace() {
 	return { [CONNECTED_NAMESPACE]: true };
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
 	const contextSystemProps = useComponentsContext();
 	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
@@ -9330,7 +9344,7 @@ function useContextSystem(props, namespace) {
 	return finalComponentProps;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
 var visuallyHidden = {
 	border: 0,
 	clip: "rect(1px, 1px, 1px, 1px)",
@@ -9346,7 +9360,7 @@ var visuallyHidden = {
 	wordBreak: "normal"
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
 var customAttributeRegExp = /^(data|aria|x)-/i;
 var eventHandlerRegExp = /^on[A-Z]/;
 var svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
@@ -9436,7 +9450,7 @@ function UnforwardedPolymorphicElement({ as, ...props }, ref) {
 }
 var PolymorphicElement = (0, react.forwardRef)(UnforwardedPolymorphicElement);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/view/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/view/component.mjs
 function UnforwardedView({ css, ...restProps }, ref) {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PolymorphicElement, {
 		ref,
@@ -9445,7 +9459,7 @@ function UnforwardedView({ css, ...restProps }, ref) {
 }
 var component_default$2 = Object.assign((0, react.forwardRef)(UnforwardedView), { selector: ".components-view" });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
 function UnconnectedVisuallyHidden(props, forwardedRef) {
 	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
@@ -9460,7 +9474,7 @@ function UnconnectedVisuallyHidden(props, forwardedRef) {
 }
 var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = [
 	"40em",
 	"52em",
@@ -9494,7 +9508,7 @@ function useResponsiveValue(values, options = {}) {
 	return array[index >= array.length ? array.length - 1 : index];
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/grid/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
 	bottom: {
 		alignItems: "flex-end",
@@ -9542,7 +9556,7 @@ function getAlignmentProps(alignment) {
 	return alignment ? ALIGNMENTS[alignment] : {};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/grid/hook.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/grid/hook.mjs
 function useGrid(props) {
 	const { align, alignment, className, columnGap, columns = 2, gap = 3, isInline = false, justify, rowGap, rows, templateColumns, templateRows, ...otherProps } = useContextSystem(props, "Grid");
 	const column = useResponsiveValue(Array.isArray(columns) ? columns : [columns]);
@@ -9584,7 +9598,7 @@ function useGrid(props) {
 	};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@types+react-dom@18.3.7_@types+react@18.3.31__@types+react_d122c1aea9dc8a45ffffc1d3c2f19116/node_modules/@wordpress/components/build-module/grid/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@40.0.0_@date-fns+tz@1.4.1_@types+react-dom@18.3.7_@types+react@18_4546240ebdf94d561ebf2fde285113fe/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
 	const gridProps = useGrid(props);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
