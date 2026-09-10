@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - HeatmapChart: Add summary columns, per-row roll-ups drawn outside the color scale.
 
 ### Fixed
+- Flip the tooltip to the side of the anchor that stays inside the chart wrapper, so a box that fits in the chart no longer reaches past it into page content that paints over it.
 - HeatmapChart: Fix an endless re-render when the keyboard tooltip opens on a chart without row labels.
 - LineChart, AreaChart, BarChart: Date a naive dateString point in the provider's time zone, so every viewer reads the same day.
 - Reserve room for the first and last labels on a time axis, size the y-axis gutter from a pinned domain, and reserve nothing for a hidden y axis.
