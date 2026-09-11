@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Heatmap: add `locale` and `timeZone` options and a `useCalendarHeatmapData` hook, so a host can bucket and label the calendar in its own zone and language instead of the viewer's. Labels with no `locale` now follow the runtime locale rather than always rendering in English, and a calendar `dateString` must start `yyyy-MM-dd`.
 - HeatmapChart: Add summary columns, per-row roll-ups drawn outside the color scale.
 - Line chart: Add options to place tooltips below the x-axis label band and customize tooltip and crosshair styles.
 

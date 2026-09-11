@@ -6,7 +6,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
 import { color, hsl } from "@visx/vendor/d3-color";
-import { addDays, differenceInCalendarWeeks, differenceInHours, differenceInYears, format, isValid, parse, parseISO, startOfWeek } from "date-fns";
+import { differenceInHours, differenceInYears, isValid, parse, parseISO } from "date-fns";
 import { tzOffset } from "@date-fns/tz";
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
@@ -111,6 +111,9 @@ const warnOnce = (key, message) => {
 */
 /**
 * Checks if a date string contains timezone information
+*
+* The minutes are optional because ISO 8601 allows a bare `±hh`, which `parseISO` reads.
+*
 * @param {string} dateString - The date string to check for timezone information
 * @return {boolean} True if the date string contains timezone information, false otherwise
 */
@@ -118,7 +121,7 @@ const hasTimezone = (dateString) => {
 	const tIndex = dateString.indexOf("T");
 	if (tIndex === -1) return false;
 	if (dateString.endsWith("Z")) return true;
-	return /[+-]\d{2}:?\d{2}$/.test(dateString.slice(tIndex + 1));
+	return /[+-]\d{2}(?::?\d{2})?$/.test(dateString.slice(tIndex + 1));
 };
 const NAIVE = /^(\d{1,4})-(\d{1,2})-(\d{1,2})(?:[T ](\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.(\d{1,3}))?)?)?$/;
 const asUtcMs = ([, ...fields]) => {
@@ -6629,6 +6632,119 @@ const getNormalizedValue = (value, extent) => {
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
 };
 //#endregion
+//#region src/charts/heatmap-chart/private/civil-day.ts
+const DAY_MS = 864e5;
+const KEY_OPTIONS = {
+	calendar: "gregory",
+	numberingSystem: "latn",
+	year: "numeric",
+	month: "2-digit",
+	day: "2-digit"
+};
+const DATE_PREFIX = /^(\d{4})-(\d{2})-(\d{2})/;
+const pad = (value, length) => String(value).padStart(length, "0");
+/**
+* The day a UTC proxy stands for.
+*
+* @param date - UTC proxy.
+* @return Its day key.
+*/
+const civilKey = (date) => `${pad(date.getUTCFullYear(), 4)}-${pad(date.getUTCMonth() + 1, 2)}-${pad(date.getUTCDate(), 2)}`;
+/**
+* A day key as a UTC-midnight proxy. UTC has no DST, so every step below is exactly
+* `DAY_MS`.
+*
+* @param key - Day key.
+* @return The proxy, or null when the key names no real day.
+*/
+const civilDate = (key) => {
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
+	if (!match) return null;
+	const date = /* @__PURE__ */ new Date(0);
+	date.setUTCFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+	date.setUTCHours(0, 0, 0, 0);
+	return civilKey(date) === key ? date : null;
+};
+/**
+* The day a written date names, ignoring any time and zone it carries.
+*
+* @param text - `yyyy-MM-dd`, optionally followed by a time.
+* @return Its day key, or null.
+*/
+const writtenDayKey = (text) => {
+	const match = DATE_PREFIX.exec(text);
+	if (!match) return null;
+	const key = `${match[1]}-${match[2]}-${match[3]}`;
+	return civilDate(key) ? key : null;
+};
+/**
+* Reads the day an instant falls on in a zone.
+*
+* @param timeZone - IANA zone name; absent leaves the runtime's own.
+* @return Reader taking a `Date`, null for a day no key can hold.
+*/
+const instantDayReader = (timeZone) => {
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		...KEY_OPTIONS,
+		timeZone
+	});
+	return (date) => {
+		const parts = formatter.formatToParts(date);
+		const read = (type) => parts.find((part) => part.type === type)?.value ?? "";
+		const key = `${pad(Number(read("year")), 4)}-${read("month")}-${read("day")}`;
+		return civilDate(key) ? key : null;
+	};
+};
+/**
+* The day a series point belongs to.
+*
+* A `Date`, or a string carrying `Z` or an offset, is an instant read in the host's
+* zone. Anything else is a wall clock the host wrote, so its date part is the day.
+*
+* @param point       - Series point.
+* @param readInstant - Reader from `instantDayReader`.
+* @return Its day key, or null when the point carries no usable date.
+*/
+const pointDayKey = (point, readInstant) => {
+	if (point.date instanceof Date && !isNaN(point.date.getTime())) {
+		const key = readInstant(point.date);
+		if (key) return key;
+	}
+	const text = point.dateString;
+	if (!text) return null;
+	if (!hasTimezone(text)) return writtenDayKey(text);
+	const parsed = parseISO(text);
+	return isNaN(parsed.getTime()) ? null : readInstant(parsed);
+};
+/**
+* Steps a proxy by whole days.
+*
+* @param date - UTC proxy.
+* @param days - Days to add; may be negative.
+* @return The shifted proxy.
+*/
+const addCivilDays = (date, days) => new Date(date.getTime() + days * DAY_MS);
+/**
+* Rounds a proxy down to its week.
+*
+* @param date         - UTC proxy.
+* @param weekStartsOn - 0 for Sunday, 1 for Monday.
+* @return The proxy for that week's first day.
+*/
+const startOfCivilWeek = (date, weekStartsOn) => {
+	const daysSinceWeekStart = (date.getUTCDay() - weekStartsOn + 7) % 7;
+	return addCivilDays(date, -daysSinceWeekStart);
+};
+/**
+* Counts the columns a span needs.
+*
+* @param from         - Earlier UTC proxy.
+* @param to           - Later UTC proxy.
+* @param weekStartsOn - 0 for Sunday, 1 for Monday.
+* @return Columns needed to cover the span, inclusive.
+*/
+const civilWeekSpan = (from, to, weekStartsOn) => Math.floor((startOfCivilWeek(to, weekStartsOn).getTime() - startOfCivilWeek(from, weekStartsOn).getTime()) / (7 * DAY_MS)) + 1;
+//#endregion
 //#region src/charts/heatmap-chart/private/build-calendar-data.ts
 /** Rows that get a weekday label (Mon, Wed, Fri with a Monday week start). */
 const LABELLED_ROWS = [
@@ -6643,69 +6759,88 @@ const LABELLED_ROWS = [
 * @param bound     - Requested bound as `yyyy-MM-dd`, if any.
 * @param fallback  - The series' own bound on this side.
 * @param direction - Which way the bound is allowed to move.
-* @return The bound to draw to.
+* @return The day key to draw to.
 */
 const widenTo = (bound, fallback, direction) => {
-	if (!bound) return fallback;
-	const parsed = parseISO(bound);
-	if (isNaN(parsed.getTime())) return fallback;
-	if (direction === "earlier") return parsed < fallback ? parsed : fallback;
-	return parsed > fallback ? parsed : fallback;
-};
-const toDate = (point) => {
-	if (point.date instanceof Date && !isNaN(point.date.getTime())) return point.date;
-	if (point.dateString) {
-		const parsed = parseISO(point.dateString);
-		if (!isNaN(parsed.getTime())) return parsed;
+	const key = bound ? writtenDayKey(bound) : null;
+	if (!key) {
+		if (bound) warnOnce(`heatmap:gridSpan:${bound}`, `gridSpan.${direction === "earlier" ? "start" : "end"} ${JSON.stringify(bound)} is not a \`yyyy-MM-dd\` day, so the grid is drawn over the series' own span.`);
+		return fallback;
 	}
-	return null;
+	if (direction === "earlier") return key < fallback ? key : fallback;
+	return key > fallback ? key : fallback;
 };
+/**
+* Lay a day-bucketed series out as calendar columns.
+*
+* @param series  - Points to bucket.
+* @param options - Grid shape, plus the locale and zone to read days in.
+* @return Columns and row labels for `HeatmapChart`.
+*/
 const buildCalendarHeatmapData = (series, options = {}) => {
 	const weekStartsOn = options.weekStartsOn ?? 1;
 	const hideOutOfRangeDays = options.hideOutOfRangeDays ?? true;
-	const entries = series.map((point) => ({
-		date: toDate(point),
-		value: point.value
-	})).filter((entry) => entry.date !== null);
-	if (!entries.length) return {
+	const { locale, timeZone } = sanitizeFormatting({
+		locale: options.locale,
+		timeZone: options.timeZone
+	});
+	const readInstant = instantDayReader(timeZone);
+	const valueByDay = /* @__PURE__ */ new Map();
+	let minDayKey;
+	let maxDayKey;
+	for (const point of series) {
+		const key = pointDayKey(point, readInstant);
+		if (!key) {
+			const offending = point.dateString ?? (point.date && String(point.date));
+			warnOnce(`heatmap:unreadableDate:${offending}`, offending ? `${JSON.stringify(offending)} is not a day this can read, so its point is left out of the calendar. A \`dateString\` must start \`yyyy-MM-dd\`.` : "A point carries neither `date` nor `dateString`, so it is left out of the calendar.");
+			continue;
+		}
+		valueByDay.set(key, point.value);
+		if (!minDayKey || key < minDayKey) minDayKey = key;
+		if (!maxDayKey || key > maxDayKey) maxDayKey = key;
+	}
+	if (!minDayKey || !maxDayKey) return {
 		data: [],
 		rowLabels: []
 	};
-	const valueByDay = /* @__PURE__ */ new Map();
-	let minDate = entries[0].date;
-	let maxDate = entries[0].date;
-	for (const { date, value } of entries) {
-		valueByDay.set(format(date, "yyyy-MM-dd"), value);
-		if (date < minDate) minDate = date;
-		if (date > maxDate) maxDate = date;
-	}
-	const minDayKey = format(minDate, "yyyy-MM-dd");
-	const maxDayKey = format(maxDate, "yyyy-MM-dd");
-	const gridMinDate = widenTo(options.gridSpan?.start, minDate, "earlier");
-	const gridMaxDate = widenTo(options.gridSpan?.end, maxDate, "later");
-	const gridMaxDayKey = format(gridMaxDate, "yyyy-MM-dd");
-	const gridStart = startOfWeek(gridMinDate, { weekStartsOn });
-	const gridMinDayKey = format(gridMinDate < minDate ? gridStart : gridMinDate, "yyyy-MM-dd");
-	const weekCount = differenceInCalendarWeeks(gridMaxDate, gridStart, { weekStartsOn }) + 1;
-	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? format(addDays(gridStart, row), "EEE") : "");
+	const requestedMinDayKey = widenTo(options.gridSpan?.start, minDayKey, "earlier");
+	const gridMaxDayKey = widenTo(options.gridSpan?.end, maxDayKey, "later");
+	const requestedMinDate = civilDate(requestedMinDayKey);
+	const gridMaxDate = civilDate(gridMaxDayKey);
+	const labelFormatting = {
+		locale,
+		timeZone: "UTC"
+	};
+	const formatWeekday = createDateFormatter({ weekday: "short" }, labelFormatting);
+	const formatMonth = createDateFormatter({ month: "short" }, labelFormatting);
+	const formatDay = createDateFormatter({
+		weekday: "short",
+		month: "short",
+		day: "numeric",
+		year: "numeric"
+	}, labelFormatting);
+	const gridStart = startOfCivilWeek(requestedMinDate, weekStartsOn);
+	const gridMinDayKey = requestedMinDayKey < minDayKey ? civilKey(gridStart) : requestedMinDayKey;
+	const weekCount = civilWeekSpan(gridStart, gridMaxDate, weekStartsOn);
+	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? formatWeekday(addCivilDays(gridStart, row)) : "");
 	const MIN_FIRST_MONTH_WEEKS = 2;
-	const firstMonth = gridStart.getMonth();
+	const firstMonth = gridStart.getUTCMonth();
 	let firstMonthWeeks = 0;
-	while (firstMonthWeeks < weekCount && addDays(gridStart, firstMonthWeeks * 7).getMonth() === firstMonth) firstMonthWeeks++;
+	while (firstMonthWeeks < weekCount && addCivilDays(gridStart, firstMonthWeeks * 7).getUTCMonth() === firstMonth) firstMonthWeeks++;
 	const showFirstMonthLabel = !(firstMonthWeeks < weekCount) || firstMonthWeeks >= MIN_FIRST_MONTH_WEEKS;
 	const data = [];
 	let previousMonth = -1;
 	for (let week = 0; week < weekCount; week++) {
-		const columnStart = addDays(gridStart, week * 7);
-		const month = columnStart.getMonth();
-		const label = month !== previousMonth && (week !== 0 || showFirstMonthLabel) ? format(columnStart, "MMM") : "";
+		const columnStart = addCivilDays(gridStart, week * 7);
+		const month = columnStart.getUTCMonth();
+		const label = month !== previousMonth && (week !== 0 || showFirstMonthLabel) ? formatMonth(columnStart) : "";
 		previousMonth = month;
 		const cells = [];
 		for (let row = 0; row < 7; row++) {
-			const day = addDays(gridStart, week * 7 + row);
-			const key = format(day, "yyyy-MM-dd");
+			const day = addCivilDays(gridStart, week * 7 + row);
+			const key = civilKey(day);
 			const cell = {
-				label: format(day, "EEE, MMM d, yyyy"),
+				label: formatDay(day),
 				value: valueByDay.has(key) ? valueByDay.get(key) : null
 			};
 			if (key < gridMinDayKey || key > gridMaxDayKey) {
@@ -7062,6 +7197,42 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ jsx(HeatmapChartW
 });
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
 const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
+//#endregion
+//#region src/charts/heatmap-chart/use-calendar-heatmap-data.ts
+/**
+* `buildCalendarHeatmapData` with the locale and zone taken from
+* `GlobalChartsProvider` where the caller names neither.
+*
+* @param series  - Points to bucket. Held by reference, so a caller that rebuilds it each render defeats the memo.
+* @param options - As for `buildCalendarHeatmapData`; `locale` and `timeZone` win over the provider.
+* @return Columns and row labels for `HeatmapChart`.
+*/
+const useCalendarHeatmapData = (series, options = {}) => {
+	const formatting = useChartFormatting();
+	const locale = options.locale ?? formatting.locale;
+	const timeZone = options.timeZone ?? formatting.timeZone;
+	const { weekStartsOn, hideOutOfRangeDays } = options;
+	const gridStart = options.gridSpan?.start;
+	const gridEnd = options.gridSpan?.end;
+	return useMemo(() => buildCalendarHeatmapData(series, {
+		locale,
+		timeZone,
+		weekStartsOn,
+		hideOutOfRangeDays,
+		gridSpan: {
+			start: gridStart,
+			end: gridEnd
+		}
+	}), [
+		series,
+		locale,
+		timeZone,
+		weekStartsOn,
+		hideOutOfRangeDays,
+		gridStart,
+		gridEnd
+	]);
+};
 //#endregion
 //#region ../../../node_modules/.pnpm/is-plain-object@5.1.0/node_modules/is-plain-object/dist/is-plain-object.mjs
 /*!
@@ -10597,6 +10768,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
 
 //# sourceMappingURL=index.js.map
