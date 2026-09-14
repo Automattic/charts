@@ -1,6 +1,6 @@
 {
 	"name": "@automattic/charts",
-	"version": "4.1.0",
+	"version": "4.1.1-alpha",
 	"description": "Display charts within Automattic products.",
 	"homepage": "https://github.com/Automattic/jetpack/tree/HEAD/projects/js-packages/charts/#readme",
 	"bugs": {
@@ -63,7 +63,7 @@
 		"typecheck": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@automattic/number-formatters": "^1.2.8",
+		"@automattic/number-formatters": "^1.2.9-alpha",
 		"@babel/runtime": "7.29.7",
 		"@date-fns/tz": "1.4.1",
 		"@react-spring/web": "10.1.1",
@@ -114,9 +114,9 @@
 		"@wordpress/components": "40.0.0",
 		"@wordpress/element": "8.6.0",
 		"@wordpress/private-apis": "1.54.0",
-		"babel-jest": "30.4.1",
+		"babel-jest": "30.5.1",
 		"identity-obj-proxy": "^3.0.0",
-		"jest": "30.4.2",
+		"jest": "30.5.1",
 		"jest-extended": "7.0.0",
 		"magic-string": "0.30.21",
 		"react": "18.3.1",
