@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - AccessibleTooltip: Merge supplied styles with the default box styles instead of replacing them; use unstyled to remove the box styles.
+- LeaderboardChart: Let valueFormatter return a React node, so a value can carry a tooltip.
 - Line chart: Keep the page from scrolling when keyboard focus moves to a below-axis tooltip.
 
 ### Fixed
