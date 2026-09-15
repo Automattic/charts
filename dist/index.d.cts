@@ -1340,8 +1340,6 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
   renderTooltip?: (data: HeatmapTooltipData) => ReactNode;
   children?: ReactNode;
 }
-//#endregion
-//#region src/charts/heatmap-chart/private/build-calendar-data.d.ts
 type CalendarHeatmapResult = {
   data: HeatmapColumn[];
   rowLabels: string[];
@@ -1372,14 +1370,6 @@ type CalendarHeatmapOptions = {
    */
   timeZone?: string;
 };
-/**
- * Lay a day-bucketed series out as calendar columns.
- *
- * @param series  - Points to bucket.
- * @param options - Grid shape, plus the locale and zone to read days in.
- * @return Columns and row labels for `HeatmapChart`.
- */
-declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.d.ts
 interface HeatmapLegendProps {
@@ -1396,6 +1386,16 @@ interface HeatmapChartSubComponents {
 }
 declare const HeatmapChart: FC<HeatmapChartProps> & HeatmapChartSubComponents;
 declare const HeatmapChartResponsive: FC<HeatmapChartProps & ResponsiveConfig> & HeatmapChartSubComponents;
+//#endregion
+//#region src/charts/heatmap-chart/build-calendar-data.d.ts
+/**
+ * Lay a day-bucketed series out as calendar columns.
+ *
+ * @param series  - Points to bucket.
+ * @param options - Grid shape, plus the locale and zone to read days in.
+ * @return Columns and row labels for `HeatmapChart`.
+ */
+declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
 //#endregion
 //#region src/charts/heatmap-chart/use-calendar-heatmap-data.d.ts
 /**

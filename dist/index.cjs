@@ -6634,233 +6634,6 @@ const getNormalizedValue = (value, extent) => {
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
 };
 //#endregion
-//#region src/charts/heatmap-chart/private/civil-day.ts
-const DAY_MS = 864e5;
-const KEY_OPTIONS = {
-	calendar: "gregory",
-	numberingSystem: "latn",
-	year: "numeric",
-	month: "2-digit",
-	day: "2-digit"
-};
-const DATE_PREFIX = /^(\d{4})-(\d{2})-(\d{2})/;
-const pad = (value, length) => String(value).padStart(length, "0");
-/**
-* The day a UTC proxy stands for.
-*
-* @param date - UTC proxy.
-* @return Its day key.
-*/
-const civilKey = (date) => `${pad(date.getUTCFullYear(), 4)}-${pad(date.getUTCMonth() + 1, 2)}-${pad(date.getUTCDate(), 2)}`;
-/**
-* A day key as a UTC-midnight proxy. UTC has no DST, so every step below is exactly
-* `DAY_MS`.
-*
-* @param key - Day key.
-* @return The proxy, or null when the key names no real day.
-*/
-const civilDate = (key) => {
-	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
-	if (!match) return null;
-	const date = /* @__PURE__ */ new Date(0);
-	date.setUTCFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-	date.setUTCHours(0, 0, 0, 0);
-	return civilKey(date) === key ? date : null;
-};
-/**
-* The day a written date names, ignoring any time and zone it carries.
-*
-* @param text - `yyyy-MM-dd`, optionally followed by a time.
-* @return Its day key, or null.
-*/
-const writtenDayKey = (text) => {
-	const match = DATE_PREFIX.exec(text);
-	if (!match) return null;
-	const key = `${match[1]}-${match[2]}-${match[3]}`;
-	return civilDate(key) ? key : null;
-};
-/**
-* Reads the day an instant falls on in a zone.
-*
-* @param timeZone - IANA zone name; absent leaves the runtime's own.
-* @return Reader taking a `Date`, null for a day no key can hold.
-*/
-const instantDayReader = (timeZone) => {
-	const formatter = new Intl.DateTimeFormat("en-US", {
-		...KEY_OPTIONS,
-		timeZone
-	});
-	return (date) => {
-		const parts = formatter.formatToParts(date);
-		const read = (type) => parts.find((part) => part.type === type)?.value ?? "";
-		const key = `${pad(Number(read("year")), 4)}-${read("month")}-${read("day")}`;
-		return civilDate(key) ? key : null;
-	};
-};
-/**
-* The day a series point belongs to.
-*
-* A `Date`, or a string carrying `Z` or an offset, is an instant read in the host's
-* zone. Anything else is a wall clock the host wrote, so its date part is the day.
-*
-* @param point       - Series point.
-* @param readInstant - Reader from `instantDayReader`.
-* @return Its day key, or null when the point carries no usable date.
-*/
-const pointDayKey = (point, readInstant) => {
-	if (point.date instanceof Date && !isNaN(point.date.getTime())) {
-		const key = readInstant(point.date);
-		if (key) return key;
-	}
-	const text = point.dateString;
-	if (!text) return null;
-	if (!hasTimezone(text)) return writtenDayKey(text);
-	const parsed = (0, date_fns.parseISO)(text);
-	return isNaN(parsed.getTime()) ? null : readInstant(parsed);
-};
-/**
-* Steps a proxy by whole days.
-*
-* @param date - UTC proxy.
-* @param days - Days to add; may be negative.
-* @return The shifted proxy.
-*/
-const addCivilDays = (date, days) => new Date(date.getTime() + days * DAY_MS);
-/**
-* Rounds a proxy down to its week.
-*
-* @param date         - UTC proxy.
-* @param weekStartsOn - 0 for Sunday, 1 for Monday.
-* @return The proxy for that week's first day.
-*/
-const startOfCivilWeek = (date, weekStartsOn) => {
-	const daysSinceWeekStart = (date.getUTCDay() - weekStartsOn + 7) % 7;
-	return addCivilDays(date, -daysSinceWeekStart);
-};
-/**
-* Counts the columns a span needs.
-*
-* @param from         - Earlier UTC proxy.
-* @param to           - Later UTC proxy.
-* @param weekStartsOn - 0 for Sunday, 1 for Monday.
-* @return Columns needed to cover the span, inclusive.
-*/
-const civilWeekSpan = (from, to, weekStartsOn) => Math.floor((startOfCivilWeek(to, weekStartsOn).getTime() - startOfCivilWeek(from, weekStartsOn).getTime()) / (7 * DAY_MS)) + 1;
-//#endregion
-//#region src/charts/heatmap-chart/private/build-calendar-data.ts
-/** Rows that get a weekday label (Mon, Wed, Fri with a Monday week start). */
-const LABELLED_ROWS = [
-	0,
-	2,
-	4
-];
-/**
-* Resolve one grid bound: an unparseable or narrowing value falls back to the
-* series' own bound, so the grid can only ever be widened.
-*
-* @param bound     - Requested bound as `yyyy-MM-dd`, if any.
-* @param fallback  - The series' own bound on this side.
-* @param direction - Which way the bound is allowed to move.
-* @return The day key to draw to.
-*/
-const widenTo = (bound, fallback, direction) => {
-	const key = bound ? writtenDayKey(bound) : null;
-	if (!key) {
-		if (bound) warnOnce(`heatmap:gridSpan:${bound}`, `gridSpan.${direction === "earlier" ? "start" : "end"} ${JSON.stringify(bound)} is not a \`yyyy-MM-dd\` day, so the grid is drawn over the series' own span.`);
-		return fallback;
-	}
-	if (direction === "earlier") return key < fallback ? key : fallback;
-	return key > fallback ? key : fallback;
-};
-/**
-* Lay a day-bucketed series out as calendar columns.
-*
-* @param series  - Points to bucket.
-* @param options - Grid shape, plus the locale and zone to read days in.
-* @return Columns and row labels for `HeatmapChart`.
-*/
-const buildCalendarHeatmapData = (series, options = {}) => {
-	const weekStartsOn = options.weekStartsOn ?? 1;
-	const hideOutOfRangeDays = options.hideOutOfRangeDays ?? true;
-	const { locale, timeZone } = sanitizeFormatting({
-		locale: options.locale,
-		timeZone: options.timeZone
-	});
-	const readInstant = instantDayReader(timeZone);
-	const valueByDay = /* @__PURE__ */ new Map();
-	let minDayKey;
-	let maxDayKey;
-	for (const point of series) {
-		const key = pointDayKey(point, readInstant);
-		if (!key) {
-			const offending = point.dateString ?? (point.date && String(point.date));
-			warnOnce(`heatmap:unreadableDate:${offending}`, offending ? `${JSON.stringify(offending)} is not a day this can read, so its point is left out of the calendar. A \`dateString\` must start \`yyyy-MM-dd\`.` : "A point carries neither `date` nor `dateString`, so it is left out of the calendar.");
-			continue;
-		}
-		valueByDay.set(key, point.value);
-		if (!minDayKey || key < minDayKey) minDayKey = key;
-		if (!maxDayKey || key > maxDayKey) maxDayKey = key;
-	}
-	if (!minDayKey || !maxDayKey) return {
-		data: [],
-		rowLabels: []
-	};
-	const requestedMinDayKey = widenTo(options.gridSpan?.start, minDayKey, "earlier");
-	const gridMaxDayKey = widenTo(options.gridSpan?.end, maxDayKey, "later");
-	const requestedMinDate = civilDate(requestedMinDayKey);
-	const gridMaxDate = civilDate(gridMaxDayKey);
-	const labelFormatting = {
-		locale,
-		timeZone: "UTC"
-	};
-	const formatWeekday = createDateFormatter({ weekday: "short" }, labelFormatting);
-	const formatMonth = createDateFormatter({ month: "short" }, labelFormatting);
-	const formatDay = createDateFormatter({
-		weekday: "short",
-		month: "short",
-		day: "numeric",
-		year: "numeric"
-	}, labelFormatting);
-	const gridStart = startOfCivilWeek(requestedMinDate, weekStartsOn);
-	const gridMinDayKey = requestedMinDayKey < minDayKey ? civilKey(gridStart) : requestedMinDayKey;
-	const weekCount = civilWeekSpan(gridStart, gridMaxDate, weekStartsOn);
-	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? formatWeekday(addCivilDays(gridStart, row)) : "");
-	const MIN_FIRST_MONTH_WEEKS = 2;
-	const firstMonth = gridStart.getUTCMonth();
-	let firstMonthWeeks = 0;
-	while (firstMonthWeeks < weekCount && addCivilDays(gridStart, firstMonthWeeks * 7).getUTCMonth() === firstMonth) firstMonthWeeks++;
-	const showFirstMonthLabel = !(firstMonthWeeks < weekCount) || firstMonthWeeks >= MIN_FIRST_MONTH_WEEKS;
-	const data = [];
-	let previousMonth = -1;
-	for (let week = 0; week < weekCount; week++) {
-		const columnStart = addCivilDays(gridStart, week * 7);
-		const month = columnStart.getUTCMonth();
-		const label = month !== previousMonth && (week !== 0 || showFirstMonthLabel) ? formatMonth(columnStart) : "";
-		previousMonth = month;
-		const cells = [];
-		for (let row = 0; row < 7; row++) {
-			const day = addCivilDays(gridStart, week * 7 + row);
-			const key = civilKey(day);
-			const cell = {
-				label: formatDay(day),
-				value: valueByDay.has(key) ? valueByDay.get(key) : null
-			};
-			if (key < gridMinDayKey || key > gridMaxDayKey) {
-				if (hideOutOfRangeDays) cell.hidden = true;
-			} else if (key < minDayKey || key > maxDayKey) cell.placeholder = true;
-			cells.push(cell);
-		}
-		data.push({
-			label,
-			data: cells
-		});
-	}
-	return {
-		data,
-		rowLabels
-	};
-};
-//#endregion
 //#region src/charts/heatmap-chart/private/heatmap-context.ts
 /** Shared by the chart and legend without importing back from `heatmap-chart.tsx`. */
 const HeatmapContext = (0, react.createContext)(null);
@@ -7199,6 +6972,233 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ (0, react_jsx_run
 });
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
 const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
+//#endregion
+//#region src/charts/heatmap-chart/private/civil-day.ts
+const DAY_MS = 864e5;
+const KEY_OPTIONS = {
+	calendar: "gregory",
+	numberingSystem: "latn",
+	year: "numeric",
+	month: "2-digit",
+	day: "2-digit"
+};
+const DATE_PREFIX = /^(\d{4})-(\d{2})-(\d{2})/;
+const pad = (value, length) => String(value).padStart(length, "0");
+/**
+* The day a UTC proxy stands for.
+*
+* @param date - UTC proxy.
+* @return Its day key.
+*/
+const civilKey = (date) => `${pad(date.getUTCFullYear(), 4)}-${pad(date.getUTCMonth() + 1, 2)}-${pad(date.getUTCDate(), 2)}`;
+/**
+* A day key as a UTC-midnight proxy. UTC has no DST, so every step below is exactly
+* `DAY_MS`.
+*
+* @param key - Day key.
+* @return The proxy, or null when the key names no real day.
+*/
+const civilDate = (key) => {
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
+	if (!match) return null;
+	const date = /* @__PURE__ */ new Date(0);
+	date.setUTCFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+	date.setUTCHours(0, 0, 0, 0);
+	return civilKey(date) === key ? date : null;
+};
+/**
+* The day a written date names, ignoring any time and zone it carries.
+*
+* @param text - `yyyy-MM-dd`, optionally followed by a time.
+* @return Its day key, or null.
+*/
+const writtenDayKey = (text) => {
+	const match = DATE_PREFIX.exec(text);
+	if (!match) return null;
+	const key = `${match[1]}-${match[2]}-${match[3]}`;
+	return civilDate(key) ? key : null;
+};
+/**
+* Reads the day an instant falls on in a zone.
+*
+* @param timeZone - IANA zone name; absent leaves the runtime's own.
+* @return Reader taking a `Date`, null for a day no key can hold.
+*/
+const instantDayReader = (timeZone) => {
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		...KEY_OPTIONS,
+		timeZone
+	});
+	return (date) => {
+		const parts = formatter.formatToParts(date);
+		const read = (type) => parts.find((part) => part.type === type)?.value ?? "";
+		const key = `${pad(Number(read("year")), 4)}-${read("month")}-${read("day")}`;
+		return civilDate(key) ? key : null;
+	};
+};
+/**
+* The day a series point belongs to.
+*
+* A `Date`, or a string carrying `Z` or an offset, is an instant read in the host's
+* zone. Anything else is a wall clock the host wrote, so its date part is the day.
+*
+* @param point       - Series point.
+* @param readInstant - Reader from `instantDayReader`.
+* @return Its day key, or null when the point carries no usable date.
+*/
+const pointDayKey = (point, readInstant) => {
+	if (point.date instanceof Date && !isNaN(point.date.getTime())) {
+		const key = readInstant(point.date);
+		if (key) return key;
+	}
+	const text = point.dateString;
+	if (!text) return null;
+	if (!hasTimezone(text)) return writtenDayKey(text);
+	const parsed = (0, date_fns.parseISO)(text);
+	return isNaN(parsed.getTime()) ? null : readInstant(parsed);
+};
+/**
+* Steps a proxy by whole days.
+*
+* @param date - UTC proxy.
+* @param days - Days to add; may be negative.
+* @return The shifted proxy.
+*/
+const addCivilDays = (date, days) => new Date(date.getTime() + days * DAY_MS);
+/**
+* Rounds a proxy down to its week.
+*
+* @param date         - UTC proxy.
+* @param weekStartsOn - 0 for Sunday, 1 for Monday.
+* @return The proxy for that week's first day.
+*/
+const startOfCivilWeek = (date, weekStartsOn) => {
+	const daysSinceWeekStart = (date.getUTCDay() - weekStartsOn + 7) % 7;
+	return addCivilDays(date, -daysSinceWeekStart);
+};
+/**
+* Counts the columns a span needs.
+*
+* @param from         - Earlier UTC proxy.
+* @param to           - Later UTC proxy.
+* @param weekStartsOn - 0 for Sunday, 1 for Monday.
+* @return Columns needed to cover the span, inclusive.
+*/
+const civilWeekSpan = (from, to, weekStartsOn) => Math.floor((startOfCivilWeek(to, weekStartsOn).getTime() - startOfCivilWeek(from, weekStartsOn).getTime()) / (7 * DAY_MS)) + 1;
+//#endregion
+//#region src/charts/heatmap-chart/build-calendar-data.ts
+/** Rows that get a weekday label (Mon, Wed, Fri with a Monday week start). */
+const LABELLED_ROWS = [
+	0,
+	2,
+	4
+];
+/**
+* Resolve one grid bound: an unparseable or narrowing value falls back to the
+* series' own bound, so the grid can only ever be widened.
+*
+* @param bound     - Requested bound as `yyyy-MM-dd`, if any.
+* @param fallback  - The series' own bound on this side.
+* @param direction - Which way the bound is allowed to move.
+* @return The day key to draw to.
+*/
+const widenTo = (bound, fallback, direction) => {
+	const key = bound ? writtenDayKey(bound) : null;
+	if (!key) {
+		if (bound) warnOnce(`heatmap:gridSpan:${bound}`, `gridSpan.${direction === "earlier" ? "start" : "end"} ${JSON.stringify(bound)} is not a \`yyyy-MM-dd\` day, so the grid is drawn over the series' own span.`);
+		return fallback;
+	}
+	if (direction === "earlier") return key < fallback ? key : fallback;
+	return key > fallback ? key : fallback;
+};
+/**
+* Lay a day-bucketed series out as calendar columns.
+*
+* @param series  - Points to bucket.
+* @param options - Grid shape, plus the locale and zone to read days in.
+* @return Columns and row labels for `HeatmapChart`.
+*/
+const buildCalendarHeatmapData = (series, options = {}) => {
+	const weekStartsOn = options.weekStartsOn ?? 1;
+	const hideOutOfRangeDays = options.hideOutOfRangeDays ?? true;
+	const { locale, timeZone } = sanitizeFormatting({
+		locale: options.locale,
+		timeZone: options.timeZone
+	});
+	const readInstant = instantDayReader(timeZone);
+	const valueByDay = /* @__PURE__ */ new Map();
+	let minDayKey;
+	let maxDayKey;
+	for (const point of series) {
+		const key = pointDayKey(point, readInstant);
+		if (!key) {
+			const offending = point.dateString ?? (point.date && String(point.date));
+			warnOnce(`heatmap:unreadableDate:${offending}`, offending ? `${JSON.stringify(offending)} is not a day this can read, so its point is left out of the calendar. A \`dateString\` must start \`yyyy-MM-dd\`.` : "A point carries neither `date` nor `dateString`, so it is left out of the calendar.");
+			continue;
+		}
+		valueByDay.set(key, point.value);
+		if (!minDayKey || key < minDayKey) minDayKey = key;
+		if (!maxDayKey || key > maxDayKey) maxDayKey = key;
+	}
+	if (!minDayKey || !maxDayKey) return {
+		data: [],
+		rowLabels: []
+	};
+	const requestedMinDayKey = widenTo(options.gridSpan?.start, minDayKey, "earlier");
+	const gridMaxDayKey = widenTo(options.gridSpan?.end, maxDayKey, "later");
+	const requestedMinDate = civilDate(requestedMinDayKey);
+	const gridMaxDate = civilDate(gridMaxDayKey);
+	const labelFormatting = {
+		locale,
+		timeZone: "UTC"
+	};
+	const formatWeekday = createDateFormatter({ weekday: "short" }, labelFormatting);
+	const formatMonth = createDateFormatter({ month: "short" }, labelFormatting);
+	const formatDay = createDateFormatter({
+		weekday: "short",
+		month: "short",
+		day: "numeric",
+		year: "numeric"
+	}, labelFormatting);
+	const gridStart = startOfCivilWeek(requestedMinDate, weekStartsOn);
+	const gridMinDayKey = requestedMinDayKey < minDayKey ? civilKey(gridStart) : requestedMinDayKey;
+	const weekCount = civilWeekSpan(gridStart, gridMaxDate, weekStartsOn);
+	const rowLabels = Array.from({ length: 7 }, (_, row) => LABELLED_ROWS.includes(row) ? formatWeekday(addCivilDays(gridStart, row)) : "");
+	const MIN_FIRST_MONTH_WEEKS = 2;
+	const firstMonth = gridStart.getUTCMonth();
+	let firstMonthWeeks = 0;
+	while (firstMonthWeeks < weekCount && addCivilDays(gridStart, firstMonthWeeks * 7).getUTCMonth() === firstMonth) firstMonthWeeks++;
+	const showFirstMonthLabel = !(firstMonthWeeks < weekCount) || firstMonthWeeks >= MIN_FIRST_MONTH_WEEKS;
+	const data = [];
+	let previousMonth = -1;
+	for (let week = 0; week < weekCount; week++) {
+		const columnStart = addCivilDays(gridStart, week * 7);
+		const month = columnStart.getUTCMonth();
+		const label = month !== previousMonth && (week !== 0 || showFirstMonthLabel) ? formatMonth(columnStart) : "";
+		previousMonth = month;
+		const cells = [];
+		for (let row = 0; row < 7; row++) {
+			const day = addCivilDays(gridStart, week * 7 + row);
+			const key = civilKey(day);
+			const cell = {
+				label: formatDay(day),
+				value: valueByDay.has(key) ? valueByDay.get(key) : null
+			};
+			if (key < gridMinDayKey || key > gridMaxDayKey) {
+				if (hideOutOfRangeDays) cell.hidden = true;
+			} else if (key < minDayKey || key > maxDayKey) cell.placeholder = true;
+			cells.push(cell);
+		}
+		data.push({
+			label,
+			data: cells
+		});
+	}
+	return {
+		data,
+		rowLabels
+	};
+};
 //#endregion
 //#region src/charts/heatmap-chart/use-calendar-heatmap-data.ts
 /**
