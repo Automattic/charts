@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Update package dependencies.
 
 ### Fixed
+- Fix unreadable axis labels in forced-colors mode.
 - Line and area charts: Restore keyboard focus after dismissing tooltips.
 
 ## [4.1.0] - 2026-09-14

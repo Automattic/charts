@@ -2487,7 +2487,7 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 		...defaultStyles,
 		zIndex,
 		backgroundColor: theme?.backgroundColor ?? "white",
-		boxShadow: `0 1px 2px ${theme?.htmlLabel?.color ? `${theme.htmlLabel.color}55` : "#22222255"}`,
+		boxShadow: `0 1px 2px ${isValidHexColor(theme?.htmlLabel?.color) ? `${theme.htmlLabel.color}55` : "#22222255"}`,
 		...theme?.htmlLabel,
 		...style
 	};
