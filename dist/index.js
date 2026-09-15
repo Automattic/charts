@@ -2670,7 +2670,8 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 				else element.focus();
 			}
 		}, [preventTooltipScroll, selectedIndex]),
-		onChartFocus: useCallback(() => {
+		onChartFocus: useCallback((event) => {
+			if (event.currentTarget.contains(event.relatedTarget)) return;
 			if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
 		}, [
 			isNavigating,
@@ -2682,15 +2683,19 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 		}, [setIsNavigating]),
 		onChartKeyDown: useCallback((event) => {
 			if (totalPoints === 0) return;
+			const focusChart = () => {
+				if (preventTooltipScroll) chartRef.current?.focus({ preventScroll: true });
+				else chartRef.current?.focus();
+			};
 			if (event.key === "Tab") {
-				chartRef.current?.focus();
+				focusChart();
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
 				return;
 			}
 			const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
 			if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
-				chartRef.current?.focus();
+				focusChart();
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
 				return;
@@ -2705,7 +2710,7 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			} else if (event.key === "Escape") {
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
-				chartRef.current?.focus();
+				focusChart();
 			} else if ((event.key === "Enter" || event.key === " ") && selectedIndex !== void 0) onActivate?.(selectedIndex);
 		}, [
 			totalPoints,
@@ -2713,7 +2718,8 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			setSelectedIndex,
 			setIsNavigating,
 			chartRef,
-			onActivate
+			onActivate,
+			preventTooltipScroll
 		])
 	};
 };
@@ -4316,6 +4322,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 			children: ({ contentHeight }) => {
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ jsx("div", {
+					ref: chartRef,
 					role: "grid",
 					"aria-label": __("Line chart", "jetpack-charts"),
 					tabIndex: 0,
@@ -4323,7 +4330,6 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 					onFocus: onChartFocus,
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsxs("div", {
-						ref: chartRef,
 						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ jsx(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ jsxs(XYChart, {
 							theme,
@@ -4821,6 +4827,7 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 			children: ({ contentHeight }) => {
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ jsx("div", {
+					ref: chartRef,
 					role: "grid",
 					"aria-label": __("Area chart", "jetpack-charts"),
 					tabIndex: 0,
@@ -4828,7 +4835,6 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 					onFocus: onChartFocus,
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsxs("div", {
-						ref: chartRef,
 						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ jsx(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ jsxs(XYChart, {
 							theme,

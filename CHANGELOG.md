@@ -12,6 +12,9 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Update package dependencies.
 
+### Fixed
+- Line and area charts: Restore keyboard focus after dismissing tooltips.
+
 ## [4.1.0] - 2026-09-14
 ### Added
 - Heatmap: add `locale` and `timeZone` options and a `useCalendarHeatmapData` hook, so a host can bucket and label the calendar in its own zone and language instead of the viewer's. Labels with no `locale` now follow the runtime locale rather than always rendering in English, and a calendar `dateString` must start `yyyy-MM-dd`. [#52114]
