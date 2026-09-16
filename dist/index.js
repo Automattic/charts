@@ -1,6 +1,6 @@
 import { getStringWidth as getStringWidth$1 } from "./visx/text/index.js";
 import { formatNumber, formatNumberCompact } from "@automattic/number-formatters";
-import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, TooltipContext, XYChart, buildChartTheme } from "@visx/xychart";
+import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, TooltipContext, XYChart, buildChartTheme, useEventEmitter } from "@visx/xychart";
 import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
@@ -2231,7 +2231,8 @@ const findClippingAncestor = (wrapper) => {
 /**
 * Where the box goes, in wrapper coordinates. Automatic placement flips to
 * the side that clips less, then clamps inside `bounds`; below-axis placement
-* is centered on the anchor and clamped horizontally.
+* is centered on the anchor and clamped horizontally; beside placement preserves
+* the anchor's y and only flips horizontally before bounds clamping.
 *
 * The flip measures against the visible part of the wrapper, its intersection
 * with `bounds`. Only the clamp is bound by the page: a box that fits inside the
@@ -2245,7 +2246,7 @@ const findClippingAncestor = (wrapper) => {
 * @param params.offsetTop  - Gap between the anchor and the box, vertically.
 * @param params.box        - Rendered size of the box.
 * @param params.wrapper    - The wrapper's own edges, in wrapper coordinates.
-* @param params.placement  - Fixed below-axis placement or automatic flipping.
+* @param params.placement  - Below-axis, beside without vertical flipping, or automatic flipping.
 * @param params.bounds     - Edges the box must keep inside, in wrapper coordinates.
 * @return The box's top-left corner; fixed placement preserves the axis's subpixel y.
 */
@@ -2269,7 +2270,8 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 	const upY = top - offsetTop - box.height;
 	const downOverflow = downY + box.height - fit.bottom;
 	const upOverflow = fit.top - upY;
-	let y = downOverflow > 0 && downOverflow > upOverflow ? upY : downY;
+	let y = top;
+	if (placement !== "beside") y = downOverflow > 0 && downOverflow > upOverflow ? upY : downY;
 	x = clamp(x, bounds.left, bounds.right, box.width);
 	y = clamp(y, bounds.top, bounds.bottom, box.height);
 	return {
@@ -2285,8 +2287,7 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * alone would let the box spill into an `overflow: hidden` card and be cut off.
 *
 * Re-measures on every render, so a box whose content changes width between
-* two hovers is placed for its current size. See `getBoundedPosition` for the
-* below-axis exception.
+* two hovers is placed for its current size.
 *
 * @param props            - visx `Tooltip` props.
 * @param props.left       - Anchor x, in wrapper coordinates.
@@ -2296,7 +2297,7 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * @param props.style      - Box styles; visx's defaults unless `unstyled`.
 * @param props.unstyled   - Skip `style` and leave the box bare.
 * @param props.children   - Box content.
-* @param props.placement  - Fixed below-axis placement or automatic flipping.
+* @param props.placement  - Below-axis, beside without vertical flipping, or automatic flipping.
 * @return The tooltip box.
 */
 const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style = defaultStyles, unstyled = false, children, placement = "auto", ...rest }) => {
@@ -2427,7 +2428,7 @@ const defaultRenderGlyph$1 = ({ key, ...props }) => /* @__PURE__ */ jsx(DefaultG
 	seriesKey: key,
 	...props
 }, key);
-const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, tooltipPlacement = "auto", zIndex = DEFAULT_TOOLTIP_Z_INDEX, style, ...rest }) => {
+const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, tooltipPlacement = "auto", tooltipAnchorTop, zIndex = DEFAULT_TOOLTIP_Z_INDEX, style, ...rest }) => {
 	const tooltipProps = Object.fromEntries(Object.entries(rest).filter(([key]) => !PORTAL_OPTIONS.has(key)));
 	const { colorScale, theme, innerHeight = 0, innerWidth = 0, margin, xScale, yScale, dataRegistry } = useContext(DataContext) || {};
 	const tooltipContent = renderTooltip ? renderTooltip({
@@ -2482,7 +2483,7 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 	const crosshairStroke = theme?.gridStyles?.stroke ?? theme?.htmlLabel?.color ?? FALLBACK_COLOR;
 	const marginTop = margin?.top ?? 0;
 	const marginLeft = margin?.left ?? 0;
-	const TooltipComponent = detectBounds || tooltipPlacement === "below-axis" ? BoundedTooltip : Tooltip;
+	const TooltipComponent = detectBounds || tooltipPlacement !== "auto" ? BoundedTooltip : Tooltip;
 	const boxStyle = {
 		...defaultStyles,
 		zIndex,
@@ -2519,11 +2520,11 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 		]
 	}), container && createPortal(/* @__PURE__ */ jsx(TooltipComponent, {
 		left: tooltipLeft,
-		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipTop,
+		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipAnchorTop ?? tooltipTop,
 		style: boxStyle,
 		applyPositionStyle: true,
 		...tooltipProps,
-		...tooltipPlacement === "below-axis" && { placement: tooltipPlacement },
+		...tooltipPlacement !== "auto" && { placement: tooltipPlacement },
 		children: tooltipContent
 	}), container)] });
 };
@@ -5276,6 +5277,20 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 	]);
 }
 //#endregion
+//#region src/charts/bar-chart/private/band-scale.ts
+/**
+* Match the inner slot scale used by visx BarGroup.
+* @param keys      - Visible primary series keys.
+* @param bandwidth - Category band width.
+* @param padding   - Padding between slots.
+* @return The grouped bar scale.
+*/
+const createGroupScale = (keys, bandwidth, padding) => scaleBand({
+	domain: keys,
+	range: [0, bandwidth],
+	padding
+});
+//#endregion
 //#region src/charts/bar-chart/private/comparison-bars-geometry.ts
 /**
 * Output position of a value scale's baseline: zero if in-domain, else the
@@ -5348,11 +5363,7 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 	const valueScale = horizontal ? xScale : yScale;
 	const bandwidth = bandScale.bandwidth ? bandScale.bandwidth() : 0;
 	if (!bandwidth) return null;
-	const groupScale = scaleBand({
-		domain: primaryKeys,
-		range: [0, bandwidth],
-		padding: groupPadding
-	});
+	const groupScale = createGroupScale(primaryKeys, bandwidth, groupPadding);
 	const slotThickness = groupScale.bandwidth();
 	const baseline = getValueScaleBaseline(valueScale);
 	const bandAccessor = horizontal ? yAccessor : xAccessor;
@@ -5404,6 +5415,163 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 	});
 };
 //#endregion
+//#region src/charts/bar-chart/private/band-highlight.tsx
+/**
+* Render and report the active band using the chart’s registered scales.
+* @param root0            - Highlight options.
+* @param root0.visible    - Whether to paint the band.
+* @param root0.horizontal - Whether categories run vertically.
+* @param root0.onChange   - Receives selected band geometry.
+* @return The optional band highlight.
+*/
+function BandHighlight({ visible, horizontal, onChange }) {
+	const { xScale, yScale, dataRegistry, margin, innerWidth, innerHeight } = useContext(DataContext);
+	const { tooltipOpen, tooltipData } = useContext(TooltipContext);
+	const nearest = tooltipData?.nearestDatum;
+	const selection = useMemo(() => {
+		if (!tooltipOpen || !nearest) return null;
+		const scale = horizontal ? yScale : xScale;
+		const entry = dataRegistry?.get(nearest.key);
+		const accessor = horizontal ? entry?.yAccessor : entry?.xAccessor;
+		if (!scale?.bandwidth || !accessor) return null;
+		const position = scale(accessor(nearest.datum));
+		if (position === void 0 || !Number.isFinite(position)) return null;
+		return {
+			datum: nearest.datum,
+			x: horizontal ? margin?.left ?? 0 : position,
+			y: horizontal ? position : margin?.top ?? 0,
+			width: horizontal ? innerWidth : scale.bandwidth(),
+			height: horizontal ? scale.bandwidth() : innerHeight
+		};
+	}, [
+		tooltipOpen,
+		nearest,
+		horizontal,
+		xScale,
+		yScale,
+		dataRegistry,
+		margin,
+		innerWidth,
+		innerHeight
+	]);
+	const stableSelection = useDeepMemo(selection);
+	const onChangeRef = useRef(onChange);
+	onChangeRef.current = onChange;
+	useEffect(() => {
+		onChangeRef.current?.(stableSelection);
+	}, [stableSelection]);
+	useEffect(() => () => onChangeRef.current?.(null), []);
+	if (!visible || !selection) return null;
+	const { x, y, width, height } = selection;
+	return /* @__PURE__ */ jsx("rect", {
+		x,
+		y,
+		width,
+		height,
+		pointerEvents: "none",
+		fill: CATALOG_POINTERS.surfaceSecondary
+	});
+}
+//#endregion
+//#region src/charts/bar-chart/private/band-tooltip.tsx
+/**
+* Find a category by its painted center, including outer padding and reversed ranges.
+* @param data     - Registered series points.
+* @param accessor - Category accessor.
+* @param scale    - Rendered category band scale.
+* @param position - Pointer coordinate on the category axis.
+* @return Index of the nearest category, or -1 when none is registered.
+*/
+function nearestBandIndex(data, accessor, scale, position) {
+	let nearest = -1;
+	let distance = Infinity;
+	data.forEach((datum, index) => {
+		const start = scale(accessor(datum));
+		if (start === void 0) return;
+		const candidate = Math.abs(start + scale.bandwidth() / 2 - position);
+		if (candidate < distance) {
+			distance = candidate;
+			nearest = index;
+		}
+	});
+	return nearest;
+}
+/**
+* Correct visx's range-based band inversion, which omits outer padding.
+* @param root0               - Registered series selection.
+* @param root0.keys          - Visible series keys.
+* @param root0.groupPadding  - Padding between grouped bars.
+* @param root0.withTooltips  - Whether pointer events update the tooltip.
+* @param root0.onPointerDown - Receives the corrected pointer-down datum.
+* @param root0.onPointerUp   - Receives the corrected pointer-up datum.
+* @return No visual content.
+*/
+function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp }) {
+	const { xScale, yScale, dataRegistry, horizontal } = useContext(DataContext);
+	const { showTooltip } = useContext(TooltipContext);
+	const scale = horizontal ? yScale : xScale;
+	const bandwidth = scale?.bandwidth?.() ?? 0;
+	const groupScale = useMemo(() => createGroupScale(keys, bandwidth, groupPadding), [
+		keys,
+		bandwidth,
+		groupPadding
+	]);
+	const getSelections = useCallback((params) => {
+		const point = params?.svgPoint;
+		if (!point || !scale?.bandwidth) return [];
+		const selections = [];
+		for (const key of keys) {
+			const entry = dataRegistry?.get(key);
+			if (!entry) continue;
+			const accessor = horizontal ? entry.yAccessor : entry.xAccessor;
+			const index = nearestBandIndex(entry.data, accessor, scale, horizontal ? point.y : point.x);
+			if (index < 0) continue;
+			const datum = entry.data[index];
+			const start = Number(scale(accessor(datum))) + Number(groupScale(key));
+			const end = start + groupScale.step();
+			const position = horizontal ? point.y : point.x;
+			const distance = position >= start && position <= end ? 0 : Math.abs(position - (start + end) / 2);
+			selections.push({
+				event: params.event,
+				key,
+				datum,
+				index,
+				svgPoint: point,
+				distanceX: horizontal ? 0 : distance,
+				distanceY: horizontal ? distance : 0
+			});
+		}
+		return selections;
+	}, [
+		scale,
+		dataRegistry,
+		horizontal,
+		keys,
+		groupScale
+	]);
+	const handlePointer = useCallback((params) => {
+		const selections = getSelections(params);
+		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
+		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
+		if (params?.event.type === "pointermove" || !callback) return;
+		const nearest = selections.reduce((best, selection) => {
+			const distance = (value) => Math.hypot(value.distanceX, value.distanceY);
+			return !best || distance(selection) <= distance(best) ? selection : best;
+		}, void 0);
+		if (nearest) callback(nearest);
+	}, [
+		getSelections,
+		withTooltips,
+		showTooltip,
+		onPointerDown,
+		onPointerUp
+	]);
+	useEventEmitter("pointermove", withTooltips ? handlePointer : void 0);
+	useEventEmitter("pointerdown", handlePointer);
+	useEventEmitter("pointerup", onPointerUp ? handlePointer : void 0);
+	return null;
+}
+//#endregion
 //#region src/charts/bar-chart/bar-chart.tsx
 const validateData$2 = (data) => {
 	if (!data?.length) return "No data available";
@@ -5415,7 +5583,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const horizontal = orientation === "horizontal";
@@ -5536,7 +5704,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		chartOptions.yScale,
 		horizontal
 	]);
-	const getBarBackground = useCallback((index) => () => withPatterns ? `url(#${getPatternId(chartId, index)})` : getElementStyles({
+	const getBarBackground = useCallback((index) => (datum) => withPatterns ? `url(#${getPatternId(chartId, index)})` : datum.color ?? getElementStyles({
 		data: dataSorted[index],
 		index
 	}).color, [
@@ -5706,13 +5874,13 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ jsx("div", {
 					role: "grid",
+					ref: chartRef,
 					"aria-label": __("Bar chart", "jetpack-charts"),
 					tabIndex: 0,
 					onKeyDown: onChartKeyDown,
 					onFocus: onChartFocus,
 					onBlur: onChartBlur,
 					children: chartHeight > 0 && /* @__PURE__ */ jsx("div", {
-						ref: chartRef,
 						className: xy_plot_module_default["xy-plot"],
 						children: /* @__PURE__ */ jsxs(XYChart, {
 							theme,
@@ -5725,15 +5893,24 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 							xScale,
 							yScale,
 							horizontal,
-							onPointerDown,
-							onPointerUp,
 							pointerEventsDataKey: "nearest",
 							children: [
-								!allSeriesHidden && /* @__PURE__ */ jsx(Grid, {
-									columns: gridVisibility.includes("y"),
-									rows: gridVisibility.includes("x"),
-									numTicks: 4
+								withTooltips && (withBandHighlight || onBandHighlightChange) && /* @__PURE__ */ jsx(BandHighlight, {
+									visible: withBandHighlight,
+									horizontal,
+									onChange: onBandHighlightChange
 								}),
+								!allSeriesHidden && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Grid, {
+									columns: gridVisibility.includes("y"),
+									rows: false,
+									numTicks: 4,
+									tickValues: chartOptions.axis.x.tickValues
+								}), /* @__PURE__ */ jsx(Grid, {
+									columns: false,
+									rows: gridVisibility.includes("x"),
+									numTicks: 4,
+									tickValues: chartOptions.axis.y.tickValues
+								})] }),
 								withPatterns && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("defs", { children: dataSorted.map((seriesData, index) => renderPattern(index, getElementStyles({
 									data: seriesData,
 									index
@@ -5769,8 +5946,17 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 										colorAccessor: getBarBackground(index)
 									}, seriesData?.label))
 								}),
+								(withTooltips || onPointerDown || onPointerUp) && /* @__PURE__ */ jsx(BandTooltip, {
+									keys: primaryKeys,
+									groupPadding,
+									withTooltips,
+									onPointerDown,
+									onPointerUp
+								}),
 								!allSeriesHidden && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.x }), /* @__PURE__ */ jsx(Axis, { ...chartOptions.axis.y })] }),
 								withTooltips && /* @__PURE__ */ jsx(AccessibleTooltip, {
+									tooltipPlacement,
+									tooltipAnchorTop,
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: true,

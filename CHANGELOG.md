@@ -5,14 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.1.1-alpha] - unreleased
+## [4.2.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Bar chart: Add a beside tooltip placement that flips only horizontally.
+- Bar chart: Add an optional band highlight.
+- Bar chart: Support individual data point colors.
 
 ### Changed
 - Update package dependencies.
 
 ### Fixed
+- Bar chart: Align grid lines with axis ticks (explicit or derived).
+- Bar chart: Return focus to the chart after pressing Escape.
+- Bar chart: Select the bar under the pointer for tooltips and pointer callbacks.
 - Fix unreadable axis labels in forced-colors mode.
 - Line and area charts: Restore keyboard focus after dismissing tooltips.
 
@@ -1074,7 +1082,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.1.1-alpha]: https://github.com/Automattic/charts/compare/v4.1.0...v4.1.1-alpha
+[4.2.0-alpha]: https://github.com/Automattic/charts/compare/v4.1.0...v4.2.0-alpha
 [4.1.0]: https://github.com/Automattic/charts/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/Automattic/charts/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/Automattic/charts/compare/v3.1.1...v3.2.0
