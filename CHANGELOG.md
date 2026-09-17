@@ -22,8 +22,14 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Align grid lines with axis ticks (explicit or derived).
 - Bar chart: Return focus to the chart after pressing Escape.
 - Bar chart: Select the bar under the pointer for tooltips and pointer callbacks.
-- Fix unreadable axis labels in forced-colors mode.
-- Line and area charts: Restore keyboard focus after dismissing tooltips.
+
+## [4.1.1] - 2026-09-15
+### Changed
+- Update package dependencies. [#52297]
+
+### Fixed
+- Fix unreadable axis labels in forced-colors mode. [#52268]
+- Return keyboard focus to line and area charts after closing a tooltip with Escape. [#52284]
 
 ## [4.1.0] - 2026-09-14
 ### Added
@@ -1083,7 +1089,8 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.2.0-alpha]: https://github.com/Automattic/charts/compare/v4.1.0...v4.2.0-alpha
+[4.2.0-alpha]: https://github.com/Automattic/charts/compare/v4.1.1...v4.2.0-alpha
+[4.1.1]: https://github.com/Automattic/charts/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/Automattic/charts/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/Automattic/charts/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/Automattic/charts/compare/v3.1.1...v3.2.0
