@@ -350,6 +350,8 @@ type ChartTheme = {
     compactCellGap?: number;
     /** Fixed square cell size in px for compact mode */
     compactCellSize?: number;
+    /** Gap in px between adjacent column groups; in compact mode the minimum, as the gaps share leftover width */
+    groupGap?: number;
   };
 };
 /**
@@ -1315,10 +1317,18 @@ type HeatmapColumn = {
    */
   summary?: boolean;
 };
+/** A run of consecutive columns sharing one label beneath the grid. */
+type HeatmapColumnGroup = {
+  label: string;
+  /** Columns covered; a positive integer. */
+  span: number;
+};
 type HeatmapTooltipData = {
   value: number | null;
   rowLabel?: string;
   columnLabel?: string;
+  /** Label of the column group the cell falls in, if any. */
+  groupLabel?: string;
   cellLabel?: string;
   row: number;
   column: number;
@@ -1326,6 +1336,22 @@ type HeatmapTooltipData = {
 interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showLegend' | 'legend' | 'gridVisibility'> {
   /** y-axis labels by row index. Empty entries render blank. */
   rowLabels?: string[];
+  /**
+   * Consecutive runs of columns sharing one label beneath the grid, set one
+   * group gap apart. Runs from the first column; columns past the last group
+   * stay ungrouped. Ignored, with a warning, when a span is not a positive
+   * integer or the spans reach past the last column.
+   */
+  columnGroups?: HeatmapColumnGroup[];
+  /**
+   * How the arrow keys move the selection. `grid` steps across the whole grid.
+   * `calendar` reads each column group as a page: Left/Right by one cell (wrapping
+   * to the next row, then the next group), Up/Down by one row into the neighboring
+   * group past the edge, Page Up/Down by one group. Default `grid`.
+   */
+  keyboardNavigation?: 'grid' | 'calendar';
+  /** Accessible name of the grid. Defaults to a localized "Heatmap chart". */
+  ariaLabel?: string;
   /** Compact mode: hide in-cell values, tighten gap, thin axis labels. Default false. */
   compact?: boolean;
   /** Render the numeric value inside each cell. Default `! compact`. */
@@ -1389,6 +1415,24 @@ type CalendarHeatmapOptions = {
    */
   timeZone?: string;
 };
+type MonthCalendarHeatmapRange = {
+  /** First measured day, `yyyy-MM-dd`. */
+  start: string;
+  /** Last measured day, `yyyy-MM-dd`, inclusive. */
+  end: string;
+};
+type MonthCalendarHeatmapOptions = {
+  /** 0 = Sunday, 1 = Monday. Default 1. */
+  weekStartsOn?: 0 | 1;
+  /** BCP-47 tag the month and day labels are written in. Defaults to the runtime's locale. */
+  locale?: string;
+};
+type MonthCalendarHeatmapResult = {
+  /** For `HeatmapChart`'s `data`: 7 columns per month, 6 cells each. */
+  data: HeatmapColumn[];
+  /** For `HeatmapChart`'s `columnGroups`: one per month, in order. */
+  columnGroups: HeatmapColumnGroup[];
+};
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.d.ts
 interface HeatmapLegendProps {
@@ -1416,6 +1460,18 @@ declare const HeatmapChartResponsive: FC<HeatmapChartProps & ResponsiveConfig> &
  */
 declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
 //#endregion
+//#region src/charts/heatmap-chart/build-month-calendar-data.d.ts
+/**
+ * Lay a day-keyed map out as one month calendar per month, weekdays across and
+ * weeks down, for `HeatmapChart` with `columnGroups`.
+ *
+ * @param valueByDay - Value per `yyyy-MM-dd`. A missing day is `null`.
+ * @param range      - The measured days; every month from `start`'s through `end`'s is drawn.
+ * @param options    - Week start and label locale.
+ * @return Columns and one group per month; empty for an invalid or reversed range.
+ */
+declare const buildMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
+//#endregion
 //#region src/charts/heatmap-chart/use-calendar-heatmap-data.d.ts
 /**
  * `buildCalendarHeatmapData` with the locale and zone taken from
@@ -1426,6 +1482,18 @@ declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: Cale
  * @return Columns and row labels for `HeatmapChart`.
  */
 declare const useCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
+//#endregion
+//#region src/charts/heatmap-chart/use-month-calendar-heatmap-data.d.ts
+/**
+ * `buildMonthCalendarHeatmapData` with the locale taken from `GlobalChartsProvider`
+ * where the caller names none.
+ *
+ * @param valueByDay - Value per `yyyy-MM-dd`. Held by reference, so a caller that rebuilds it each render defeats the memo.
+ * @param range      - As for `buildMonthCalendarHeatmapData`.
+ * @param options    - As for `buildMonthCalendarHeatmapData`; `locale` wins over the provider.
+ * @return Columns and groups for `HeatmapChart`.
+ */
+declare const useMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
 //#endregion
 //#region src/charts/leaderboard-chart/types.d.ts
 interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation'> {
@@ -2217,5 +2285,5 @@ declare const defaultTheme: CompleteChartTheme;
  */
 declare const useChartScopeElement: () => HTMLElement | null;
 //#endregion
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 //# sourceMappingURL=index.d.ts.map

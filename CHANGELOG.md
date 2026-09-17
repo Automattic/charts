@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Add a beside tooltip placement that flips only horizontally.
 - Bar chart: Add an optional band highlight.
 - Bar chart: Support individual data point colors.
+- Heatmap: add `columnGroups` for labeled, gapped column runs, a `keyboardNavigation="calendar"` mode that steps by day, week and month, and `buildMonthCalendarHeatmapData` / `useMonthCalendarHeatmapData`, which draw a date-keyed map as one month calendar per month on a shared scale. The column-label row is omitted when no column has a label, the grid takes an `ariaLabel`, the keyboard selection scrolls into view, calendar labels stay Gregorian under any locale, and `CompleteChartTheme.heatmapChart` gains a required `groupGap`.
 
 ### Changed
 - Update package dependencies.

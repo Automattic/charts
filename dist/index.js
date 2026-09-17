@@ -981,7 +981,8 @@ const defaultTheme = {
 	},
 	heatmapChart: {
 		compactCellGap: 2,
-		compactCellSize: 11
+		compactCellSize: 11,
+		groupGap: 24
 	}
 };
 //#endregion
@@ -6778,7 +6779,9 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__gap-start": "a8ccharts-O3YMOW-heatmap-chart__gap-start",
 	"heatmap-chart__grid": "a8ccharts-O3YMOW-heatmap-chart__grid",
 	"heatmap-chart__grid--compact": "a8ccharts-O3YMOW-heatmap-chart__grid--compact",
+	"heatmap-chart__grid--flex-gaps": "a8ccharts-O3YMOW-heatmap-chart__grid--flex-gaps",
 	"heatmap-chart__grid--height-capped": "a8ccharts-O3YMOW-heatmap-chart__grid--height-capped",
+	"heatmap-chart__group-label": "a8ccharts-O3YMOW-heatmap-chart__group-label",
 	"heatmap-chart__legend-label": "a8ccharts-O3YMOW-heatmap-chart__legend-label",
 	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
 	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
@@ -6871,16 +6874,208 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 	});
 };
 //#endregion
+//#region src/charts/heatmap-chart/private/column-groups.ts
+const isSpan = (span) => Number.isInteger(span) && span > 0;
+/**
+* Validates column groups and lays them over the columns.
+*
+* @param groups      - Groups as passed to the chart.
+* @param columnCount - Number of data columns.
+* @param firstLine   - Grid column line of the first data column.
+* @return Grid column lines for every column and group; no groups when the input was unusable.
+*/
+const resolveColumnGroups = (groups, columnCount, firstLine) => {
+	const ungrouped = () => ({
+		columns: Array.from({ length: columnCount }, (_, index) => ({
+			line: firstLine + index,
+			gapBefore: false
+		})),
+		groups: []
+	});
+	if (!groups || groups.length === 0 || columnCount === 0) return ungrouped();
+	const spans = groups.map((group) => group.span);
+	const total = spans.reduce((sum, span) => sum + span, 0);
+	if (!spans.every(isSpan) || total > columnCount) {
+		warnOnce(`heatmap:columnGroups:${JSON.stringify(spans)}:${columnCount}`, `columnGroups spans ${JSON.stringify(spans)} must be positive integers that fit the ${columnCount} columns, so no groups are drawn.`);
+		return ungrouped();
+	}
+	const columns = [];
+	const laidOut = [];
+	let line = firstLine;
+	groups.forEach((group, groupIndex) => {
+		if (groupIndex > 0) line += 1;
+		laidOut.push({
+			...group,
+			line
+		});
+		for (let offset = 0; offset < group.span; offset++) {
+			columns.push({
+				line,
+				gapBefore: groupIndex > 0 && offset === 0,
+				group: groupIndex
+			});
+			line += 1;
+		}
+	});
+	while (columns.length < columnCount) {
+		columns.push({
+			line,
+			gapBefore: false
+		});
+		line += 1;
+	}
+	return {
+		columns,
+		groups: laidOut
+	};
+};
+//#endregion
+//#region src/charts/heatmap-chart/private/keyboard-navigation.ts
+const ARROW_KEYS = [
+	"ArrowLeft",
+	"ArrowRight",
+	"ArrowUp",
+	"ArrowDown"
+];
+const PAGE_KEYS = ["PageUp", "PageDown"];
+const isNavigationKey = (key, mode) => ARROW_KEYS.includes(key) || mode === "calendar" && PAGE_KEYS.includes(key);
+const inGrid = (grid, { column, row }) => column >= 0 && column < grid.columns && row >= 0 && row < grid.rows;
+const firstSelectable = (grid, cells) => cells.find((cell) => inGrid(grid, cell) && !grid.isInert(cell.column, cell.row));
+/**
+* Column-major scan for the first selectable cell.
+*
+* @param grid - The grid.
+* @return The cell, or undefined when every slot is inert.
+*/
+const firstGridCell = (grid) => {
+	for (let column = 0; column < grid.columns; column++) for (let row = 0; row < grid.rows; row++) if (!grid.isInert(column, row)) return {
+		column,
+		row
+	};
+};
+/**
+* Steps across the grid in the key's direction, past inert slots, staying put at the edge.
+*
+* @param grid - The grid.
+* @param from - The selected cell.
+* @param key  - The arrow key.
+* @return The next cell, or undefined to keep the selection.
+*/
+const stepGridCell = (grid, from, key) => {
+	const step = {
+		ArrowRight: [1, 0],
+		ArrowLeft: [-1, 0],
+		ArrowDown: [0, 1],
+		ArrowUp: [0, -1]
+	}[key];
+	if (!step) return;
+	const [stepColumn, stepRow] = step;
+	let cell = from;
+	do
+		cell = {
+			column: cell.column + stepColumn,
+			row: cell.row + stepRow
+		};
+	while (inGrid(grid, cell) && grid.isInert(cell.column, cell.row));
+	return inGrid(grid, cell) ? cell : void 0;
+};
+/**
+* Every slot of the blocks in reading order: block by block, each a row at a time.
+*
+* @param grid   - The grid.
+* @param blocks - The blocks, left to right.
+* @return The slots in order.
+*/
+const readingOrder = (grid, blocks) => blocks.flatMap((block) => Array.from({ length: grid.rows }, (_row, row) => Array.from({ length: block.end - block.start }, (_offset, offset) => ({
+	column: block.start + offset,
+	row
+}))).flat());
+const blockOf = (blocks, column) => blocks.findIndex((block) => column >= block.start && column < block.end);
+/**
+* The slots after a cell down its column (or before it, going up), continuing at the
+* same column offset of each following block.
+*
+* @param grid      - The grid.
+* @param blocks    - The blocks, left to right.
+* @param from      - The selected cell.
+* @param direction - 1 downwards, -1 upwards.
+* @return The slots in order.
+*/
+const columnOrderFrom = (grid, blocks, from, direction) => {
+	const blockIndex = blockOf(blocks, from.column);
+	if (blockIndex < 0) return [];
+	const offset = from.column - blocks[blockIndex].start;
+	const cells = [];
+	const pushRows = (column, startRow) => {
+		for (let row = startRow; row >= 0 && row < grid.rows; row += direction) cells.push({
+			column,
+			row
+		});
+	};
+	pushRows(from.column, from.row + direction);
+	for (let index = blockIndex + direction; index >= 0 && index < blocks.length; index += direction) {
+		const column = blocks[index].start + offset;
+		if (column < blocks[index].end) pushRows(column, direction === 1 ? 0 : grid.rows - 1);
+	}
+	return cells;
+};
+/**
+* The first selectable cell in calendar reading order.
+*
+* @param grid   - The grid.
+* @param blocks - The blocks, left to right.
+* @return The cell, or undefined when every slot is inert.
+*/
+const firstCalendarCell = (grid, blocks) => firstSelectable(grid, readingOrder(grid, blocks));
+/**
+* Steps through the blocks as pages of a calendar: Left/Right by one slot in reading
+* order, Up/Down by one row (into the neighboring block past the edge), Page Up/Down
+* to the same slot of the neighboring block or its nearest selectable cell.
+*
+* @param grid   - The grid.
+* @param blocks - The blocks, left to right.
+* @param from   - The selected cell.
+* @param key    - The navigation key.
+* @return The next cell, or undefined to keep the selection.
+*/
+const stepCalendarCell = (grid, blocks, from, key) => {
+	if (key === "ArrowRight" || key === "ArrowLeft") {
+		const order = readingOrder(grid, blocks);
+		const index = order.findIndex((cell) => cell.column === from.column && cell.row === from.row);
+		if (index < 0) return;
+		const ahead = key === "ArrowRight" ? order.slice(index + 1) : order.slice(0, index).reverse();
+		return firstSelectable(grid, ahead);
+	}
+	if (key === "ArrowDown" || key === "ArrowUp") return firstSelectable(grid, columnOrderFrom(grid, blocks, from, key === "ArrowDown" ? 1 : -1));
+	const blockIndex = blockOf(blocks, from.column);
+	const target = blocks[blockIndex + (key === "PageDown" ? 1 : -1)];
+	if (blockIndex < 0 || !target) return;
+	const same = {
+		column: target.start + (from.column - blocks[blockIndex].start),
+		row: from.row
+	};
+	const page = readingOrder(grid, [target]);
+	const at = page.findIndex((cell) => cell.row > same.row || cell.row === same.row && cell.column >= same.column);
+	const after = at === -1 ? [] : page.slice(at);
+	const before = page.slice(0, at === -1 ? page.length : at).reverse();
+	return firstSelectable(grid, after) ?? firstSelectable(grid, before);
+};
+//#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_MIX_FLOOR = .15;
 const NO_ROW_LABELS = [];
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
+const cellName = (info) => info.cellLabel || [
+	info.groupLabel,
+	info.columnLabel,
+	info.rowLabel
+].filter(Boolean).join(" ");
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, theme } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const { heatmapChart: heatmapChartSettings } = theme;
 	const { nonLegendChildren } = useChartChildren(children, "HeatmapChart");
-	const [selectedIndex, setSelectedIndex] = useState();
+	const [selected, setSelected] = useState();
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, showTooltip, hideTooltip } = useTooltip();
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const containerRef = useRef(null);
@@ -6899,69 +7094,75 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	}), [extent, primaryColorHex]);
 	const columns = data.length;
 	const rows = Math.max(0, ...data.map((column) => column.data.length));
-	const { compactCellGap, compactCellSize } = heatmapChartSettings;
+	const groupLayout = useMemo(() => resolveColumnGroups(columnGroups, columns, 2), [columnGroups, columns]);
+	const { compactCellGap, compactCellSize, groupGap } = heatmapChartSettings;
 	const drawValues = showValues ?? !compact;
 	const buildTooltipData = useCallback((columnIndex, rowIndex) => {
 		const cell = data[columnIndex]?.data[rowIndex];
+		const group = groupLayout.columns[columnIndex]?.group;
 		return {
 			value: cell?.value ?? null,
 			rowLabel: rowLabels[rowIndex],
 			columnLabel: data[columnIndex]?.label,
+			groupLabel: group === void 0 ? void 0 : groupLayout.groups[group]?.label,
 			cellLabel: cell?.label,
 			row: rowIndex,
 			column: columnIndex
 		};
-	}, [data, rowLabels]);
+	}, [
+		data,
+		rowLabels,
+		groupLayout
+	]);
 	const onChartBlur = useCallback(() => {
-		setSelectedIndex(void 0);
+		setSelected(void 0);
 		hideTooltip();
 	}, [hideTooltip]);
 	const isCellInert = useCallback((col, row) => {
 		const cell = data[col]?.data[row];
 		return cell?.hidden === true || cell?.placeholder === true;
 	}, [data]);
+	const blocks = useMemo(() => {
+		const grouped = groupLayout.groups.map((group, index) => {
+			const start = groupLayout.columns.findIndex((column) => column.group === index);
+			return {
+				start,
+				end: start + group.span
+			};
+		});
+		const groupedEnd = grouped.length ? grouped[grouped.length - 1].end : 0;
+		return groupedEnd < columns ? [...grouped, {
+			start: groupedEnd,
+			end: columns
+		}] : grouped;
+	}, [groupLayout, columns]);
 	const onChartKeyDown = useCallback((event) => {
-		if (![
-			"ArrowLeft",
-			"ArrowRight",
-			"ArrowUp",
-			"ArrowDown",
-			"Escape",
-			"Tab"
-		].includes(event.key)) return;
 		if (event.key === "Tab" || event.key === "Escape") {
-			setSelectedIndex(void 0);
+			setSelected(void 0);
 			hideTooltip();
 			return;
 		}
+		if (!isNavigationKey(event.key, keyboardNavigation)) return;
 		event.preventDefault();
-		if (selectedIndex === void 0) {
-			for (let index = 0; index < columns * rows; index++) if (!isCellInert(Math.floor(index / rows), index % rows)) {
-				setSelectedIndex(index);
-				return;
-			}
+		const grid = {
+			columns,
+			rows,
+			isInert: isCellInert
+		};
+		if (selected === void 0) {
+			setSelected(keyboardNavigation === "calendar" ? firstCalendarCell(grid, blocks) : firstGridCell(grid));
 			return;
 		}
-		let stepCol = 0;
-		let stepRow = 0;
-		if (event.key === "ArrowRight") stepCol = 1;
-		else if (event.key === "ArrowLeft") stepCol = -1;
-		else if (event.key === "ArrowDown") stepRow = 1;
-		else if (event.key === "ArrowUp") stepRow = -1;
-		let col = Math.floor(selectedIndex / rows);
-		let row = selectedIndex % rows;
-		do {
-			col += stepCol;
-			row += stepRow;
-		} while (col >= 0 && col < columns && row >= 0 && row < rows && isCellInert(col, row));
-		if (col < 0 || col >= columns || row < 0 || row >= rows) return;
-		setSelectedIndex(col * rows + row);
+		const next = keyboardNavigation === "calendar" ? stepCalendarCell(grid, blocks, selected, event.key) : stepGridCell(grid, selected, event.key);
+		if (next) setSelected(next);
 	}, [
 		rows,
 		columns,
-		selectedIndex,
+		selected,
 		hideTooltip,
-		isCellInert
+		isCellInert,
+		keyboardNavigation,
+		blocks
 	]);
 	const handleCellMouseMove = useCallback((event) => {
 		if (!withTooltips) return;
@@ -6981,35 +7182,47 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		buildTooltipData,
 		getTooltipOrigin
 	]);
+	const getCellElement = useCallback((col, row) => typeof document !== "undefined" ? document.getElementById(`${chartId}-cell-${col}-${row}`) : null, [chartId]);
 	const handleCellMouseLeave = useCallback(() => {
-		if (withTooltips && selectedIndex === void 0) hideTooltip();
+		if (withTooltips && selected === void 0) hideTooltip();
 	}, [
 		withTooltips,
-		selectedIndex,
+		selected,
 		hideTooltip
 	]);
 	useEffect(() => {
-		if (!withTooltips || selectedIndex === void 0) return;
+		if (selected && (selected.column >= columns || selected.row >= rows)) setSelected(void 0);
+	}, [
+		selected,
+		columns,
+		rows
+	]);
+	useEffect(() => {
+		if (selected === void 0) return;
+		getCellElement(selected.column, selected.row)?.scrollIntoView?.({
+			block: "nearest",
+			inline: "nearest"
+		});
+	}, [selected, getCellElement]);
+	useEffect(() => {
+		if (!withTooltips || selected === void 0) return;
 		const origin = getTooltipOrigin();
 		if (!origin) return;
-		const col = Math.floor(selectedIndex / rows);
-		const row = selectedIndex % rows;
-		const rect = (typeof document !== "undefined" ? document.getElementById(`${chartId}-cell-${col}-${row}`) : null)?.getBoundingClientRect();
+		const rect = getCellElement(selected.column, selected.row)?.getBoundingClientRect();
 		showTooltip({
 			tooltipLeft: rect ? rect.left + rect.width / 2 - origin.left : 0,
 			tooltipTop: rect ? rect.top + rect.height / 2 - origin.top : 0,
-			tooltipData: buildTooltipData(col, row)
+			tooltipData: buildTooltipData(selected.column, selected.row)
 		});
 	}, [
-		selectedIndex,
+		selected,
 		withTooltips,
-		rows,
-		chartId,
+		getCellElement,
 		buildTooltipData,
 		showTooltip,
 		getTooltipOrigin
 	]);
-	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim() }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
+	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: cellName(info) }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
 	if (!columns || !rows) return /* @__PURE__ */ jsx(Center, {
 		className: clsx("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className),
 		style: {
@@ -7023,10 +7236,16 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	});
 	const columnTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellWidth ?? 0}px, ${maxCellWidth ? `${maxCellWidth}px` : "1fr"})`;
 	const rowTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
+	const hasColumnLabels = data.some((column) => Boolean(column.label));
+	const hasGroups = groupLayout.groups.length > 0;
+	const columnLine = (columnIndex) => groupLayout.columns[columnIndex].line;
+	const firstDataRow = hasColumnLabels ? 2 : 1;
+	const dataTrack = (column) => column.summary ? "minmax(auto, max-content)" : columnTrack;
+	const gapTrack = compact ? `minmax(${groupGap}px, 1fr)` : `${groupGap}px`;
 	const gridStyle = {
 		"--a8c-charts-color-heatmap-primary": primaryColorHex,
-		gridTemplateColumns: `auto ${data.some((column) => column.summary) ? data.map((column) => column.summary ? "minmax(auto, max-content)" : columnTrack).join(" ") : `repeat(${columns}, ${columnTrack})`}`,
-		gridTemplateRows: `auto repeat(${rows}, ${rowTrack})`
+		gridTemplateColumns: `auto ${data.map((column, columnIndex) => groupLayout.columns[columnIndex].gapBefore ? `${gapTrack} ${dataTrack(column)}` : dataTrack(column)).join(" ")}`,
+		gridTemplateRows: `${hasColumnLabels ? "auto " : ""}repeat(${rows}, ${rowTrack})${hasGroups ? " auto" : ""}`
 	};
 	if (compact) {
 		gridStyle["--a8c-charts-dimension-heatmap-cell-gap"] = `${compactCellGap}px`;
@@ -7039,7 +7258,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 			[heatmap_chart_module_default["heatmap-chart__gap-end"]]: columnIndex < columns - 1 && !data[columnIndex + 1]?.summary
 		};
 	};
-	const activeDescendant = selectedIndex !== void 0 ? `${chartId}-cell-${Math.floor(selectedIndex / rows)}-${selectedIndex % rows}` : void 0;
+	const activeDescendant = selected ? `${chartId}-cell-${selected.column}-${selected.row}` : void 0;
 	const heightCapped = !compact && Boolean(maxCellHeight);
 	return /* @__PURE__ */ jsx(HeatmapContext.Provider, {
 		value: heatmapContext,
@@ -7059,7 +7278,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 				children: [/* @__PURE__ */ jsxs("div", {
 					ref: containerRef,
 					role: "grid",
-					"aria-label": __("Heatmap chart", "jetpack-charts"),
+					"aria-label": ariaLabel ?? __("Heatmap chart", "jetpack-charts"),
 					"aria-rowcount": rows,
 					"aria-colcount": columns,
 					"aria-activedescendant": activeDescendant,
@@ -7068,73 +7287,110 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 					onKeyDown: onChartKeyDown,
 					className: clsx(heatmap_chart_module_default["heatmap-chart__grid"], {
 						[heatmap_chart_module_default["heatmap-chart__grid--compact"]]: compact,
+						[heatmap_chart_module_default["heatmap-chart__grid--flex-gaps"]]: compact && hasGroups,
 						[heatmap_chart_module_default["heatmap-chart__grid--height-capped"]]: heightCapped
 					}),
 					style: gridStyle,
-					children: [/* @__PURE__ */ jsxs("div", {
-						role: "row",
-						"aria-hidden": "true",
-						className: heatmap_chart_module_default["heatmap-chart__row"],
-						children: [/* @__PURE__ */ jsx("span", {}), data.map((column, columnIndex) => /* @__PURE__ */ jsx("span", {
-							className: clsx(heatmap_chart_module_default["heatmap-chart__col-label"], {
-								[heatmap_chart_module_default["heatmap-chart__col-label--summary"]]: column.summary,
-								...summaryGaps(columnIndex)
-							}),
-							children: column.label
-						}, `col-${columnIndex}`))]
-					}), Array.from({ length: rows }).map((_row, rowIndex) => {
-						const labelVisible = !compact || rowIndex % 2 === 0;
-						return /* @__PURE__ */ jsxs("div", {
+					children: [
+						hasColumnLabels && /* @__PURE__ */ jsxs("div", {
 							role: "row",
-							"aria-rowindex": rowIndex + 1,
+							"aria-hidden": "true",
 							className: heatmap_chart_module_default["heatmap-chart__row"],
-							children: [/* @__PURE__ */ jsx("span", {
-								"aria-hidden": "true",
-								className: heatmap_chart_module_default["heatmap-chart__row-label"],
-								children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
-							}), data.map((column, columnIndex) => {
-								const cell = column.data[rowIndex];
-								if (cell?.hidden) return /* @__PURE__ */ jsx("div", {
+							children: [/* @__PURE__ */ jsx("span", { style: {
+								gridColumn: 1,
+								gridRow: 1
+							} }), data.map((column, columnIndex) => /* @__PURE__ */ jsx("span", {
+								style: {
+									gridColumn: columnLine(columnIndex),
+									gridRow: 1
+								},
+								className: clsx(heatmap_chart_module_default["heatmap-chart__col-label"], {
+									[heatmap_chart_module_default["heatmap-chart__col-label--summary"]]: column.summary,
+									...summaryGaps(columnIndex)
+								}),
+								children: column.label
+							}, `col-${columnIndex}`))]
+						}),
+						Array.from({ length: rows }).map((_row, rowIndex) => {
+							const labelVisible = !compact || rowIndex % 2 === 0;
+							const gridRow = firstDataRow + rowIndex;
+							return /* @__PURE__ */ jsxs("div", {
+								role: "row",
+								"aria-rowindex": rowIndex + 1,
+								className: heatmap_chart_module_default["heatmap-chart__row"],
+								children: [/* @__PURE__ */ jsx("span", {
 									"aria-hidden": "true",
-									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--hidden"])
-								}, `cell-${columnIndex}-${rowIndex}`);
-								if (cell?.placeholder) return /* @__PURE__ */ jsx("div", {
-									"aria-hidden": "true",
-									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--placeholder"])
-								}, `cell-${columnIndex}-${rowIndex}`);
-								const value = cell?.value ?? null;
-								const present = isPresent(value);
-								const filled = present && !column.summary;
-								const normalized = filled ? getNormalizedValue(value, extent) : 0;
-								const flatIndex = columnIndex * rows + rowIndex;
-								const info = buildTooltipData(columnIndex, rowIndex);
-								const accessibleLabel = `${info.cellLabel || `${info.columnLabel ?? ""} ${info.rowLabel ?? ""}`.trim()}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
-								return /* @__PURE__ */ jsx("div", {
-									id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
-									role: "gridcell",
-									tabIndex: -1,
-									"aria-colindex": columnIndex + 1,
-									"aria-label": accessibleLabel,
-									"data-column": columnIndex,
-									"data-row": rowIndex,
-									className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], {
-										[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: filled,
-										[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: filled && cellHasLightText(normalized),
-										[heatmap_chart_module_default["heatmap-chart__cell--summary"]]: column.summary,
-										...summaryGaps(columnIndex),
-										[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selectedIndex === flatIndex
-									}),
-									style: filled ? { "--a8c-charts-heatmap-cell-intensity": normalized } : void 0,
-									onMouseMove: handleCellMouseMove,
-									onMouseLeave: handleCellMouseLeave,
-									children: (drawValues || column.summary) && present && /* @__PURE__ */ jsx("span", {
-										className: heatmap_chart_module_default["heatmap-chart__cell-value"],
-										children: formatNumberCompact(value)
-									})
-								}, `cell-${columnIndex}-${rowIndex}`);
-							})]
-						}, `row-${rowIndex}`);
-					})]
+									className: heatmap_chart_module_default["heatmap-chart__row-label"],
+									style: {
+										gridColumn: 1,
+										gridRow
+									},
+									children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
+								}), data.map((column, columnIndex) => {
+									const cell = column.data[rowIndex];
+									const placement = {
+										gridColumn: columnLine(columnIndex),
+										gridRow
+									};
+									if (cell?.hidden) return /* @__PURE__ */ jsx("div", {
+										"aria-hidden": "true",
+										style: placement,
+										className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--hidden"])
+									}, `cell-${columnIndex}-${rowIndex}`);
+									if (cell?.placeholder) return /* @__PURE__ */ jsx("div", {
+										"aria-hidden": "true",
+										style: placement,
+										className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], heatmap_chart_module_default["heatmap-chart__cell--placeholder"])
+									}, `cell-${columnIndex}-${rowIndex}`);
+									const value = cell?.value ?? null;
+									const present = isPresent(value);
+									const filled = present && !column.summary;
+									const normalized = filled ? getNormalizedValue(value, extent) : 0;
+									const info = buildTooltipData(columnIndex, rowIndex);
+									const accessibleLabel = `${cellName(info)}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
+									return /* @__PURE__ */ jsx("div", {
+										id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
+										role: "gridcell",
+										tabIndex: -1,
+										"aria-colindex": columnIndex + 1,
+										"aria-label": accessibleLabel,
+										"data-column": columnIndex,
+										"data-row": rowIndex,
+										className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], {
+											[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: filled,
+											[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: filled && cellHasLightText(normalized),
+											[heatmap_chart_module_default["heatmap-chart__cell--summary"]]: column.summary,
+											...summaryGaps(columnIndex),
+											[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selected?.column === columnIndex && selected?.row === rowIndex
+										}),
+										style: {
+											...placement,
+											...filled ? { "--a8c-charts-heatmap-cell-intensity": normalized } : {}
+										},
+										onMouseMove: handleCellMouseMove,
+										onMouseLeave: handleCellMouseLeave,
+										children: (drawValues || column.summary) && present && /* @__PURE__ */ jsx("span", {
+											className: heatmap_chart_module_default["heatmap-chart__cell-value"],
+											children: formatNumberCompact(value)
+										})
+									}, `cell-${columnIndex}-${rowIndex}`);
+								})]
+							}, `row-${rowIndex}`);
+						}),
+						hasGroups && /* @__PURE__ */ jsx("div", {
+							role: "row",
+							"aria-hidden": "true",
+							className: heatmap_chart_module_default["heatmap-chart__row"],
+							children: groupLayout.groups.map((group, groupIndex) => /* @__PURE__ */ jsx("span", {
+								className: heatmap_chart_module_default["heatmap-chart__group-label"],
+								style: {
+									gridColumn: `${group.line} / span ${group.span}`,
+									gridRow: firstDataRow + rows
+								},
+								children: group.label
+							}, `group-${groupIndex}`))
+						})
+					]
 				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
 					top: tooltipTop,
 					left: tooltipLeft,
@@ -7173,6 +7429,43 @@ const KEY_OPTIONS = {
 	day: "2-digit"
 };
 const DATE_PREFIX = /^(\d{4})-(\d{2})-(\d{2})/;
+/**
+* Label formatters for UTC proxies, so both calendar layouts name a day alike.
+*
+* `gregory` keeps a locale whose default calendar is not Gregorian (fa-IR) from
+* splitting one grid month across two names.
+*
+* @param locale - BCP 47 locale.
+* @return Weekday, month and full-day formatters.
+*/
+const civilLabelFormatters = (locale) => {
+	const formatting = {
+		locale,
+		timeZone: "UTC"
+	};
+	return {
+		formatWeekday: createDateFormatter({
+			weekday: "short",
+			calendar: "gregory"
+		}, formatting),
+		formatMonth: createDateFormatter({
+			month: "short",
+			calendar: "gregory"
+		}, formatting),
+		formatMonthYear: createDateFormatter({
+			month: "short",
+			year: "numeric",
+			calendar: "gregory"
+		}, formatting),
+		formatDay: createDateFormatter({
+			weekday: "short",
+			month: "short",
+			day: "numeric",
+			year: "numeric",
+			calendar: "gregory"
+		}, formatting)
+	};
+};
 const pad = (value, length) => String(value).padStart(length, "0");
 /**
 * The day a UTC proxy stands for.
@@ -7338,18 +7631,7 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 	const gridMaxDayKey = widenTo(options.gridSpan?.end, maxDayKey, "later");
 	const requestedMinDate = civilDate(requestedMinDayKey);
 	const gridMaxDate = civilDate(gridMaxDayKey);
-	const labelFormatting = {
-		locale,
-		timeZone: "UTC"
-	};
-	const formatWeekday = createDateFormatter({ weekday: "short" }, labelFormatting);
-	const formatMonth = createDateFormatter({ month: "short" }, labelFormatting);
-	const formatDay = createDateFormatter({
-		weekday: "short",
-		month: "short",
-		day: "numeric",
-		year: "numeric"
-	}, labelFormatting);
+	const { formatWeekday, formatMonth, formatDay } = civilLabelFormatters(locale);
 	const gridStart = startOfCivilWeek(requestedMinDate, weekStartsOn);
 	const gridMinDayKey = requestedMinDayKey < minDayKey ? civilKey(gridStart) : requestedMinDayKey;
 	const weekCount = civilWeekSpan(gridStart, gridMaxDate, weekStartsOn);
@@ -7390,6 +7672,89 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 	};
 };
 //#endregion
+//#region src/charts/heatmap-chart/build-month-calendar-data.ts
+/** Week rows per month, fixed so every month block is the same height. */
+const MONTH_ROWS = 6;
+const DAYS_PER_WEEK = 7;
+const startOfCivilMonth = (date) => {
+	const first = new Date(date.getTime());
+	first.setUTCDate(1);
+	return first;
+};
+const startOfNextCivilMonth = (date) => {
+	const next = startOfCivilMonth(date);
+	next.setUTCMonth(next.getUTCMonth() + 1);
+	return next;
+};
+/**
+* Lay a day-keyed map out as one month calendar per month, weekdays across and
+* weeks down, for `HeatmapChart` with `columnGroups`.
+*
+* @param valueByDay - Value per `yyyy-MM-dd`. A missing day is `null`.
+* @param range      - The measured days; every month from `start`'s through `end`'s is drawn.
+* @param options    - Week start and label locale.
+* @return Columns and one group per month; empty for an invalid or reversed range.
+*/
+const buildMonthCalendarHeatmapData = (valueByDay, range, options = {}) => {
+	const start = civilDate(range.start);
+	const end = civilDate(range.end);
+	if (!start || !end || start.getTime() > end.getTime()) {
+		warnOnce(`heatmap:monthRange:${range.start}:${range.end}`, `range ${JSON.stringify(range)} must be two \`yyyy-MM-dd\` days with start on or before end, so the calendar is empty.`);
+		return {
+			data: [],
+			columnGroups: []
+		};
+	}
+	const startKey = civilKey(start);
+	const endKey = civilKey(end);
+	const weekStartsOn = options.weekStartsOn ?? 1;
+	const { locale } = sanitizeFormatting({ locale: options.locale });
+	for (const key of Object.keys(valueByDay)) if (!civilDate(key)) warnOnce(`heatmap:monthKey:${key}`, `${JSON.stringify(key)} is not a \`yyyy-MM-dd\` day, so its value is left out of the calendar.`);
+	const readValue = (key) => {
+		const value = valueByDay[key];
+		return isPresent(value) ? value : null;
+	};
+	const { formatMonth, formatMonthYear, formatDay } = civilLabelFormatters(locale);
+	const data = [];
+	const columnGroups = [];
+	const lastMonthStart = startOfCivilMonth(end);
+	const formatGroup = (lastMonthStart.getUTCFullYear() - start.getUTCFullYear()) * 12 + lastMonthStart.getUTCMonth() - start.getUTCMonth() + 1 > 12 ? formatMonthYear : formatMonth;
+	for (let monthStart = startOfCivilMonth(start); monthStart.getTime() <= lastMonthStart.getTime(); monthStart = startOfNextCivilMonth(monthStart)) {
+		const monthStartKey = civilKey(monthStart);
+		const monthEndKey = civilKey(addCivilDays(startOfNextCivilMonth(monthStart), -1));
+		const gridStart = startOfCivilWeek(monthStart, weekStartsOn);
+		for (let weekday = 0; weekday < DAYS_PER_WEEK; weekday++) {
+			const cells = [];
+			for (let week = 0; week < MONTH_ROWS; week++) {
+				const day = addCivilDays(gridStart, week * DAYS_PER_WEEK + weekday);
+				const key = civilKey(day);
+				if (key < monthStartKey || key > monthEndKey) cells.push({
+					value: null,
+					hidden: true
+				});
+				else if (key < startKey || key > endKey) cells.push({
+					label: formatDay(day),
+					value: null,
+					placeholder: true
+				});
+				else cells.push({
+					label: formatDay(day),
+					value: readValue(key)
+				});
+			}
+			data.push({ data: cells });
+		}
+		columnGroups.push({
+			label: formatGroup(monthStart),
+			span: DAYS_PER_WEEK
+		});
+	}
+	return {
+		data,
+		columnGroups
+	};
+};
+//#endregion
 //#region src/charts/heatmap-chart/use-calendar-heatmap-data.ts
 /**
 * `buildCalendarHeatmapData` with the locale and zone taken from
@@ -7423,6 +7788,36 @@ const useCalendarHeatmapData = (series, options = {}) => {
 		hideOutOfRangeDays,
 		gridStart,
 		gridEnd
+	]);
+};
+//#endregion
+//#region src/charts/heatmap-chart/use-month-calendar-heatmap-data.ts
+/**
+* `buildMonthCalendarHeatmapData` with the locale taken from `GlobalChartsProvider`
+* where the caller names none.
+*
+* @param valueByDay - Value per `yyyy-MM-dd`. Held by reference, so a caller that rebuilds it each render defeats the memo.
+* @param range      - As for `buildMonthCalendarHeatmapData`.
+* @param options    - As for `buildMonthCalendarHeatmapData`; `locale` wins over the provider.
+* @return Columns and groups for `HeatmapChart`.
+*/
+const useMonthCalendarHeatmapData = (valueByDay, range, options = {}) => {
+	const formatting = useChartFormatting();
+	const locale = options.locale ?? formatting.locale;
+	const { weekStartsOn } = options;
+	const { start, end } = range;
+	return useMemo(() => buildMonthCalendarHeatmapData(valueByDay, {
+		start,
+		end
+	}, {
+		locale,
+		weekStartsOn
+	}), [
+		valueByDay,
+		start,
+		end,
+		locale,
+		weekStartsOn
 	]);
 };
 //#endregion
@@ -10956,6 +11351,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TrendIndicator, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 
 //# sourceMappingURL=index.js.map
