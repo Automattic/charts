@@ -2591,11 +2591,32 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		return flattened;
 	}, [series, mode]);
 	const hasKeyboardSelection = useRef(false);
+	const closeTooltipNow = useCallback(() => {
+		tooltipContext?.updateTooltip({
+			tooltipOpen: false,
+			tooltipLeft: void 0,
+			tooltipTop: void 0,
+			tooltipData: void 0
+		});
+	}, []);
+	const chartId = useContext(ChartInstanceContext)?.chartId;
+	const { getHiddenSeries } = useGlobalChartsContext();
+	const hiddenSeriesKey = chartId ? JSON.stringify([...getHiddenSeries(chartId)].sort()) : void 0;
+	const lastHiddenSeriesKey = useRef(hiddenSeriesKey);
+	useEffect(() => {
+		const changed = lastHiddenSeriesKey.current !== hiddenSeriesKey;
+		lastHiddenSeriesKey.current = hiddenSeriesKey;
+		if (changed && selectedIndex === void 0) closeTooltipNow();
+	}, [
+		hiddenSeriesKey,
+		selectedIndex,
+		closeTooltipNow
+	]);
 	useEffect(() => {
 		if (selectedIndex === void 0) {
 			if (hasKeyboardSelection.current) {
 				hasKeyboardSelection.current = false;
-				tooltipContext?.hideTooltip();
+				closeTooltipNow();
 			}
 			return;
 		}
@@ -2664,14 +2685,43 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		renderTooltip: focusableRenderTooltip
 	});
 };
-const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate, preventTooltipScroll = false }) => {
+const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate, preventTooltipScroll = false, visibleSeriesKey }) => {
+	const getChartRoot = useCallback(() => chartRef.current?.closest("[role=\"grid\"]") ?? chartRef.current, [chartRef]);
+	const focusWithoutScrollIfNeeded = useCallback((element) => {
+		if (preventTooltipScroll) element?.focus({ preventScroll: true });
+		else element?.focus();
+	}, [preventTooltipScroll]);
+	const tooltipRef = useCallback((element) => {
+		if (element && selectedIndex !== void 0) focusWithoutScrollIfNeeded(element);
+	}, [focusWithoutScrollIfNeeded, selectedIndex]);
+	const previousTotalPoints = useRef(totalPoints);
+	const previousVisibleSeriesKey = useRef(visibleSeriesKey);
+	useEffect(() => {
+		const countChanged = previousTotalPoints.current !== totalPoints;
+		const seriesChanged = previousVisibleSeriesKey.current !== visibleSeriesKey;
+		previousTotalPoints.current = totalPoints;
+		previousVisibleSeriesKey.current = visibleSeriesKey;
+		if (!countChanged && !seriesChanged || selectedIndex === void 0) return;
+		const { activeElement } = document;
+		const focusIsInChart = activeElement !== null && !!getChartRoot()?.contains(activeElement);
+		if (totalPoints === 0 || !focusIsInChart || !countChanged) {
+			setSelectedIndex(void 0);
+			setIsNavigating(false);
+			if (focusIsInChart) focusWithoutScrollIfNeeded(getChartRoot());
+			return;
+		}
+		setSelectedIndex(Math.min(selectedIndex, totalPoints - 1));
+	}, [
+		selectedIndex,
+		totalPoints,
+		visibleSeriesKey,
+		setSelectedIndex,
+		setIsNavigating,
+		getChartRoot,
+		focusWithoutScrollIfNeeded
+	]);
 	return {
-		tooltipRef: useCallback((element) => {
-			if (element && selectedIndex !== void 0) {
-				if (preventTooltipScroll) element.focus({ preventScroll: true });
-				else element.focus();
-			}
-		}, [preventTooltipScroll, selectedIndex]),
+		tooltipRef,
 		onChartFocus: useCallback((event) => {
 			if (event.currentTarget.contains(event.relatedTarget)) return;
 			if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
@@ -2684,44 +2734,35 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			setIsNavigating(false);
 		}, [setIsNavigating]),
 		onChartKeyDown: useCallback((event) => {
+			if (event.key === "Tab" || event.key === "Escape") {
+				if (event.key === "Escape" && selectedIndex !== void 0) event.preventDefault();
+				focusWithoutScrollIfNeeded(getChartRoot());
+				setSelectedIndex(void 0);
+				setIsNavigating(false);
+				return;
+			}
 			if (totalPoints === 0) return;
-			const focusChart = () => {
-				if (preventTooltipScroll) chartRef.current?.focus({ preventScroll: true });
-				else chartRef.current?.focus();
-			};
-			if (event.key === "Tab") {
-				focusChart();
-				setSelectedIndex(void 0);
-				setIsNavigating(false);
-				return;
-			}
 			const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
-			if (currentSelectedIndex + 1 >= totalPoints && ["ArrowRight"].includes(event.key)) {
-				focusChart();
-				setSelectedIndex(void 0);
-				setIsNavigating(false);
-				return;
+			if (event.key === "ArrowRight") {
+				event.preventDefault();
+				setIsNavigating(true);
+				setSelectedIndex(Math.min(currentSelectedIndex + 1, totalPoints - 1));
+			} else if (event.key === "ArrowLeft") {
+				event.preventDefault();
+				setIsNavigating(true);
+				setSelectedIndex(Math.max(currentSelectedIndex - 1, 0));
+			} else if ((event.key === "Enter" || event.key === " ") && selectedIndex !== void 0) {
+				event.preventDefault();
+				onActivate?.(selectedIndex);
 			}
-			event.preventDefault();
-			if (["ArrowRight"].includes(event.key)) {
-				setIsNavigating(true);
-				setSelectedIndex((currentSelectedIndex + 1) % totalPoints);
-			} else if (["ArrowLeft"].includes(event.key)) {
-				setIsNavigating(true);
-				setSelectedIndex((currentSelectedIndex - 1 + totalPoints) % totalPoints);
-			} else if (event.key === "Escape") {
-				setSelectedIndex(void 0);
-				setIsNavigating(false);
-				focusChart();
-			} else if ((event.key === "Enter" || event.key === " ") && selectedIndex !== void 0) onActivate?.(selectedIndex);
 		}, [
 			totalPoints,
 			selectedIndex,
 			setSelectedIndex,
 			setIsNavigating,
-			chartRef,
-			onActivate,
-			preventTooltipScroll
+			getChartRoot,
+			focusWithoutScrollIfNeeded,
+			onActivate
 		])
 	};
 };
@@ -5610,8 +5651,6 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	}, [height]);
 	const [selectedIndex, setSelectedIndex] = useState(void 0);
 	const [isNavigating, setIsNavigating] = useState(false);
-	const primarySeriesForNav = dataWithVisibleZeros.filter((s) => s.options?.type !== "comparison");
-	const totalPoints = Math.max(0, ...primarySeriesForNav.map((s) => s.data?.length || 0)) * primarySeriesForNav.length;
 	const seriesWithVisibility = useMemo(() => dataWithVisibleZeros.map((series, index) => ({
 		series,
 		index,
@@ -5621,6 +5660,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
 	const primaryEntries = useMemo(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
+	const totalPoints = Math.max(0, ...primaryEntries.map((e) => e.series.data.length)) * primaryEntries.length;
 	const primaryKeys = useMemo(() => primaryEntries.map(({ series }) => series.label), [primaryEntries]);
 	const primarySeries = useMemo(() => primaryEntries.map(({ series }) => series), [primaryEntries]);
 	const activateSelectedBar = useCallback((index) => {
@@ -5635,6 +5675,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 			key: series.label
 		});
 	}, [primaryEntries, onDatumActivate]);
+	const visibleSeriesKey = useMemo(() => JSON.stringify(primaryKeys), [primaryKeys]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
@@ -5642,7 +5683,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		setIsNavigating,
 		chartRef,
 		totalPoints,
-		onActivate: activateSelectedBar
+		onActivate: activateSelectedBar,
+		visibleSeriesKey
 	});
 	const comparisonEntries = useMemo(() => {
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {

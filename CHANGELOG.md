@@ -22,6 +22,7 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Align grid lines with axis ticks (explicit or derived).
 - Bar chart: Return focus to the chart after pressing Escape.
 - Bar chart: Select the bar under the pointer for tooltips and pointer callbacks.
+- Keep keyboard focus on the first or last data point when an arrow key reaches the end of a chart, return focus to the chart when Escape closes a tooltip, skip hidden series during bar chart keyboard navigation, stop a focused chart from swallowing keys it does not use such as Page Down, and close the tooltip when the series it describes is hidden.
 
 ## [4.1.1] - 2026-09-15
 ### Changed
