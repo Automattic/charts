@@ -2182,7 +2182,10 @@ function useChartLegendItems(data, options = {}, legendShape) {
 }
 //#endregion
 //#region src/components/tooltip/base-tooltip.module.scss
-var base_tooltip_module_default = { "tooltip": "a8ccharts--zY0xG-tooltip" };
+var base_tooltip_module_default = {
+	"surface": "a8ccharts--zY0xG-surface",
+	"tooltip": "a8ccharts--zY0xG-tooltip"
+};
 //#endregion
 //#region src/components/tooltip/base-tooltip.tsx
 const DefaultTooltipContent = ({ data }) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
@@ -2401,7 +2404,6 @@ const crosshairPaintProps = (props = {}) => {
 };
 const DEFAULT_GLYPH_RADIUS = 4;
 const FALLBACK_COLOR = "#222";
-const DEFAULT_TOOLTIP_Z_INDEX = 3;
 const PORTAL_OPTIONS = /* @__PURE__ */ new Set([
 	"scroll",
 	"debounce",
@@ -2429,7 +2431,7 @@ const defaultRenderGlyph$1 = ({ key, ...props }) => /* @__PURE__ */ jsx(DefaultG
 	seriesKey: key,
 	...props
 }, key);
-const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, tooltipPlacement = "auto", tooltipAnchorTop, zIndex = DEFAULT_TOOLTIP_Z_INDEX, style, ...rest }) => {
+const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, renderGlyph = defaultRenderGlyph$1, glyphStyle, snapTooltipToDatumX = false, snapTooltipToDatumY = false, showVerticalCrosshair = false, showHorizontalCrosshair = false, showDatumGlyph = false, showSeriesGlyphs = false, verticalCrosshairStyle, horizontalCrosshairStyle, detectBounds = true, tooltipPlacement = "auto", tooltipAnchorTop, zIndex = 3, style, ...rest }) => {
 	const tooltipProps = Object.fromEntries(Object.entries(rest).filter(([key]) => !PORTAL_OPTIONS.has(key)));
 	const { colorScale, theme, innerHeight = 0, innerWidth = 0, margin, xScale, yScale, dataRegistry } = useContext(DataContext) || {};
 	const tooltipContent = renderTooltip ? renderTooltip({
@@ -6825,6 +6827,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__grid--height-capped": "a8ccharts-O3YMOW-heatmap-chart__grid--height-capped",
 	"heatmap-chart__group-label": "a8ccharts-O3YMOW-heatmap-chart__group-label",
 	"heatmap-chart__legend-label": "a8ccharts-O3YMOW-heatmap-chart__legend-label",
+	"heatmap-chart__legend-scale--bar": "a8ccharts-O3YMOW-heatmap-chart__legend-scale--bar",
 	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
 	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
 	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label",
@@ -6874,7 +6877,7 @@ const getNormalizedValue = (value, extent) => {
 const HeatmapContext = createContext(null);
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.tsx
-const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
+const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }) => {
 	const context = useContext(HeatmapContext);
 	const { legend } = useGlobalChartsTheme();
 	if (!context) return null;
@@ -6893,11 +6896,12 @@ const HeatmapLegend = ({ steps = 5, lessLabel, moreLabel }) => {
 			}),
 			/* @__PURE__ */ jsx(Stack, {
 				direction: "row",
-				gap: "xs",
+				gap: variant === "bar" ? void 0 : "xs",
+				"aria-hidden": "true",
+				className: variant === "bar" ? heatmap_chart_module_default["heatmap-chart__legend-scale--bar"] : void 0,
 				children: Array.from({ length: steps }, (_, index) => {
 					const intensity = steps <= 1 ? 1 : index / (steps - 1);
 					return /* @__PURE__ */ jsx("span", {
-						"aria-hidden": "true",
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
 						style: {
 							"--a8c-charts-color-heatmap-primary": primaryColorHex,
@@ -7106,13 +7110,24 @@ const stepCalendarCell = (grid, blocks, from, key) => {
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_MIX_FLOOR = .15;
 const NO_ROW_LABELS = [];
+const TOOLTIP_BOX_STYLES = {
+	light: {
+		...defaultStyles,
+		zIndex: 3
+	},
+	dark: { zIndex: 3 }
+};
 const cellName = (info) => info.cellLabel || [
 	info.groupLabel,
 	info.columnLabel,
 	info.rowLabel
 ].filter(Boolean).join(" ");
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, children }) => {
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipVariant = "light", tooltipStyle, children }) => {
 	const chartId = useChartId(providedChartId);
+	const tooltipBoxStyle = tooltipStyle ? {
+		...TOOLTIP_BOX_STYLES[tooltipVariant],
+		...tooltipStyle
+	} : TOOLTIP_BOX_STYLES[tooltipVariant];
 	const { getElementStyles, theme } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const { heatmapChart: heatmapChartSettings } = theme;
@@ -7436,6 +7451,8 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
 					top: tooltipTop,
 					left: tooltipLeft,
+					className: tooltipVariant === "dark" ? base_tooltip_module_default.surface : void 0,
+					style: tooltipBoxStyle,
 					children: /* @__PURE__ */ jsx("div", {
 						className: standaloneScopeClass,
 						role: "tooltip",

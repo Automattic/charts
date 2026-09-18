@@ -1383,6 +1383,14 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
    */
   primaryColor?: string;
   renderTooltip?: (data: HeatmapTooltipData) => ReactNode;
+  /**
+   * The tooltip box: `light` is the plain white box, `dark` the package's
+   * tooltip surface, themed through `--a8c-charts-color-tooltip-surface`.
+   * Default `light`.
+   */
+  tooltipVariant?: 'light' | 'dark';
+  /** Inline styles merged onto the tooltip box, over the variant's own. */
+  tooltipStyle?: CSSProperties;
   children?: ReactNode;
 }
 type CalendarHeatmapResult = {
@@ -1438,6 +1446,11 @@ type MonthCalendarHeatmapResult = {
 interface HeatmapLegendProps {
   /** Number of swatches in the scale. Default 5. */
   steps?: number;
+  /**
+   * `swatches` spaces the steps out as cell-sized squares; `bar` joins them
+   * into one continuous band with rounded ends. Default `swatches`.
+   */
+  variant?: 'swatches' | 'bar';
   lessLabel?: string;
   moreLabel?: string;
 }

@@ -104,7 +104,7 @@
   font-weight: var(--wpds-typography-font-weight-emphasis, 600);
   flex-shrink: 0;
 }
-.a8ccharts--zY0xG-tooltip {
+.a8ccharts--zY0xG-surface, .a8ccharts--zY0xG-tooltip {
   padding: var(--wpds-dimension-padding-sm, 8px);
   background-color: var(--a8c-charts-color-tooltip-surface, #000000d9);
   color: #fff;
@@ -112,6 +112,9 @@
   font-size: var(--wpds-typography-font-size-md, 13px);
   box-shadow: var(--a8c-charts-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005);
   pointer-events: none;
+}
+
+.a8ccharts--zY0xG-tooltip {
   position: absolute;
   transform: translate(-50%, -100%);
 }
@@ -479,6 +482,7 @@
   white-space: nowrap;
 }
 .a8ccharts-O3YMOW-heatmap-chart {
+  isolation: isolate;
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -627,6 +631,16 @@
   height: var(--wpds-dimension-size-3xs, 12px);
   border-radius: var(--a8c-charts-border-radius-cell);
   background: color-mix(in sRGB, var(--a8c-charts-color-heatmap-primary) calc((.15 + .85 * var(--a8c-charts-heatmap-cell-intensity)) * 100%), var(--a8c-charts-color-background, #fff));
+}
+
+.a8ccharts-O3YMOW-heatmap-chart__legend-scale--bar {
+  border-radius: var(--a8c-charts-border-radius-cell);
+  overflow: hidden;
+}
+
+.a8ccharts-O3YMOW-heatmap-chart__legend-scale--bar .a8ccharts-O3YMOW-heatmap-chart__legend-swatch {
+  width: var(--wpds-dimension-size-sm, 24px);
+  border-radius: 0;
 }
 .a8ccharts-GovfoW-leaderboardChart {
   transition: opacity var(--wpds-motion-duration-lg, .3s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
