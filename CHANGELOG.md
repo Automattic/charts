@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Fixed
+- Bar chart: Draw a gap for a period with no data instead of refusing to render the chart.
+- Bar chart: Give a flat or single-bucket series a value axis with height, so its bars are visible.
+- Bar chart: Translate the "No data available" and "Invalid data" messages.
+
 ## [4.2.0] - 2026-09-18
 ### Added
 - Bar chart: Add a beside tooltip placement that flips only horizontally. [#52234]
@@ -1089,6 +1098,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[4.2.1-alpha]: https://github.com/Automattic/charts/compare/v4.2.0...v4.2.1-alpha
 [4.2.0]: https://github.com/Automattic/charts/compare/v4.1.1...v4.2.0
 [4.1.1]: https://github.com/Automattic/charts/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/Automattic/charts/compare/v4.0.0...v4.1.0

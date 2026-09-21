@@ -1457,8 +1457,9 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		const allDataPoints = data.flatMap((series) => series.data);
 		if (horizontal) return allDataPoints.map((d) => d.label || d.date?.getTime());
 		if (options.axis?.y?.tickValues?.length) return options.axis.y.tickValues;
-		const minY = Math.min(...allDataPoints.map((d) => d.value));
-		const maxY = Math.max(...allDataPoints.map((d) => d.value));
+		const values = allDataPoints.map((d) => d.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+		const minY = values.length ? Math.min(...values) : 0;
+		const maxY = values.length ? Math.max(...values) : 1;
 		const yScale = (0, _visx_scale.createScale)({
 			...options.yScale,
 			domain: options.yScale?.domain ?? [minY, maxY],
@@ -5093,6 +5094,65 @@ const createTruncatedTickComponent = (axis) => (props) => {
 const TruncatedXTickComponent = createTruncatedTickComponent("x");
 const TruncatedYTickComponent = createTruncatedTickComponent("y");
 //#endregion
+//#region src/charts/bar-chart/private/value-domain.ts
+/** Domain for a value axis that has nothing to scale, so its ticks still read 0 to 1. */
+const EMPTY_DOMAIN = [0, 1];
+/**
+* The value a bar is drawn at, preferring `visualValue` so a zero still shows a sliver.
+*
+* A missing reading is NaN, not null: `ComparisonBars` coerces the value with `Number()`,
+* which turns null into 0 and would draw a comparison shadow at the baseline.
+*
+* @param point - A data point handed to visx.
+* @return The bar value, or NaN when the bucket has no reading.
+*/
+const getBarValue = (point) => {
+	const enhanced = point;
+	return (enhanced?.visualValue !== void 0 ? enhanced.visualValue : point?.value) ?? NaN;
+};
+/**
+* Whether visx renders a bar for a point.
+*
+* @param point - A data point handed to visx.
+* @return True when the point has a finite bar value.
+*/
+const isBarRendered = (point) => Number.isFinite(getBarValue(point));
+/**
+* How many bars visx renders for a list of points.
+*
+* @param points - Data points handed to visx.
+* @return The number of points that get a bar.
+*/
+const countRenderedBars = (points) => points.filter(isBarRendered).length;
+/**
+* An explicit domain for the value scale, or null to let visx fit one to the data.
+*
+* Fitting is right for ordinary varying data, but it collapses to zero height when every
+* value is the same, and produces no domain at all when no bucket has a reading.
+*
+* @param data                - Every series handed to the chart.
+* @param hasComparisonSeries - Whether a comparison series is present.
+* @param isSeriesRendered    - Whether visx mounts a series, i.e. the legend shows it.
+* @return Value domain, or null when visx should fit its own.
+*/
+const getValueScaleDomain = (data, hasComparisonSeries, isSeriesRendered) => {
+	let min = Infinity;
+	let max = -Infinity;
+	for (const series of data) {
+		if (!isSeriesRendered(series)) continue;
+		for (const point of series.data) {
+			const value = getBarValue(point);
+			if (!Number.isFinite(value)) continue;
+			min = Math.min(min, value);
+			max = Math.max(max, value);
+		}
+	}
+	if (min === Infinity) return [...EMPTY_DOMAIN];
+	if (min === max) return min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
+	if (hasComparisonSeries) return [Math.min(0, min), Math.max(0, max)];
+	return null;
+};
+//#endregion
 //#region src/charts/bar-chart/private/use-bar-chart-options.ts
 /** Outer padding of the category band scale (space at the chart edges). */
 const BASE_BAND_PADDING = .2;
@@ -5217,10 +5277,6 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		const tooltipDatumFormatter = hasLabels ? labelFormatter : byBucket(getTooltipFormatter(data, tickResolution, formatting));
 		const valueFormatter = _automattic_number_formatters.formatNumberCompact;
 		const bandDomain = timeTickFormatter ? getBandDomain(data, isSeriesRendered) : null;
-		const valueAccessor = (d) => {
-			const enhancedPoint = d;
-			return enhancedPoint?.visualValue !== void 0 ? enhancedPoint.visualValue : d?.value;
-		};
 		return {
 			timeAxis: bandDomain && timeTickFormatter && {
 				domain: bandDomain,
@@ -5231,7 +5287,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 				yTickFormat: valueFormatter,
 				tooltipLabelFormatter: tooltipDatumFormatter,
 				xAccessor: bucketAccessor,
-				yAccessor: valueAccessor,
+				yAccessor: getBarValue,
 				gridVisibility: "x",
 				xScale: bandScale,
 				yScale: linearScale
@@ -5240,7 +5296,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 				xTickFormat: valueFormatter,
 				yTickFormat: labelFormatter,
 				tooltipLabelFormatter: tooltipDatumFormatter,
-				xAccessor: valueAccessor,
+				xAccessor: getBarValue,
 				yAccessor: bucketAccessor,
 				gridVisibility: "y",
 				xScale: linearScale,
@@ -5255,20 +5311,10 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 	]);
 	return (0, react.useMemo)(() => {
 		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
-		let valueScaleDomainOverride = {};
-		if (data.some((s) => s.options?.type === "comparison")) {
-			if (!(!horizontal ? stableOptions.yScale?.domain : stableOptions.xScale?.domain)) {
-				const allValues = [];
-				data.forEach((series) => {
-					series.data.forEach((d) => {
-						const enhanced = d;
-						const v = enhanced.visualValue !== void 0 ? enhanced.visualValue : d.value;
-						if (typeof v === "number" && Number.isFinite(v)) allValues.push(v);
-					});
-				});
-				if (allValues.length > 0) valueScaleDomainOverride = { domain: [Math.min(0, ...allValues), Math.max(0, ...allValues)] };
-			}
-		}
+		const userDomain = !horizontal ? stableOptions.yScale?.domain : stableOptions.xScale?.domain;
+		const hasComparisonSeries = data.some((s) => s.options?.type === "comparison");
+		const domain = userDomain ? null : getValueScaleDomain(data, hasComparisonSeries, isSeriesRendered);
+		const valueScaleDomainOverride = domain ? { domain } : {};
 		const xScale = {
 			...baseXScale,
 			...stableOptions.xScale || {},
@@ -5319,7 +5365,8 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		axisConfig,
 		stableOptions,
 		horizontal,
-		data
+		data,
+		isSeriesRendered
 	]);
 }
 //#endregion
@@ -5620,8 +5667,8 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 //#endregion
 //#region src/charts/bar-chart/bar-chart.tsx
 const validateData$2 = (data) => {
-	if (!data?.length) return "No data available";
-	if (data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))))) return "Invalid data";
+	if (!data?.length) return (0, _wordpress_i18n.__)("No data available", "jetpack-charts");
+	if (data.some((series) => series.data.some((point) => point.value !== null && isNaN(point.value) || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))))) return (0, _wordpress_i18n.__)("Invalid data", "jetpack-charts");
 	return null;
 };
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
@@ -5629,6 +5676,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ (0, react_jsx_runtime
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("%1$s: %2$s", "jetpack-charts"), label, value)
 });
+const formatTooltipValue = (value) => value == null ? (0, _wordpress_i18n.__)("No data", "jetpack-charts") : (0, _automattic_number_formatters.formatNumber)(value);
 const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -5778,15 +5826,15 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 			const p = point;
 			return nearestDatum.label != null ? p.label === nearestDatum.label : !!nearestDatum.date && !!p.date && p.date.getTime() === nearestDatum.date.getTime();
 		});
-		if (comparisonEntry && comparisonDatum && comparisonDatum.value != null) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		if (comparisonEntry && comparisonDatum) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 			className: bar_chart_module_default["bar-chart__tooltip"],
 			children: [
 				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: bar_chart_module_default["bar-chart__tooltip-header"],
 					children: categoryLabel
 				}),
-				renderTooltipRow(primaryKey, (0, _automattic_number_formatters.formatNumber)(nearestDatum.value)),
-				renderTooltipRow(comparisonEntry.series.label, (0, _automattic_number_formatters.formatNumber)(comparisonDatum.value))
+				renderTooltipRow(primaryKey, formatTooltipValue(nearestDatum.value)),
+				renderTooltipRow(comparisonEntry.series.label, formatTooltipValue(comparisonDatum.value))
 			]
 		});
 		return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -5794,7 +5842,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: bar_chart_module_default["bar-chart__tooltip-header"],
 				children: primaryKey
-			}), renderTooltipRow(categoryLabel, (0, _automattic_number_formatters.formatNumber)(nearestDatum.value))]
+			}), renderTooltipRow(categoryLabel, formatTooltipValue(nearestDatum.value))]
 		});
 	}, [chartOptions.tooltip, comparisonEntries]);
 	const renderPattern = (0, react.useCallback)((index, color) => {
@@ -5845,15 +5893,15 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	const createKeyboardHighlightStyle = (0, react.useCallback)(() => {
 		if (selectedIndex === void 0) return "";
 		const primaryCount = primaryEntries.length;
-		const maxDataPoints = Math.max(...primaryEntries.map((e) => e.series.data.length));
+		if (!primaryCount) return "";
 		const dataPointIndex = Math.floor(selectedIndex / primaryCount);
 		const seriesIndex = selectedIndex % primaryCount;
-		if (dataPointIndex >= maxDataPoints || seriesIndex >= primaryCount) return "";
 		const seriesData = primaryEntries[seriesIndex]?.series;
-		if (!seriesData || dataPointIndex >= seriesData.data.length) return "";
-		const actualBarIndex = seriesIndex * maxDataPoints + dataPointIndex;
+		const datum = seriesData?.data[dataPointIndex];
+		if (!seriesData || !datum || !isBarRendered(datum)) return "";
+		const domBarIndex = primaryEntries.slice(0, seriesIndex).reduce((count, { series }) => count + countRenderedBars(series.data), 0) + countRenderedBars(seriesData.data.slice(0, dataPointIndex));
 		return `
-			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${actualBarIndex + 1}) {
+			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${domBarIndex + 1}) {
 				stroke: #005fcc;
 				stroke-width: 2px;
 			}
