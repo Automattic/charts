@@ -91,6 +91,7 @@ type ThemeAnnotationStyles = {
 type DataPoint = {
   label: string;
   value: number;
+  /** Per-point fill override for BarChart; other built-in charts ignore it. */
   color?: string;
 };
 /**
@@ -141,6 +142,7 @@ type DataPointDate = {
   dateString?: string;
   value: number | null;
   label?: string;
+  /** Per-point fill override for BarChart; other built-in charts ignore it. */
   color?: string;
 };
 type LeaderboardEntry = {
@@ -1045,9 +1047,11 @@ type AreaChartResponsiveComponent = React.ForwardRefExoticComponent<AreaChartBas
 declare const AreaChart: AreaChartComponent;
 declare const AreaChartResponsive: AreaChartResponsiveComponent;
 //#endregion
-//#region src/charts/bar-chart/bar-chart.d.ts
+//#region src/charts/bar-chart/types.d.ts
 type BandHighlightSelection = {
   datum: DataPointDate;
+  key: string;
+  index: number;
   x: number;
   y: number;
   width: number;
@@ -1072,6 +1076,8 @@ interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityPr
   onBandHighlightChange?: (selection: BandHighlightSelection | null) => void;
   children?: ReactNode;
 }
+//#endregion
+//#region src/charts/bar-chart/bar-chart.d.ts
 type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
 interface BarChartSubComponents {
   Legend: ComponentType<React.ComponentProps<typeof Legend>>;

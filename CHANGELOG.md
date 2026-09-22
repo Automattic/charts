@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Add required key and index fields to BandHighlightSelection for identifying the selected series and rendered data point.
 - Legend: Add a comparisonItem option that appends a static Comparison period item, and let a legend item opt out of interactivity. Keep comparison items visible when their labels match a metric.
 
 ### Fixed

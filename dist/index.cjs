@@ -2666,7 +2666,7 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 				tooltipContext?.showTooltip({
 					datum: tooltipItem.datum,
 					key: tooltipItem.seriesLabel,
-					index: tooltipItem.seriesIndex
+					index: tooltipItem.dataPointIndex
 				});
 			}
 		}
@@ -5559,6 +5559,8 @@ function BandHighlight({ visible, horizontal, onChange }) {
 		if (position === void 0 || !Number.isFinite(position)) return null;
 		return {
 			datum: nearest.datum,
+			key: nearest.key,
+			index: nearest.index,
 			x: horizontal ? margin?.left ?? 0 : position,
 			y: horizontal ? position : margin?.top ?? 0,
 			width: horizontal ? innerWidth : scale.bandwidth(),
@@ -5706,6 +5708,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ (0, react_jsx_runtime
 });
 const formatTooltipValue = (value) => value == null ? (0, _wordpress_i18n.__)("No data", "jetpack-charts") : (0, _automattic_number_formatters.formatNumber)(value);
 const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
