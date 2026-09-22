@@ -944,7 +944,8 @@ interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityP
 }
 type TooltipDatum = {
   key: string;
-  value: number;
+  /** The series' reading, or null when the bucket has none. */
+  value: number | null;
 };
 //#endregion
 //#region src/charts/area-chart/types.d.ts

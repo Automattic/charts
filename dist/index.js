@@ -21,6 +21,7 @@ import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
 import { useParentSize } from "@visx/responsive";
 import { Annotation, CircleSubject, Connector, HtmlLabel, Label, LineSubject } from "@visx/annotation";
+import { bisector } from "@visx/vendor/d3-array";
 import { PatternCircles, PatternHexagons, PatternLines, PatternWaves } from "@visx/pattern";
 import { Chart } from "react-google-charts";
 import DOMPurify from "dompurify";
@@ -2987,6 +2988,31 @@ const DefaultGlyph = (props) => {
 	});
 };
 //#endregion
+//#region src/charts/private/readings.ts
+/**
+* Whether a value is a reading a scale can place.
+*
+* @param value - The point's value.
+* @return True for a finite number.
+*/
+const isReading = (value) => typeof value === "number" && Number.isFinite(value);
+/**
+* Whether a data point's value cannot be drawn.
+*
+* @param value                - The point's value.
+* @param options              - Validation options.
+* @param options.allowMissing - Whether `null` is a bucket with no reading rather than a fault.
+* @return True when the value is invalid.
+*/
+const isInvalidReading = (value, { allowMissing }) => value === null ? !allowMissing : value === void 0 || isNaN(value);
+/**
+* Formats a reading for a tooltip.
+*
+* @param value - The reading, or null when the bucket has none.
+* @return The formatted value.
+*/
+const formatReading = (value) => value == null ? __("No data", "jetpack-charts") : formatNumber(value);
+//#endregion
 //#region src/charts/private/center/center.module.scss
 var center_module_default = { "center": "a8ccharts-w3qxlG-center" };
 //#endregion
@@ -4025,11 +4051,15 @@ const toNumber$1 = (val) => {
 const LineChartGlyph = ({ data, index, color, glyphStyle, renderGlyph, accessors, position }) => {
 	const { xScale, yScale } = useContext(DataContext) || {};
 	if (!xScale || !yScale) return null;
-	if (data.data.length === 0) return null;
-	const point = position === "start" ? data.data[0] : data.data[data.data.length - 1];
+	const hasFiniteY = (datum) => {
+		const scaledY = yScale(accessors.yAccessor(datum));
+		return typeof scaledY === "number" && Number.isFinite(scaledY);
+	};
+	const point = position === "start" ? data.data.find(hasFiniteY) : data.data.findLast(hasFiniteY);
+	if (!point) return null;
 	const x = xScale(accessors.xAccessor(point));
 	const y = yScale(accessors.yAccessor(point));
-	if (typeof x !== "number" || typeof y !== "number") return null;
+	if (typeof x !== "number" || typeof y !== "number" || !Number.isFinite(x) || !Number.isFinite(y)) return null;
 	const size = Math.max(0, toNumber$1(glyphStyle?.radius) ?? 4);
 	return renderGlyph({
 		key: `${position}-glyph-${data.label}`,
@@ -4043,6 +4073,106 @@ const LineChartGlyph = ({ data, index, color, glyphStyle, renderGlyph, accessors
 		position
 	});
 };
+//#endregion
+//#region src/charts/line-chart/private/nearest-pointer-events.tsx
+/**
+* Find the datum nearest a pointer along x, in one series sorted by x.
+*
+* @param data      - The series' registered data, in ascending x order.
+* @param xAccessor - Reads a datum's x value.
+* @param xScale    - The chart's x scale.
+* @param x         - Pointer x in SVG coordinates.
+* @return Index of the nearest datum and its distance, or index -1 when none has a position.
+*/
+function nearestByX(data, xAccessor, xScale, x) {
+	return (typeof xScale.invert === "function" ? [bisector(xAccessor).left(data, xScale.invert(x))].flatMap((index) => [index - 1, index]) : data.map((_datum, index) => index)).filter((index) => index >= 0 && index < data.length).reduce((best, index) => {
+		const distance = Math.abs(Number(xScale(xAccessor(data[index]))) - x);
+		return distance < best.distance ? {
+			index,
+			distance
+		} : best;
+	}, {
+		index: -1,
+		distance: Infinity
+	});
+}
+/**
+* Pick the candidate to report: the closest placed reading, else the closest bucket with no reading along x.
+*
+* @param candidates - One candidate per series.
+* @return The chosen candidate's params, or undefined when there are none.
+*/
+function pickNearest(candidates) {
+	const placed = candidates.map(({ params }) => params).filter((params) => Number.isFinite(params.distanceY));
+	const missing = candidates.filter(({ isMissing }) => isMissing).map(({ params }) => params);
+	const distance = (params) => placed.length ? Math.hypot(params.distanceX ?? 0, params.distanceY ?? 0) : params.distanceX ?? 0;
+	return (placed.length ? placed : missing).reduce((best, params) => !best || distance(params) < distance(best) ? params : best, void 0);
+}
+/**
+* Report pointer events at the nearest datum, including a bucket with no reading.
+*
+* visx's own nearest search measures y distance too, which is NaN for a null value, so a pointer
+* over a bucket where no series has a reading fires no event at all.
+*
+* @param props               - Handlers to call.
+* @param props.onPointerDown - Receives the nearest datum on pointer down.
+* @param props.onPointerMove - Receives the nearest datum on pointer move.
+* @param props.onPointerUp   - Receives the nearest datum on pointer up.
+* @return No visual content.
+*/
+function NearestPointerEvents({ onPointerDown, onPointerMove, onPointerUp }) {
+	const { xScale, yScale, dataRegistry } = useContext(DataContext);
+	const findNearest = useCallback((params) => {
+		const point = params?.svgPoint;
+		if (!point || !xScale || !yScale || !dataRegistry) return;
+		const candidates = [];
+		for (const key of dataRegistry.keys()) {
+			const entry = dataRegistry.get(key);
+			if (!entry) continue;
+			const { index, distance } = nearestByX(entry.data, entry.xAccessor, xScale, point.x);
+			if (index < 0) continue;
+			const datum = entry.data[index];
+			const value = entry.yAccessor(datum);
+			candidates.push({
+				params: {
+					event: params.event,
+					svgPoint: point,
+					key,
+					datum,
+					index,
+					distanceX: distance,
+					distanceY: Math.abs(Number(yScale(value)) - point.y)
+				},
+				isMissing: value == null
+			});
+		}
+		return pickNearest(candidates);
+	}, [
+		xScale,
+		yScale,
+		dataRegistry
+	]);
+	const handlers = useMemo(() => {
+		const report = (handler) => handler && ((params) => {
+			const nearest = findNearest(params);
+			if (nearest) handler(nearest);
+		});
+		return {
+			pointerdown: report(onPointerDown),
+			pointermove: report(onPointerMove),
+			pointerup: report(onPointerUp)
+		};
+	}, [
+		findNearest,
+		onPointerDown,
+		onPointerMove,
+		onPointerUp
+	]);
+	useEventEmitter("pointerdown", handlers.pointerdown);
+	useEventEmitter("pointermove", handlers.pointermove);
+	useEventEmitter("pointerup", handlers.pointerup);
+	return null;
+}
 //#endregion
 //#region src/charts/line-chart/line-chart.tsx
 const defaultRenderGlyph = (props) => {
@@ -4087,8 +4217,13 @@ const renderDefaultTooltip = (params, contentStyle) => {
 	if (!nearestDatum) return null;
 	const tooltipPoints = Object.entries(tooltipData?.datumByKey || {}).map(([key, { datum }]) => ({
 		key,
-		value: datum.value
-	})).sort((a, b) => b.value - a.value);
+		value: datum.value ?? null
+	})).sort((a, b) => {
+		if (a.value === null && b.value === null) return 0;
+		if (a.value === null) return 1;
+		if (b.value === null) return -1;
+		return b.value - a.value;
+	});
 	return /* @__PURE__ */ jsxs("div", {
 		className: line_chart_module_default["line-chart__tooltip"],
 		style: contentStyle,
@@ -4108,15 +4243,22 @@ const renderDefaultTooltip = (params, contentStyle) => {
 				children: [point.key, ":"]
 			}), /* @__PURE__ */ jsx("span", {
 				className: line_chart_module_default["line-chart__tooltip-value"],
-				children: formatNumber(point.value)
+				children: formatReading(point.value)
 			})]
 		}, point.key))]
 	});
 };
 const validateData$4 = (data) => {
-	if (!data?.length) return "No data available";
-	if (data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())))) return "Invalid data";
+	if (!data?.length) return __("No data available", "jetpack-charts");
+	if (data.some((series) => series.data.some((point) => isInvalidReading(point.value, { allowMissing: true }) || "date" in point && point.date && isNaN(point.date.getTime())))) return __("Invalid data", "jetpack-charts");
 	return null;
+};
+const getFallbackYDomain = (readingExtent, isLogScale) => {
+	const emptyDomain = isLogScale ? [1, 10] : [0, 1];
+	if (!readingExtent) return emptyDomain;
+	const [min, max] = readingExtent;
+	if (min !== max || isLogScale) return;
+	return min === 0 ? emptyDomain : [Math.min(0, min), Math.max(0, max)];
 };
 const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	const context = useContext(DataContext);
@@ -4197,7 +4339,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		let max = -Infinity;
 		for (const series of dataSorted) for (const point of series.data ?? []) {
 			const value = point?.value;
-			if (typeof value === "number" && Number.isFinite(value)) {
+			if (isReading(value)) {
 				min = Math.min(min, value);
 				max = Math.max(max, value);
 			}
@@ -4223,7 +4365,23 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		onActivate: activateSelectedPoint,
 		preventTooltipScroll: tooltipPlacement === "below-axis"
 	});
+	const visibleReadingExtent = useMemo(() => {
+		let min = Infinity;
+		let max = -Infinity;
+		for (const series of dataSorted) {
+			if (!isSeriesVisible(series.label)) continue;
+			for (const point of series.data) {
+				const value = point?.value;
+				if (isReading(value)) {
+					min = Math.min(min, value);
+					max = Math.max(max, value);
+				}
+			}
+		}
+		return min <= max ? [min, max] : void 0;
+	}, [dataSorted, isSeriesVisible]);
 	const chartOptions = useMemo(() => {
+		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, options?.yScale?.type === "log");
 		return {
 			axis: {
 				x: buildTimeAxisOptions({
@@ -4252,6 +4410,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 				type: "linear",
 				nice: true,
 				zero: false,
+				...fallbackYDomain ? { domain: fallbackYDomain } : {},
 				...stableYDomain ? { domain: stableYDomain } : {},
 				...options?.yScale
 			}
@@ -4262,6 +4421,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		width,
 		zoom.domain,
 		stableYDomain,
+		visibleReadingExtent,
 		formatting,
 		isSeriesVisible
 	]);
@@ -4414,12 +4574,9 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 							},
 							xScale: chartOptions.xScale,
 							yScale: chartOptions.yScale,
-							onPointerDown: zoom.handlers.onPointerDown,
-							onPointerUp: zoom.handlers.onPointerUp,
-							onPointerMove: zoom.handlers.onPointerMove,
 							onPointerOut,
-							pointerEventsDataKey: "nearest",
 							children: [
+								/* @__PURE__ */ jsx(NearestPointerEvents, { ...zoom.handlers }),
 								!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
 									columns: false,
 									numTicks: 4
@@ -4566,7 +4723,7 @@ var area_chart_module_default = {
 const validateData$3 = (data) => {
 	if (!data?.length) return __("No data available", "jetpack-charts");
 	if (data.some((series) => !series.data?.length)) return __("No data available", "jetpack-charts");
-	if (data.some((series) => series.data.some((point) => isNaN(point.value) || point.value === null || point.value === void 0 || "date" in point && point.date && isNaN(point.date.getTime())))) return __("Invalid data", "jetpack-charts");
+	if (data.some((series) => series.data.some((point) => isInvalidReading(point.value, { allowMissing: false }) || "date" in point && point.date && isNaN(point.date.getTime())))) return __("Invalid data", "jetpack-charts");
 	return null;
 };
 //#endregion
@@ -5696,7 +5853,7 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 //#region src/charts/bar-chart/bar-chart.tsx
 const validateData$2 = (data) => {
 	if (!data?.length) return __("No data available", "jetpack-charts");
-	if (data.some((series) => series.data.some((point) => point.value !== null && isNaN(point.value) || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))))) return __("Invalid data", "jetpack-charts");
+	if (data.some((series) => series.data.some((point) => isInvalidReading(point.value, { allowMissing: true }) || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))))) return __("Invalid data", "jetpack-charts");
 	return null;
 };
 const getPatternId = (chartId, index) => `bar-pattern-${chartId}-${index}`;
@@ -5704,7 +5861,6 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const formatTooltipValue = (value) => value == null ? __("No data", "jetpack-charts") : formatNumber(value);
 const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
@@ -5866,8 +6022,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 					className: bar_chart_module_default["bar-chart__tooltip-header"],
 					children: categoryLabel
 				}),
-				renderTooltipRow(primaryKey, formatTooltipValue(nearestDatum.value)),
-				renderTooltipRow(comparisonEntry.series.label, formatTooltipValue(comparisonDatum.value))
+				renderTooltipRow(primaryKey, formatReading(nearestDatum.value)),
+				renderTooltipRow(comparisonEntry.series.label, formatReading(comparisonDatum.value))
 			]
 		});
 		return /* @__PURE__ */ jsxs("div", {
@@ -5875,7 +6031,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 			children: [/* @__PURE__ */ jsx("div", {
 				className: bar_chart_module_default["bar-chart__tooltip-header"],
 				children: primaryKey
-			}), renderTooltipRow(categoryLabel, formatTooltipValue(nearestDatum.value))]
+			}), renderTooltipRow(categoryLabel, formatReading(nearestDatum.value))]
 		});
 	}, [chartOptions.tooltip, comparisonEntries]);
 	const renderPattern = useCallback((index, color) => {
