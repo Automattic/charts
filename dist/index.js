@@ -1074,7 +1074,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		return getChartColor(index, colorCache);
 	}, [colorCache, groupToColorMap]);
 	const getElementStyles = useCallback(({ data, index, overrideColor, legendShape }) => {
-		const isSeriesData = data && typeof data === "object" && "data" in data && "options" in data;
+		const isSeriesData = data && typeof data === "object" && "data" in data;
 		const isPointPercentageData = data && typeof data === "object" && "value" in data && typeof data.value === "number" && !("data" in data);
 		return {
 			color: resolveColor({
@@ -1792,23 +1792,6 @@ function valueOrIdentityString(_) {
 	return String(valueOrIdentity(_));
 }
 //#endregion
-//#region src/components/legend/utils/label-transform-factory.ts
-/**
-* Returns a function which takes a Datum and index as input, and returns a formatted label object.
-* @param {object}                            root0             - The object to return the value of.
-* @param {AnyD3Scale}                        root0.scale       - The scale to use.
-* @param {LabelFormatter<ScaleInput<Scale>>} root0.labelFormat - The label format to use.
-* @return {ItemTransformer<ScaleInput<Scale>, ReturnType<Scale>>} The label transform factory.
-*/
-function labelTransformFactory({ scale, labelFormat }) {
-	return (d, i) => ({
-		datum: d,
-		index: i,
-		text: `${labelFormat(d, i)}`,
-		value: scale(d)
-	});
-}
-//#endregion
 //#region src/components/legend/private/base-legend.module.scss
 var base_legend_module_default = {
 	"legend": "a8ccharts-04TogW-legend",
@@ -1850,7 +1833,7 @@ const getLegendItemAriaLabel = (text, value, visible, interactive) => {
 	if (visible) return;
 	return sprintf(_x("%s: hidden", "hidden non-interactive legend item", "jetpack-charts"), accessibleText);
 };
-const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", alignment = "center", shape = "rect", fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform = labelTransformFactory, itemStyles, itemClassName, labelStyles, labelClassName, shapeStyles, render, interactive = false, chartId }, ref) => {
+const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", alignment = "center", shape = "rect", fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform, itemStyles, itemClassName, labelStyles, labelClassName, shapeStyles, render, interactive = false, chartId }, ref) => {
 	const { margin: itemMargin = "0", flexDirection: itemDirection = "row" } = itemStyles ?? {};
 	const { justifyContent: labelJustifyContent = "flex-start", flex: labelFlex = "0 0 auto", margin: labelMargin = "0 4px", maxWidth, textOverflow = "wrap" } = labelStyles ?? {};
 	const { width: shapeWidth = 16, height: shapeHeight = 16, margin: shapeMargin = "2px 4px 2px 0" } = shapeStyles ?? {};
@@ -1858,11 +1841,17 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 	const context = useContext(GlobalChartsContext);
 	const chartInstanceContext = useContext(ChartInstanceContext);
 	const standaloneScopeClass = useStandaloneScopeClass();
+	const domain = items.map((item) => item.label);
 	const legendScale = scaleOrdinal({
-		domain: items.map((item) => item.label),
+		domain,
 		range: items.map((item) => item.color)
 	});
-	const domain = legendScale.domain();
+	const defaultLabelTransform = useCallback(({ labelFormat: format }) => (datum, index) => ({
+		datum,
+		index,
+		text: String(format(datum, index)),
+		value: items[index].color
+	}), [items]);
 	const getShapeStyle = useCallback(({ index }) => items[index]?.shapeStyle, [items]);
 	const handleLegendClick = useCallback((seriesLabels) => {
 		if (interactive && chartId && context) {
@@ -1883,24 +1872,26 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 		chartInstanceContext,
 		context
 	]);
-	const createClickHandler = useCallback((seriesLabels) => {
-		if (!interactive) return;
+	const createClickHandler = useCallback((seriesLabels, itemInteractive) => {
+		if (!itemInteractive) return;
 		return () => handleLegendClick(seriesLabels);
-	}, [interactive, handleLegendClick]);
-	const createKeyDownHandler = useCallback((seriesLabels) => {
-		if (!interactive) return;
+	}, [handleLegendClick]);
+	const createKeyDownHandler = useCallback((seriesLabels, itemInteractive) => {
+		if (!itemInteractive) return;
 		return (event) => {
 			if (event.key === "Enter" || event.key === " ") {
 				event.preventDefault();
 				handleLegendClick(seriesLabels);
 			}
 		};
-	}, [interactive, handleLegendClick]);
+	}, [handleLegendClick]);
 	const flexAlignment = ALIGNMENT_TO_FLEX[alignment] ?? "center";
+	const staticItemRole = interactive ? void 0 : "listitem";
 	return render ? render(items) : /* @__PURE__ */ jsx(LegendOrdinal, {
 		scale: legendScale,
+		domain,
 		labelFormat,
-		labelTransform,
+		labelTransform: labelTransform ?? defaultLabelTransform,
 		children: (labels) => /* @__PURE__ */ jsx(Stack, {
 			ref,
 			direction: orientation === "vertical" ? "column" : "row",
@@ -1914,19 +1905,20 @@ const BaseLegend = forwardRef(({ items, className, orientation = "horizontal", a
 			children: labels.map((label, i) => {
 				const matchedItem = items[i];
 				const seriesLabels = matchedItem?.seriesLabels?.length ? matchedItem.seriesLabels : [label.text];
-				const visible = isSeriesVisible(seriesLabels[0]);
-				const handleClick = createClickHandler(seriesLabels);
-				const handleKeyDown = createKeyDownHandler(seriesLabels);
+				const visible = matchedItem?.interactive === false || isSeriesVisible(seriesLabels[0]);
+				const itemInteractive = interactive && matchedItem?.interactive !== false;
+				const handleClick = createClickHandler(seriesLabels, itemInteractive);
+				const handleKeyDown = createKeyDownHandler(seriesLabels, itemInteractive);
 				return /* @__PURE__ */ jsxs(LegendItem, {
-					className: clsx("visx-legend-item", base_legend_module_default["legend-item"], interactive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
+					className: clsx("visx-legend-item", base_legend_module_default["legend-item"], itemInteractive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
 					margin: itemMargin,
 					flexDirection: orientation === "vertical" && alignment === "end" ? "row-reverse" : itemDirection,
 					onClick: handleClick,
 					onKeyDown: handleKeyDown,
-					role: interactive ? "button" : "listitem",
-					tabIndex: interactive ? 0 : void 0,
-					"aria-pressed": interactive ? visible : void 0,
-					"aria-label": getLegendItemAriaLabel(label.text, matchedItem?.value, visible, interactive),
+					role: itemInteractive ? "button" : staticItemRole,
+					tabIndex: itemInteractive ? 0 : void 0,
+					"aria-pressed": itemInteractive ? visible : void 0,
+					"aria-label": getLegendItemAriaLabel(label.text, matchedItem?.value, visible, itemInteractive),
 					children: [items[i]?.renderGlyph ? /* @__PURE__ */ jsx("svg", {
 						width: items[i]?.glyphSize * 2,
 						height: items[i]?.glyphSize * 2,
@@ -2128,6 +2120,32 @@ function processSeriesData(seriesData, getElementStyles, showValues, withGlyph, 
 	});
 }
 /**
+* Builds the static item that names the comparison overlay, styled like its first series.
+* Skipped when a comparison series already has an item of its own, so nothing is listed twice.
+* @param seriesData       - The series data to search for a comparison series
+* @param items            - The legend items already built from the series
+* @param label            - The item label
+* @param getElementStyles - Function to get element styles
+* @param legendShape      - The shape type for legend items (string literal or React component)
+* @return The legend item, or null when it would add nothing
+*/
+function buildComparisonLegendItem(seriesData, items, label, getElementStyles, legendShape) {
+	const itemLabels = new Set(items.map((item) => item.label));
+	const index = seriesData.findIndex((series) => series.options?.type === "comparison" && !itemLabels.has(series.label));
+	if (index === -1) return null;
+	const { color, shapeStyles } = getElementStyles({
+		data: seriesData[index],
+		index,
+		legendShape
+	});
+	return {
+		label,
+		color,
+		shapeStyle: shapeStyles,
+		interactive: false
+	};
+}
+/**
 * Processes point data into legend items
 * @param pointData          - The point data to process
 * @param getElementStyles   - Function to get element styles
@@ -2163,11 +2181,16 @@ function processPointData(pointData, getElementStyles, showValues, legendValueDi
 * @return Array of legend items ready for display
 */
 function useChartLegendItems(data, options = {}, legendShape) {
-	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, renderGlyph } = options;
+	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, comparisonItem = false, renderGlyph } = options;
 	const { getElementStyles } = useGlobalChartsContext();
 	return useMemo(() => {
 		if (!data || !Array.isArray(data) || data.length === 0) return [];
-		if ("data" in data[0]) return processSeriesData(data, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
+		if ("data" in data[0]) {
+			const seriesData = data;
+			const items = processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
+			const comparison = comparisonItem ? buildComparisonLegendItem(seriesData, items, typeof comparisonItem === "string" ? comparisonItem : __("Comparison period", "jetpack-charts"), getElementStyles, legendShape) : null;
+			return comparison ? [...items, comparison] : items;
+		}
 		return processPointData(data, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape);
 	}, [
 		data,
@@ -2177,6 +2200,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
 		withGlyph,
 		glyphSize,
 		collapseGroups,
+		comparisonItem,
 		renderGlyph,
 		legendShape
 	]);
@@ -4120,6 +4144,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
+	const legendComparisonItem = legend.comparisonItem ?? false;
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const formatting = useChartFormatting();
@@ -4271,11 +4296,13 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		withGlyph: withLegendGlyph,
 		glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
 		collapseGroups: legendCollapseGroups,
+		comparisonItem: legendComparisonItem,
 		renderGlyph
 	}), [
 		withLegendGlyph,
 		glyphStyle?.radius,
 		legendCollapseGroups,
+		legendComparisonItem,
 		renderGlyph
 	]), legendShape);
 	const chartMetadata = useMemo(() => ({
@@ -4747,8 +4774,9 @@ const AreaChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({
 		withGlyph: false,
 		glyphSize: 0,
-		collapseGroups: legend.collapseGroups ?? false
-	}), [legend.collapseGroups]), legendShape);
+		collapseGroups: legend.collapseGroups ?? false,
+		comparisonItem: legend.comparisonItem ?? false
+	}), [legend.collapseGroups, legend.comparisonItem]), legendShape);
 	const chartMetadata = useMemo(() => ({
 		stacked,
 		stackOffset,
@@ -5678,6 +5706,7 @@ const formatTooltipValue = (value) => value == null ? __("No data", "jetpack-cha
 const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
+	const legendComparisonItem = legend.comparisonItem ?? false;
 	const horizontal = orientation === "horizontal";
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
@@ -5688,7 +5717,10 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		enabled: showZeroValues,
 		valueAxisLength: horizontal ? width : height
 	});
-	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({ collapseGroups: legendCollapseGroups }), [legendCollapseGroups]));
+	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({
+		collapseGroups: legendCollapseGroups,
+		comparisonItem: legendComparisonItem
+	}), [legendCollapseGroups, legendComparisonItem]));
 	const { getElementStyles } = useGlobalChartsContext();
 	const isSeriesRendered = useCallback((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);

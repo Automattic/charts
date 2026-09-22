@@ -573,6 +573,12 @@ type SeriesChartLegendConfig = ChartLegendConfig<SeriesData[]> & {
    * uncollapsed one toggles only its own.
    */
   collapseGroups?: boolean;
+  /**
+   * Append a static, non-interactive item explaining the comparison overlay whenever a series
+   * has `options.type === 'comparison'`. Skipped when that series already has its own item.
+   * Pass a string to replace the default label.
+   */
+  comparisonItem?: boolean | string;
 };
 /**
  * Initial visibility options for charts built from labelled series.
@@ -738,6 +744,8 @@ type BaseLegendItem = {
    * the interactive legend to toggle a whole group's visibility from one item.
    */
   seriesLabels?: string[];
+  /** Set to false for a static item that cannot be toggled or dimmed. */
+  interactive?: boolean;
 };
 //#endregion
 //#region src/components/legend/legend.d.ts
@@ -760,6 +768,12 @@ interface ChartLegendOptions {
    * primary series. Off by default, so every series gets its own item.
    */
   collapseGroups?: boolean;
+  /**
+   * Append a static item explaining the comparison overlay whenever a series has
+   * `options.type === 'comparison'`. Skipped when that series already has its own
+   * item. Pass a string to replace the default label.
+   */
+  comparisonItem?: boolean | string;
 }
 /**
  * Hook to transform chart data into legend items

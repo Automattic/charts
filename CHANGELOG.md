@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.2.1-alpha] - unreleased
+## [4.3.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Legend: Add a comparisonItem option that appends a static Comparison period item, and let a legend item opt out of interactivity. Keep comparison items visible when their labels match a metric.
 
 ### Fixed
 - Bar chart: Draw a gap for a period with no data instead of refusing to render the chart.
@@ -1098,7 +1101,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.2.1-alpha]: https://github.com/Automattic/charts/compare/v4.2.0...v4.2.1-alpha
+[4.3.0-alpha]: https://github.com/Automattic/charts/compare/v4.2.0...v4.3.0-alpha
 [4.2.0]: https://github.com/Automattic/charts/compare/v4.1.1...v4.2.0
 [4.1.1]: https://github.com/Automattic/charts/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/Automattic/charts/compare/v4.0.0...v4.1.0
