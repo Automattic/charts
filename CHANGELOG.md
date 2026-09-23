@@ -13,6 +13,9 @@ This is an alpha version! The changes listed here are not final.
 - Add required key and index fields to BandHighlightSelection for identifying the selected series and rendered data point.
 - Legend: Add a comparisonItem option that appends a static Comparison period item, and let a legend item opt out of interactivity. Keep comparison items visible when their labels match a metric.
 
+### Changed
+- Bar chart: Start the value axis at zero by default; pass `zero: false` on the value scale to fit it to the data.
+
 ### Fixed
 - Bar chart: Draw a gap for a period with no data instead of refusing to render the chart.
 - Bar chart: Give a flat or single-bucket series a value axis with height, so its bars are visible.

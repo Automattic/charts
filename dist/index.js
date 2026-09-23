@@ -5400,15 +5400,15 @@ const countRenderedBars = (points) => points.filter(isBarRendered).length;
 /**
 * An explicit domain for the value scale, or null to let visx fit one to the data.
 *
-* Fitting is right for ordinary varying data, but it collapses to zero height when every
-* value is the same, and produces no domain at all when no bucket has a reading.
+* Zero goes into the domain here rather than through the scale's `zero` flag: visx applies
+* `nice` before `zero`, which would leave the axis topping out at a raw maximum.
 *
-* @param data                - Every series handed to the chart.
-* @param hasComparisonSeries - Whether a comparison series is present.
-* @param isSeriesRendered    - Whether visx mounts a series, i.e. the legend shows it.
+* @param data             - Every series handed to the chart.
+* @param includeZero      - Whether the domain must span zero.
+* @param isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it.
 * @return Value domain, or null when visx should fit its own.
 */
-const getValueScaleDomain = (data, hasComparisonSeries, isSeriesRendered) => {
+const getValueScaleDomain = (data, includeZero, isSeriesRendered) => {
 	let min = Infinity;
 	let max = -Infinity;
 	for (const series of data) {
@@ -5422,7 +5422,7 @@ const getValueScaleDomain = (data, hasComparisonSeries, isSeriesRendered) => {
 	}
 	if (min === Infinity) return [...EMPTY_DOMAIN];
 	if (min === max) return min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
-	if (hasComparisonSeries) return [Math.min(0, min), Math.max(0, max)];
+	if (includeZero) return [Math.min(0, min), Math.max(0, max)];
 	return null;
 };
 //#endregion
@@ -5584,9 +5584,9 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 	]);
 	return useMemo(() => {
 		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
-		const userDomain = !horizontal ? stableOptions.yScale?.domain : stableOptions.xScale?.domain;
-		const hasComparisonSeries = data.some((s) => s.options?.type === "comparison");
-		const domain = userDomain ? null : getValueScaleDomain(data, hasComparisonSeries, isSeriesRendered);
+		const valueScaleOptions = horizontal ? stableOptions.xScale : stableOptions.yScale;
+		const includeZero = data.some((s) => s.options?.type === "comparison") || valueScaleOptions?.zero !== false;
+		const domain = valueScaleOptions?.domain ? null : getValueScaleDomain(data, includeZero, isSeriesRendered);
 		const valueScaleDomainOverride = domain ? { domain } : {};
 		const xScale = {
 			...baseXScale,
