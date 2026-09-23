@@ -12,7 +12,7 @@ import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
 import { Tooltip, defaultStyles, useTooltip } from "@visx/tooltip";
-import { createScale, getTicks, scaleBand, scaleOrdinal, scaleTime } from "@visx/scale";
+import { createScale, getTicks, scaleBand, scaleCanBeZeroed, scaleOrdinal, scaleTime } from "@visx/scale";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { IconButton, Stack, Text as Text$1 } from "@wordpress/ui";
@@ -4381,19 +4381,32 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 	const allSeriesHidden = useMemo(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
-	const stableYDomain = useMemo(() => {
-		if (rescaleYOnVisibilityChange) return;
+	const yDomain = useMemo(() => {
+		const includeZero = options?.yScale?.zero === true && scaleCanBeZeroed({ type: options.yScale.type ?? "linear" });
+		if (rescaleYOnVisibilityChange && !includeZero) return;
 		let min = Infinity;
 		let max = -Infinity;
-		for (const series of dataSorted) for (const point of series.data ?? []) {
-			const value = point?.value;
-			if (isReading(value)) {
-				min = Math.min(min, value);
-				max = Math.max(max, value);
+		for (const series of dataSorted) {
+			if (rescaleYOnVisibilityChange && !isSeriesVisible(series.label)) continue;
+			for (const point of series.data ?? []) {
+				const value = point?.value;
+				if (isReading(value)) {
+					min = Math.min(min, value);
+					max = Math.max(max, value);
+				}
 			}
 		}
+		if (includeZero) {
+			if (min === Infinity) return;
+			return max === 0 && min === 0 ? [0, 1] : [Math.min(0, min), Math.max(0, max)];
+		}
 		return min < max ? [min, max] : void 0;
-	}, [rescaleYOnVisibilityChange, dataSorted]);
+	}, [
+		rescaleYOnVisibilityChange,
+		dataSorted,
+		isSeriesVisible,
+		options?.yScale
+	]);
 	const activateSelectedPoint = useCallback((index) => {
 		const series = dataSorted[0];
 		const datum = series?.data[index];
@@ -4460,7 +4473,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 				nice: true,
 				zero: false,
 				...fallbackYDomain ? { domain: fallbackYDomain } : {},
-				...stableYDomain ? { domain: stableYDomain } : {},
+				...yDomain ? { domain: yDomain } : {},
 				...options?.yScale
 			}
 		};
@@ -4469,7 +4482,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		dataSorted,
 		width,
 		zoom.domain,
-		stableYDomain,
+		yDomain,
 		visibleReadingExtent,
 		formatting,
 		isSeriesVisible
