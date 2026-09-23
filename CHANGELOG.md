@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Added
+- Bar chart: Add per-datum bar classes and tooltip box style overrides.
+
+### Fixed
+- Bar chart: Fix the comparison shadow baseline on horizontal charts whose domain excludes zero.
+
 ## [4.3.0] - 2026-09-23
 ### Added
 - Add required key and index fields to BandHighlightSelection for identifying the selected series and rendered data point. [#52544]
@@ -1108,6 +1118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[4.4.0-alpha]: https://github.com/Automattic/charts/compare/v4.3.0...v4.4.0-alpha
 [4.3.0]: https://github.com/Automattic/charts/compare/v4.2.0...v4.3.0
 [4.2.0]: https://github.com/Automattic/charts/compare/v4.1.1...v4.2.0
 [4.1.1]: https://github.com/Automattic/charts/compare/v4.1.0...v4.1.1

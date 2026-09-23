@@ -1,6 +1,6 @@
 import { getStringWidth as getStringWidth$1 } from "./visx/text/index.js";
 import { formatNumber, formatNumberCompact } from "@automattic/number-formatters";
-import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, Grid, TooltipContext, XYChart, buildChartTheme, useEventEmitter } from "@visx/xychart";
+import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, GlyphSeries, Grid, TooltipContext, XYChart, buildChartTheme, useEventEmitter } from "@visx/xychart";
 import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
@@ -5659,9 +5659,8 @@ const createGroupScale = (keys, bandwidth, padding) => scaleBand({
 //#endregion
 //#region src/charts/bar-chart/private/comparison-bars-geometry.ts
 /**
-* Output position of a value scale's baseline: zero if in-domain, else the
-* nearest range edge. Mirrors visx's getScaleBaseline so comparison shadows
-* sit on the same baseline as primary bars.
+* Mirrors visx's getScaleBaseline so comparison shadows and primary bars
+* share the same baseline, including out-of-domain zero values.
 *
 * @param {ValueScale} scale - The continuous value scale.
 * @return {number} The baseline output position in pixels.
@@ -5672,7 +5671,7 @@ function getValueScaleBaseline(scale) {
 	const maybeZero = scale(0);
 	const [minOutput, maxOutput] = isDescending ? [b, a] : [a, b];
 	if (isDescending) return Number.isFinite(maybeZero) ? Math.min(Math.max(minOutput, maybeZero), maxOutput) : maxOutput;
-	return Number.isFinite(maybeZero) ? Math.min(Math.max(maybeZero, minOutput), maxOutput) : minOutput;
+	return Number.isFinite(maybeZero) ? Math.max(maybeZero, minOutput) : minOutput;
 }
 /**
 * Compute the rect for a comparison "shadow" bar, centered on the paired
@@ -5708,6 +5707,51 @@ function computeComparisonRect(params) {
 		height: valueLength
 	};
 }
+//#endregion
+//#region src/charts/bar-chart/private/classified-bar-series.tsx
+const ClassifiedBarSeries = ({ barClassName, primaryKeys, groupPadding, ...props }) => {
+	const { xScale, yScale, horizontal } = useContext(DataContext);
+	const bandScale = horizontal ? yScale : xScale;
+	const valueScale = horizontal ? xScale : yScale;
+	const groupScale = useMemo(() => createGroupScale(primaryKeys, bandScale?.bandwidth?.() ?? 0, groupPadding), [
+		primaryKeys,
+		bandScale,
+		groupPadding
+	]);
+	const renderGlyph = useCallback(({ datum, x, y, color, onBlur, onFocus, onPointerMove, onPointerOut, onPointerUp }) => {
+		if (!bandScale?.bandwidth || !valueScale) return null;
+		const baseline = getValueScaleBaseline(valueScale);
+		const position = Number(bandScale((horizontal ? props.yAccessor : props.xAccessor)(datum))) + (groupScale(props.dataKey) ?? 0);
+		const value = horizontal ? x : y;
+		return /* @__PURE__ */ jsx("rect", {
+			className: clsx("visx-bar", barClassName(datum)),
+			tabIndex: onFocus || onBlur ? 0 : void 0,
+			onBlur,
+			onFocus,
+			onPointerMove,
+			onPointerOut,
+			onPointerUp,
+			x: horizontal ? Math.min(value, baseline) : position,
+			y: horizontal ? position : Math.min(value, baseline),
+			width: horizontal ? Math.abs(value - baseline) : groupScale.bandwidth(),
+			height: horizontal ? groupScale.bandwidth() : Math.abs(value - baseline),
+			fill: color
+		});
+	}, [
+		bandScale,
+		valueScale,
+		horizontal,
+		groupScale,
+		props.dataKey,
+		props.xAccessor,
+		props.yAccessor,
+		barClassName
+	]);
+	return /* @__PURE__ */ jsx(GlyphSeries, {
+		...props,
+		renderGlyph
+	});
+};
 /**
 * Upper clamp on the computed group padding, so bars can never collapse to zero width
 * even at very large `widthFactor` values.
@@ -5951,7 +5995,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -6321,7 +6365,19 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									getElementStyles,
 									resolveFill: resolveComparisonFill
 								}),
-								/* @__PURE__ */ jsx(BarGroup, {
+								barClassName ? /* @__PURE__ */ jsx("g", {
+									className: "visx-bar-group",
+									children: primaryEntries.map(({ series: seriesData, index }) => /* @__PURE__ */ jsx(ClassifiedBarSeries, {
+										dataKey: seriesData.label,
+										data: seriesData.data,
+										xAccessor: chartOptions.accessors.xAccessor,
+										yAccessor: chartOptions.accessors.yAccessor,
+										colorAccessor: getBarBackground(index),
+										barClassName,
+										primaryKeys,
+										groupPadding
+									}, seriesData.label))
+								}) : /* @__PURE__ */ jsx(BarGroup, {
 									padding: groupPadding,
 									children: primaryEntries.map(({ series: seriesData, index }) => /* @__PURE__ */ jsx(BarSeries, {
 										dataKey: seriesData?.label,
@@ -6351,6 +6407,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 								withTooltips && /* @__PURE__ */ jsx(AccessibleTooltip, {
 									tooltipPlacement,
 									tooltipAnchorTop,
+									style: tooltipStyle,
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: true,

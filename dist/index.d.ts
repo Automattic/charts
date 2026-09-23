@@ -1068,6 +1068,10 @@ interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityPr
   tooltipPlacement?: 'auto' | 'beside';
   /** Tooltip top anchor in SVG coordinates; negative offsets are supported. */
   tooltipAnchorTop?: number;
+  /** Inline styles merged over the tooltip box defaults. */
+  tooltipStyle?: CSSProperties;
+  /** CSS class for each primary bar, in addition to visx-bar. */
+  barClassName?: (datum: DataPointDate) => string | undefined;
   orientation?: 'horizontal' | 'vertical';
   withPatterns?: boolean;
   showZeroValues?: boolean;
