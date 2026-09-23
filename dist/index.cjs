@@ -5733,8 +5733,8 @@ const ClassifiedBarSeries = ({ barClassName, primaryKeys, groupPadding, ...props
 			onPointerMove,
 			onPointerOut,
 			onPointerUp,
-			x: horizontal ? Math.min(value, baseline) : position,
-			y: horizontal ? position : Math.min(value, baseline),
+			x: horizontal ? baseline + Math.min(0, value - baseline) : position,
+			y: horizontal ? position : baseline + Math.min(0, value - baseline),
 			width: horizontal ? Math.abs(value - baseline) : groupScale.bandwidth(),
 			height: horizontal ? groupScale.bandwidth() : Math.abs(value - baseline),
 			fill: color
