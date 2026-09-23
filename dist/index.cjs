@@ -3387,6 +3387,54 @@ const buildTimeAxisOptions = ({ dataSorted, width, axisOptions, scaleDomain, zoo
 	};
 };
 //#endregion
+//#region src/charts/private/whole-number-ticks.tsx
+/**
+* Whether every reading in the series is a whole number.
+*
+* @param series - The series visx renders.
+* @return True when at least one reading exists and none has a fraction.
+*/
+const hasOnlyWholeNumbers = (series) => {
+	let sawReading = false;
+	for (const { data } of series) for (const point of data) {
+		const value = point?.value;
+		if (!isReading(value)) continue;
+		if (!Number.isInteger(value)) return false;
+		sawReading = true;
+	}
+	return sawReading;
+};
+/**
+* The scale's ticks with the fractional ones dropped.
+*
+* d3 steps by 1, 2 or 5 times a power of ten, so every whole number inside the domain is one of its ticks.
+*
+* @param scale - The value scale visx built.
+* @param count - Ticks to ask the scale for; undefined uses the scale's own default, as visx does.
+* @return Whole-number ticks, or undefined when visx's own ticks need no change.
+*/
+const getWholeNumberTickValues = (scale, count) => {
+	const ticks = scale?.ticks?.(count);
+	if (!ticks?.every((tick) => typeof tick === "number")) return;
+	const whole = ticks.filter((tick) => Number.isInteger(tick));
+	return whole.length > 1 && whole.length < ticks.length ? whole : void 0;
+};
+/**
+* Hands its children the whole-number ticks of the chart's value scale.
+*
+* @param props          - Component props.
+* @param props.axis     - Which scale carries the values.
+* @param props.numTicks - Ticks to ask the scale for.
+* @param props.enabled  - Whether the plotted values are all whole numbers and the caller pinned neither the ticks nor the value domain.
+* @param props.children - Renders the axis and grid with the tick values.
+* @return The rendered children.
+*/
+const WholeNumberTicks = ({ axis, numTicks, enabled, children }) => {
+	const { xScale, yScale } = (0, react.useContext)(_visx_xychart.DataContext);
+	const tickValues = enabled ? getWholeNumberTickValues(axis === "x" ? xScale : yScale, numTicks) : void 0;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: children(tickValues) });
+};
+//#endregion
 //#region src/charts/private/with-responsive/with-responsive.module.scss
 var with_responsive_module_default = {
 	"container": "a8ccharts-sP1gHa-container",
@@ -4382,6 +4430,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		}
 		return min <= max ? [min, max] : void 0;
 	}, [dataSorted, isSeriesVisible]);
+	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(dataSorted.filter((series) => isSeriesVisible(series.label))), [dataSorted, isSeriesVisible]);
 	const chartOptions = (0, react.useMemo)(() => {
 		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, options?.yScale?.type === "log");
 		return {
@@ -4579,12 +4628,23 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 							onPointerOut,
 							children: [
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(NearestPointerEvents, { ...zoom.handlers }),
-								!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
-									columns: false,
-									numTicks: 4
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
+									axis: "y",
+									numTicks: chartOptions.axis.y.numTicks,
+									enabled: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain,
+									children: (tickValues) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
+											columns: false,
+											numTicks: chartOptions.axis.y.numTicks,
+											tickValues: tickValues ?? chartOptions.axis.y.tickValues
+										}),
+										!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.x }),
+										!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+											...chartOptions.axis.y,
+											...tickValues ? { tickValues } : {}
+										})
+									] })
 								}),
-								!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.x }),
-								!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.y }),
 								allSeriesHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
 									x: width / 2,
 									y: chartHeight / 2,
@@ -4841,6 +4901,12 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 		}));
 	}, [dataSorted, hiddenSeries]);
 	const allSeriesHidden = (0, react.useMemo)(() => seriesWithVisibility.every(({ isVisible }) => !isVisible), [seriesWithVisibility]);
+	const hasWholeNumberValues = (0, react.useMemo)(() => (!stacked || stackOffset === "none") && hasOnlyWholeNumbers(dataSorted.filter((series) => isSeriesVisible(series.label))), [
+		dataSorted,
+		isSeriesVisible,
+		stacked,
+		stackOffset
+	]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
@@ -5085,12 +5151,23 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 							onPointerOut,
 							pointerEventsDataKey: "nearest",
 							children: [
-								!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
-									columns: false,
-									numTicks: 4
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
+									axis: "y",
+									numTicks: chartOptions.axis.y.numTicks,
+									enabled: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain,
+									children: (tickValues) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
+											columns: false,
+											numTicks: chartOptions.axis.y.numTicks,
+											tickValues: tickValues ?? chartOptions.axis.y.tickValues
+										}),
+										!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.x }),
+										!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+											...chartOptions.axis.y,
+											...tickValues ? { tickValues } : {}
+										})
+									] })
 								}),
-								!allSeriesHidden && chartOptions.axis.x.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.x }),
-								!allSeriesHidden && chartOptions.axis.y.display && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.y }),
 								allSeriesHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
 									x: width / 2,
 									y: chartHeight / 2,
@@ -5884,7 +5961,15 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 	}), [legendCollapseGroups, legendComparisonItem]));
 	const { getElementStyles } = useGlobalChartsContext();
 	const isSeriesRendered = (0, react.useCallback)((series) => isSeriesVisible(series.label), [isSeriesVisible]);
+	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(dataSorted.filter(isSeriesRendered)), [dataSorted, isSeriesRendered]);
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
+	const valueAxis = horizontal ? chartOptions.axis.x : chartOptions.axis.y;
+	const callerValueDomain = horizontal ? options.xScale?.domain : options.yScale?.domain;
+	const wholeNumberTicksProps = {
+		axis: horizontal ? "x" : "y",
+		numTicks: valueAxis.numTicks,
+		enabled: hasWholeNumberValues && !valueAxis.tickValues && !callerValueDomain
+	};
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
 	const chartRef = (0, react.useRef)(null);
 	const { legendChildren, nonLegendChildren } = useChartChildren(children, "BarChart");
@@ -6186,17 +6271,20 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									horizontal,
 									onChange: onBandHighlightChange
 								}),
-								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
-									columns: gridVisibility.includes("y"),
-									rows: false,
-									numTicks: 4,
-									tickValues: chartOptions.axis.x.tickValues
-								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
-									columns: false,
-									rows: gridVisibility.includes("x"),
-									numTicks: 4,
-									tickValues: chartOptions.axis.y.tickValues
-								})] }),
+								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
+									...wholeNumberTicksProps,
+									children: (valueTicks) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
+										columns: gridVisibility.includes("y"),
+										rows: false,
+										numTicks: chartOptions.axis.x.numTicks,
+										tickValues: (horizontal ? valueTicks : void 0) ?? chartOptions.axis.x.tickValues
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Grid, {
+										columns: false,
+										rows: gridVisibility.includes("x"),
+										numTicks: chartOptions.axis.y.numTicks,
+										tickValues: (horizontal ? void 0 : valueTicks) ?? chartOptions.axis.y.tickValues
+									})] })
+								}),
 								withPatterns && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("defs", { children: dataSorted.map((seriesData, index) => renderPattern(index, getElementStyles({
 									data: seriesData,
 									index
@@ -6239,7 +6327,16 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									onPointerDown,
 									onPointerUp
 								}),
-								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.x }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, { ...chartOptions.axis.y })] }),
+								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
+									...wholeNumberTicksProps,
+									children: (valueTicks) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+										...chartOptions.axis.x,
+										...horizontal && valueTicks ? { tickValues: valueTicks } : {}
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+										...chartOptions.axis.y,
+										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
+									})] })
+								}),
 								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccessibleTooltip, {
 									tooltipPlacement,
 									tooltipAnchorTop,

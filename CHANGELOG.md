@@ -17,6 +17,8 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Draw a gap for a period with no data instead of refusing to render the chart.
 - Bar chart: Give a flat or single-bucket series a value axis with height, so its bars are visible.
 - Bar chart: Translate the "No data available" and "Invalid data" messages.
+- Line, bar and area charts: Draw gridlines at the ticks set by each axis's `numTicks` and `tickValues`, matching the axis labels.
+- Line, bar and area charts: Label the value axis only at whole numbers when every value is a whole number.
 - Line chart: Break the line at a period with no data instead of refusing to render the chart.
 - Line chart: Start the value axis at zero for a flat series, so its line is not drawn halfway up the plot.
 - Line chart: Translate the "No data available" and "Invalid data" messages.
