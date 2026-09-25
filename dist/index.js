@@ -2748,18 +2748,41 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 		getChartRoot,
 		focusWithoutScrollIfNeeded
 	]);
+	const onChartFocus = useCallback((event) => {
+		if (event.currentTarget.contains(event.relatedTarget)) return;
+		if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
+	}, [
+		isNavigating,
+		selectedIndex,
+		setSelectedIndex
+	]);
+	const pointerIndex = useRef(void 0);
+	const onChartPointerMove = useCallback((index) => {
+		if (selectedIndex === void 0) {
+			if (pointerIndex.current !== void 0) pointerIndex.current = index;
+			return;
+		}
+		const root = getChartRoot();
+		const activeElement = root?.ownerDocument.activeElement;
+		if (activeElement && root.contains(activeElement)) {
+			pointerIndex.current = index;
+			focusWithoutScrollIfNeeded(root);
+		}
+		setSelectedIndex(void 0);
+		setIsNavigating(false);
+	}, [
+		selectedIndex,
+		setSelectedIndex,
+		setIsNavigating,
+		getChartRoot,
+		focusWithoutScrollIfNeeded
+	]);
 	return {
 		tooltipRef,
-		onChartFocus: useCallback((event) => {
-			if (event.currentTarget.contains(event.relatedTarget)) return;
-			if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
-		}, [
-			isNavigating,
-			selectedIndex,
-			setSelectedIndex
-		]),
-		onChartBlur: useCallback(() => {
+		onChartFocus,
+		onChartBlur: useCallback((event) => {
 			setIsNavigating(false);
+			if (!event.currentTarget.contains(event.relatedTarget)) pointerIndex.current = void 0;
 		}, [setIsNavigating]),
 		onChartKeyDown: useCallback((event) => {
 			if (event.key === "Tab" || event.key === "Escape") {
@@ -2767,10 +2790,12 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 				focusWithoutScrollIfNeeded(getChartRoot());
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
+				pointerIndex.current = void 0;
 				return;
 			}
 			if (totalPoints === 0) return;
-			const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
+			const currentSelectedIndex = selectedIndex ?? pointerIndex.current ?? -1;
+			if (event.key === "ArrowRight" || event.key === "ArrowLeft") pointerIndex.current = void 0;
 			if (event.key === "ArrowRight") {
 				event.preventDefault();
 				setIsNavigating(true);
@@ -2791,7 +2816,8 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			getChartRoot,
 			focusWithoutScrollIfNeeded,
 			onActivate
-		])
+		]),
+		onChartPointerMove
 	};
 };
 //#endregion
@@ -5916,9 +5942,10 @@ function nearestBandIndex(data, accessor, scale, position) {
 * @param root0.withTooltips  - Whether pointer events update the tooltip.
 * @param root0.onPointerDown - Receives the corrected pointer-down datum.
 * @param root0.onPointerUp   - Receives the corrected pointer-up datum.
+* @param root0.onPointerMove - Receives the corrected datum under a moving pointer.
 * @return No visual content.
 */
-function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp }) {
+function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp, onPointerMove }) {
 	const { xScale, yScale, dataRegistry, horizontal } = useContext(DataContext);
 	const { showTooltip } = useContext(TooltipContext);
 	const scale = horizontal ? yScale : xScale;
@@ -5963,20 +5990,22 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 	]);
 	const handlePointer = useCallback((params) => {
 		const selections = getSelections(params);
-		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
-		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
-		if (params?.event.type === "pointermove" || !callback) return;
 		const nearest = selections.reduce((best, selection) => {
 			const distance = (value) => Math.hypot(value.distanceX, value.distanceY);
 			return !best || distance(selection) <= distance(best) ? selection : best;
 		}, void 0);
+		if (params?.event.type === "pointermove" && nearest) onPointerMove?.(nearest);
+		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
+		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
+		if (params?.event.type === "pointermove" || !callback) return;
 		if (nearest) callback(nearest);
 	}, [
 		getSelections,
 		withTooltips,
 		showTooltip,
 		onPointerDown,
-		onPointerUp
+		onPointerUp,
+		onPointerMove
 	]);
 	useEventEmitter("pointermove", withTooltips ? handlePointer : void 0);
 	useEventEmitter("pointerdown", handlePointer);
@@ -6059,7 +6088,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		});
 	}, [primaryEntries, onDatumActivate]);
 	const visibleSeriesKey = useMemo(() => JSON.stringify(primaryKeys), [primaryKeys]);
-	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
+	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown, onChartPointerMove } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
@@ -6069,6 +6098,10 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		onActivate: activateSelectedBar,
 		visibleSeriesKey
 	});
+	const handlePointerMove = useCallback(({ key, index }) => {
+		const seriesIndex = primaryKeys.indexOf(key);
+		if (seriesIndex >= 0) onChartPointerMove(index * primaryKeys.length + seriesIndex);
+	}, [primaryKeys, onChartPointerMove]);
 	const comparisonEntries = useMemo(() => {
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
 			label: series.label,
@@ -6392,7 +6425,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									groupPadding,
 									withTooltips,
 									onPointerDown,
-									onPointerUp
+									onPointerUp,
+									onPointerMove: handlePointerMove
 								}),
 								!allSeriesHidden && /* @__PURE__ */ jsx(WholeNumberTicks, {
 									...wholeNumberTicksProps,

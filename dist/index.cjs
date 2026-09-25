@@ -2750,18 +2750,41 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 		getChartRoot,
 		focusWithoutScrollIfNeeded
 	]);
+	const onChartFocus = (0, react.useCallback)((event) => {
+		if (event.currentTarget.contains(event.relatedTarget)) return;
+		if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
+	}, [
+		isNavigating,
+		selectedIndex,
+		setSelectedIndex
+	]);
+	const pointerIndex = (0, react.useRef)(void 0);
+	const onChartPointerMove = (0, react.useCallback)((index) => {
+		if (selectedIndex === void 0) {
+			if (pointerIndex.current !== void 0) pointerIndex.current = index;
+			return;
+		}
+		const root = getChartRoot();
+		const activeElement = root?.ownerDocument.activeElement;
+		if (activeElement && root.contains(activeElement)) {
+			pointerIndex.current = index;
+			focusWithoutScrollIfNeeded(root);
+		}
+		setSelectedIndex(void 0);
+		setIsNavigating(false);
+	}, [
+		selectedIndex,
+		setSelectedIndex,
+		setIsNavigating,
+		getChartRoot,
+		focusWithoutScrollIfNeeded
+	]);
 	return {
 		tooltipRef,
-		onChartFocus: (0, react.useCallback)((event) => {
-			if (event.currentTarget.contains(event.relatedTarget)) return;
-			if (!isNavigating && selectedIndex !== void 0) setSelectedIndex(0);
-		}, [
-			isNavigating,
-			selectedIndex,
-			setSelectedIndex
-		]),
-		onChartBlur: (0, react.useCallback)(() => {
+		onChartFocus,
+		onChartBlur: (0, react.useCallback)((event) => {
 			setIsNavigating(false);
+			if (!event.currentTarget.contains(event.relatedTarget)) pointerIndex.current = void 0;
 		}, [setIsNavigating]),
 		onChartKeyDown: (0, react.useCallback)((event) => {
 			if (event.key === "Tab" || event.key === "Escape") {
@@ -2769,10 +2792,12 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 				focusWithoutScrollIfNeeded(getChartRoot());
 				setSelectedIndex(void 0);
 				setIsNavigating(false);
+				pointerIndex.current = void 0;
 				return;
 			}
 			if (totalPoints === 0) return;
-			const currentSelectedIndex = selectedIndex === void 0 ? -1 : selectedIndex;
+			const currentSelectedIndex = selectedIndex ?? pointerIndex.current ?? -1;
+			if (event.key === "ArrowRight" || event.key === "ArrowLeft") pointerIndex.current = void 0;
 			if (event.key === "ArrowRight") {
 				event.preventDefault();
 				setIsNavigating(true);
@@ -2793,7 +2818,8 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 			getChartRoot,
 			focusWithoutScrollIfNeeded,
 			onActivate
-		])
+		]),
+		onChartPointerMove
 	};
 };
 //#endregion
@@ -5918,9 +5944,10 @@ function nearestBandIndex(data, accessor, scale, position) {
 * @param root0.withTooltips  - Whether pointer events update the tooltip.
 * @param root0.onPointerDown - Receives the corrected pointer-down datum.
 * @param root0.onPointerUp   - Receives the corrected pointer-up datum.
+* @param root0.onPointerMove - Receives the corrected datum under a moving pointer.
 * @return No visual content.
 */
-function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp }) {
+function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp, onPointerMove }) {
 	const { xScale, yScale, dataRegistry, horizontal } = (0, react.useContext)(_visx_xychart.DataContext);
 	const { showTooltip } = (0, react.useContext)(_visx_xychart.TooltipContext);
 	const scale = horizontal ? yScale : xScale;
@@ -5965,20 +5992,22 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 	]);
 	const handlePointer = (0, react.useCallback)((params) => {
 		const selections = getSelections(params);
-		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
-		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
-		if (params?.event.type === "pointermove" || !callback) return;
 		const nearest = selections.reduce((best, selection) => {
 			const distance = (value) => Math.hypot(value.distanceX, value.distanceY);
 			return !best || distance(selection) <= distance(best) ? selection : best;
 		}, void 0);
+		if (params?.event.type === "pointermove" && nearest) onPointerMove?.(nearest);
+		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
+		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
+		if (params?.event.type === "pointermove" || !callback) return;
 		if (nearest) callback(nearest);
 	}, [
 		getSelections,
 		withTooltips,
 		showTooltip,
 		onPointerDown,
-		onPointerUp
+		onPointerUp,
+		onPointerMove
 	]);
 	(0, _visx_xychart.useEventEmitter)("pointermove", withTooltips ? handlePointer : void 0);
 	(0, _visx_xychart.useEventEmitter)("pointerdown", handlePointer);
@@ -6061,7 +6090,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		});
 	}, [primaryEntries, onDatumActivate]);
 	const visibleSeriesKey = (0, react.useMemo)(() => JSON.stringify(primaryKeys), [primaryKeys]);
-	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
+	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown, onChartPointerMove } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
@@ -6071,6 +6100,10 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		onActivate: activateSelectedBar,
 		visibleSeriesKey
 	});
+	const handlePointerMove = (0, react.useCallback)(({ key, index }) => {
+		const seriesIndex = primaryKeys.indexOf(key);
+		if (seriesIndex >= 0) onChartPointerMove(index * primaryKeys.length + seriesIndex);
+	}, [primaryKeys, onChartPointerMove]);
 	const comparisonEntries = (0, react.useMemo)(() => {
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
 			label: series.label,
@@ -6394,7 +6427,8 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 									groupPadding,
 									withTooltips,
 									onPointerDown,
-									onPointerUp
+									onPointerUp,
+									onPointerMove: handlePointerMove
 								}),
 								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
 									...wholeNumberTicksProps,

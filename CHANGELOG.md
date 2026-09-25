@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Fixed
+- Bar chart: End a keyboard selection when the pointer moves over the chart, instead of flickering between the hovered and selected bars.
+
 ## [4.4.0] - 2026-09-23
 ### Added
 - Bar chart: Add per-datum bar classes and tooltip box style overrides. [#52547]
