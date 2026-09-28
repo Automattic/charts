@@ -850,6 +850,10 @@
 .a8ccharts-gnszbG-pie-chart__label-text {
   fill: var(--a8c-charts-color-label-inverse, #f0f0f0);
 }
+
+.a8ccharts-gnszbG-pie-chart__label-text--on-light {
+  fill: var(--a8c-charts-color-label, #1e1e1e);
+}
 .a8ccharts-YtTOxW-pie-semi-circle-chart__plot {
   position: relative;
 }

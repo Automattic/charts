@@ -5,12 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.4.1-alpha] - unreleased
+## [4.5.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
+### Deprecated
+- Deprecate getColorDistance, which is not perceptual and is no longer used to generate palette colors.
+
 ### Fixed
 - Bar chart: End a keyboard selection when the pointer moves over the chart, instead of flickering between the hovered and selected bars.
+- Keep generated series colors distinguishable from each other, including for color-blind viewers, and legible on the chart background; pick pie label text that contrasts with each slice.
 
 ## [4.4.0] - 2026-09-23
 ### Added
@@ -1122,7 +1126,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.4.1-alpha]: https://github.com/Automattic/charts/compare/v4.4.0...v4.4.1-alpha
+[4.5.0-alpha]: https://github.com/Automattic/charts/compare/v4.4.0...v4.5.0-alpha
 [4.4.0]: https://github.com/Automattic/charts/compare/v4.3.0...v4.4.0
 [4.3.0]: https://github.com/Automattic/charts/compare/v4.2.0...v4.3.0
 [4.2.0]: https://github.com/Automattic/charts/compare/v4.1.1...v4.2.0

@@ -438,9 +438,11 @@ const hexToRgba = (hex, alpha) => {
 	return (0, _visx_vendor_d3_color.color)(hex).copy({ opacity: alpha }).formatRgb();
 };
 /**
-* Calculate the perceptual distance between two HSL colors
-* @param hsl1 - first color in HSL format [h, s, l]
-* @param hsl2 - second color in HSL format [h, s, l]
+* Weighted Euclidean distance between two HSL colors.
+*
+* @deprecated Not perceptual and blind to color vision deficiency, so charts no longer use it; it will be removed in a future major version.
+* @param      hsl1 - first color in HSL format [h, s, l]
+* @param      hsl2 - second color in HSL format [h, s, l]
 * @return distance value (0-100+, lower means more similar)
 */
 const getColorDistance = (hsl1, hsl2) => {
@@ -802,135 +804,6 @@ const createZonedClock = (timeZone) => {
 * All JS token resolution reads this element rather than `document.documentElement`, so a `getComputedStyle` call sees the same `--a8c-charts-*` values — including any override set inside the provider tree — that a CSS-painted sibling element does.
 */
 const ChartScopeContext = (0, react.createContext)(null);
-//#endregion
-//#region src/providers/chart-context/private/get-chart-color.ts
-/**
-* Golden ratio for mathematically pleasing color distribution
-* Used to generate evenly spaced hues that are visually distinct
-*/
-const GOLDEN_RATIO = .618033988749;
-/**
-* Minimum perceptual distance between colors to ensure visual distinction
-* Based on weighted HSL distance calculation optimized for chart readability
-*/
-const MIN_COLOR_DISTANCE = 25;
-/**
-* Maximum attempts to find a sufficiently different color
-* Prevents infinite loops while allowing reasonable search space
-*/
-const MAX_COLOR_GENERATION_ATTEMPTS = 50;
-/**
-* Color variation attempt offset
-* Small increment to explore slightly different color variations per attempt
-*/
-const VARIATION_ATTEMPT_OFFSET = .1;
-/**
-* Base saturation percentage for generated colors
-* 45% provides muted, professional colors without being washed out
-*/
-const BASE_SATURATION = 45;
-/**
-* Number of saturation variation steps
-* Creates 3 different saturation levels for variety
-*/
-const SATURATION_VARIATION_STEPS = 3;
-/**
-* Saturation increment per variation step
-* 10% increments provide subtle variation while keeping colors muted
-* Results in saturation levels: 45%, 55%, 65%
-*/
-const SATURATION_INCREMENT = 10;
-/**
-* Base lightness percentage for generated colors
-* 35% ensures sufficient contrast against white backgrounds for WCAG AA compliance
-* WCAG AA requires 4.5:1 contrast ratio for normal text
-*/
-const BASE_LIGHTNESS = 35;
-/**
-* Number of lightness variation steps
-* Creates 4 different lightness levels for variety
-*/
-const LIGHTNESS_VARIATION_STEPS = 4;
-/**
-* Lightness increment per variation step
-* 8% increments provide subtle lightness variation while maintaining accessibility
-* Results in lightness levels: 35%, 43%, 51%, 59%
-* All levels maintain WCAG AA compliance against white backgrounds
-*/
-const LIGHTNESS_INCREMENT = 8;
-/**
-* Minimum hue range in degrees to ensure sufficient color variety
-* 60 degrees provides reasonable color spread even for narrow palettes
-*/
-const MIN_HUE_RANGE_DEGREES = 60;
-/**
-* Hue range expansion factor
-* 1.3x expansion provides slightly more variety than the original palette
-*/
-const HUE_RANGE_EXPANSION_FACTOR = 1.3;
-/**
-* Threshold for detecting hue wrap-around (color wheel boundary crossing)
-* 180 degrees indicates the colors span more than half the color wheel
-*/
-const HUE_WRAP_THRESHOLD_DEGREES = 180;
-/**
-* Full color wheel rotation in degrees
-*/
-const FULL_HUE_ROTATION_DEGREES = 360;
-/**
-* Factor for single color hue range
-*/
-const SINGLE_COLOR_HUE_RANGE_FACTOR = .33;
-/**
-* Get a color from the colors array or generate a new color using the golden ratio
-*
-* @param index      - the index of the color to get
-* @param colorCache - pre-computed color data for performance
-* @return a color from the colors array or a new color using the golden ratio
-*/
-const getChartColor = (index, colorCache) => {
-	const { colors, hues, existingHslColors, minHue: cachedMinHue, maxHue: cachedMaxHue } = colorCache;
-	if (index < colors.length) return colors[index];
-	let minHue = cachedMinHue;
-	let maxHue = cachedMaxHue;
-	for (let attempt = 0; attempt < MAX_COLOR_GENERATION_ATTEMPTS; attempt++) {
-		let hue = (index - colors.length + attempt * VARIATION_ATTEMPT_OFFSET) * GOLDEN_RATIO * FULL_HUE_ROTATION_DEGREES % FULL_HUE_ROTATION_DEGREES;
-		if (hues.length > 0) {
-			let hueRange = maxHue - minHue;
-			if (hues.length === 1) hueRange = FULL_HUE_ROTATION_DEGREES * SINGLE_COLOR_HUE_RANGE_FACTOR;
-			else if (hueRange > HUE_WRAP_THRESHOLD_DEGREES) {
-				const altMinHue = Math.min(...hues.filter((h) => h > HUE_WRAP_THRESHOLD_DEGREES));
-				const altMaxHue = Math.max(...hues.filter((h) => h < HUE_WRAP_THRESHOLD_DEGREES)) + FULL_HUE_ROTATION_DEGREES;
-				const altRange = altMaxHue - altMinHue;
-				if (altRange < hueRange) {
-					minHue = altMinHue;
-					maxHue = altMaxHue;
-					hueRange = altRange;
-				}
-			}
-			const expandedRange = Math.max(hueRange * HUE_RANGE_EXPANSION_FACTOR, MIN_HUE_RANGE_DEGREES);
-			hue = (minHue + maxHue) / 2 - expandedRange / 2 + hue / FULL_HUE_ROTATION_DEGREES * expandedRange;
-			hue = (hue % FULL_HUE_ROTATION_DEGREES + FULL_HUE_ROTATION_DEGREES) % FULL_HUE_ROTATION_DEGREES;
-		}
-		const saturation = BASE_SATURATION + (index + attempt) % SATURATION_VARIATION_STEPS * SATURATION_INCREMENT;
-		const lightness = BASE_LIGHTNESS + (index + attempt) % LIGHTNESS_VARIATION_STEPS * LIGHTNESS_INCREMENT;
-		const candidateHsl = [
-			hue,
-			saturation,
-			lightness
-		];
-		let isSufficientlyDifferent = true;
-		for (const existingHsl of existingHslColors) if (getColorDistance(candidateHsl, existingHsl) < MIN_COLOR_DISTANCE) {
-			isSufficientlyDifferent = false;
-			break;
-		}
-		if (isSufficientlyDifferent) return (0, _visx_vendor_d3_color.hsl)(Math.round(hue), saturation / 100, lightness / 100).formatHex();
-	}
-	const fallbackHue = (index - colors.length) * GOLDEN_RATIO * FULL_HUE_ROTATION_DEGREES % FULL_HUE_ROTATION_DEGREES;
-	const fallbackSaturation = BASE_SATURATION + index % SATURATION_VARIATION_STEPS * SATURATION_INCREMENT;
-	const fallbackLightness = BASE_LIGHTNESS + index % LIGHTNESS_VARIATION_STEPS * LIGHTNESS_INCREMENT;
-	return (0, _visx_vendor_d3_color.hsl)(Math.round(fallbackHue), fallbackSaturation / 100, fallbackLightness / 100).formatHex();
-};
 /**
 * The catalog role holding one series-palette slot.
 *
@@ -941,6 +814,411 @@ const seriesRole = (slot) => `--a8c-charts-color-series-${slot}`;
 const SERIES_SLOT_1_FALLBACK = "#3858e9";
 /** The catalog pointer for every slot, in slot order. */
 const SERIES_PALETTE_POINTERS = Array.from({ length: 5 }, (_, index) => index === 0 ? `var(${seriesRole(1)}, ${SERIES_SLOT_1_FALLBACK})` : `var(${seriesRole(index + 1)})`);
+//#endregion
+//#region src/providers/chart-context/private/catalog-pointers.ts
+/** Terminal literals the provider also generates from before its first read, so SSR and the first client render agree. */
+const BACKGROUND_FALLBACK = "#ffffff";
+const LABEL_FALLBACK = "#1e1e1e";
+const LABEL_INVERSE_FALLBACK = "#f0f0f0";
+const CATALOG_POINTERS = {
+	background: `var(--a8c-charts-color-background, ${BACKGROUND_FALLBACK})`,
+	label: `var(--a8c-charts-color-label, ${LABEL_FALLBACK})`,
+	labelAxis: "var(--a8c-charts-color-label-axis, #1e1e1e)",
+	labelInverse: `var(--a8c-charts-color-label-inverse, ${LABEL_INVERSE_FALLBACK})`,
+	labelBackground: "var(--a8c-charts-color-label-background, transparent)",
+	grid: "var(--a8c-charts-color-grid, #dbdbdb)",
+	axisX: "var(--a8c-charts-color-axis-x, #dbdbdb)",
+	tickX: "var(--a8c-charts-color-tick-x, #dbdbdb)",
+	axisY: "var(--a8c-charts-color-axis-y, none)",
+	tickY: "var(--a8c-charts-color-tick-y, none)",
+	annotation: "var(--a8c-charts-color-annotation, #1e1e1e)",
+	surface: "var(--a8c-charts-color-surface, #fff)",
+	surfaceSecondary: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
+	trendUp: "var(--a8c-charts-color-trend-up, #008030)",
+	trendDown: "var(--a8c-charts-color-trend-down, #cc1818)",
+	series: SERIES_PALETTE_POINTERS
+};
+/**
+* The annotation parts visx paints, in the shape `@visx/annotation` takes. `radius`
+* rides along as the base the theme and the per-datum styles merge onto.
+*/
+const ANNOTATION_POINTERS = {
+	label: {
+		anchorLineStroke: CATALOG_POINTERS.annotation,
+		backgroundFill: CATALOG_POINTERS.surface
+	},
+	connector: { stroke: CATALOG_POINTERS.annotation },
+	circleSubject: {
+		stroke: "transparent",
+		fill: CATALOG_POINTERS.annotation,
+		radius: 5
+	}
+};
+//#endregion
+//#region src/providers/chart-context/private/perceptual-color.ts
+const DEUTERANOPIA = [
+	.367322,
+	.860646,
+	-.227968,
+	.280085,
+	.672501,
+	.047413,
+	-.01182,
+	.04294,
+	.968881
+];
+const PROTANOPIA = [
+	.152286,
+	1.052583,
+	-.204868,
+	.114503,
+	.786281,
+	.099216,
+	-.003882,
+	-.048116,
+	1.051998
+];
+const DEGREES = Math.PI / 180;
+const toLinear = (channel) => channel <= .04045 ? channel / 12.92 : Math.pow((channel + .055) / 1.055, 2.4);
+const fromLinear = (channel) => channel <= .0031308 ? 12.92 * channel : 1.055 * Math.pow(channel, 1 / 2.4) - .055;
+const hexToLinear = (hex) => {
+	validateHexColor(hex);
+	return [
+		1,
+		3,
+		5
+	].map((start) => toLinear(parseInt(hex.slice(start, start + 2), 16) / 255));
+};
+const linearToHex = (linear) => "#" + linear.map((channel) => Math.round(Math.min(1, Math.max(0, fromLinear(channel))) * 255).toString(16).padStart(2, "0")).join("");
+const simulate = (matrix, [r, g, b]) => [
+	0,
+	3,
+	6
+].map((row) => Math.min(1, Math.max(0, matrix[row] * r + matrix[row + 1] * g + matrix[row + 2] * b)));
+const linearToLab = ([r, g, b]) => {
+	const x = (.4124564 * r + .3575761 * g + .1804375 * b) / .95047;
+	const y = .2126729 * r + .7151522 * g + .072175 * b;
+	const z = (.0193339 * r + .119192 * g + .9503041 * b) / 1.08883;
+	const f = (t) => t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116;
+	return [
+		116 * f(y) - 16,
+		500 * (f(x) - f(y)),
+		200 * (f(y) - f(z))
+	];
+};
+/**
+* CIEDE2000 color difference between two CIELAB colors.
+*
+* @param first  - First color in CIELAB.
+* @param second - Second color in CIELAB.
+* @return ΔE00; about 10 is where two chart categories stop being reliably distinguishable.
+*/
+const deltaE2000 = (first, second) => {
+	const [l1, a1, b1] = first;
+	const [l2, a2, b2] = second;
+	const chromaMean = (Math.hypot(a1, b1) + Math.hypot(a2, b2)) / 2;
+	const g = .5 * (1 - Math.sqrt(chromaMean ** 7 / (chromaMean ** 7 + 25 ** 7)));
+	const a1p = a1 * (1 + g);
+	const a2p = a2 * (1 + g);
+	const c1p = Math.hypot(a1p, b1);
+	const c2p = Math.hypot(a2p, b2);
+	const hueOf = (a, b) => a === 0 && b === 0 ? 0 : (Math.atan2(b, a) / DEGREES + 360) % 360;
+	const h1p = hueOf(a1p, b1);
+	const h2p = hueOf(a2p, b2);
+	const chromatic = c1p * c2p !== 0;
+	let hueDelta = chromatic ? h2p - h1p : 0;
+	if (hueDelta > 180) hueDelta -= 360;
+	else if (hueDelta < -180) hueDelta += 360;
+	const lightnessDelta = l2 - l1;
+	const chromaDelta = c2p - c1p;
+	const hueDifference = 2 * Math.sqrt(c1p * c2p) * Math.sin(hueDelta * DEGREES / 2);
+	const lightnessMean = (l1 + l2) / 2;
+	const chromaMeanPrime = (c1p + c2p) / 2;
+	let hueMean = h1p + h2p;
+	if (chromatic) {
+		if (Math.abs(h1p - h2p) > 180) hueMean += hueMean < 360 ? 360 : -360;
+		hueMean /= 2;
+	}
+	const t = 1 - .17 * Math.cos((hueMean - 30) * DEGREES) + .24 * Math.cos(2 * hueMean * DEGREES) + .32 * Math.cos((3 * hueMean + 6) * DEGREES) - .2 * Math.cos((4 * hueMean - 63) * DEGREES);
+	const lightnessScale = 1 + .015 * (lightnessMean - 50) ** 2 / Math.sqrt(20 + (lightnessMean - 50) ** 2);
+	const chromaScale = 1 + .045 * chromaMeanPrime;
+	const hueScale = 1 + .015 * chromaMeanPrime * t;
+	const rotation = -2 * Math.sqrt(chromaMeanPrime ** 7 / (chromaMeanPrime ** 7 + 25 ** 7)) * Math.sin(60 * Math.exp(-(((hueMean - 275) / 25) ** 2)) * DEGREES);
+	const lightnessTerm = lightnessDelta / lightnessScale;
+	const chromaTerm = chromaDelta / chromaScale;
+	const hueTerm = hueDifference / hueScale;
+	return Math.sqrt(lightnessTerm ** 2 + chromaTerm ** 2 + hueTerm ** 2 + rotation * chromaTerm * hueTerm);
+};
+/**
+* A hex color in CIELAB as seen in normal vision, under deuteranopia and under protanopia.
+*
+* @param  hex - Six-digit hex color.
+* @return The three views.
+* @throws {Error} if hex string is malformed
+*/
+const hexToViews = (hex) => {
+	const linear = hexToLinear(hex);
+	return [
+		linearToLab(linear),
+		linearToLab(simulate(DEUTERANOPIA, linear)),
+		linearToLab(simulate(PROTANOPIA, linear))
+	];
+};
+/**
+* The smallest ΔE00 between two colors across the three views.
+*
+* @param first  - First color's views.
+* @param second - Second color's views.
+* @return The distance in the view where the two are hardest to tell apart.
+*/
+const viewDistance = (first, second) => Math.min(deltaE2000(first[0], second[0]), deltaE2000(first[1], second[1]), deltaE2000(first[2], second[2]));
+/**
+* Convert an OKLCH color to sRGB hex.
+*
+* @param lightness - OKLab L, 0 to 1.
+* @param chroma    - OKLCH C.
+* @param hue       - Hue in degrees.
+* @return Hex color, or null when the color is outside the sRGB gamut.
+*/
+const oklchToHex = (lightness, chroma, hue) => {
+	const a = chroma * Math.cos(hue * DEGREES);
+	const b = chroma * Math.sin(hue * DEGREES);
+	const l = (lightness + .3963377774 * a + .2158037573 * b) ** 3;
+	const m = (lightness - .1055613458 * a - .0638541728 * b) ** 3;
+	const s = (lightness - .0894841775 * a - 1.291485548 * b) ** 3;
+	const linear = [
+		4.0767416621 * l - 3.3077633306 * m + .2309645873 * s,
+		-1.2684380046 * l + 2.6097574011 * m - .3413193965 * s,
+		-.0041960863 * l - .7034186147 * m + 1.707614701 * s
+	];
+	if (linear.some((channel) => channel < -1e-4 || channel > 1.0001)) return null;
+	return linearToHex(linear);
+};
+/**
+* OKLCH chroma and hue of a hex color.
+*
+* @param  hex - Six-digit hex color.
+* @return Chroma, and hue in degrees from 0 to 360.
+* @throws {Error} if hex string is malformed
+*/
+const hexToOklch = (hex) => {
+	const [r, g, b] = hexToLinear(hex);
+	const l = Math.cbrt(.4122214708 * r + .5363325363 * g + .0514459929 * b);
+	const m = Math.cbrt(.2119034982 * r + .6806995451 * g + .1073969566 * b);
+	const s = Math.cbrt(.0883024619 * r + .2817188376 * g + .6299787005 * b);
+	const a = 1.9779984951 * l - 2.428592205 * m + .4505937099 * s;
+	const bAxis = .0259040371 * l + .7827717662 * m - .808675766 * s;
+	return {
+		chroma: Math.hypot(a, bAxis),
+		hue: (Math.atan2(bAxis, a) / DEGREES + 360) % 360
+	};
+};
+/**
+* WCAG contrast ratio between two relative luminances.
+*
+* @param first  - First relative luminance.
+* @param second - Second relative luminance.
+* @return Ratio from 1 to 21.
+*/
+const luminanceContrastRatio = (first, second) => (Math.max(first, second) + .05) / (Math.min(first, second) + .05);
+/**
+* WCAG contrast ratio between two hex colors.
+*
+* @param  first  - First hex color.
+* @param  second - Second hex color.
+* @return Ratio from 1 to 21.
+* @throws {Error} if either hex string is malformed
+*/
+const contrastRatio = (first, second) => luminanceContrastRatio(relativeLuminance(first), relativeLuminance(second));
+/** WCAG 1.4.3 text contrast, which a label drawn on a fill needs from at least one label color. */
+const MIN_LABEL_CONTRAST = 4.5;
+/** Degrees of hue one unit of OKLCH chroma is worth when ranking candidates by hue. */
+const CHROMA_WEIGHT = 300;
+/** ΔE00 one unit of OKLCH chroma is worth when ranking candidates by distance. */
+const FAR_CHROMA_WEIGHT = 100;
+const toCandidate = (hex, oklch = hexToOklch(hex)) => ({
+	hex,
+	views: hexToViews(hex),
+	luminance: relativeLuminance(hex),
+	hue: oklch.hue,
+	chroma: oklch.chroma
+});
+const rank = (candidate, distance, anchorHue) => anchorHue === null ? -(distance + candidate.chroma * FAR_CHROMA_WEIGHT) : (candidate.hue - anchorHue + 360) % 360 - candidate.chroma * CHROMA_WEIGHT;
+const LIGHTNESS_STEPS = Array.from({ length: 13 }, (_, step) => .45 + step * .025);
+const CHROMA_STEPS = [
+	.12,
+	.15,
+	.18,
+	.21
+];
+const HUE_STEPS = Array.from({ length: 72 }, (_, step) => step * 5);
+let candidateGrid = null;
+const getCandidateGrid = () => {
+	if (!candidateGrid) {
+		const seen = /* @__PURE__ */ new Set();
+		candidateGrid = [];
+		for (const lightness of LIGHTNESS_STEPS) for (const chroma of CHROMA_STEPS) for (const hue of HUE_STEPS) {
+			const hex = oklchToHex(lightness, chroma, hue);
+			if (hex && !seen.has(hex)) {
+				seen.add(hex);
+				candidateGrid.push(toCandidate(hex, {
+					hue,
+					chroma
+				}));
+			}
+		}
+	}
+	return candidateGrid;
+};
+const legiblePools = /* @__PURE__ */ new Map();
+const legibleCandidatesFor = (rawBackground, labelColors) => {
+	const background = rawBackground.toLowerCase();
+	const key = [background, ...labelColors.map((hex) => hex.toLowerCase())].join("|");
+	let pool = legiblePools.get(key);
+	if (!pool) {
+		const backgroundLuminance = relativeLuminance(background);
+		const labelLuminances = labelColors.map(relativeLuminance);
+		const onBackground = getCandidateGrid().filter((candidate) => luminanceContrastRatio(candidate.luminance, backgroundLuminance) >= 3);
+		const underLabels = onBackground.filter((candidate) => labelLuminances.some((labelLuminance) => luminanceContrastRatio(candidate.luminance, labelLuminance) >= MIN_LABEL_CONTRAST));
+		pool = underLabels.length > 0 ? underLabels : onBackground;
+		legiblePools.set(key, pool);
+	}
+	return pool;
+};
+/**
+* Build a tracker for a candidate pool, seeding each unused candidate's nearest distance against
+* every color already in the palette.
+*
+* @param pool      - Candidates to track, in selection-priority order.
+* @param palette   - Colors already placed.
+* @param usedHexes - Hex values already placed; a used candidate's distance is never read.
+* @return The tracker.
+*/
+const buildTracker = (pool, palette, usedHexes) => {
+	const nearest = new Float64Array(pool.length).fill(Infinity);
+	for (let i = 0; i < pool.length; i++) {
+		if (usedHexes.has(pool[i].hex)) continue;
+		for (const color of palette) {
+			const distance = viewDistance(pool[i].views, color.views);
+			if (distance < nearest[i]) nearest[i] = distance;
+		}
+	}
+	return {
+		pool,
+		nearest
+	};
+};
+/**
+* Fold one newly placed color into a tracker's nearest distances.
+*
+* @param tracker    - Tracker to update.
+* @param addedColor - Color just added to the palette.
+* @param usedHexes  - Hex values already placed; a used candidate's distance is never read.
+*/
+const updateTracker = (tracker, addedColor, usedHexes) => {
+	for (let i = 0; i < tracker.pool.length; i++) {
+		if (usedHexes.has(tracker.pool[i].hex)) continue;
+		const distance = viewDistance(tracker.pool[i].views, addedColor.views);
+		if (distance < tracker.nearest[i]) tracker.nearest[i] = distance;
+	}
+};
+/**
+* Pick the next color: the best-ranked unused candidate that clears `PREFERRED_SEPARATION` from
+* every earlier color; otherwise the farthest candidate.
+*
+* @param tracker   - Tracker to read.
+* @param usedHexes - Hex values already placed; a used candidate is never picked.
+* @param anchorHue - Hue to walk the wheel from, or null to rank by distance.
+* @return The picked candidate, or null if every candidate in the pool is used.
+*/
+const pickNext = (tracker, usedHexes, anchorHue) => {
+	let farthestIndex = -1;
+	let farthestDistance = -Infinity;
+	let preferredIndex = -1;
+	let preferredRank = Infinity;
+	for (let i = 0; i < tracker.pool.length; i++) {
+		if (usedHexes.has(tracker.pool[i].hex)) continue;
+		const distance = tracker.nearest[i];
+		if (distance > farthestDistance) {
+			farthestDistance = distance;
+			farthestIndex = i;
+		}
+		if (distance >= 12) {
+			const candidateRank = rank(tracker.pool[i], distance, anchorHue);
+			if (candidateRank < preferredRank || candidateRank === preferredRank && distance > tracker.nearest[preferredIndex]) {
+				preferredRank = candidateRank;
+				preferredIndex = i;
+			}
+		}
+	}
+	const index = preferredIndex === -1 ? farthestIndex : preferredIndex;
+	return index === -1 ? null : tracker.pool[index];
+};
+const generators = /* @__PURE__ */ new Map();
+const MAX_CACHED_GENERATORS = 32;
+/**
+* Build the series palette: the seeds, then colors that stay apart from every earlier color in
+* normal vision and under deuteranopia and protanopia.
+*
+* @param seeds       - Resolved hex palette slots, in slot order.
+* @param background  - Resolved hex chart background.
+* @param labelColors - Resolved hex label colors that may be drawn on a fill; each generated color reaches `MIN_LABEL_CONTRAST` with one of them.
+* @return The color at a palette index.
+*/
+const createPaletteGenerator = (seeds, background, labelColors = []) => {
+	const normalizedSeeds = seeds.map((hex) => hex.toLowerCase());
+	const normalizedBackground = background.toLowerCase();
+	const normalizedLabels = labelColors.map((hex) => hex.toLowerCase());
+	const key = `${normalizedSeeds.join(",")}|${normalizedBackground}|${normalizedLabels.join(",")}`;
+	let colorAt = generators.get(key);
+	if (!colorAt) {
+		if (generators.size >= MAX_CACHED_GENERATORS) generators.delete(generators.keys().next().value);
+		colorAt = buildPaletteGenerator(normalizedSeeds, normalizedBackground, normalizedLabels);
+		generators.set(key, colorAt);
+	}
+	return colorAt;
+};
+const buildPaletteGenerator = (normalizedSeeds, background, labelColors) => {
+	const palette = normalizedSeeds.map((hex) => toCandidate(hex));
+	const usedHexes = new Set(normalizedSeeds);
+	const anchorHue = palette.length > 0 ? palette[0].hue : null;
+	let legibleTracker = null;
+	let legibleExhausted = false;
+	let gridTracker = null;
+	let gridExhausted = false;
+	let placedBeforeExhaustion = 0;
+	let repeatCount = 0;
+	const nextColor = () => {
+		const walkHue = (palette.length - normalizedSeeds.length) % 2 === 1 ? anchorHue : null;
+		if (!legibleExhausted) {
+			legibleTracker ??= buildTracker(legibleCandidatesFor(background, labelColors), palette, usedHexes);
+			const picked = pickNext(legibleTracker, usedHexes, walkHue);
+			if (picked) return picked;
+			legibleExhausted = true;
+		}
+		if (!gridExhausted) {
+			gridTracker ??= buildTracker(getCandidateGrid(), palette, usedHexes);
+			const picked = pickNext(gridTracker, usedHexes, walkHue);
+			if (picked) return picked;
+			gridExhausted = true;
+			placedBeforeExhaustion = palette.length;
+		}
+		const repeated = palette[repeatCount % placedBeforeExhaustion];
+		repeatCount++;
+		return repeated;
+	};
+	return (index) => {
+		if (index < palette.length) return palette[index].hex;
+		while (palette.length <= index) {
+			const next = nextColor();
+			usedHexes.add(next.hex);
+			palette.push(next);
+			if (legibleTracker && !legibleExhausted) updateTracker(legibleTracker, next, usedHexes);
+			if (gridTracker && !gridExhausted) updateTracker(gridTracker, next, usedHexes);
+		}
+		return palette[index].hex;
+	};
+};
 //#endregion
 //#region src/providers/chart-context/themes.ts
 /**
@@ -990,6 +1268,13 @@ const defaultTheme = {
 };
 //#endregion
 //#region src/providers/chart-context/global-charts-provider.tsx
+const resolveOpaqueHex = (pointer, element) => {
+	const raw = resolveCssVariable(pointer, element);
+	if (!raw || (0, _visx_vendor_d3_color.color)(raw)?.opacity !== 1) return null;
+	const hex = normalizeColorToHex(pointer, element, resolveCssVariable);
+	return isValidHexColor(hex) ? hex : null;
+};
+const PLACEHOLDER_LABEL_COLORS = [LABEL_FALLBACK, LABEL_INVERSE_FALLBACK];
 const GlobalChartsContext = (0, react.createContext)(null);
 const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 	const [charts, setCharts] = (0, react.useState)(() => /* @__PURE__ */ new Map());
@@ -1004,50 +1289,32 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 	const providerTheme = (0, react.useMemo)(() => theme ? mergeThemes(defaultTheme, theme) : defaultTheme, [theme]);
 	const [colorCache, setColorCache] = (0, react.useState)(() => ({
 		colors: [],
-		hues: [],
-		existingHslColors: [],
-		minHue: 360,
-		maxHue: 0
+		background: BACKGROUND_FALLBACK,
+		labelColors: PLACEHOLDER_LABEL_COLORS,
+		colorAt: createPaletteGenerator([SERIES_SLOT_1_FALLBACK], BACKGROUND_FALLBACK, PLACEHOLDER_LABEL_COLORS)
 	}));
 	const [isColorPaletteResolved, setIsColorPaletteResolved] = (0, react.useState)(false);
 	(0, react.useLayoutEffect)(() => {
 		setIsColorPaletteResolved(false);
 		const resolvedColors = [];
-		const hues = [];
-		const existingHslColors = [];
-		let minHue = 360;
-		let maxHue = 0;
 		for (const color of SERIES_PALETTE_POINTERS) {
 			const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
-			if (normalizedColor.startsWith("#")) {
-				resolvedColors.push(normalizedColor);
-				const hslColor = (0, _visx_vendor_d3_color.hsl)(normalizedColor);
-				if (!isNaN(hslColor.h)) {
-					const hslTuple = [
-						hslColor.h,
-						hslColor.s * 100,
-						hslColor.l * 100
-					];
-					hues.push(hslTuple[0]);
-					existingHslColors.push(hslTuple);
-					minHue = Math.min(minHue, hslTuple[0]);
-					maxHue = Math.max(maxHue, hslTuple[0]);
-				}
-			}
+			if (isValidHexColor(normalizedColor)) resolvedColors.push(normalizedColor);
 		}
+		const backgroundHex = resolveOpaqueHex(CATALOG_POINTERS.background, wrapperRef.current) ?? "#ffffff";
+		const labelColors = [CATALOG_POINTERS.label, CATALOG_POINTERS.labelInverse].map((pointer) => resolveOpaqueHex(pointer, wrapperRef.current)).filter((hex) => hex !== null);
 		setColorCache({
 			colors: resolvedColors,
-			hues,
-			existingHslColors,
-			minHue,
-			maxHue
+			background: backgroundHex,
+			labelColors,
+			colorAt: createPaletteGenerator(resolvedColors, backgroundHex, labelColors)
 		});
 	}, []);
 	(0, react.useEffect)(() => {
 		if (colorCache.colors.length > 0) setIsColorPaletteResolved(true);
 	}, [colorCache]);
 	const [groupToColorMap, setGroupToColorMap] = (0, react.useState)(() => /* @__PURE__ */ new Map());
-	const paletteKey = colorCache.colors.join(",");
+	const paletteKey = `${colorCache.colors.join(",")}|${colorCache.background}|${colorCache.labelColors.join(",")}`;
 	(0, react.useEffect)(() => {
 		setGroupToColorMap(/* @__PURE__ */ new Map());
 	}, [paletteKey]);
@@ -1070,11 +1337,11 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 			const existing = groupToColorMap.get(group);
 			if (existing) return existing;
 			const assignedCount = groupToColorMap.size;
-			const color = getChartColor(assignedCount, colorCache);
+			const color = colorCache.colorAt(assignedCount);
 			groupToColorMap.set(group, color);
 			return color;
 		}
-		return getChartColor(index, colorCache);
+		return colorCache.colorAt(index);
 	}, [colorCache, groupToColorMap]);
 	const getElementStyles = (0, react.useCallback)(({ data, index, overrideColor, legendShape }) => {
 		const isSeriesData = data && typeof data === "object" && "data" in data;
@@ -1238,39 +1505,6 @@ const useDeepMemo = (value) => {
 	const ref = (0, react.useRef)(value);
 	if (!(0, import_fast_deep_equal.default)(ref.current, value)) ref.current = value;
 	return ref.current;
-};
-//#endregion
-//#region src/providers/chart-context/private/catalog-pointers.ts
-const CATALOG_POINTERS = {
-	background: "var(--a8c-charts-color-background, #fff)",
-	labelAxis: "var(--a8c-charts-color-label-axis, #1e1e1e)",
-	grid: "var(--a8c-charts-color-grid, #dbdbdb)",
-	axisX: "var(--a8c-charts-color-axis-x, #dbdbdb)",
-	tickX: "var(--a8c-charts-color-tick-x, #dbdbdb)",
-	axisY: "var(--a8c-charts-color-axis-y, none)",
-	tickY: "var(--a8c-charts-color-tick-y, none)",
-	annotation: "var(--a8c-charts-color-annotation, #1e1e1e)",
-	surface: "var(--a8c-charts-color-surface, #fff)",
-	surfaceSecondary: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
-	trendUp: "var(--a8c-charts-color-trend-up, #008030)",
-	trendDown: "var(--a8c-charts-color-trend-down, #cc1818)",
-	series: SERIES_PALETTE_POINTERS
-};
-/**
-* The annotation parts visx paints, in the shape `@visx/annotation` takes. `radius`
-* rides along as the base the theme and the per-datum styles merge onto.
-*/
-const ANNOTATION_POINTERS = {
-	label: {
-		anchorLineStroke: CATALOG_POINTERS.annotation,
-		backgroundFill: CATALOG_POINTERS.surface
-	},
-	connector: { stroke: CATALOG_POINTERS.annotation },
-	circleSubject: {
-		stroke: "transparent",
-		fill: CATALOG_POINTERS.annotation,
-		radius: 5
-	}
 };
 //#endregion
 //#region src/providers/chart-scope/use-chart-scope-element.ts
@@ -2958,7 +3192,7 @@ function useChartChildren(children, chartType) {
 var chart_layout_module_default = { "chart-layout__content": "a8ccharts-fpNVAq-chart-layout__content" };
 //#endregion
 //#region src/charts/private/chart-layout/chart-layout.tsx
-const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, trailingContent, onContentHeightChange, gap, className, style, "data-testid": dataTestId, "data-chart-id": dataChartId }) => {
+const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, trailingContent, onContentHeightChange, gap, className, rootRef, style, "data-testid": dataTestId, "data-chart-id": dataChartId }) => {
 	const [contentRef, contentWidth, contentHeight] = useElementSize();
 	const isRenderProp = typeof children === "function";
 	const isMeasured = contentHeight > 0;
@@ -2977,6 +3211,7 @@ const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, 
 		isMeasured
 	}) : children;
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_wordpress_ui.Stack, {
+		ref: rootRef,
 		direction: "column",
 		gap,
 		className,
@@ -11485,6 +11720,7 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 var pie_chart_module_default = {
 	"pie-chart__label-plate": "a8ccharts-gnszbG-pie-chart__label-plate",
 	"pie-chart__label-text": "a8ccharts-gnszbG-pie-chart__label-text",
+	"pie-chart__label-text--on-light": "a8ccharts-gnszbG-pie-chart__label-text--on-light",
 	"pie-chart__plot": "a8ccharts-gnszbG-pie-chart__plot",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
@@ -11529,6 +11765,25 @@ const validateData$1 = (data) => {
 	};
 };
 /**
+* Whether a pie slice's label should use the dark `label` role instead of the default `label-inverse` role.
+*
+* A label plate always wins: the text sits on the plate, not the slice fill, so it never flips.
+* Otherwise the role that contrasts more with the resolved slice fill wins. `null` pointers (not
+* yet resolved, or labels off) keep the default inverse role.
+*
+* @param fill     - The slice's resolved fill color.
+* @param pointers - The label pointers, resolved at the chart's own root element.
+* @return Whether the label needs dark text.
+*/
+const labelNeedsDarkText = (fill, pointers) => {
+	if (!pointers || pointers.hasPlate) return false;
+	const fillHex = normalizeColorToHex(fill);
+	if (!isValidHexColor(fillHex) || !isValidHexColor(pointers.labelHex)) return false;
+	if (pointers.isInverseSeeThrough) return true;
+	if (!isValidHexColor(pointers.labelInverseHex)) return false;
+	return contrastRatio(fillHex, pointers.labelHex) > contrastRatio(fillHex, pointers.labelInverseHex);
+};
+/**
 * Renders a pie or donut chart using the provided data.
 *
 * @param {PieChartProps} props - Component props
@@ -11542,11 +11797,36 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = (0, _visx_tooltip.useTooltip)();
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const containerRef = (0, react.useRef)(null);
+	const rootRef = (0, react.useRef)(null);
+	const [labelPointers, setLabelPointers] = (0, react.useState)(null);
 	const onMouseLeave = (0, react.useCallback)(() => {
 		if (!withTooltips) return;
 		hideTooltip();
 	}, [withTooltips, hideTooltip]);
-	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
+	const { getElementStyles, isSeriesVisible, isColorPaletteResolved } = useGlobalChartsContext();
+	const { isValid, message } = validateData$1(data);
+	(0, react.useLayoutEffect)(() => {
+		if (!showLabels || !rootRef.current) return;
+		const resolve = createCssVariableResolver(rootRef.current);
+		const rawLabelBackground = resolve(CATALOG_POINTERS.labelBackground);
+		const rawLabel = resolve(CATALOG_POINTERS.label);
+		const isLabelOpaque = rawLabel ? (0, _visx_vendor_d3_color.color)(rawLabel)?.opacity === 1 : false;
+		const rawLabelInverse = resolve(CATALOG_POINTERS.labelInverse);
+		const labelInverseColor = rawLabelInverse ? (0, _visx_vendor_d3_color.color)(rawLabelInverse) : null;
+		const plateColor = rawLabelBackground ? (0, _visx_vendor_d3_color.color)(rawLabelBackground) : null;
+		const next = {
+			hasPlate: rawLabelBackground ? !plateColor || plateColor.opacity > 0 : false,
+			labelHex: isLabelOpaque ? normalizeColorToHex(CATALOG_POINTERS.label, null, resolve) : "",
+			labelInverseHex: normalizeColorToHex(CATALOG_POINTERS.labelInverse, null, resolve),
+			isInverseSeeThrough: labelInverseColor ? labelInverseColor.opacity < 1 : false
+		};
+		setLabelPointers((previous) => previous && previous.hasPlate === next.hasPlate && previous.labelHex === next.labelHex && previous.labelInverseHex === next.labelInverseHex && previous.isInverseSeeThrough === next.isInverseSeeThrough ? previous : next);
+	}, [
+		showLabels,
+		className,
+		isColorPaletteResolved,
+		isValid
+	]);
 	const dataWithPercentages = useDataWithPercentages(data);
 	const { visibleData, allSegmentsHidden, legendData } = useLegendVisibilityData({
 		data: dataWithPercentages,
@@ -11557,7 +11837,6 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		showValues: true,
 		legendValueDisplay
 	}), [legendValueDisplay]));
-	const { isValid, message } = validateData$1(data);
 	const { svgChildren, htmlChildren, legendChildren, otherChildren } = useChartChildren(children, "PieChart");
 	const chartMetadata = (0, react.useMemo)(() => ({
 		thickness,
@@ -11619,6 +11898,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 			legendElement,
 			legendChildren,
 			gap,
+			rootRef,
 			className: (0, clsx.default)("pie-chart", pie_chart_module_default["pie-chart"], { [pie_chart_module_default["pie-chart--responsive"]]: !propWidth && !propHeight }, className),
 			style: {
 				width: propWidth || void 0,
@@ -11680,9 +11960,10 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 												tooltipTop: event.clientY - bounds.top + tooltipOffsetY
 											});
 										};
+										const fill = accessors.fill(arc.data);
 										const pathProps = {
 											d: pie.path(arc) || "",
-											fill: accessors.fill(arc.data),
+											fill,
 											"data-testid": "pie-segment"
 										};
 										const groupProps = {};
@@ -11710,7 +11991,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 												ry: 4,
 												pointerEvents: "none"
 											}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("text", {
-												className: pie_chart_module_default["pie-chart__label-text"],
+												className: (0, clsx.default)(pie_chart_module_default["pie-chart__label-text"], { [pie_chart_module_default["pie-chart__label-text--on-light"]]: labelNeedsDarkText(fill, labelPointers) }),
 												x: centroidX,
 												y: centroidY,
 												dy: ".33em",
