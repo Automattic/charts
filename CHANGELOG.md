@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- GeoChart: Add a `domain` prop that draws disputed borders from a given country's viewpoint.
+
 ### Deprecated
 - Deprecate getColorDistance, which is not perceptual and is no longer used to generate palette colors.
 

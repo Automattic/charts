@@ -7343,12 +7343,13 @@ function normalizeGeoChartError(eventArgs) {
 * @param props.height            - Height of the chart in pixels
 * @param props.region            - Region to display ('world', 'US', or ISO 3166-1 alpha-2 code)
 * @param props.resolution        - Resolution level ('countries', 'provinces', or 'metros')
+* @param props.domain            - Country code whose viewpoint sets the disputed borders
 * @param props.onError           - Optional callback for Google Charts errors
 * @param props.className         - Additional CSS class name for the chart container
 * @param props.renderPlaceholder - Optional render function for the loading placeholder
 * @return A React component displaying an interactive map with data visualization
 */
-const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", onError, renderPlaceholder }) => {
+const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", domain, onError, renderPlaceholder }) => {
 	const { getElementStyles } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const containerRef = useRef(null);
@@ -7412,6 +7413,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 	const options = useMemo(() => ({
 		...region !== "world" && { region },
 		...resolution !== "countries" && { resolution },
+		...domain && { domain },
 		colorAxis: { colors: [lightColorHex, fullColorHex] },
 		backgroundColor: backgroundColorHex,
 		datalessRegionColor: defaultFillColorHex,
@@ -7425,6 +7427,7 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 	}), [
 		region,
 		resolution,
+		domain,
 		lightColorHex,
 		fullColorHex,
 		backgroundColorHex,

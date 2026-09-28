@@ -1290,6 +1290,11 @@ interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | '
    */
   resolution?: GeoResolution;
   /**
+   * ISO 3166-1 alpha-2 code of the country whose viewpoint sets the disputed borders
+   * (e.g., 'IN' draws Kashmir as India shows it). Google's default borders apply when omitted.
+   */
+  domain?: string;
+  /**
    * Callback fired when Google Charts emits a chart error.
    */
   onError?: (error: GeoChartError) => void;
