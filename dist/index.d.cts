@@ -4,7 +4,7 @@ import { AxisRendererProps, AxisScale, Orientation, TickFormatter } from "@visx/
 import { PickD3Scale, ScaleInput, ScaleType } from "@visx/scale";
 import { TextProps } from "@visx/text";
 import { EventHandlerParams, EventHandlerParams as EventHandlerParams$1, GlyphProps, GridStyles, GridStyles as GridStyles$1, LineStyles, LineStyles as LineStyles$1, TooltipContextType } from "@visx/xychart";
-import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
+import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, JSX, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
 import { TooltipProps as TooltipProps$1, UseTooltipPortalOptions } from "@visx/tooltip";
 import { PieProvidedProps } from "@visx/shape";
 //#region src/types.d.ts
@@ -2232,7 +2232,7 @@ type TrendIndicatorProps = {
  * @param {TrendIndicatorProps} props - Component props
  * @return {JSX.Element} The rendered trend indicator
  */
-declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): import("react").JSX.Element;
+declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): JSX.Element;
 //#endregion
 //#region src/providers/chart-context/types.d.ts
 interface ChartRegistration {
