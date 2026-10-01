@@ -618,8 +618,16 @@
   font-size: var(--wpds-typography-font-size-md, 13px);
 }
 
-.a8ccharts-O3YMOW-heatmap-chart__cell--strong .a8ccharts-O3YMOW-heatmap-chart__cell-value {
+.a8ccharts-O3YMOW-heatmap-chart__cell-value--inverse {
   color: var(--a8c-charts-color-label-inverse);
+}
+
+.a8ccharts-O3YMOW-heatmap-chart__cell-value--black {
+  color: #000;
+}
+
+.a8ccharts-O3YMOW-heatmap-chart__cell-value--white {
+  color: #fff;
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__legend-label {
@@ -853,6 +861,14 @@
 
 .a8ccharts-gnszbG-pie-chart__label-text--on-light {
   fill: var(--a8c-charts-color-label, #1e1e1e);
+}
+
+.a8ccharts-gnszbG-pie-chart__label-text--black {
+  fill: #000;
+}
+
+.a8ccharts-gnszbG-pie-chart__label-text--white {
+  fill: #fff;
 }
 .a8ccharts-YtTOxW-pie-semi-circle-chart__plot {
   position: relative;

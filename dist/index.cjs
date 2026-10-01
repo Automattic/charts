@@ -562,7 +562,8 @@ const relativeLuminance = (hex) => {
 * Whether light text reads better than dark text on the given background, using the W3C
 * luminance threshold (0.179) that maximizes contrast against black vs white.
 *
-* @param backgroundHex - Hex background color
+* @deprecated Assumes black and white text, so it ignores label role overrides and cannot guarantee AA; charts no longer use it, and it will be removed in a future major version.
+* @param      backgroundHex - Hex background color
 * @return true if light text should be used; false (dark text) for malformed colors
 */
 const prefersLightText = (backgroundHex) => {
@@ -881,14 +882,27 @@ const PROTANOPIA = [
 const DEGREES = Math.PI / 180;
 const toLinear = (channel) => channel <= .04045 ? channel / 12.92 : Math.pow((channel + .055) / 1.055, 2.4);
 const fromLinear = (channel) => channel <= .0031308 ? 12.92 * channel : 1.055 * Math.pow(channel, 1 / 2.4) - .055;
-const hexToLinear = (hex) => {
+/**
+* The sRGB channels of a hex color.
+*
+* @param  hex - A six-digit hex color.
+* @return Channels from 0 to 255.
+* @throws {Error} if the hex string is malformed
+*/
+const hexToRgb = (hex) => {
 	validateHexColor(hex);
-	return [
+	const [r, g, b] = [
 		1,
 		3,
 		5
-	].map((start) => toLinear(parseInt(hex.slice(start, start + 2), 16) / 255));
+	].map((start) => parseInt(hex.slice(start, start + 2), 16));
+	return [
+		r,
+		g,
+		b
+	];
 };
+const hexToLinear = (hex) => hexToRgb(hex).map((channel) => toLinear(channel / 255));
 const linearToHex = (linear) => "#" + linear.map((channel) => Math.round(Math.min(1, Math.max(0, fromLinear(channel))) * 255).toString(16).padStart(2, "0")).join("");
 const simulate = (matrix, [r, g, b]) => [
 	0,
@@ -1014,6 +1028,35 @@ const hexToOklch = (hex) => {
 	};
 };
 /**
+* `foreground` over `background` at `weight`, left unrounded as CSS `color-mix` and alpha compositing leave it.
+*
+* A mix rounded to hex can land on the other side of a contrast threshold from the fill the browser paints.
+*
+* @param foreground - The color weighted by `weight`.
+* @param background - The color it is mixed over.
+* @param weight     - Share of `foreground`, from 0 to 1.
+* @return The mixed channels.
+*/
+const blendRgb = (foreground, background, weight) => {
+	const share = Math.min(1, Math.max(0, weight));
+	const [r, g, b] = foreground.map((channel, i) => background[i] + (channel - background[i]) * share);
+	return [
+		r,
+		g,
+		b
+	];
+};
+/**
+* WCAG relative luminance of unrounded sRGB channels.
+*
+* @param rgb - Channels from 0 to 255.
+* @return Relative luminance from 0 to 1.
+*/
+const rgbLuminance = (rgb) => {
+	const [r, g, b] = rgb.map((channel) => toLinear(channel / 255));
+	return .2126 * r + .7152 * g + .0722 * b;
+};
+/**
 * WCAG contrast ratio between two relative luminances.
 *
 * @param first  - First relative luminance.
@@ -1021,15 +1064,6 @@ const hexToOklch = (hex) => {
 * @return Ratio from 1 to 21.
 */
 const luminanceContrastRatio = (first, second) => (Math.max(first, second) + .05) / (Math.min(first, second) + .05);
-/**
-* WCAG contrast ratio between two hex colors.
-*
-* @param  first  - First hex color.
-* @param  second - Second hex color.
-* @return Ratio from 1 to 21.
-* @throws {Error} if either hex string is malformed
-*/
-const contrastRatio = (first, second) => luminanceContrastRatio(relativeLuminance(first), relativeLuminance(second));
 /** WCAG 1.4.3 text contrast, which a label drawn on a fill needs from at least one label color. */
 const MIN_LABEL_CONTRAST = 4.5;
 /** Degrees of hue one unit of OKLCH chroma is worth when ranking candidates by hue. */
@@ -1976,6 +2010,9 @@ function usePrefersReducedMotion() {
 	}, []);
 	return prefersReducedMotion;
 }
+//#endregion
+//#region src/hooks/use-isomorphic-layout-effect.ts
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? react.useLayoutEffect : react.useEffect;
 //#endregion
 //#region src/providers/chart-context/hooks/use-chart-registration.ts
 const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, metadata }) => {
@@ -3058,7 +3095,6 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 };
 //#endregion
 //#region src/providers/chart-context/hooks/use-default-hidden-series.ts
-const useIsomorphicLayoutEffect$1 = typeof window !== "undefined" ? react.useLayoutEffect : react.useEffect;
 /**
 * Seeds a chart's hidden series once per chart ID, the first time the provider
 * sees that ID.
@@ -3079,7 +3115,7 @@ const useDefaultHiddenSeries = (chartId, seriesLabels) => {
 	labelsRef.current = seriesLabels;
 	const hasSeriesLabels = seriesLabels !== void 0;
 	const shouldUseDefaults = hasSeriesLabels && !hasSeededChart(chartId);
-	useIsomorphicLayoutEffect$1(() => {
+	useIsomorphicLayoutEffect(() => {
 		if (labelsRef.current === void 0) return;
 		seedChartHiddenSeries(chartId, labelsRef.current);
 	}, [
@@ -3704,7 +3740,6 @@ var with_responsive_module_default = {
 };
 //#endregion
 //#region src/charts/private/with-responsive/with-responsive.tsx
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? react.useLayoutEffect : react.useEffect;
 /**
 * A higher-order component that provides responsive dimensions
 * to the wrapped chart component using useParentSize from `@visx/responsive`.
@@ -7487,6 +7522,73 @@ let GoogleDataTableColumnRoleType = /* @__PURE__ */ function(GoogleDataTableColu
 	GoogleDataTableColumnRoleType["domain"] = "domain";
 	return GoogleDataTableColumnRoleType;
 }({});
+const resolveRole = (pointer, resolve) => {
+	const raw = resolve(pointer);
+	const parsed = raw ? (0, _visx_vendor_d3_color.color)(raw) : null;
+	if (!parsed) return {
+		kind: "unreadable",
+		raw
+	};
+	const { r, g, b } = parsed.opacity > 0 ? parsed.rgb() : {
+		r: 0,
+		g: 0,
+		b: 0
+	};
+	return {
+		kind: "color",
+		rgb: [
+			r,
+			g,
+			b
+		],
+		alpha: parsed.opacity
+	};
+};
+/**
+* Reads both label roles at the element the label text inherits from, so JS and CSS agree on what paints.
+*
+* @param resolve - A CSS variable resolver bound to that element.
+* @return The resolved label roles.
+*/
+const resolveLabelRoles = (resolve) => ({
+	label: resolveRole(CATALOG_POINTERS.label, resolve),
+	labelInverse: resolveRole(CATALOG_POINTERS.labelInverse, resolve)
+});
+const roleContrast = (role, fill, fillLuminance) => {
+	if (role.kind === "unreadable") return 0;
+	return luminanceContrastRatio(fillLuminance, rgbLuminance(blendRgb(role.rgb, fill, role.alpha)));
+};
+/**
+* Picks the label color for text drawn on a fill: the role that contrasts more, or black/white when neither reaches AA.
+*
+* Both roles set to one color is a host's choice to keep that color, so it never falls back.
+*
+* @param fill        - The fill the text sits on, as unrounded sRGB channels.
+* @param roles       - The label roles resolved at the chart's element, or null before they are read.
+* @param defaultRole - The role the chart's stylesheet paints when nothing can be decided.
+* @return The color the label should paint with.
+*/
+const pickLabelTextColorForFill = (fill, roles, defaultRole) => {
+	if (!roles || (0, import_fast_deep_equal.default)(roles.label, roles.labelInverse)) return defaultRole;
+	const fillLuminance = rgbLuminance(fill);
+	const labelContrast = roleContrast(roles.label, fill, fillLuminance);
+	const inverseContrast = roleContrast(roles.labelInverse, fill, fillLuminance);
+	if (Math.max(labelContrast, inverseContrast) >= 4.55) return labelContrast > inverseContrast ? "label" : "label-inverse";
+	return luminanceContrastRatio(fillLuminance, 0) > luminanceContrastRatio(fillLuminance, 1) ? "black" : "white";
+};
+/**
+* `pickLabelTextColorForFill` for a fill given as a color.
+*
+* @param fill        - The fill, in any color syntax `normalizeColorToHex` reads.
+* @param roles       - The label roles resolved at the chart's element, or null before they are read.
+* @param defaultRole - The role the chart's stylesheet paints when nothing can be decided.
+* @return The color the label should paint with.
+*/
+const pickLabelTextColor = (fill, roles, defaultRole) => {
+	const fillHex = normalizeColorToHex(fill);
+	if (!isValidHexColor(fillHex)) return defaultRole;
+	return pickLabelTextColorForFill(hexToRgb(fillHex), roles, defaultRole);
+};
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.module.scss
 var heatmap_chart_module_default = {
@@ -7496,9 +7598,11 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__cell--hidden": "a8ccharts-O3YMOW-heatmap-chart__cell--hidden",
 	"heatmap-chart__cell--placeholder": "a8ccharts-O3YMOW-heatmap-chart__cell--placeholder",
 	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
-	"heatmap-chart__cell--strong": "a8ccharts-O3YMOW-heatmap-chart__cell--strong",
 	"heatmap-chart__cell--summary": "a8ccharts-O3YMOW-heatmap-chart__cell--summary",
 	"heatmap-chart__cell-value": "a8ccharts-O3YMOW-heatmap-chart__cell-value",
+	"heatmap-chart__cell-value--black": "a8ccharts-O3YMOW-heatmap-chart__cell-value--black",
+	"heatmap-chart__cell-value--inverse": "a8ccharts-O3YMOW-heatmap-chart__cell-value--inverse",
+	"heatmap-chart__cell-value--white": "a8ccharts-O3YMOW-heatmap-chart__cell-value--white",
 	"heatmap-chart__col-label": "a8ccharts-O3YMOW-heatmap-chart__col-label",
 	"heatmap-chart__col-label--summary": "a8ccharts-O3YMOW-heatmap-chart__col-label--summary",
 	"heatmap-chart__empty": "a8ccharts-O3YMOW-heatmap-chart__empty",
@@ -7792,6 +7896,12 @@ const stepCalendarCell = (grid, blocks, from, key) => {
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_MIX_FLOOR = .15;
+const CELL_VALUE_MODIFIER = {
+	label: void 0,
+	"label-inverse": heatmap_chart_module_default["heatmap-chart__cell-value--inverse"],
+	black: heatmap_chart_module_default["heatmap-chart__cell-value--black"],
+	white: heatmap_chart_module_default["heatmap-chart__cell-value--white"]
+};
 const NO_ROW_LABELS = [];
 const TOOLTIP_BOX_STYLES = {
 	light: {
@@ -7819,6 +7929,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, showTooltip, hideTooltip } = (0, _visx_tooltip.useTooltip)();
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const containerRef = (0, react.useRef)(null);
+	const [labelRoles, setLabelRoles] = (0, react.useState)(null);
 	const getTooltipOrigin = (0, react.useCallback)(() => containerRef.current?.closest(`[data-chart-id="heatmap-chart-${chartId}"]`)?.getBoundingClientRect() ?? null, [chartId]);
 	const { color: primaryColorHex } = getElementStyles({
 		index: 0,
@@ -7826,7 +7937,21 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	});
 	const chartBackgroundHex = normalizeColorToHex(CATALOG_POINTERS.background, scopeElement, resolveCssVariable);
 	const primaryHex = normalizeColorToHex(primaryColorHex);
-	const cellHasLightText = (intensity) => isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) && prefersLightText(mixHexColors(primaryHex, chartBackgroundHex, 1 - (CELL_MIX_FLOOR + .85 * intensity)));
+	const cellMix = isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) ? {
+		primary: hexToRgb(primaryHex),
+		background: hexToRgb(chartBackgroundHex)
+	} : null;
+	const cellTextColor = (intensity) => cellMix ? pickLabelTextColorForFill(blendRgb(cellMix.primary, cellMix.background, CELL_MIX_FLOOR + .85 * intensity), labelRoles, "label") : "label";
+	useIsomorphicLayoutEffect(() => {
+		if (!containerRef.current) return;
+		const next = resolveLabelRoles(createCssVariableResolver(containerRef.current));
+		setLabelRoles((previous) => (0, import_fast_deep_equal.default)(previous, next) ? previous : next);
+	}, [
+		data,
+		className,
+		primaryColorHex,
+		chartBackgroundHex
+	]);
 	const extent = (0, react.useMemo)(() => getValueExtent(data), [data]);
 	const heatmapContext = (0, react.useMemo)(() => ({
 		extent,
@@ -8098,7 +8223,6 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 										"data-row": rowIndex,
 										className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__cell"], {
 											[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: filled,
-											[heatmap_chart_module_default["heatmap-chart__cell--strong"]]: filled && cellHasLightText(normalized),
 											[heatmap_chart_module_default["heatmap-chart__cell--summary"]]: column.summary,
 											...summaryGaps(columnIndex),
 											[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selected?.column === columnIndex && selected?.row === rowIndex
@@ -8110,7 +8234,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 										onMouseMove: handleCellMouseMove,
 										onMouseLeave: handleCellMouseLeave,
 										children: (drawValues || column.summary) && present && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-											className: heatmap_chart_module_default["heatmap-chart__cell-value"],
+											className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__cell-value"], filled && CELL_VALUE_MODIFIER[cellTextColor(normalized)]),
 											children: (0, _automattic_number_formatters.formatNumberCompact)(value)
 										})
 									}, `cell-${columnIndex}-${rowIndex}`);
@@ -11726,7 +11850,9 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 var pie_chart_module_default = {
 	"pie-chart__label-plate": "a8ccharts-gnszbG-pie-chart__label-plate",
 	"pie-chart__label-text": "a8ccharts-gnszbG-pie-chart__label-text",
+	"pie-chart__label-text--black": "a8ccharts-gnszbG-pie-chart__label-text--black",
 	"pie-chart__label-text--on-light": "a8ccharts-gnszbG-pie-chart__label-text--on-light",
+	"pie-chart__label-text--white": "a8ccharts-gnszbG-pie-chart__label-text--white",
 	"pie-chart__plot": "a8ccharts-gnszbG-pie-chart__plot",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
@@ -11770,24 +11896,11 @@ const validateData$1 = (data) => {
 		message: ""
 	};
 };
-/**
-* Whether a pie slice's label should use the dark `label` role instead of the default `label-inverse` role.
-*
-* A label plate always wins: the text sits on the plate, not the slice fill, so it never flips.
-* Otherwise the role that contrasts more with the resolved slice fill wins. `null` pointers (not
-* yet resolved, or labels off) keep the default inverse role.
-*
-* @param fill     - The slice's resolved fill color.
-* @param pointers - The label pointers, resolved at the chart's own root element.
-* @return Whether the label needs dark text.
-*/
-const labelNeedsDarkText = (fill, pointers) => {
-	if (!pointers || pointers.hasPlate) return false;
-	const fillHex = normalizeColorToHex(fill);
-	if (!isValidHexColor(fillHex) || !isValidHexColor(pointers.labelHex)) return false;
-	if (pointers.isInverseSeeThrough) return true;
-	if (!isValidHexColor(pointers.labelInverseHex)) return false;
-	return contrastRatio(fillHex, pointers.labelHex) > contrastRatio(fillHex, pointers.labelInverseHex);
+const LABEL_TEXT_MODIFIER = {
+	label: pie_chart_module_default["pie-chart__label-text--on-light"],
+	"label-inverse": void 0,
+	black: pie_chart_module_default["pie-chart__label-text--black"],
+	white: pie_chart_module_default["pie-chart__label-text--white"]
 };
 /**
 * Renders a pie or donut chart using the provided data.
@@ -11804,7 +11917,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const containerRef = (0, react.useRef)(null);
 	const rootRef = (0, react.useRef)(null);
-	const [labelPointers, setLabelPointers] = (0, react.useState)(null);
+	const [labelRoles, setLabelRoles] = (0, react.useState)(null);
 	const onMouseLeave = (0, react.useCallback)(() => {
 		if (!withTooltips) return;
 		hideTooltip();
@@ -11815,18 +11928,9 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		if (!showLabels || !rootRef.current) return;
 		const resolve = createCssVariableResolver(rootRef.current);
 		const rawLabelBackground = resolve(CATALOG_POINTERS.labelBackground);
-		const rawLabel = resolve(CATALOG_POINTERS.label);
-		const isLabelOpaque = rawLabel ? (0, _visx_vendor_d3_color.color)(rawLabel)?.opacity === 1 : false;
-		const rawLabelInverse = resolve(CATALOG_POINTERS.labelInverse);
-		const labelInverseColor = rawLabelInverse ? (0, _visx_vendor_d3_color.color)(rawLabelInverse) : null;
 		const plateColor = rawLabelBackground ? (0, _visx_vendor_d3_color.color)(rawLabelBackground) : null;
-		const next = {
-			hasPlate: rawLabelBackground ? !plateColor || plateColor.opacity > 0 : false,
-			labelHex: isLabelOpaque ? normalizeColorToHex(CATALOG_POINTERS.label, null, resolve) : "",
-			labelInverseHex: normalizeColorToHex(CATALOG_POINTERS.labelInverse, null, resolve),
-			isInverseSeeThrough: labelInverseColor ? labelInverseColor.opacity < 1 : false
-		};
-		setLabelPointers((previous) => previous && previous.hasPlate === next.hasPlate && previous.labelHex === next.labelHex && previous.labelInverseHex === next.labelInverseHex && previous.isInverseSeeThrough === next.isInverseSeeThrough ? previous : next);
+		const next = (rawLabelBackground ? !plateColor || plateColor.opacity > 0 : false) ? null : resolveLabelRoles(resolve);
+		setLabelRoles((previous) => (0, import_fast_deep_equal.default)(previous, next) ? previous : next);
 	}, [
 		showLabels,
 		className,
@@ -11997,7 +12101,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 												ry: 4,
 												pointerEvents: "none"
 											}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("text", {
-												className: (0, clsx.default)(pie_chart_module_default["pie-chart__label-text"], { [pie_chart_module_default["pie-chart__label-text--on-light"]]: labelNeedsDarkText(fill, labelPointers) }),
+												className: (0, clsx.default)(pie_chart_module_default["pie-chart__label-text"], LABEL_TEXT_MODIFIER[pickLabelTextColor(fill, labelRoles, "label-inverse")]),
 												x: centroidX,
 												y: centroidY,
 												dy: ".33em",
