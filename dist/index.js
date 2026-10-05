@@ -11,11 +11,12 @@ import { tzOffset } from "@date-fns/tz";
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
-import { Tooltip, defaultStyles, useTooltip } from "@visx/tooltip";
+import { Tooltip, useTooltip } from "@visx/tooltip";
 import { createScale, getTicks, scaleBand, scaleCanBeZeroed, scaleOrdinal, scaleTime } from "@visx/scale";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal, LegendShape } from "@visx/legend";
 import { IconButton, Stack, Text as Text$1 } from "@wordpress/ui";
+import { ThemeProvider } from "@wordpress/theme";
 import { createPortal } from "react-dom";
 import { LinearGradient } from "@visx/gradient";
 import { curveCatmullRom, curveLinear, curveMonotoneX } from "@visx/curve";
@@ -1566,15 +1567,13 @@ const useXYChartTheme = (data) => {
 		const resolve = createCssVariableResolver(scopeElement);
 		const resolveColor = (value) => value ? resolve(value) ?? value : value;
 		const paletteColors = [...JSON.parse(seriesColorKey), ...CATALOG_POINTERS.series].map((color) => resolveColor(color)).filter((color) => Boolean(color) && !color.includes("var("));
-		const resolvedLabelColor = resolveColor(CATALOG_POINTERS.labelAxis);
-		const htmlLabelColor = resolvedLabelColor ? normalizeColorToHex(resolvedLabelColor) || resolvedLabelColor : resolvedLabelColor;
 		return buildChartTheme({
 			...theme,
 			gridColor: "",
 			gridColorDark: "",
 			colors: paletteColors,
 			backgroundColor: resolveColor(CATALOG_POINTERS.background),
-			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : void 0,
+			htmlLabel: { color: CATALOG_POINTERS.labelAxis },
 			gridStyles: {
 				...theme.gridStyles,
 				stroke: CATALOG_POINTERS.grid
@@ -2484,6 +2483,30 @@ var base_tooltip_module_default = {
 	"tooltip": "a8ccharts--zY0xG-tooltip"
 };
 //#endregion
+//#region src/components/tooltip/private/tooltip-theme.tsx
+const DEFAULT_SURFACE = "#1e1e1e";
+const TOOLTIP_SURFACE = `var(--a8c-charts-color-tooltip-surface, ${DEFAULT_SURFACE})`;
+const toSeed = (value) => {
+	const parsed = value ? color(value) : null;
+	return parsed && parsed.opacity === 1 ? parsed.formatHex() : DEFAULT_SURFACE;
+};
+/**
+* Themes the tooltip box for its dark surface, as `@wordpress/ui`'s Tooltip themes its popup. The box re-declares the catalog under this theme, so every role it reads is tuned for the surface, whatever theme the chart is in.
+*
+* @param props          - Component props.
+* @param props.children - The tooltip box.
+* @return The themed box.
+*/
+const TooltipTheme = ({ children }) => {
+	const scopeElement = useChartScopeElement();
+	const color = useMemo(() => ({ background: toSeed(resolveCssVariable(TOOLTIP_SURFACE, scopeElement)) }), [scopeElement]);
+	if (!ThemeProvider) return /* @__PURE__ */ jsx(Fragment$1, { children });
+	return /* @__PURE__ */ jsx(ThemeProvider, {
+		color,
+		children
+	});
+};
+//#endregion
 //#region src/components/tooltip/base-tooltip.tsx
 const DefaultTooltipContent = ({ data }) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
 	data?.label,
@@ -2495,10 +2518,9 @@ const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipCon
 		data,
 		className
 	});
-	const standaloneScopeClass = useStandaloneScopeClass();
 	if (!renderContainer) return content;
-	return /* @__PURE__ */ jsx("div", {
-		className: clsx(standaloneScopeClass, base_tooltip_module_default.tooltip),
+	return /* @__PURE__ */ jsx(TooltipTheme, { children: /* @__PURE__ */ jsx("div", {
+		className: clsx(CHART_SCOPE_CLASS, base_tooltip_module_default.tooltip),
 		style: {
 			top,
 			left,
@@ -2506,7 +2528,7 @@ const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipCon
 		},
 		role: "tooltip",
 		children: content
-	});
+	}) });
 };
 //#endregion
 //#region src/components/tooltip/private/bounded-tooltip.tsx
@@ -2520,6 +2542,11 @@ const isClipping = (element) => {
 		overflowX,
 		overflowY
 	].some((value) => value && value !== "visible");
+};
+const findLayoutParent = (node) => {
+	let element = node.parentElement;
+	while (element && getComputedStyle(element).display === "contents") element = element.parentElement;
+	return element;
 };
 const findClippingAncestor = (wrapper) => {
 	let element = wrapper.parentElement;
@@ -2595,19 +2622,20 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * @param props.top        - Anchor y, in wrapper coordinates.
 * @param props.offsetLeft - Gap between the anchor and the box, horizontally.
 * @param props.offsetTop  - Gap between the anchor and the box, vertically.
-* @param props.style      - Box styles; visx's defaults unless `unstyled`.
-* @param props.unstyled   - Skip `style` and leave the box bare.
+* @param props.style      - Inline overrides on the surface; ignored when `unstyled`.
+* @param props.unstyled   - Drop the surface and `style`, leaving the box bare.
+* @param props.className  - Extra classes beside the surface.
 * @param props.children   - Box content.
 * @param props.placement  - Below-axis, beside without vertical flipping, or automatic flipping.
 * @return The tooltip box.
 */
-const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style = defaultStyles, unstyled = false, children, placement = "auto", ...rest }) => {
+const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style, unstyled = false, className, children, placement = "auto", ...rest }) => {
 	const nodeRef = useRef(null);
 	const clipRef = useRef(null);
 	const [position, setPosition] = useState(null);
 	useLayoutEffect(() => {
 		const node = nodeRef.current;
-		const wrapper = node?.parentElement;
+		const wrapper = node && findLayoutParent(node);
 		if (!node || !wrapper) return;
 		if (clipRef.current?.wrapper !== wrapper) clipRef.current = {
 			wrapper,
@@ -2655,8 +2683,9 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 	]);
 	const x = position?.x ?? left + offsetLeft;
 	const y = position?.y ?? top + (placement === "below-axis" ? POINTER_HEIGHT : offsetTop);
-	return /* @__PURE__ */ jsxs(Tooltip, {
+	const box = /* @__PURE__ */ jsxs(Tooltip, {
 		ref: nodeRef,
+		className: clsx(!unstyled && ["a8c-charts-tooltip-scope", base_tooltip_module_default.surface], className),
 		style: {
 			position: "absolute",
 			left: 0,
@@ -2672,13 +2701,14 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 				left: left - x - POINTER_HEIGHT,
 				top: -6,
 				width: 12,
-				height: POINTER_HEIGHT,
+				height: 7,
 				background: "inherit",
-				clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
+				clipPath: `polygon(50% 0, 100% ${POINTER_HEIGHT}px, 100% 100%, 0 100%, 0 ${POINTER_HEIGHT}px)`,
 				pointerEvents: "none"
 			}
 		}), children]
 	});
+	return unstyled ? box : /* @__PURE__ */ jsx(TooltipTheme, { children: box });
 };
 //#endregion
 //#region src/components/tooltip/xy-chart-tooltip.tsx
@@ -2785,13 +2815,20 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 	const marginLeft = margin?.left ?? 0;
 	const TooltipComponent = detectBounds || tooltipPlacement !== "auto" ? BoundedTooltip : Tooltip;
 	const boxStyle = {
-		...defaultStyles,
 		zIndex,
-		backgroundColor: theme?.backgroundColor ?? "white",
-		boxShadow: `0 1px 2px ${isValidHexColor(theme?.htmlLabel?.color) ? `${theme.htmlLabel.color}55` : "#22222255"}`,
-		...theme?.htmlLabel,
 		...style
 	};
+	const themesOwnBox = TooltipComponent === Tooltip && !tooltipProps.unstyled;
+	const box = /* @__PURE__ */ jsx(TooltipComponent, {
+		left: tooltipLeft,
+		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipAnchorTop ?? tooltipTop,
+		style: boxStyle,
+		applyPositionStyle: true,
+		...tooltipProps,
+		className: clsx(themesOwnBox && ["a8c-charts-scope", base_tooltip_module_default.surface], tooltipProps.className),
+		...tooltipPlacement !== "auto" && { placement: tooltipPlacement },
+		children: tooltipContent
+	});
 	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsxs("g", {
 		className: "visx-tooltip-overlay",
 		pointerEvents: "none",
@@ -2818,15 +2855,7 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 			}),
 			glyphs
 		]
-	}), container && createPortal(/* @__PURE__ */ jsx(TooltipComponent, {
-		left: tooltipLeft,
-		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipAnchorTop ?? tooltipTop,
-		style: boxStyle,
-		applyPositionStyle: true,
-		...tooltipProps,
-		...tooltipPlacement !== "auto" && { placement: tooltipPlacement },
-		children: tooltipContent
-	}), container)] });
+	}), container && createPortal(themesOwnBox ? /* @__PURE__ */ jsx(TooltipTheme, { children: box }) : box, container)] });
 };
 /**
 * In-tree replacement for `@visx/xychart`'s `Tooltip`.
@@ -4021,10 +4050,8 @@ var line_chart_module_default = {
 	"line-chart__annotation-label-popover-content": "a8ccharts-inuQka-line-chart__annotation-label-popover-content",
 	"line-chart__annotation-label-trigger-button": "a8ccharts-inuQka-line-chart__annotation-label-trigger-button",
 	"line-chart__annotations-overlay": "a8ccharts-inuQka-line-chart__annotations-overlay",
-	"line-chart__tooltip": "a8ccharts-inuQka-line-chart__tooltip",
 	"line-chart__tooltip-date": "a8ccharts-inuQka-line-chart__tooltip-date",
 	"line-chart__tooltip-label": "a8ccharts-inuQka-line-chart__tooltip-label",
-	"line-chart__tooltip-row": "a8ccharts-inuQka-line-chart__tooltip-row",
 	"line-chart--animated": "a8ccharts-inuQka-line-chart--animated",
 	"rise": "a8ccharts-inuQka-rise"
 };
@@ -4551,11 +4578,10 @@ const TooltipDate = ({ date, displayResolution }) => {
 * one row per visible series (label + formatted value), sorted descending by
 * value. Reused by AreaChart, which has the same multi-series shape.
 *
-* @param params       - visx tooltip data and the chart's optional `bucketInfo`.
-* @param contentStyle - Explicit tooltip content color overrides.
+* @param params - visx tooltip data and the chart's optional `bucketInfo`.
 * @return Tooltip JSX, or `null` when no datum is hovered.
 */
-const renderDefaultTooltip = (params, contentStyle) => {
+const renderDefaultTooltip = (params) => {
 	const { tooltipData, bucketInfo } = params;
 	const nearestDatum = tooltipData?.nearestDatum?.datum;
 	if (!nearestDatum) return null;
@@ -4568,29 +4594,24 @@ const renderDefaultTooltip = (params, contentStyle) => {
 		if (b.value === null) return -1;
 		return b.value - a.value;
 	});
-	return /* @__PURE__ */ jsxs("div", {
-		className: line_chart_module_default["line-chart__tooltip"],
-		style: contentStyle,
-		children: [/* @__PURE__ */ jsx("div", {
-			className: line_chart_module_default["line-chart__tooltip-date"],
-			children: /* @__PURE__ */ jsx(TooltipDate, {
-				date: nearestDatum.date,
-				displayResolution: bucketInfo?.displayResolution ?? "day"
-			})
-		}), tooltipPoints.map((point) => /* @__PURE__ */ jsxs(Stack, {
-			direction: "row",
-			align: "center",
-			justify: "space-between",
-			className: line_chart_module_default["line-chart__tooltip-row"],
-			children: [/* @__PURE__ */ jsxs("span", {
-				className: line_chart_module_default["line-chart__tooltip-label"],
-				children: [point.key, ":"]
-			}), /* @__PURE__ */ jsx("span", {
-				className: line_chart_module_default["line-chart__tooltip-value"],
-				children: formatReading(point.value)
-			})]
-		}, point.key))]
-	});
+	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("div", {
+		className: line_chart_module_default["line-chart__tooltip-date"],
+		children: /* @__PURE__ */ jsx(TooltipDate, {
+			date: nearestDatum.date,
+			displayResolution: bucketInfo?.displayResolution ?? "day"
+		})
+	}), tooltipPoints.map((point) => /* @__PURE__ */ jsxs(Stack, {
+		direction: "row",
+		align: "center",
+		justify: "space-between",
+		children: [/* @__PURE__ */ jsxs("span", {
+			className: line_chart_module_default["line-chart__tooltip-label"],
+			children: [point.key, ":"]
+		}), /* @__PURE__ */ jsx("span", {
+			className: line_chart_module_default["line-chart__tooltip-value"],
+			children: formatReading(point.value)
+		})]
+	}, point.key))] });
 };
 const validateData$4 = (data) => {
 	if (!data?.length) return __("No data available", "jetpack-charts");
@@ -4850,29 +4871,10 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 		xAccessor: (d) => d?.date,
 		yAccessor: (d) => d?.value
 	};
-	const resolvedTooltipStyle = useMemo(() => {
-		if (renderTooltip !== renderDefaultTooltip || !tooltipStyle) return tooltipStyle;
-		if (!tooltipStyle.color || tooltipStyle.background || tooltipStyle.backgroundColor) return tooltipStyle;
-		return {
-			backgroundColor: "var(--a8c-charts-color-tooltip-surface, rgb(0 0 0 / 85%))",
-			...tooltipStyle
-		};
-	}, [renderTooltip, tooltipStyle]);
-	const tooltipRenderer = useMemo(() => (params) => renderTooltip === renderDefaultTooltip ? renderDefaultTooltip({
+	const tooltipRenderer = useMemo(() => (params) => renderTooltip({
 		...params,
 		bucketInfo
-	}, {
-		color: tooltipStyle?.color,
-		background: tooltipStyle?.background,
-		backgroundColor: tooltipStyle?.backgroundColor
-	}) : renderTooltip({
-		...params,
-		bucketInfo
-	}), [
-		renderTooltip,
-		bucketInfo,
-		tooltipStyle
-	]);
+	}), [renderTooltip, bucketInfo]);
 	if (error) return /* @__PURE__ */ jsx("div", {
 		className: clsx("line-chart", line_chart_module_default["line-chart"]),
 		children: error
@@ -5020,7 +5022,7 @@ const LineChartInternal = forwardRef(({ data, chartId: providedChartId, width, h
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									tooltipPlacement,
-									style: resolvedTooltipStyle,
+									style: tooltipStyle,
 									snapTooltipToDatumY: true,
 									showSeriesGlyphs: true,
 									renderTooltip: tooltipRenderer,
@@ -6928,8 +6930,7 @@ var conversion_funnel_chart_module_default = {
 	"step-rate": "a8ccharts-mGEVca-step-rate",
 	"stretch": "a8ccharts-mGEVca-stretch",
 	"tooltip-content": "a8ccharts-mGEVca-tooltip-content",
-	"tooltip-title": "a8ccharts-mGEVca-tooltip-title",
-	"tooltip-wrapper": "a8ccharts-mGEVca-tooltip-wrapper"
+	"tooltip-title": "a8ccharts-mGEVca-tooltip-title"
 };
 //#endregion
 //#region src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
@@ -6990,9 +6991,10 @@ const useFunnelSelection = (hideTooltip) => {
 * @param props.renderStepRate   - Custom render function for step rates
 * @param props.renderMainMetric - Custom render function for the entire main metric section
 * @param props.renderTooltip    - Custom render function for tooltip content
+* @param props.tooltipStyle     - Inline styles merged over the tooltip box defaults
 * @return JSX element representing the conversion funnel chart
 */
-const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip }) => {
+const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, tooltipStyle }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, isColorPaletteResolved } = useGlobalChartsContext();
 	const chartRef = useRef(null);
@@ -7227,14 +7229,14 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 				step: tooltipData,
 				index: steps.findIndex((s) => s.id === tooltipData.id),
 				top: tooltipTop,
-				left: tooltipLeft,
-				className: conversion_funnel_chart_module_default["tooltip-wrapper"]
+				left: tooltipLeft
 			}) : renderDefaultTooltip(tooltipData);
 			if (!tooltipContent) return null;
 			return /* @__PURE__ */ jsx(BoundedTooltip, {
 				top: tooltipTop,
 				left: tooltipLeft,
-				className: clsx(standaloneScopeClass, conversion_funnel_chart_module_default["tooltip-wrapper"]),
+				className: standaloneScopeClass,
+				style: tooltipStyle,
 				children: tooltipContent
 			});
 		})()]
@@ -7901,24 +7903,18 @@ const CELL_VALUE_MODIFIER = {
 	white: heatmap_chart_module_default["heatmap-chart__cell-value--white"]
 };
 const NO_ROW_LABELS = [];
-const TOOLTIP_BOX_STYLES = {
-	light: {
-		...defaultStyles,
-		zIndex: 3
-	},
-	dark: { zIndex: 3 }
-};
+const TOOLTIP_BOX_STYLE = { zIndex: 3 };
 const cellName = (info) => info.cellLabel || [
 	info.groupLabel,
 	info.columnLabel,
 	info.rowLabel
 ].filter(Boolean).join(" ");
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipVariant = "light", tooltipStyle, children }) => {
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
 	const chartId = useChartId(providedChartId);
 	const tooltipBoxStyle = tooltipStyle ? {
-		...TOOLTIP_BOX_STYLES[tooltipVariant],
+		...TOOLTIP_BOX_STYLE,
 		...tooltipStyle
-	} : TOOLTIP_BOX_STYLES[tooltipVariant];
+	} : TOOLTIP_BOX_STYLE;
 	const { getElementStyles, theme } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const { heatmapChart: heatmapChartSettings } = theme;
@@ -8256,7 +8252,6 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 				}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ jsx(BoundedTooltip, {
 					top: tooltipTop,
 					left: tooltipLeft,
-					className: tooltipVariant === "dark" ? base_tooltip_module_default.surface : void 0,
 					style: tooltipBoxStyle,
 					children: /* @__PURE__ */ jsx("div", {
 						className: standaloneScopeClass,

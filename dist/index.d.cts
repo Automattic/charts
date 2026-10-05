@@ -829,7 +829,7 @@ type XyChartTooltipProps<Datum extends object> = {
   tooltipPlacement?: TooltipPlacement;
   /** Override the tooltip top anchor in SVG coordinates, including negative offsets. */
   tooltipAnchorTop?: number;
-  /** Merge overrides with the default box styles; use `unstyled` to strip the box styling. */
+  /** Inline overrides on the tooltip surface; `unstyled` drops both. */
   style?: TooltipProps$1['style'];
   snapTooltipToDatumX?: boolean;
   snapTooltipToDatumY?: boolean;
@@ -1209,6 +1209,7 @@ interface TooltipRenderProps {
   index: number;
   top: number;
   left: number;
+  /** @deprecated The tooltip box draws the package surface; this is no longer set. */
   className?: string;
 }
 /**
@@ -1235,6 +1236,8 @@ interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 
   renderMainMetric?: (props: MainMetricRenderProps) => React.ReactNode;
   /** Custom render function for tooltip content */
   renderTooltip?: (props: TooltipRenderProps) => React.ReactNode;
+  /** Inline styles merged over the tooltip box defaults. */
+  tooltipStyle?: React.CSSProperties;
 }
 //#endregion
 //#region src/charts/conversion-funnel-chart/conversion-funnel-chart.d.ts
@@ -1424,13 +1427,9 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
    */
   primaryColor?: string;
   renderTooltip?: (data: HeatmapTooltipData) => ReactNode;
-  /**
-   * The tooltip box: `light` is the plain white box, `dark` the package's
-   * tooltip surface, themed through `--a8c-charts-color-tooltip-surface`.
-   * Default `light`.
-   */
+  /** @deprecated Every tooltip draws on the package tooltip surface; this prop has no effect. */
   tooltipVariant?: 'light' | 'dark';
-  /** Inline styles merged onto the tooltip box, over the variant's own. */
+  /** Inline styles merged onto the tooltip box, over the surface's own. */
   tooltipStyle?: CSSProperties;
   children?: ReactNode;
 }

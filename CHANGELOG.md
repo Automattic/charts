@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
+### Changed
+- Tooltips: Draw every chart tooltip on one dark surface that matches the WordPress design system tooltip. `--a8c-charts-color-tooltip-surface` now sets that surface for every chart. For a light tooltip, set `--a8c-charts-color-tooltip-surface` to a light color. The box re-declares the catalog under its own `a8c-charts-tooltip-scope` class, so a rule on `.a8c-charts-scope` no longer reaches it. LineChart no longer adds a dark background when `tooltipStyle` sets only `color`. A custom `renderGlyph` can now receive a `var()` color instead of a hex when the series has no palette color. Custom `renderTooltip` content that sets its own text color or draws its own card may need updating for the dark box. ConversionFunnelChart gains `tooltipStyle` to restyle the box itself.
+
+### Deprecated
+- Conversion funnel chart: Deprecate `className` in the custom `renderTooltip` props, which is no longer set.
+- Heatmap chart: Deprecate `tooltipVariant`, which no longer has an effect.
+
 ### Fixed
 - Heatmap and pie charts: Keep values drawn on a fill at WCAG AA contrast, falling back to black or white where neither label color passes, and deprecate prefersLightText.
 

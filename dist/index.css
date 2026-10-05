@@ -1,4 +1,4 @@
-:where(.a8c-charts-scope) {
+:where(.a8c-charts-scope, .a8c-charts-tooltip-scope) {
   --a8c-charts-color-series-1: var(--wp-admin-theme-color, var(--wpds-color-foreground-interactive-brand, var(--wp-admin-theme-color, #3858e9)));
   --a8c-charts-color-grid: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
   --a8c-charts-color-axis-x: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
@@ -18,7 +18,7 @@
   --a8c-charts-color-surface: var(--wpds-color-background-surface-neutral-strong, #fff);
   --a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-neutral-weak, #f4f4f4);
   --a8c-charts-color-track: var(--wpds-color-background-track-neutral-weak, #f0f0f0);
-  --a8c-charts-color-tooltip-surface: #000000d9;
+  --a8c-charts-color-tooltip-surface: #1e1e1e;
   --a8c-charts-color-zoom-selection: var(--wpds-color-background-interactive-brand-strong, var(--wp-admin-theme-color, #3858e9));
   --a8c-charts-color-zoom-selection-stroke: var(--wpds-color-stroke-interactive-brand, var(--wp-admin-theme-color, #3858e9));
   --a8c-charts-elevation-xs: 0 1px 1px 0 #00000008,
@@ -39,7 +39,7 @@
 }
 
 @media (forced-colors: active) {
-  :where(.a8c-charts-scope) {
+  :where(.a8c-charts-scope, .a8c-charts-tooltip-scope) {
     --a8c-charts-color-label-axis: CanvasText;
     --a8c-charts-color-grid: GrayText;
     --a8c-charts-color-axis-x: GrayText;
@@ -105,13 +105,21 @@
   flex-shrink: 0;
 }
 .a8ccharts--zY0xG-surface, .a8ccharts--zY0xG-tooltip {
-  padding: var(--wpds-dimension-padding-sm, 8px);
-  background-color: var(--a8c-charts-color-tooltip-surface, #000000d9);
-  color: #fff;
+  padding: var(--wpds-dimension-padding-xs, 4px) var(--wpds-dimension-padding-sm, 8px);
+  background-color: var(--a8c-charts-color-surface);
+  color: var(--a8c-charts-color-label);
   border-radius: var(--wpds-border-radius-md, 4px);
-  font-size: var(--wpds-typography-font-size-md, 13px);
+  font-family: var(--wpds-typography-font-family-body, -apple-system, system-ui, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif);
+  font-size: var(--wpds-typography-font-size-sm, 12px);
   box-shadow: var(--a8c-charts-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005);
   pointer-events: none;
+  line-height: 1.4;
+}
+
+@media (forced-colors: active) {
+  .a8ccharts--zY0xG-surface, .a8ccharts--zY0xG-tooltip {
+    border: var(--wpds-border-width-xs, 1px) solid CanvasText;
+  }
 }
 
 .a8ccharts--zY0xG-tooltip {
@@ -191,7 +199,7 @@
   overflow: visible;
 }
 
-.a8ccharts-inuQka-line-chart__tooltip, .a8ccharts-inuQka-line-chart__annotation-label-popover {
+.a8ccharts-inuQka-line-chart__annotation-label-popover {
   background: var(--a8c-charts-color-surface);
   color: var(--a8c-charts-color-label);
   padding: var(--wpds-dimension-padding-sm, 8px);
@@ -200,10 +208,6 @@
 .a8ccharts-inuQka-line-chart__tooltip-date {
   font-weight: var(--wpds-typography-font-weight-emphasis, 600);
   padding-bottom: var(--wpds-dimension-padding-md, 12px);
-}
-
-.a8ccharts-inuQka-line-chart__tooltip-row {
-  padding: var(--wpds-dimension-padding-xs, 4px) 0;
 }
 
 .a8ccharts-inuQka-line-chart__tooltip-label {
@@ -443,13 +447,6 @@
   to {
     transform: scaleY(1);
   }
-}
-
-.a8ccharts-mGEVca-tooltip-wrapper {
-  background: var(--a8c-charts-color-surface);
-  border-radius: var(--wpds-border-radius-md, 4px) !important;
-  padding: var(--wpds-dimension-padding-md, 12px) !important;
-  box-shadow: var(--a8c-charts-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005) !important;
 }
 
 .a8ccharts-mGEVca-tooltip-title {
