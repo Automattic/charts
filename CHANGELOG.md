@@ -5,19 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.7.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
+## [4.7.0] - 2026-10-05
+### Added
+- Conversion funnel chart: Add `tooltipStyle` to restyle the tooltip box. [#52850]
 
 ### Changed
-- Tooltips: Draw every chart tooltip on one dark surface that matches the WordPress design system tooltip. `--a8c-charts-color-tooltip-surface` now sets that surface for every chart. For a light tooltip, set `--a8c-charts-color-tooltip-surface` to a light color. The box re-declares the catalog under its own `a8c-charts-tooltip-scope` class, so a rule on `.a8c-charts-scope` no longer reaches it. LineChart no longer adds a dark background when `tooltipStyle` sets only `color`. A custom `renderGlyph` can now receive a `var()` color instead of a hex when the series has no palette color. Custom `renderTooltip` content that sets its own text color or draws its own card may need updating for the dark box. ConversionFunnelChart gains `tooltipStyle` to restyle the box itself.
+- Tooltips: Draw every chart tooltip on one dark surface that matches the WordPress design system; set `--a8c-charts-color-tooltip-surface` for a light tooltip. [#52850]
 
 ### Deprecated
-- Conversion funnel chart: Deprecate `className` in the custom `renderTooltip` props, which is no longer set.
-- Heatmap chart: Deprecate `tooltipVariant`, which no longer has an effect.
+- Conversion funnel chart: Deprecate `className` in the custom `renderTooltip` props, which is no longer set. [#52850]
+- Deprecate the `prefersLightText` color utility. [#52968]
+- Heatmap chart: Deprecate `tooltipVariant`, which no longer has an effect. [#52850]
 
 ### Fixed
-- Heatmap and pie charts: Keep values drawn on a fill at WCAG AA contrast, falling back to black or white where neither label color passes, and deprecate prefersLightText.
+- Keep values drawn on heatmap and pie chart fills at WCAG AA contrast. [#52968]
 
 ## [4.6.0] - 2026-09-29
 ### Added
@@ -1145,7 +1146,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.7.0-alpha]: https://github.com/Automattic/charts/compare/v4.6.0...v4.7.0-alpha
+[4.7.0]: https://github.com/Automattic/charts/compare/v4.6.0...v4.7.0
 [4.6.0]: https://github.com/Automattic/charts/compare/v4.5.0...v4.6.0
 [4.5.0]: https://github.com/Automattic/charts/compare/v4.4.0...v4.5.0
 [4.4.0]: https://github.com/Automattic/charts/compare/v4.3.0...v4.4.0
