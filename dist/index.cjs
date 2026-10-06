@@ -6757,10 +6757,10 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 								}),
 								!allSeriesHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(WholeNumberTicks, {
 									...wholeNumberTicksProps,
-									children: (valueTicks) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+									children: (valueTicks) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [chartOptions.axis.x.display !== false && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
 										...chartOptions.axis.x,
 										...horizontal && valueTicks ? { tickValues: valueTicks } : {}
-									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
+									}), chartOptions.axis.y.display !== false && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.Axis, {
 										...chartOptions.axis.y,
 										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
 									})] })

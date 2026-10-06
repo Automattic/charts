@@ -16,6 +16,7 @@ This is an alpha version! The changes listed here are not final.
 - Deprecate `AccessibleTooltip` in favor of `XYChartTooltip`, and `BaseTooltip`'s `data`, `component`, `renderContainer`, `top` and `left` props in favor of `TooltipBox`.
 
 ### Fixed
+- Bar chart: Stop drawing an axis set to display: false.
 - ConversionFunnelChart: Give the tooltip content `role="tooltip"`, like the other charts.
 - Tooltip: Keep the tooltip as wide as its content when the host page caps the width of visx tooltips.
 

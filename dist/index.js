@@ -6755,10 +6755,10 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 								}),
 								!allSeriesHidden && /* @__PURE__ */ jsx(WholeNumberTicks, {
 									...wholeNumberTicksProps,
-									children: (valueTicks) => /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Axis, {
+									children: (valueTicks) => /* @__PURE__ */ jsxs(Fragment$1, { children: [chartOptions.axis.x.display !== false && /* @__PURE__ */ jsx(Axis, {
 										...chartOptions.axis.x,
 										...horizontal && valueTicks ? { tickValues: valueTicks } : {}
-									}), /* @__PURE__ */ jsx(Axis, {
+									}), chartOptions.axis.y.display !== false && /* @__PURE__ */ jsx(Axis, {
 										...chartOptions.axis.y,
 										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
 									})] })
