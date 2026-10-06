@@ -1,5 +1,5 @@
 import { EventHandlerParams, EventHandlerParams as EventHandlerParams$1, GlyphProps, GridStyles, GridStyles as GridStyles$1, LineStyles, LineStyles as LineStyles$1, TooltipContextType } from "@visx/xychart";
-import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, JSX, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
+import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, HTMLAttributes, JSX, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
 import { TextProps } from "@visx/text";
 import { TooltipProps as TooltipProps$1, UseTooltipPortalOptions } from "@visx/tooltip";
 import { PickD3Scale, ScaleInput, ScaleType } from "@visx/scale";
@@ -1932,7 +1932,7 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
   tooltipOffsetY?: number;
   /**
    * Custom render function for tooltip content.
-   * When provided, replaces the default BaseTooltip with custom content.
+   * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieChartRenderTooltipParams) => ReactNode;
 }
@@ -1998,7 +1998,7 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
   tooltipOffsetY?: number;
   /**
    * Custom render function for tooltip content.
-   * When provided, replaces the default BaseTooltip with custom content.
+   * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieSemiCircleChartRenderTooltipParams) => ReactNode;
 }
@@ -2119,30 +2119,42 @@ declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, size, wid
   size?: number;
 } & ResponsiveConfig) => import("react").JSX.Element;
 //#endregion
-//#region src/components/tooltip/base-tooltip.d.ts
+//#region src/components/tooltip/types.d.ts
+type TooltipProps = {
+  data: {
+    label: string;
+    value: number;
+  };
+};
 type TooltipData = {
   label: string;
   value: number;
   valueDisplay?: string;
 };
+//#endregion
+//#region src/components/tooltip/base-tooltip.d.ts
 type TooltipComponentProps = {
   data: TooltipData;
   className?: string;
 };
 type TooltipCommonProps = {
-  top: number;
-  left: number;
+  /** @deprecated Position the box with `style`, or use `TooltipBox`. */
+  top?: number;
+  /** @deprecated Position the box with `style`, or use `TooltipBox`. */
+  left?: number;
   style?: CSSProperties;
   className?: string;
   /**
    * Whether to render the tooltip container div. When false, only renders the content.
-   * Useful when the tooltip is rendered inside a portal or custom container.
+   * @deprecated Render the content directly; `TooltipBox` draws the box.
    * @default true
    */
   renderContainer?: boolean;
 };
 type DefaultDataTooltip = {
+  /** @deprecated Pass the content as children, or use `TooltipBox`. */
   data: TooltipData;
+  /** @deprecated Pass the content as children, or use `TooltipBox`. */
   component?: ComponentType<TooltipComponentProps>;
   children?: never;
 };
@@ -2152,16 +2164,31 @@ type CustomTooltip = {
   component?: never;
 };
 type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip);
+/**
+ * A tooltip box with children or `label: value` content. Prefer `TooltipBox`.
+ *
+ * @param props                 - Tooltip props.
+ * @param props.data            - Data for the default content.
+ * @param props.top             - Deprecated vertical position.
+ * @param props.left            - Deprecated horizontal position.
+ * @param props.component       - Deprecated content component.
+ * @param props.children        - Tooltip content.
+ * @param props.className       - Class name passed to the content component.
+ * @param props.style           - Styles for the box.
+ * @param props.renderContainer - Deprecated; render the content alone when false.
+ * @return The tooltip.
+ */
 declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | true | import("react").JSX.Element | Iterable<ReactNode>;
 //#endregion
-//#region src/components/tooltip/accessible-tooltip.d.ts
+//#region src/components/tooltip/xy-chart-tooltip.d.ts
 type FlattenedTooltipData = {
   datum: DataPointDate;
   seriesLabel: string;
   seriesIndex: number;
   dataPointIndex: number;
 };
-interface AccessibleTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>, 'renderTooltip'> {
+/** The XY chart tooltip that LineChart, AreaChart and BarChart render; place it inside a visx `XYChart`. */
+interface XYChartTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>, 'renderTooltip'> {
   renderTooltip?: (params: RenderTooltipParams<DataPointDate>) => ReactNode;
   selectedIndex?: number | undefined;
   tooltipRef?: (element: HTMLDivElement | null) => void;
@@ -2182,15 +2209,27 @@ interface AccessibleTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>
    */
   mode?: 'individual' | 'group';
 }
-declare const AccessibleTooltip: React.FC<AccessibleTooltipProps>;
+declare const XYChartTooltip: React.FC<XYChartTooltipProps>;
+/** @deprecated Use `XYChartTooltip`. */
+declare const AccessibleTooltip: import("react").FC<XYChartTooltipProps>;
 //#endregion
-//#region src/components/tooltip/types.d.ts
-type TooltipProps = {
-  data: {
-    label: string;
-    value: number;
-  };
+//#region src/components/tooltip/tooltip-box.d.ts
+type TooltipBoxProps = HTMLAttributes<HTMLDivElement> & {
+  /** Drop the chart surface, scope class and dark theme, leaving a bare box. */
+  unstyled?: boolean;
 };
+/**
+ * The chart tooltip box: the dark surface every chart tooltip draws. It does not position itself; place it with `style` or a wrapper.
+ *
+ * @param props          - Div attributes, plus `unstyled`.
+ * @param props.unstyled - Drop the surface, scope class and theme.
+ * @param ref            - Forwarded to the box element.
+ * @return The tooltip box.
+ */
+declare const TooltipBox: import("react").ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & {
+  /** Drop the chart surface, scope class and dark theme, leaving a bare box. */
+  unstyled?: boolean;
+} & import("react").RefAttributes<HTMLDivElement>>;
 //#endregion
 //#region src/components/trend-indicator/types.d.ts
 /**
@@ -2341,5 +2380,5 @@ declare const defaultTheme: CompleteChartTheme;
  */
 declare const useChartScopeElement: () => HTMLElement | null;
 //#endregion
-export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, type XyChartTooltipProps, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
+export { AccessibleTooltip, type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, BaseTooltip, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, GoogleDataTableColumnRoleType, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, Legend, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, TooltipBox, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, TrendIndicator, type TrendIndicatorProps, XYChartTooltip, type XyChartTooltipProps, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 //# sourceMappingURL=index.d.ts.map

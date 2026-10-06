@@ -2479,11 +2479,12 @@ function useChartLegendItems(data, options = {}, legendShape) {
 	]);
 }
 //#endregion
-//#region src/components/tooltip/base-tooltip.module.scss
-var base_tooltip_module_default = {
-	"surface": "a8ccharts--zY0xG-surface",
-	"tooltip": "a8ccharts--zY0xG-tooltip"
-};
+//#region src/components/tooltip/private/label-value-content.tsx
+const LabelValueContent = ({ data }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+	data.label,
+	": ",
+	data.valueDisplay || (0, _automattic_number_formatters.formatNumber)(data.value)
+] });
 //#endregion
 //#region src/components/tooltip/private/tooltip-theme.tsx
 const DEFAULT_SURFACE = "#1e1e1e";
@@ -2509,28 +2510,63 @@ const TooltipTheme = ({ children }) => {
 	});
 };
 //#endregion
+//#region src/components/tooltip/tooltip-box.module.scss
+var tooltip_box_module_default = { "surface": "a8ccharts-ddpU1W-surface" };
+//#endregion
+//#region src/components/tooltip/tooltip-box.tsx
+/**
+* The chart tooltip box: the dark surface every chart tooltip draws. It does not position itself; place it with `style` or a wrapper.
+*
+* @param props          - Div attributes, plus `unstyled`.
+* @param props.unstyled - Drop the surface, scope class and theme.
+* @param ref            - Forwarded to the box element.
+* @return The tooltip box.
+*/
+const TooltipBox = (0, react.forwardRef)(({ unstyled = false, role = "tooltip", className, children, ...rest }, ref) => {
+	const box = /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		ref,
+		role,
+		className: (0, clsx.default)("visx-tooltip", !unstyled && ["a8c-charts-tooltip-scope", tooltip_box_module_default.surface], className),
+		...rest,
+		children
+	});
+	return unstyled ? box : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTheme, { children: box });
+});
+TooltipBox.displayName = "TooltipBox";
+//#endregion
 //#region src/components/tooltip/base-tooltip.tsx
-const DefaultTooltipContent = ({ data }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-	data?.label,
-	": ",
-	data?.valueDisplay || (0, _automattic_number_formatters.formatNumber)(data?.value)
-] });
-const BaseTooltip = ({ data, top, left, component: Component = DefaultTooltipContent, children, className, style, renderContainer = true }) => {
+/**
+* A tooltip box with children or `label: value` content. Prefer `TooltipBox`.
+*
+* @param props                 - Tooltip props.
+* @param props.data            - Data for the default content.
+* @param props.top             - Deprecated vertical position.
+* @param props.left            - Deprecated horizontal position.
+* @param props.component       - Deprecated content component.
+* @param props.children        - Tooltip content.
+* @param props.className       - Class name passed to the content component.
+* @param props.style           - Styles for the box.
+* @param props.renderContainer - Deprecated; render the content alone when false.
+* @return The tooltip.
+*/
+const BaseTooltip = ({ data, top, left, component: Component = LabelValueContent, children, className, style, renderContainer = true }) => {
 	const content = children || data && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Component, {
 		data,
 		className
 	});
 	if (!renderContainer) return content;
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTheme, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-		className: (0, clsx.default)(CHART_SCOPE_CLASS, base_tooltip_module_default.tooltip),
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipBox, {
 		style: {
-			top,
-			left,
+			...top === void 0 && left === void 0 ? void 0 : {
+				position: "absolute",
+				top,
+				left,
+				transform: "translate(-50%, -100%)"
+			},
 			...style
 		},
-		role: "tooltip",
 		children: content
-	}) });
+	});
 };
 //#endregion
 //#region src/components/tooltip/private/bounded-tooltip.tsx
@@ -2610,7 +2646,7 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 	};
 };
 /**
-* visx's `Tooltip`, positioned like its `TooltipWithBounds` but kept inside the
+* A `TooltipBox`, positioned like visx's `TooltipWithBounds` but kept inside the
 * nearest clipping ancestor — or the viewport when there is none — rather than
 * inside its own parent. Rendered in-tree, a tooltip's parent is the chart
 * wrapper, which is often narrower than the box; measuring against the parent
@@ -2619,7 +2655,7 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * Re-measures on every render, so a box whose content changes width between
 * two hovers is placed for its current size.
 *
-* @param props            - visx `Tooltip` props.
+* @param props            - `TooltipBox` props plus placement.
 * @param props.left       - Anchor x, in wrapper coordinates.
 * @param props.top        - Anchor y, in wrapper coordinates.
 * @param props.offsetLeft - Gap between the anchor and the box, horizontally.
@@ -2685,9 +2721,11 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 	]);
 	const x = position?.x ?? left + offsetLeft;
 	const y = position?.y ?? top + (placement === "below-axis" ? POINTER_HEIGHT : offsetTop);
-	const box = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_tooltip.Tooltip, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(TooltipBox, {
 		ref: nodeRef,
-		className: (0, clsx.default)(!unstyled && ["a8c-charts-tooltip-scope", base_tooltip_module_default.surface], className),
+		role: "presentation",
+		unstyled,
+		className,
 		style: {
 			position: "absolute",
 			left: 0,
@@ -2710,10 +2748,9 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offset
 			}
 		}), children]
 	});
-	return unstyled ? box : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTheme, { children: box });
 };
 //#endregion
-//#region src/components/tooltip/xy-chart-tooltip.tsx
+//#region src/components/tooltip/private/xy-chart-tooltip-overlay.tsx
 const CROSSHAIR_STROKE_WIDTH = 1.5;
 const CROSSHAIR_PAINT_PROPERTIES = /* @__PURE__ */ new Set([
 	"stroke",
@@ -2815,20 +2852,34 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 	const crosshairStroke = theme?.gridStyles?.stroke ?? theme?.htmlLabel?.color ?? FALLBACK_COLOR;
 	const marginTop = margin?.top ?? 0;
 	const marginLeft = margin?.left ?? 0;
-	const TooltipComponent = detectBounds || tooltipPlacement !== "auto" ? BoundedTooltip : _visx_tooltip.Tooltip;
 	const boxStyle = {
 		zIndex,
 		...style
 	};
-	const themesOwnBox = TooltipComponent === _visx_tooltip.Tooltip && !tooltipProps.unstyled;
-	const box = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipComponent, {
+	const { offsetLeft = 10, offsetTop = 10, unstyled, className, ...boxProps } = tooltipProps;
+	const anchorTop = tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipAnchorTop ?? tooltipTop;
+	const box = detectBounds || tooltipPlacement !== "auto" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BoundedTooltip, {
 		left: tooltipLeft,
-		top: tooltipPlacement === "below-axis" ? marginTop + innerHeight + (margin?.bottom ?? 0) : tooltipAnchorTop ?? tooltipTop,
+		top: anchorTop,
+		offsetLeft,
+		offsetTop,
+		unstyled,
+		className,
 		style: boxStyle,
-		applyPositionStyle: true,
-		...tooltipProps,
-		className: (0, clsx.default)(themesOwnBox && ["a8c-charts-scope", base_tooltip_module_default.surface], tooltipProps.className),
+		...boxProps,
 		...tooltipPlacement !== "auto" && { placement: tooltipPlacement },
+		children: tooltipContent
+	}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipBox, {
+		role: "presentation",
+		unstyled,
+		className,
+		style: {
+			position: "absolute",
+			left: (tooltipLeft ?? 0) + offsetLeft,
+			top: (anchorTop ?? 0) + offsetTop,
+			...!unstyled && boxStyle
+		},
+		...boxProps,
 		children: tooltipContent
 	});
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", {
@@ -2857,7 +2908,7 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 			}),
 			glyphs
 		]
-	}), container && (0, react_dom.createPortal)(themesOwnBox ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTheme, { children: box }) : box, container)] });
+	}), container && (0, react_dom.createPortal)(box, container)] });
 };
 /**
 * In-tree replacement for `@visx/xychart`'s `Tooltip`.
@@ -2882,7 +2933,7 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 * @param props - visx's `Tooltip` options. `scroll`, `debounce` and `resizeObserverPolyfill` are accepted and ignored.
 * @return An anchor in the SVG, plus the overlay and the tooltip box while the tooltip is open.
 */
-const XyChartTooltip = (props) => {
+const XyChartTooltipOverlay = (props) => {
 	const tooltipContext = (0, react.useContext)(_visx_xychart.TooltipContext);
 	const [container, setContainer] = (0, react.useState)(null);
 	const anchorRef = (0, react.useCallback)((node) => {
@@ -2895,8 +2946,8 @@ const XyChartTooltip = (props) => {
 	})] });
 };
 //#endregion
-//#region src/components/tooltip/accessible-tooltip.tsx
-const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
+//#region src/components/tooltip/xy-chart-tooltip.tsx
+const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
 	const tooltipContext = (0, react.useContext)(_visx_xychart.TooltipContext);
 	const scopeElement = useChartScopeElement();
 	const crosshairStroke = (0, react.useMemo)(() => {
@@ -3002,7 +3053,7 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		keyboardFocusedClassName,
 		standaloneScopeClass
 	]);
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(XyChartTooltip, {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(XyChartTooltipOverlay, {
 		...props,
 		verticalCrosshairStyle: {
 			...crosshairStroke,
@@ -3015,6 +3066,8 @@ const AccessibleTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardF
 		renderTooltip: focusableRenderTooltip
 	});
 };
+/** @deprecated Use `XYChartTooltip`. */
+const AccessibleTooltip = XYChartTooltip;
 const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate, preventTooltipScroll = false, visibleSeriesKey }) => {
 	const getChartRoot = (0, react.useCallback)(() => chartRef.current?.closest("[role=\"grid\"]") ?? chartRef.current, [chartRef]);
 	const focusWithoutScrollIfNeeded = (0, react.useCallback)((element) => {
@@ -5020,7 +5073,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 										] }, seriesData?.label || index);
 									})
 								}),
-								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccessibleTooltip, {
+								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(XYChartTooltip, {
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									tooltipPlacement,
@@ -5496,7 +5549,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 										children: seriesWithVisibility.map(renderSeries)
 									}), !allSeriesHidden && !stacked && seriesWithVisibility.map(renderSeries)]
 								}),
-								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccessibleTooltip, {
+								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(XYChartTooltip, {
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: !stacked,
@@ -6712,7 +6765,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
 									})] })
 								}),
-								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccessibleTooltip, {
+								withTooltips && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(XYChartTooltip, {
 									tooltipPlacement,
 									tooltipAnchorTop,
 									style: tooltipStyle,
@@ -7239,7 +7292,10 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 				left: tooltipLeft,
 				className: standaloneScopeClass,
 				style: tooltipStyle,
-				children: tooltipContent
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					role: "tooltip",
+					children: tooltipContent
+				})
 			});
 		})()]
 	});
@@ -11855,18 +11911,13 @@ var pie_chart_module_default = {
 //#region src/charts/pie-chart/pie-chart.tsx
 /**
 * Default tooltip renderer for pie charts.
-* Renders a BaseTooltip with the hovered segment's data.
+* Renders the default `label: value` tooltip content for the hovered segment.
 *
 * @param {PieChartRenderTooltipParams} params - The tooltip parameters containing the hovered data point
 * @return {ReactNode} The rendered tooltip content
 */
 const renderDefaultPieTooltip = ({ tooltipData }) => {
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BaseTooltip, {
-		data: tooltipData,
-		top: 0,
-		left: 0,
-		renderContainer: false
-	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LabelValueContent, { data: tooltipData });
 };
 /**
 * Validates the pie chart data
@@ -12152,18 +12203,13 @@ var pie_semi_circle_chart_module_default = {
 //#region src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 /**
 * Default tooltip renderer for semi-circle pie charts.
-* Renders a BaseTooltip with the hovered segment's data.
+* Renders the default `label: value` tooltip content for the hovered segment.
 *
 * @param {PieSemiCircleChartRenderTooltipParams} params - The tooltip parameters containing the hovered data point
 * @return {ReactNode} The rendered tooltip content
 */
 const renderDefaultPieSemiCircleTooltip = ({ tooltipData }) => {
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BaseTooltip, {
-		data: tooltipData,
-		top: 0,
-		left: 0,
-		renderContainer: false
-	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LabelValueContent, { data: tooltipData });
 };
 const PAD_ANGLE = .03;
 const DEFAULT_WIDTH$1 = 400;
@@ -12631,7 +12677,9 @@ exports.PieSemiCircleChartUnresponsive = PieSemiCircleChart;
 exports.Sparkline = Sparkline;
 exports.SparklineUnresponsive = SparklineUnresponsive;
 exports.ThemeProvider = GlobalChartsProvider;
+exports.TooltipBox = TooltipBox;
 exports.TrendIndicator = TrendIndicator;
+exports.XYChartTooltip = XYChartTooltip;
 exports.buildCalendarHeatmapData = buildCalendarHeatmapData;
 exports.buildMonthCalendarHeatmapData = buildMonthCalendarHeatmapData;
 exports.defaultTheme = defaultTheme;

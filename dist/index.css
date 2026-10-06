@@ -104,7 +104,7 @@
   font-weight: var(--wpds-typography-font-weight-emphasis, 600);
   flex-shrink: 0;
 }
-.a8ccharts--zY0xG-surface, .a8ccharts--zY0xG-tooltip {
+.a8ccharts-ddpU1W-surface {
   padding: var(--wpds-dimension-padding-xs, 4px) var(--wpds-dimension-padding-sm, 8px);
   background-color: var(--a8c-charts-color-surface);
   color: var(--a8c-charts-color-label);
@@ -118,14 +118,9 @@
 }
 
 @media (forced-colors: active) {
-  .a8ccharts--zY0xG-surface, .a8ccharts--zY0xG-tooltip {
+  .a8ccharts-ddpU1W-surface {
     border: var(--wpds-border-width-xs, 1px) solid CanvasText;
   }
-}
-
-.a8ccharts--zY0xG-tooltip {
-  position: absolute;
-  transform: translate(-50%, -100%);
 }
 .a8ccharts-fpNVAq-chart-layout__content {
   flex: 1;

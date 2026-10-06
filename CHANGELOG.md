@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.7.1-alpha] - unreleased
+## [4.8.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
 
+### Added
+- Add `TooltipBox`, the chart tooltip box, and `XYChartTooltip`, the new name for `AccessibleTooltip`.
+
+### Deprecated
+- Deprecate `AccessibleTooltip` in favor of `XYChartTooltip`, and `BaseTooltip`'s `data`, `component`, `renderContainer`, `top` and `left` props in favor of `TooltipBox`.
+
 ### Fixed
+- ConversionFunnelChart: Give the tooltip content `role="tooltip"`, like the other charts.
 - Tooltip: Keep the tooltip as wide as its content when the host page caps the width of visx tooltips.
 
 ## [4.7.0] - 2026-10-05
@@ -1153,7 +1160,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.7.1-alpha]: https://github.com/Automattic/charts/compare/v4.7.0...v4.7.1-alpha
+[4.8.0-alpha]: https://github.com/Automattic/charts/compare/v4.7.0...v4.8.0-alpha
 [4.7.0]: https://github.com/Automattic/charts/compare/v4.6.0...v4.7.0
 [4.6.0]: https://github.com/Automattic/charts/compare/v4.5.0...v4.6.0
 [4.5.0]: https://github.com/Automattic/charts/compare/v4.4.0...v4.5.0
