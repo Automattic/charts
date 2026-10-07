@@ -19,6 +19,7 @@ This is an alpha version! The changes listed here are not final.
 ### Fixed
 - Bar chart: Stop drawing an axis set to display: false.
 - ConversionFunnelChart: Give the tooltip content `role="tooltip"`, like the other charts.
+- Heatmap chart: Keep the lowest step of the color scale at 3:1 contrast against the chart background and empty cells in every theme, deepen the highest step to 9:1, and draw zeros in data without negative values as empty cells.
 - Tooltip: Keep the tooltip as wide as its content when the host page caps the width of visx tooltips.
 
 ## [4.7.0] - 2026-10-05

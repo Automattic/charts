@@ -5,11 +5,11 @@ import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
 import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
-import { color, hsl } from "@visx/vendor/d3-color";
 import { differenceInHours, differenceInYears, isValid, parse, parseISO } from "date-fns";
 import { tzOffset } from "@date-fns/tz";
 import { Text, getStringWidth } from "@visx/text";
 import deepmerge from "deepmerge";
+import { color, hsl } from "@visx/vendor/d3-color";
 import { Fragment as Fragment$1, jsx, jsxs } from "react/jsx-runtime";
 import { useTooltip } from "@visx/tooltip";
 import { createScale, getTicks, scaleBand, scaleCanBeZeroed, scaleOrdinal, scaleTime } from "@visx/scale";
@@ -834,6 +834,7 @@ const CATALOG_POINTERS = {
 	annotation: "var(--a8c-charts-color-annotation, #1e1e1e)",
 	surface: "var(--a8c-charts-color-surface, #fff)",
 	surfaceSecondary: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
+	track: "var(--a8c-charts-color-track, #f0f0f0)",
 	trendUp: "var(--a8c-charts-color-trend-up, #008030)",
 	trendDown: "var(--a8c-charts-color-trend-down, #cc1818)",
 	series: SERIES_PALETTE_POINTERS
@@ -1063,6 +1064,15 @@ const rgbLuminance = (rgb) => {
 * @return Ratio from 1 to 21.
 */
 const luminanceContrastRatio = (first, second) => (Math.max(first, second) + .05) / (Math.min(first, second) + .05);
+/**
+* WCAG contrast ratio between two hex colors.
+*
+* @param  first  - First hex color.
+* @param  second - Second hex color.
+* @return Ratio from 1 to 21.
+* @throws {Error} if either hex string is malformed
+*/
+const contrastRatio = (first, second) => luminanceContrastRatio(relativeLuminance(first), relativeLuminance(second));
 /** WCAG 1.4.3 text contrast, which a label drawn on a fill needs from at least one label color. */
 const MIN_LABEL_CONTRAST = 4.5;
 /** Degrees of hue one unit of OKLCH chroma is worth when ranking candidates by hue. */
@@ -1253,6 +1263,14 @@ const buildPaletteGenerator = (normalizedSeeds, background, labelColors) => {
 	};
 };
 //#endregion
+//#region src/providers/chart-context/private/resolve-opaque-hex.ts
+const resolveOpaqueHex = (pointer, resolve) => {
+	const raw = resolve(pointer);
+	if (!raw || color(raw)?.opacity !== 1) return null;
+	const hex = normalizeColorToHex(raw);
+	return isValidHexColor(hex) ? hex : null;
+};
+//#endregion
 //#region src/providers/chart-context/themes.ts
 /**
 * Default theme configuration: the shape and spacing a consumer can override.
@@ -1301,12 +1319,6 @@ const defaultTheme = {
 };
 //#endregion
 //#region src/providers/chart-context/global-charts-provider.tsx
-const resolveOpaqueHex = (pointer, element) => {
-	const raw = resolveCssVariable(pointer, element);
-	if (!raw || color(raw)?.opacity !== 1) return null;
-	const hex = normalizeColorToHex(pointer, element, resolveCssVariable);
-	return isValidHexColor(hex) ? hex : null;
-};
 const PLACEHOLDER_LABEL_COLORS = [LABEL_FALLBACK, LABEL_INVERSE_FALLBACK];
 const GlobalChartsContext = createContext(null);
 const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
@@ -1334,8 +1346,9 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 			const normalizedColor = normalizeColorToHex(color, wrapperRef.current, resolveCssVariable);
 			if (isValidHexColor(normalizedColor)) resolvedColors.push(normalizedColor);
 		}
-		const backgroundHex = resolveOpaqueHex(CATALOG_POINTERS.background, wrapperRef.current) ?? "#ffffff";
-		const labelColors = [CATALOG_POINTERS.label, CATALOG_POINTERS.labelInverse].map((pointer) => resolveOpaqueHex(pointer, wrapperRef.current)).filter((hex) => hex !== null);
+		const resolveAtWrapper = createCssVariableResolver(wrapperRef.current);
+		const backgroundHex = resolveOpaqueHex(CATALOG_POINTERS.background, resolveAtWrapper) ?? "#ffffff";
+		const labelColors = [CATALOG_POINTERS.label, CATALOG_POINTERS.labelInverse].map((pointer) => resolveOpaqueHex(pointer, resolveAtWrapper)).filter((hex) => hex !== null);
 		setColorCache({
 			colors: resolvedColors,
 			background: backgroundHex,
@@ -7681,30 +7694,44 @@ var heatmap_chart_module_default = {
 //#region src/charts/heatmap-chart/private/use-heatmap-colors.ts
 const isPresent = (value) => value !== null && value !== void 0 && !isNaN(value);
 /**
-* Get the min and max values from heatmap data, ignoring null/NaN. Summary
-* columns stay out: a roll-up on the scale would flatten every real cell.
+* Get the min and max values from heatmap data, ignoring null/NaN and the zeros
+* `isEmptyValue` paints as empty. Summary columns stay out: a roll-up on the
+* scale would flatten every real cell.
 * @param data - The heatmap columns
 * @return Tuple of [min, max] values
 */
 const getValueExtent = (data) => {
 	let min = Infinity;
 	let max = -Infinity;
+	let hasZero = false;
 	for (const column of data) {
 		if (column.summary) continue;
 		for (const cell of column.data) {
 			if (!isPresent(cell.value)) continue;
+			if (cell.value === 0) {
+				hasZero = true;
+				continue;
+			}
 			if (cell.value < min) min = cell.value;
 			if (cell.value > max) max = cell.value;
 		}
 	}
+	if (hasZero && min < 0) max = Math.max(max, 0);
 	if (min === Infinity) return [0, 0];
 	return [min, max];
 };
 /**
+* Whether a value paints as an empty cell: a zero in data with no negatives
+* counts nothing, so it must not look like the lowest step of activity.
+*
+* @param value  - The cell value
+* @param extent - The extent from `getValueExtent`
+* @return True when the cell takes the empty-cell color
+*/
+const isEmptyValue = (value, extent) => value === 0 && extent[0] >= 0;
+/**
 * Normalize a value to 0–1 within the extent. A flat extent (min === max)
-* maps to 1 — every cell is equally the "highest" — except an all-zero
-* extent, which maps to 0 so a no-activity grid renders at the scale's
-* bottom instead of full intensity.
+* maps to 1, since every cell is equally the "highest".
 *
 * @param value  - The value to normalize
 * @param extent - Tuple of [min, max] values for the normalization range
@@ -7712,8 +7739,39 @@ const getValueExtent = (data) => {
 */
 const getNormalizedValue = (value, extent) => {
 	const [min, max] = extent;
-	if (min === max) return max === 0 ? 0 : 1;
+	if (min === max) return 1;
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
+};
+const STEPS = 200;
+const firstMeeting = (from, to, meets) => {
+	for (let step = 0; step <= STEPS; step++) {
+		const color = mixHexColors(from, to, step / STEPS);
+		if (meets(color)) return color;
+	}
+	return null;
+};
+/**
+* The two ends of the heatmap fill scale: 3:1 against the background and the empty cell at the
+* low end, toward 9:1 against the background at the high end.
+*
+* @param primary    - The resolved primary color, as six-digit hex.
+* @param background - The resolved chart background, as six-digit hex.
+* @param emptyCell  - The resolved empty-cell color, as six-digit hex, when it is opaque.
+* @return The scale ends, as six-digit hex.
+*/
+const getHeatmapScale = (primary, background, emptyCell) => {
+	const primaryStandsOut = contrastRatio(primary, background) >= 3;
+	const extreme = (primaryStandsOut ? relativeLuminance(primary) > relativeLuminance(background) : contrastRatio("#ffffff", background) > contrastRatio("#000000", background)) ? "#ffffff" : "#000000";
+	const lowAgainst = (references) => {
+		const meets = (color) => references.every((reference) => contrastRatio(color, reference) >= 3);
+		return (primaryStandsOut ? firstMeeting(background, primary, meets) : null) ?? firstMeeting(primary, extreme, meets);
+	};
+	const high = firstMeeting(primary, extreme, (color) => contrastRatio(color, background) >= 9) ?? extreme;
+	const againstEmptyCell = emptyCell ? lowAgainst([background, emptyCell]) : null;
+	return {
+		low: (againstEmptyCell && contrastRatio(againstEmptyCell, background) <= contrastRatio(high, background) ? againstEmptyCell : lowAgainst([background])) ?? extreme,
+		high
+	};
 };
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-context.ts
@@ -7725,7 +7783,7 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 	const context = useContext(HeatmapContext);
 	const { legend } = useGlobalChartsTheme();
 	if (!context) return null;
-	const { primaryColorHex } = context;
+	const { fillVars } = context;
 	const labelStyle = legend.labelStyles;
 	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "row",
@@ -7748,7 +7806,7 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 					return /* @__PURE__ */ jsx("span", {
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
 						style: {
-							"--a8c-charts-color-heatmap-primary": primaryColorHex,
+							...fillVars,
 							"--a8c-charts-heatmap-cell-intensity": intensity
 						}
 					}, index);
@@ -7952,7 +8010,6 @@ const stepCalendarCell = (grid, blocks, from, key) => {
 };
 //#endregion
 //#region src/charts/heatmap-chart/heatmap-chart.tsx
-const CELL_MIX_FLOOR = .15;
 const CELL_VALUE_MODIFIER = {
 	label: void 0,
 	"label-inverse": heatmap_chart_module_default["heatmap-chart__cell-value--inverse"],
@@ -7986,13 +8043,23 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		index: 0,
 		overrideColor: primaryColor
 	});
-	const chartBackgroundHex = normalizeColorToHex(CATALOG_POINTERS.background, scopeElement, resolveCssVariable);
+	const resolveAtScope = createCssVariableResolver(scopeElement);
+	const chartBackgroundHex = resolveOpaqueHex(CATALOG_POINTERS.background, resolveAtScope) ?? "#ffffff";
+	const emptyCellHex = resolveOpaqueHex(CATALOG_POINTERS.track, resolveAtScope);
 	const primaryHex = normalizeColorToHex(primaryColorHex);
-	const cellMix = isValidHexColor(primaryHex) && isValidHexColor(chartBackgroundHex) ? {
-		primary: hexToRgb(primaryHex),
-		background: hexToRgb(chartBackgroundHex)
-	} : null;
-	const cellTextColor = (intensity) => cellMix ? pickLabelTextColorForFill(blendRgb(cellMix.primary, cellMix.background, CELL_MIX_FLOOR + .85 * intensity), labelRoles, "label") : "label";
+	const scale = useMemo(() => isValidHexColor(primaryHex) ? getHeatmapScale(primaryHex, chartBackgroundHex, emptyCellHex) : null, [
+		primaryHex,
+		chartBackgroundHex,
+		emptyCellHex
+	]);
+	const fillVars = useMemo(() => ({
+		"--a8c-charts-color-heatmap-primary": primaryColorHex,
+		...scale && {
+			"--a8c-charts-color-heatmap-low": scale.low,
+			"--a8c-charts-color-heatmap-high": scale.high
+		}
+	}), [primaryColorHex, scale]);
+	const cellTextColor = (intensity) => scale ? pickLabelTextColorForFill(blendRgb(hexToRgb(scale.high), hexToRgb(scale.low), intensity), labelRoles, "label") : "label";
 	useIsomorphicLayoutEffect(() => {
 		if (!containerRef.current) return;
 		const next = resolveLabelRoles(createCssVariableResolver(containerRef.current));
@@ -8006,8 +8073,8 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const extent = useMemo(() => getValueExtent(data), [data]);
 	const heatmapContext = useMemo(() => ({
 		extent,
-		primaryColorHex
-	}), [extent, primaryColorHex]);
+		fillVars
+	}), [extent, fillVars]);
 	const columns = data.length;
 	const rows = Math.max(0, ...data.map((column) => column.data.length));
 	const groupLayout = useMemo(() => resolveColumnGroups(columnGroups, columns, 2), [columnGroups, columns]);
@@ -8158,9 +8225,10 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const firstDataRow = hasColumnLabels ? 2 : 1;
 	const dataTrack = (column) => column.summary ? "minmax(auto, max-content)" : columnTrack;
 	const gapTrack = compact ? `minmax(${groupGap}px, 1fr)` : `${groupGap}px`;
+	const columnTracks = data.map((column, columnIndex) => groupLayout.columns[columnIndex].gapBefore ? `${gapTrack} ${dataTrack(column)}` : dataTrack(column)).join(" ");
 	const gridStyle = {
-		"--a8c-charts-color-heatmap-primary": primaryColorHex,
-		gridTemplateColumns: `auto ${data.map((column, columnIndex) => groupLayout.columns[columnIndex].gapBefore ? `${gapTrack} ${dataTrack(column)}` : dataTrack(column)).join(" ")}`,
+		...fillVars,
+		gridTemplateColumns: `auto ${columnTracks}`,
 		gridTemplateRows: `${hasColumnLabels ? "auto " : ""}repeat(${rows}, ${rowTrack})${hasGroups ? " auto" : ""}`
 	};
 	if (compact) {
@@ -8260,7 +8328,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 									}, `cell-${columnIndex}-${rowIndex}`);
 									const value = cell?.value ?? null;
 									const present = isPresent(value);
-									const filled = present && !column.summary;
+									const filled = present && !column.summary && !isEmptyValue(value, extent);
 									const normalized = filled ? getNormalizedValue(value, extent) : 0;
 									const info = buildTooltipData(columnIndex, rowIndex);
 									const accessibleLabel = `${cellName(info)}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
