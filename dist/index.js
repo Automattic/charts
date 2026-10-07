@@ -1684,10 +1684,10 @@ const DEFAULT_MARGIN_BOTTOM = 20;
 */
 const DEFAULT_MARGIN_LEFT = 20;
 /**
-* Bottom margin to use when the X-axis is rendered at the top.
+* Bottom margin when no X-axis sits below the chart, because it is on top or hidden.
 * We only need a small buffer below the chart in that case.
 */
-const DEFAULT_BOTTOM_FOR_TOP_AXIS = 10;
+const DEFAULT_BOTTOM_WITHOUT_X_AXIS = 10;
 /**
 * Fallback font size used when we cannot derive a font size
 * from the theme or axis styles for X-axis tick labels.
@@ -1767,18 +1767,18 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 			if (yAxisOrientation === "right") defaultMargin.right = yMarginValue;
 			else defaultMargin.left = yMarginValue;
 		}
-		const xOrientation = options.axis?.x?.orientation === "top" ? "top" : "bottom";
-		const { fontSize, tickLength, tickLabelStyle } = getXAxisLabelMetrics(theme, xOrientation);
-		const computedXMargin = fontSize + tickLength;
-		if (xOrientation === "top") {
-			defaultMargin.top = Math.max(defaultMargin.top, computedXMargin);
-			defaultMargin.bottom = DEFAULT_BOTTOM_FOR_TOP_AXIS;
-		} else defaultMargin.bottom = Math.max(defaultMargin.bottom, computedXMargin);
 		if (options.axis?.x?.display !== false) {
+			const xOrientation = options.axis?.x?.orientation === "top" ? "top" : "bottom";
+			const { fontSize, tickLength, tickLabelStyle } = getXAxisLabelMetrics(theme, xOrientation);
+			const computedXMargin = fontSize + tickLength;
+			if (xOrientation === "top") {
+				defaultMargin.top = Math.max(defaultMargin.top, computedXMargin);
+				defaultMargin.bottom = DEFAULT_BOTTOM_WITHOUT_X_AXIS;
+			} else defaultMargin.bottom = Math.max(defaultMargin.bottom, computedXMargin);
 			const { first, last } = getEdgeTickWidths(options.axis?.x?.tickValues ?? [], options.axis?.x?.tickFormat, tickLabelStyle);
 			defaultMargin.left = Math.max(defaultMargin.left, Math.ceil(first / 2));
 			defaultMargin.right = Math.max(defaultMargin.right, Math.ceil(last / 2));
-		}
+		} else defaultMargin.bottom = DEFAULT_BOTTOM_WITHOUT_X_AXIS;
 		return defaultMargin;
 	}, [
 		options,
