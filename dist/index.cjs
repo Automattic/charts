@@ -6160,6 +6160,7 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 				widthFactor
 			});
 			rects.push(/* @__PURE__ */ (0, react_jsx_runtime.jsx)("rect", {
+				className: "bar-chart__comparison-bar",
 				x: rect.x,
 				y: rect.y,
 				width: rect.width,
@@ -6575,7 +6576,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 		const patternId = getPatternId(chartId, index);
 		return `
 			.visx-bar[fill="url(#${patternId})"],
-			.bar-chart__comparison-bars rect[fill="url(#${patternId})"] {
+			.bar-chart__comparison-bar[fill="url(#${patternId})"] {
 				stroke: ${color};
 				stroke-width: 1;
 				}

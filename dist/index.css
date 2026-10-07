@@ -32,6 +32,7 @@
   --a8c-charts-motion-duration-entrance: var(--wpds-motion-duration-xl, .4s);
   --a8c-charts-motion-easing-entrance: var(--wpds-motion-easing-expressive, cubic-bezier(.25, 0, 0, 1));
   --a8c-charts-border-radius-bar: var(--wpds-border-radius-md, 4px);
+  --a8c-charts-border-radius-bar-chart: 0;
   --a8c-charts-border-radius-cell: var(--wpds-border-radius-sm, 2px);
   --a8c-charts-border-radius-leaderboard-bar: 9999px;
   --a8c-charts-dimension-leaderboard-row-gap: var(--wpds-dimension-gap-md, 12px);
@@ -303,6 +304,10 @@
 }
 .a8ccharts-97yN9W-bar-chart svg {
   overflow: visible;
+}
+
+.a8ccharts-97yN9W-bar-chart .visx-bar, .a8ccharts-97yN9W-bar-chart .bar-chart__comparison-bar {
+  rx: var(--a8c-charts-border-radius-bar-chart);
 }
 
 .a8ccharts-97yN9W-bar-chart--animated rect {
