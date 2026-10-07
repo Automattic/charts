@@ -3295,11 +3295,13 @@ function useChartChildren(children, chartType) {
 				}
 				const displayName = child.type?.displayName;
 				if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
-					if (child.props?.children) Children.forEach(child.props.children, (svgChild) => {
+					const { children: svgChildren } = child.props ?? {};
+					if (svgChildren) Children.forEach(svgChildren, (svgChild) => {
 						svg.push(svgChild);
 					});
 				} else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
-					if (child.props?.children) Children.forEach(child.props.children, (htmlChild) => {
+					const { children: htmlChildren } = child.props ?? {};
+					if (htmlChildren) Children.forEach(htmlChildren, (htmlChild) => {
 						html.push(htmlChild);
 					});
 				} else if (child.type === Group) svg.push(child);

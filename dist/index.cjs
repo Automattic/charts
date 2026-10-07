@@ -3297,11 +3297,13 @@ function useChartChildren(children, chartType) {
 				}
 				const displayName = child.type?.displayName;
 				if (displayName === `${chartType}.SVG` || displayName === "Chart.SVG") {
-					if (child.props?.children) react.Children.forEach(child.props.children, (svgChild) => {
+					const { children: svgChildren } = child.props ?? {};
+					if (svgChildren) react.Children.forEach(svgChildren, (svgChild) => {
 						svg.push(svgChild);
 					});
 				} else if (displayName === `${chartType}.HTML` || displayName === "Chart.HTML") {
-					if (child.props?.children) react.Children.forEach(child.props.children, (htmlChild) => {
+					const { children: htmlChildren } = child.props ?? {};
+					if (htmlChildren) react.Children.forEach(htmlChildren, (htmlChild) => {
 						html.push(htmlChild);
 					});
 				} else if (child.type === _visx_group.Group) svg.push(child);
