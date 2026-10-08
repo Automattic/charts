@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Line, Area and Bar charts: Add an `ariaLabel` prop to name each chart for screen readers.
 
 ### Changed
+- Heatmap chart: Start the legend with a swatch in the empty-cell color.
 - Line, Area and Bar charts: Change the chart container's role from `grid` to `application`, so it is valid for screen readers, and drop the inner svg's `aria-label="XYChart"`. Update any selector that targets `[role="grid"]` or `[aria-label="XYChart"]`.
 
 ## [4.8.0] - 2026-10-07

@@ -7691,6 +7691,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__legend-label": "a8ccharts-O3YMOW-heatmap-chart__legend-label",
 	"heatmap-chart__legend-scale--bar": "a8ccharts-O3YMOW-heatmap-chart__legend-scale--bar",
 	"heatmap-chart__legend-swatch": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch",
+	"heatmap-chart__legend-swatch--empty": "a8ccharts-O3YMOW-heatmap-chart__legend-swatch--empty",
 	"heatmap-chart__row": "a8ccharts-O3YMOW-heatmap-chart__row",
 	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label",
 	"heatmap-chart--height-capped": "a8ccharts-O3YMOW-heatmap-chart--height-capped"
@@ -7788,8 +7789,9 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 	const context = useContext(HeatmapContext);
 	const { legend } = useGlobalChartsTheme();
 	if (!context) return null;
-	const { fillVars } = context;
+	const { extent, fillVars } = context;
 	const labelStyle = legend.labelStyles;
+	const showsEmptyCell = isEmptyValue(0, extent);
 	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "row",
 		gap: "xs",
@@ -7801,12 +7803,12 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 				style: labelStyle,
 				children: lessLabel ?? __("Less", "jetpack-charts")
 			}),
-			/* @__PURE__ */ jsx(Stack, {
+			/* @__PURE__ */ jsxs(Stack, {
 				direction: "row",
 				gap: variant === "bar" ? void 0 : "xs",
 				"aria-hidden": "true",
 				className: variant === "bar" ? heatmap_chart_module_default["heatmap-chart__legend-scale--bar"] : void 0,
-				children: Array.from({ length: steps }, (_, index) => {
+				children: [showsEmptyCell && /* @__PURE__ */ jsx("span", { className: clsx(heatmap_chart_module_default["heatmap-chart__legend-swatch"], heatmap_chart_module_default["heatmap-chart__legend-swatch--empty"]) }), Array.from({ length: steps }, (_, index) => {
 					const intensity = steps <= 1 ? 1 : index / (steps - 1);
 					return /* @__PURE__ */ jsx("span", {
 						className: heatmap_chart_module_default["heatmap-chart__legend-swatch"],
@@ -7815,7 +7817,7 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 							"--a8c-charts-heatmap-cell-intensity": intensity
 						}
 					}, index);
-				})
+				})]
 			}),
 			/* @__PURE__ */ jsx(Text$1, {
 				variant: "body-sm",

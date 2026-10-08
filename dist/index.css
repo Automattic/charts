@@ -639,6 +639,10 @@
   background: color-mix(in sRGB, var(--a8c-charts-color-heatmap-high, var(--a8c-charts-color-heatmap-primary)) calc(var(--a8c-charts-heatmap-cell-intensity) * 100%), var(--a8c-charts-color-heatmap-low, color-mix(in sRGB, var(--a8c-charts-color-heatmap-primary) 15%, var(--a8c-charts-color-background, #fff))));
 }
 
+.a8ccharts-O3YMOW-heatmap-chart__legend-swatch--empty {
+  background: var(--a8c-charts-color-track);
+}
+
 .a8ccharts-O3YMOW-heatmap-chart__legend-scale--bar {
   border-radius: var(--a8c-charts-border-radius-cell);
   overflow: hidden;

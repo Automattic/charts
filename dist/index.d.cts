@@ -1491,7 +1491,7 @@ type MonthCalendarHeatmapResult = {
 //#endregion
 //#region src/charts/heatmap-chart/private/heatmap-legend.d.ts
 interface HeatmapLegendProps {
-  /** Number of swatches in the scale. Default 5. */
+  /** Number of color swatches in the scale, not counting the empty-cell swatch. Default 5. */
   steps?: number;
   /**
    * `swatches` spaces the steps out as cell-sized squares; `bar` joins them
