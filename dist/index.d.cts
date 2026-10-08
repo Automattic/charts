@@ -895,6 +895,8 @@ type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
   position?: 'start' | 'end';
 };
 interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+  /** Accessible name of the chart. Defaults to a localized "Line chart". */
+  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -950,6 +952,8 @@ type TooltipDatum = {
 //#endregion
 //#region src/charts/area-chart/types.d.ts
 interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+  /** Accessible name of the chart. Defaults to a localized "Area chart". */
+  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -1059,6 +1063,8 @@ type BandHighlightSelection = {
   height: number;
 };
 interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+  /** Accessible name of the chart. Defaults to a localized "Bar chart". */
+  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */

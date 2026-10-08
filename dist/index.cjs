@@ -3082,7 +3082,7 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 /** @deprecated Use `XYChartTooltip`. */
 const AccessibleTooltip = XYChartTooltip;
 const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, setIsNavigating, chartRef, totalPoints, onActivate, preventTooltipScroll = false, visibleSeriesKey }) => {
-	const getChartRoot = (0, react.useCallback)(() => chartRef.current?.closest("[role=\"grid\"]") ?? chartRef.current, [chartRef]);
+	const getChartRoot = (0, react.useCallback)(() => chartRef.current?.closest("[role=\"application\"]") ?? chartRef.current, [chartRef]);
 	const focusWithoutScrollIfNeeded = (0, react.useCallback)((element) => {
 		if (preventTooltipScroll) element?.focus({ preventScroll: true });
 		else element?.focus();
@@ -4718,7 +4718,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
@@ -4986,8 +4986,8 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					ref: chartRef,
-					role: "grid",
-					"aria-label": (0, _wordpress_i18n.__)("Line chart", "jetpack-charts"),
+					role: "application",
+					"aria-label": ariaLabel ?? (0, _wordpress_i18n.__)("Line chart", "jetpack-charts"),
 					tabIndex: 0,
 					onKeyDown: onChartKeyDown,
 					onFocus: onChartFocus,
@@ -4995,6 +4995,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 					children: chartHeight > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_xychart.XYChart, {
+							accessibilityLabel: "",
 							theme,
 							width,
 							height: chartHeight,
@@ -5235,7 +5236,7 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 };
 //#endregion
 //#region src/charts/area-chart/area-chart.tsx
-const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const AreaChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
 	const legendPosition = legend.position ?? "bottom";
@@ -5506,8 +5507,8 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					ref: chartRef,
-					role: "grid",
-					"aria-label": (0, _wordpress_i18n.__)("Area chart", "jetpack-charts"),
+					role: "application",
+					"aria-label": ariaLabel ?? (0, _wordpress_i18n.__)("Area chart", "jetpack-charts"),
 					tabIndex: 0,
 					onKeyDown: onChartKeyDown,
 					onFocus: onChartFocus,
@@ -5515,6 +5516,7 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, chartId: providedChartI
 					children: chartHeight > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 						className: xy_plot_module_default["xy-plot"],
 						children: [zoomable && zoom.domain && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ZoomResetButton, { onClick: zoom.reset }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_xychart.XYChart, {
+							accessibilityLabel: "",
 							theme,
 							width,
 							height: chartHeight,
@@ -6367,7 +6369,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ (0, react_jsx_runtime
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -6675,9 +6677,9 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 			children: ({ contentHeight }) => {
 				const chartHeight = contentHeight > 0 ? contentHeight : height;
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-					role: "grid",
+					role: "application",
 					ref: chartRef,
-					"aria-label": (0, _wordpress_i18n.__)("Bar chart", "jetpack-charts"),
+					"aria-label": ariaLabel ?? (0, _wordpress_i18n.__)("Bar chart", "jetpack-charts"),
 					tabIndex: 0,
 					onKeyDown: onChartKeyDown,
 					onFocus: onChartFocus,
@@ -6685,6 +6687,7 @@ const BarChartInternal = ({ data, chartId: providedChartId, width, height, class
 					children: chartHeight > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 						className: xy_plot_module_default["xy-plot"],
 						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_xychart.XYChart, {
+							accessibilityLabel: "",
 							theme,
 							width,
 							height: chartHeight,
