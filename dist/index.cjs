@@ -4125,6 +4125,7 @@ var line_chart_module_default = {
 	"line-chart--animated": "a8ccharts-inuQka-line-chart--animated",
 	"rise": "a8ccharts-inuQka-rise"
 };
+const isReact18 = react.version.startsWith("18.");
 const CloseIcon = () => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 	width: "16",
 	height: "16",
@@ -4167,7 +4168,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 		className: line_chart_module_default["line-chart__annotation-label"],
 		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 			ref: buttonRef,
-			popovertarget: popoverId,
+			...isReact18 ? { popovertarget: popoverId } : { popoverTarget: popoverId },
 			className: line_chart_module_default["line-chart__annotation-label-trigger-button"],
 			style: {
 				width: `44px`,
@@ -4195,8 +4196,13 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 						subtitle
 					})
 				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
-					popovertarget: popoverId,
-					popovertargetaction: "hide",
+					...isReact18 ? {
+						popovertarget: popoverId,
+						popovertargetaction: "hide"
+					} : {
+						popoverTarget: popoverId,
+						popoverTargetAction: "hide"
+					},
 					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
 					"aria-label": (0, _wordpress_i18n.__)("Close", "jetpack-charts"),
 					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CloseIcon, {})

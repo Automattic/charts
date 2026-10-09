@@ -4,7 +4,7 @@ import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarS
 import { __, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
-import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1 } from "react";
+import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1, version } from "react";
 import { differenceInHours, differenceInYears, isValid, parse, parseISO } from "date-fns";
 import { tzOffset } from "@date-fns/tz";
 import { Text, getStringWidth } from "@visx/text";
@@ -4123,6 +4123,7 @@ var line_chart_module_default = {
 	"line-chart--animated": "a8ccharts-inuQka-line-chart--animated",
 	"rise": "a8ccharts-inuQka-rise"
 };
+const isReact18 = version.startsWith("18.");
 const CloseIcon = () => /* @__PURE__ */ jsx("svg", {
 	width: "16",
 	height: "16",
@@ -4165,7 +4166,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 		className: line_chart_module_default["line-chart__annotation-label"],
 		children: [/* @__PURE__ */ jsx("button", {
 			ref: buttonRef,
-			popovertarget: popoverId,
+			...isReact18 ? { popovertarget: popoverId } : { popoverTarget: popoverId },
 			className: line_chart_module_default["line-chart__annotation-label-trigger-button"],
 			style: {
 				width: `44px`,
@@ -4193,8 +4194,13 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 						subtitle
 					})
 				}), /* @__PURE__ */ jsx("button", {
-					popovertarget: popoverId,
-					popovertargetaction: "hide",
+					...isReact18 ? {
+						popovertarget: popoverId,
+						popovertargetaction: "hide"
+					} : {
+						popoverTarget: popoverId,
+						popoverTargetAction: "hide"
+					},
 					className: line_chart_module_default["line-chart__annotation-label-popover-close-button"],
 					"aria-label": __("Close", "jetpack-charts"),
 					children: /* @__PURE__ */ jsx(CloseIcon, {})

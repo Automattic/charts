@@ -880,14 +880,14 @@ type LineChartAnnotationProps = {
   subjectType?: 'circle' | 'line-vertical' | 'line-horizontal';
   styles?: AnnotationStyles;
   testId?: string;
-  renderLabel?: FC<{
+  renderLabel?: (props: {
     title: string;
     subtitle?: string;
-  }>;
-  renderLabelPopover?: FC<{
+  }) => ReactNode;
+  renderLabelPopover?: (props: {
     title: string;
     subtitle?: string;
-  }>;
+  }) => ReactNode;
 };
 type CurveType = 'smooth' | 'linear' | 'monotone';
 type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
