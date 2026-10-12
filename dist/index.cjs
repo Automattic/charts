@@ -12093,6 +12093,210 @@ LeaderboardChartWithProvider.displayName = "LeaderboardChart";
 const LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, { Legend });
 const LeaderboardChartResponsive = attachSubComponents(withResponsive(LeaderboardChartWithProvider), { Legend });
 //#endregion
+//#region src/charts/private/pie-keyboard-navigation/order-arcs-for-navigation.ts
+/**
+* Orders arcs the way they appear: clockwise from 12 o'clock, which for a semi-circle is left to right.
+*
+* @param arcs - Arcs from visx's `pie` factory, in data order.
+* @return A copy of `arcs` sorted by angular midpoint.
+*/
+const orderArcsForNavigation = (arcs) => [...arcs].sort((a, b) => a.startAngle + a.endAngle - (b.startAngle + b.endAngle));
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/pie-selection-announcement.tsx
+const PieSelectionAnnouncement = ({ data }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_ui.VisuallyHidden, {
+	role: "status",
+	"aria-atomic": "true",
+	children: data && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LabelValueContent, { data })
+});
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/pie-tooltip.tsx
+const PieTooltip = ({ top, left, selectedIndex, tooltipRef, children }) => {
+	const standaloneScopeClass = useStandaloneScopeClass();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BoundedTooltip, {
+		top,
+		left,
+		children: selectedIndex === void 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: standaloneScopeClass,
+			role: "tooltip",
+			children
+		}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			ref: tooltipRef,
+			tabIndex: -1,
+			role: "tooltip",
+			"aria-atomic": "true",
+			className: standaloneScopeClass,
+			children
+		}, `chart-tooltip-${selectedIndex}`)
+	});
+};
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/pie-selection-output.tsx
+/**
+* Reports the selected segment: a focused tooltip for a keyboard selection, a pointer tooltip on hover, or a screen reader announcement without tooltips.
+*
+* @param {PieSelectionOutputProps} props - Component props
+* @return {JSX.Element} The announcement region and the tooltip, if any
+*/
+const PieSelectionOutput = ({ withTooltips, selectedIndex, selectedData, keyboardTooltipAnchor, pointerTooltip, chartRef, svgRef, tooltipRef, renderTooltip }) => {
+	const [svgOffset, setSvgOffset] = (0, react.useState)({
+		top: 0,
+		left: 0
+	});
+	const showKeyboardTooltip = withTooltips && selectedData && keyboardTooltipAnchor;
+	(0, react.useLayoutEffect)(() => {
+		const chartBounds = chartRef.current?.getBoundingClientRect();
+		const svgBounds = svgRef.current?.getBoundingClientRect();
+		if (!showKeyboardTooltip || !chartBounds || !svgBounds) return;
+		const top = svgBounds.top - chartBounds.top;
+		const left = svgBounds.left - chartBounds.left;
+		setSvgOffset((current) => current.top === top && current.left === left ? current : {
+			top,
+			left
+		});
+	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PieSelectionAnnouncement, { data: withTooltips ? void 0 : selectedData }),
+		showKeyboardTooltip && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PieTooltip, {
+			top: svgOffset.top + keyboardTooltipAnchor.top,
+			left: svgOffset.left + keyboardTooltipAnchor.left,
+			selectedIndex,
+			tooltipRef,
+			children: renderTooltip({ tooltipData: selectedData })
+		}),
+		withTooltips && !selectedData && pointerTooltip?.data && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PieTooltip, {
+			top: pointerTooltip.top,
+			left: pointerTooltip.left,
+			children: renderTooltip({ tooltipData: pointerTooltip.data })
+		})
+	] });
+};
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/pie-keyboard-navigation.module.scss
+var pie_keyboard_navigation_module_default = {
+	"selected-ring__contrast": "a8ccharts-V2HDKq-selected-ring__contrast",
+	"selected-ring__focus": "a8ccharts-V2HDKq-selected-ring__focus"
+};
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/selected-segment-ring.tsx
+/**
+* Encodes `value` for an SVG id, losslessly so distinct chart ids never share a clip path.
+*
+* @param value - Any string.
+* @return `value` with each character outside `[A-Za-z0-9-]` written as `_<hex code point>_`.
+*/
+const toSvgId = (value) => Array.from(value, (character) => /[A-Za-z0-9-]/.test(character) ? character : `_${character.codePointAt(0)?.toString(16)}_`).join("");
+/**
+* Marks the selected segment with a two-tone ring drawn inside its edge, so the SVG edge cannot cut it off.
+*
+* @param {SelectedSegmentRingProps} props - Component props
+* @return {JSX.Element} The ring
+*/
+const SelectedSegmentRing = ({ chartId, d }) => {
+	const clipId = `pie-selected-ring-clip-${toSvgId(chartId)}`;
+	const clipPath = `url(#${clipId})`;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", {
+		pointerEvents: "none",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("clipPath", {
+				id: clipId,
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d })
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+				d,
+				clipPath,
+				className: pie_keyboard_navigation_module_default["selected-ring__contrast"]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+				d,
+				clipPath,
+				className: pie_keyboard_navigation_module_default["selected-ring__focus"]
+			})
+		]
+	});
+};
+//#endregion
+//#region src/charts/private/pie-keyboard-navigation/use-pie-keyboard-navigation.ts
+const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX, tooltipOffsetY }) => {
+	const chartRef = (0, react.useRef)(null);
+	const svgRef = (0, react.useRef)(null);
+	const [selectedIndex, setSelectedIndex] = (0, react.useState)(void 0);
+	const [isNavigating, setIsNavigating] = (0, react.useState)(false);
+	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = (0, _visx_tooltip.useTooltip)();
+	const { tooltipRef: focusTooltip, onChartFocus, onChartBlur, onChartKeyDown, onChartPointerMove } = useKeyboardNavigation({
+		selectedIndex,
+		setSelectedIndex,
+		isNavigating,
+		setIsNavigating,
+		chartRef,
+		totalPoints: navigationArcs.length,
+		visibleSeriesKey: JSON.stringify(navigationArcs.map((arcDatum) => arcDatum.data.label))
+	});
+	const selectedArc = selectedIndex === void 0 ? void 0 : navigationArcs[selectedIndex];
+	const keyboardTooltip = (0, react.useRef)(null);
+	const tooltipLostFocus = (0, react.useRef)(false);
+	const tooltipRef = (0, react.useCallback)((element) => {
+		if (element) {
+			keyboardTooltip.current = element;
+			focusTooltip(element);
+		} else if (keyboardTooltip.current?.ownerDocument.activeElement === keyboardTooltip.current) tooltipLostFocus.current = true;
+	}, [focusTooltip]);
+	(0, react.useLayoutEffect)(() => {
+		if (!tooltipLostFocus.current) return;
+		tooltipLostFocus.current = false;
+		const { activeElement, body } = chartRef.current?.ownerDocument ?? document;
+		if (activeElement === null || activeElement === body) chartRef.current?.focus();
+	});
+	const getSegmentHandlers = (data, navigationIndex) => ({
+		onMouseMove: (event) => {
+			onChartPointerMove(navigationIndex);
+			if (!withTooltips) return;
+			const bounds = chartRef.current?.getBoundingClientRect();
+			if (!bounds) return;
+			showTooltip({
+				tooltipData: data,
+				tooltipLeft: event.clientX - bounds.left + tooltipOffsetX,
+				tooltipTop: event.clientY - bounds.top + tooltipOffsetY
+			});
+		},
+		onMouseLeave: withTooltips ? hideTooltip : void 0
+	});
+	return {
+		chartRef,
+		svgRef,
+		selectedArc,
+		getSegmentHandlers,
+		getKeyboardTooltipAnchor: (0, react.useCallback)((originX, originY, [x, y]) => withTooltips ? {
+			left: originX + x + tooltipOffsetX,
+			top: originY + y + tooltipOffsetY
+		} : void 0, [
+			withTooltips,
+			tooltipOffsetX,
+			tooltipOffsetY
+		]),
+		selectionOutputProps: {
+			withTooltips,
+			selectedIndex,
+			selectedData: selectedArc?.data,
+			chartRef,
+			svgRef,
+			tooltipRef,
+			pointerTooltip: tooltipOpen ? {
+				data: tooltipData,
+				left: tooltipLeft || 0,
+				top: tooltipTop || 0
+			} : void 0
+		},
+		chartProps: {
+			role: "application",
+			tabIndex: 0,
+			onKeyDown: onChartKeyDown,
+			onFocus: onChartFocus,
+			onBlur: onChartBlur
+		}
+	};
+};
+//#endregion
 //#region src/charts/private/radial-wipe-animation/radial-wipe-animation.tsx
 /**
 * Renders a SVG mask that creates a radial wipe animation effect.
@@ -12188,20 +12392,13 @@ const LABEL_TEXT_MODIFIER = {
 * @param {PieChartProps} props - Component props
 * @return {JSX.Element} The rendered chart component
 */
-const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legend = {}, width: propWidth, height: propHeight, size, animation, thickness = 1, padding = 0, gapScale = 0, cornerScale = 0, showLabels = true, legendValueDisplay = "percentage", children = null, tooltipOffsetX = 0, tooltipOffsetY = -15, renderTooltip = renderDefaultPieTooltip, gap = "md" }) => {
+const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false, className, showLegend = false, legend = {}, width: propWidth, height: propHeight, size, animation, thickness = 1, padding = 0, gapScale = 0, cornerScale = 0, showLabels = true, legendValueDisplay = "percentage", children = null, tooltipOffsetX = 0, tooltipOffsetY = -15, renderTooltip = renderDefaultPieTooltip, ariaLabel, gap = "md" }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendPosition = legend.position ?? "bottom";
 	const providerTheme = useGlobalChartsTheme();
 	const chartId = useChartId(providedChartId);
-	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = (0, _visx_tooltip.useTooltip)();
-	const standaloneScopeClass = useStandaloneScopeClass();
-	const containerRef = (0, react.useRef)(null);
 	const rootRef = (0, react.useRef)(null);
 	const [labelRoles, setLabelRoles] = (0, react.useState)(null);
-	const onMouseLeave = (0, react.useCallback)(() => {
-		if (!withTooltips) return;
-		hideTooltip();
-	}, [withTooltips, hideTooltip]);
 	const { getElementStyles, isSeriesVisible, isColorPaletteResolved } = useGlobalChartsContext();
 	const { isValid, message } = validateData$1(data);
 	(0, react.useLayoutEffect)(() => {
@@ -12245,13 +12442,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
-	if (!isValid) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-		className: (0, clsx.default)("pie-chart", pie_chart_module_default["pie-chart"], className),
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-			className: pie_chart_module_default["error-message"],
-			children: message
-		})
-	});
+	const wipeMask = animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null;
 	const padAngle = gapScale * (2 * Math.PI / data.length);
 	const dataWithIndex = visibleData.map((d) => {
 		const originalIndex = data.findIndex((item) => item.label === d.label);
@@ -12269,6 +12460,24 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 			}).color;
 		}
 	};
+	const arcs = (0, _visx_shape.pie)({
+		value: accessors.value,
+		padAngle
+	})(dataWithIndex);
+	const navigationArcs = orderArcsForNavigation(arcs);
+	const { chartRef, svgRef, selectedArc, getSegmentHandlers, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
+		navigationArcs,
+		withTooltips,
+		tooltipOffsetX,
+		tooltipOffsetY
+	});
+	if (!isValid) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: (0, clsx.default)("pie-chart", pie_chart_module_default["pie-chart"], className),
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: pie_chart_module_default["error-message"],
+			children: message
+		})
+	});
 	const legendElement = showLegend && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Legend, {
 		orientation: legend.orientation ?? "horizontal",
 		position: legendPosition,
@@ -12307,102 +12516,96 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 				const innerRadius = thickness === 0 ? 0 : outerRadius * (1 - thickness);
 				const maxCornerRadius = (outerRadius - innerRadius) / 2;
 				const cornerRadius = cornerScale ? Math.min(cornerScale * outerRadius, maxCornerRadius) : 0;
+				const path = (0, _visx_shape.arc)({
+					innerRadius,
+					outerRadius,
+					cornerRadius
+				});
+				const svgLabelSmall = providerTheme.svgLabelSmall;
+				const fontSize = resolveFontSize(svgLabelSmall?.fontSize) ?? 12;
+				const renderLabel = (arcDatum, index) => {
+					if (arcDatum.endAngle - arcDatum.startAngle < .25) return null;
+					const [centroidX, centroidY] = path.centroid(arcDatum);
+					const backgroundWidth = (0, _visx_text.getStringWidth)(arcDatum.data.label, {
+						fontSize,
+						fontFamily: svgLabelSmall?.fontFamily,
+						fontWeight: svgLabelSmall?.fontWeight
+					}) + 12;
+					const backgroundHeight = fontSize + 12;
+					return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("rect", {
+						className: pie_chart_module_default["pie-chart__label-plate"],
+						x: centroidX - backgroundWidth / 2,
+						y: centroidY - backgroundHeight / 2,
+						width: backgroundWidth,
+						height: backgroundHeight,
+						rx: 4,
+						ry: 4,
+						pointerEvents: "none"
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("text", {
+						className: (0, clsx.default)(pie_chart_module_default["pie-chart__label-text"], LABEL_TEXT_MODIFIER[pickLabelTextColor(accessors.fill(arcDatum.data), labelRoles, "label-inverse")]),
+						x: centroidX,
+						y: centroidY,
+						dy: ".33em",
+						fontSize,
+						textAnchor: "middle",
+						pointerEvents: "none",
+						children: arcDatum.data.label
+					})] }, `label-${index}`);
+				};
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Center, {
-					ref: containerRef,
+					ref: chartRef,
 					className: pie_chart_module_default["pie-chart__plot"],
+					...chartProps,
+					"aria-label": ariaLabel ?? (0, _wordpress_i18n.__)("Pie chart", "jetpack-charts"),
 					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+						ref: svgRef,
 						viewBox: `0 0 ${width} ${height}`,
 						preserveAspectRatio: "xMidYMid meet",
 						width,
 						height,
-						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadialWipeAnimation, {
-							id: `radial-wipe-${chartId}`,
-							radius: outerRadius,
-							innerRadius
-						}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_group.Group, {
-							top: centerY,
-							left: centerX,
-							mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-							children: [allSegmentsHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
-								x: 0,
-								y: 0,
-								width,
-								height,
-								children: getAllHiddenMessage(legendInteractive, "segments")
-							}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_shape.Pie, {
-								data: dataWithIndex,
-								pieValue: accessors.value,
-								outerRadius,
-								innerRadius,
-								padAngle,
-								cornerRadius,
-								children: (pie) => {
-									return pie.arcs.map((arc, index) => {
-										const [centroidX, centroidY] = pie.path.centroid(arc);
-										const hasSpaceForLabel = arc.endAngle - arc.startAngle >= .25;
-										const handleMouseMove = (event) => {
-											if (!withTooltips) return;
-											const bounds = containerRef.current?.getBoundingClientRect();
-											if (!bounds) return;
-											showTooltip({
-												tooltipData: arc.data,
-												tooltipLeft: event.clientX - bounds.left + tooltipOffsetX,
-												tooltipTop: event.clientY - bounds.top + tooltipOffsetY
-											});
-										};
-										const fill = accessors.fill(arc.data);
-										const pathProps = {
-											d: pie.path(arc) || "",
-											fill,
-											"data-testid": "pie-segment"
-										};
-										const groupProps = {};
-										if (withTooltips) {
-											groupProps.onMouseMove = handleMouseMove;
-											groupProps.onMouseLeave = onMouseLeave;
-										}
-										const svgLabelSmall = providerTheme.svgLabelSmall;
-										const fontSize = resolveFontSize(svgLabelSmall?.fontSize) ?? 12;
-										const backgroundWidth = (0, _visx_text.getStringWidth)(arc.data.label, {
-											fontSize,
-											fontFamily: svgLabelSmall?.fontFamily,
-											fontWeight: svgLabelSmall?.fontWeight
-										}) + 12;
-										const backgroundHeight = fontSize + 12;
-										return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", {
-											...groupProps,
-											children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { ...pathProps }), showLabels && hasSpaceForLabel && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("g", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("rect", {
-												className: pie_chart_module_default["pie-chart__label-plate"],
-												x: centroidX - backgroundWidth / 2,
-												y: centroidY - backgroundHeight / 2,
-												width: backgroundWidth,
-												height: backgroundHeight,
-												rx: 4,
-												ry: 4,
-												pointerEvents: "none"
-											}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("text", {
-												className: (0, clsx.default)(pie_chart_module_default["pie-chart__label-text"], LABEL_TEXT_MODIFIER[pickLabelTextColor(fill, labelRoles, "label-inverse")]),
-												x: centroidX,
-												y: centroidY,
-												dy: ".33em",
-												fontSize,
-												textAnchor: "middle",
-												pointerEvents: "none",
-												children: arc.data.label
-											})] })]
-										}, `arc-${index}`);
-									});
-								}
-							}), !allSegmentsHidden && svgChildren]
-						})]
-					}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BoundedTooltip, {
-						top: tooltipTop || 0,
-						left: tooltipLeft || 0,
-						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-							className: standaloneScopeClass,
-							role: "tooltip",
-							children: renderTooltip({ tooltipData })
-						})
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadialWipeAnimation, {
+								id: `radial-wipe-${chartId}`,
+								radius: outerRadius,
+								innerRadius
+							}) }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_group.Group, {
+								top: centerY,
+								left: centerX,
+								mask: wipeMask,
+								children: allSegmentsHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
+									x: 0,
+									y: 0,
+									width,
+									height,
+									children: getAllHiddenMessage(legendInteractive, "segments")
+								}) : arcs.map((arcDatum, index) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
+									...getSegmentHandlers(arcDatum.data, navigationArcs.indexOf(arcDatum)),
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+										d: path(arcDatum) || "",
+										fill: accessors.fill(arcDatum.data)
+									})
+								}, `arc-${index}`))
+							}),
+							selectedArc && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_group.Group, {
+								top: centerY,
+								left: centerX,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectedSegmentRing, {
+									chartId,
+									d: path(selectedArc) || ""
+								})
+							}),
+							!allSegmentsHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_group.Group, {
+								top: centerY,
+								left: centerX,
+								mask: wipeMask,
+								children: [showLabels && arcs.map(renderLabel), svgChildren]
+							})
+						]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PieSelectionOutput, {
+						...selectionOutputProps,
+						keyboardTooltipAnchor: selectedArc && getKeyboardTooltipAnchor(centerX, centerY, path.centroid(selectedArc)),
+						renderTooltip
 					})]
 				});
 			}
@@ -12470,32 +12673,10 @@ const validateData = (data) => {
 		message: ""
 	};
 };
-const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, thickness = .4, clockwise = true, withTooltips = false, showLegend = false, legend = {}, legendValueDisplay = "percentage", label, animation, note, className, children, tooltipOffsetX = 0, tooltipOffsetY = -15, renderTooltip = renderDefaultPieSemiCircleTooltip, gap = "md" }) => {
+const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, thickness = .4, clockwise = true, withTooltips = false, showLegend = false, legend = {}, legendValueDisplay = "percentage", label, animation, note, className, children, tooltipOffsetX = 0, tooltipOffsetY = -15, renderTooltip = renderDefaultPieSemiCircleTooltip, ariaLabel, gap = "md" }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendPosition = legend.position ?? "bottom";
 	const chartId = useChartId(providedChartId);
-	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = (0, _visx_tooltip.useTooltip)();
-	const standaloneScopeClass = useStandaloneScopeClass();
-	const containerRef = (0, react.useRef)(null);
-	const handleMouseMove = (0, react.useCallback)((event, arc) => {
-		const bounds = containerRef.current?.getBoundingClientRect();
-		if (!bounds) return;
-		showTooltip({
-			tooltipData: arc.data,
-			tooltipLeft: event.clientX - bounds.left + tooltipOffsetX,
-			tooltipTop: event.clientY - bounds.top + tooltipOffsetY
-		});
-	}, [
-		showTooltip,
-		tooltipOffsetX,
-		tooltipOffsetY
-	]);
-	const handleMouseLeave = (0, react.useCallback)(() => {
-		hideTooltip();
-	}, [hideTooltip]);
-	const handleArcMouseMove = (0, react.useCallback)((arc) => (event) => {
-		handleMouseMove(event, arc);
-	}, [handleMouseMove]);
 	const { isValid, message } = validateData(data);
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
 	const dataWithPercentages = useDataWithPercentages(data);
@@ -12529,7 +12710,31 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		metadata: chartMetadata
 	});
 	const prefersReducedMotion = usePrefersReducedMotion();
+	const wipeMask = animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null;
 	const effectiveWidth = propWidth || DEFAULT_WIDTH$1;
+	const dataWithIndex = visibleData.map((d) => {
+		const originalIndex = data.findIndex((item) => item.label === d.label);
+		return {
+			...d,
+			index: originalIndex >= 0 ? originalIndex : 0
+		};
+	});
+	const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
+	const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
+	const arcs = (0, _visx_shape.pie)({
+		value: accessors.value,
+		sort: accessors.sort,
+		padAngle: PAD_ANGLE,
+		startAngle,
+		endAngle
+	})(dataWithIndex);
+	const navigationArcs = orderArcsForNavigation(arcs);
+	const { chartRef, svgRef, selectedArc, getSegmentHandlers, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
+		navigationArcs,
+		withTooltips,
+		tooltipOffsetX,
+		tooltipOffsetY
+	});
 	if (!isValid) {
 		const errorWidth = propHeight ? Math.min(propWidth || propHeight * 2, propHeight * 2) : effectiveWidth;
 		const errorHeight = errorWidth / 2;
@@ -12548,15 +12753,6 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 			})
 		});
 	}
-	const dataWithIndex = visibleData.map((d) => {
-		const originalIndex = data.findIndex((item) => item.label === d.label);
-		return {
-			...d,
-			index: originalIndex >= 0 ? originalIndex : 0
-		};
-	});
-	const startAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
-	const endAngle = clockwise ? Math.PI / 2 : -Math.PI / 2;
 	const legendElement = showLegend && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Legend, {
 		orientation: legend.orientation ?? "horizontal",
 		position: legendPosition,
@@ -12589,52 +12785,60 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 				const height = width / 2;
 				const radius = height;
 				const innerRadius = radius * (1 - thickness);
+				const path = (0, _visx_shape.arc)({
+					innerRadius,
+					outerRadius: radius,
+					cornerRadius: 3
+				});
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Center, {
-					ref: containerRef,
+					ref: chartRef,
 					className: pie_semi_circle_chart_module_default["pie-semi-circle-chart__plot"],
+					...chartProps,
+					"aria-label": ariaLabel ?? (0, _wordpress_i18n.__)("Semi-circle chart", "jetpack-charts"),
 					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+						ref: svgRef,
 						width,
 						height,
 						viewBox: `0 0 ${width} ${height}`,
-						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadialWipeAnimation, {
-							id: `radial-wipe-${chartId}`,
-							radius,
-							innerRadius,
-							startAngle: "-180deg",
-							wipePercentage: 50
-						}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_group.Group, {
-							top: height,
-							left: width / 2,
-							mask: animation && !prefersReducedMotion ? `url(#radial-wipe-${chartId})` : null,
-							children: allSegmentsHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
-								x: 0,
-								y: -radius / 2,
-								width,
-								height,
-								children: getAllHiddenMessage(legendInteractive, "segments")
-							}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_shape.Pie, {
-									data: dataWithIndex,
-									pieValue: accessors.value,
-									outerRadius: radius,
-									innerRadius,
-									cornerRadius: 3,
-									padAngle: PAD_ANGLE,
-									startAngle,
-									endAngle,
-									pieSort: accessors.sort,
-									children: (pie) => {
-										return pie.arcs.map((arc) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
-											onMouseMove: withTooltips ? handleArcMouseMove(arc) : void 0,
-											onMouseLeave: withTooltips ? handleMouseLeave : void 0,
-											children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-												d: pie.path(arc) || "",
-												fill: accessors.fill(arc.data)
-											})
-										}, arc.data.label));
-									}
-								}),
-								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_group.Group, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_text.Text, {
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadialWipeAnimation, {
+								id: `radial-wipe-${chartId}`,
+								radius,
+								innerRadius,
+								startAngle: "-180deg",
+								wipePercentage: 50
+							}) }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_group.Group, {
+								top: height,
+								left: width / 2,
+								mask: wipeMask,
+								children: allSegmentsHidden ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SvgEmptyState, {
+									x: 0,
+									y: -radius / 2,
+									width,
+									height,
+									children: getAllHiddenMessage(legendInteractive, "segments")
+								}) : arcs.map((arcDatum) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
+									...getSegmentHandlers(arcDatum.data, navigationArcs.indexOf(arcDatum)),
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+										d: path(arcDatum) || "",
+										fill: accessors.fill(arcDatum.data)
+									})
+								}, arcDatum.data.label))
+							}),
+							selectedArc && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_group.Group, {
+								top: height,
+								left: width / 2,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectedSegmentRing, {
+									chartId,
+									d: path(selectedArc) || ""
+								})
+							}),
+							!allSegmentsHidden && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_group.Group, {
+								top: height,
+								left: width / 2,
+								mask: wipeMask,
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_group.Group, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_text.Text, {
 									textAnchor: "middle",
 									verticalAnchor: "start",
 									y: -40,
@@ -12646,18 +12850,13 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 									y: -20,
 									className: pie_semi_circle_chart_module_default.note,
 									children: note
-								})] }),
-								!allSegmentsHidden && svgChildren
-							] })
-						})]
-					}), withTooltips && tooltipOpen && tooltipData && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BoundedTooltip, {
-						top: tooltipTop || 0,
-						left: tooltipLeft || 0,
-						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-							className: standaloneScopeClass,
-							role: "tooltip",
-							children: renderTooltip({ tooltipData })
-						})
+								})] }), svgChildren]
+							})
+						]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PieSelectionOutput, {
+						...selectionOutputProps,
+						keyboardTooltipAnchor: selectedArc && getKeyboardTooltipAnchor(width / 2, height, path.centroid(selectedArc)),
+						renderTooltip
 					})]
 				});
 			}

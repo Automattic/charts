@@ -844,6 +844,19 @@
     transition: none;
   }
 }
+.a8ccharts-V2HDKq-selected-ring__contrast, .a8ccharts-V2HDKq-selected-ring__focus {
+  fill: none;
+}
+
+.a8ccharts-V2HDKq-selected-ring__contrast {
+  stroke: var(--a8c-charts-color-background, #fff);
+  stroke-width: calc(4 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
+}
+
+.a8ccharts-V2HDKq-selected-ring__focus {
+  stroke: var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
+  stroke-width: calc(2 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
+}
 .a8ccharts-gnszbG-pie-chart__plot {
   position: relative;
 }

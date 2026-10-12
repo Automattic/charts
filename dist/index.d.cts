@@ -1944,6 +1944,10 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
    * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieChartRenderTooltipParams) => ReactNode;
+  /**
+   * Accessible name of the chart. Defaults to a localized "Pie chart".
+   */
+  ariaLabel?: string;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
 type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;
@@ -2010,6 +2014,10 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
    * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieSemiCircleChartRenderTooltipParams) => ReactNode;
+  /**
+   * Accessible name of the chart. Defaults to a localized "Semi-circle chart".
+   */
+  ariaLabel?: string;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;
