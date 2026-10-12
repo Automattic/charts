@@ -547,9 +547,9 @@
 }
 
 .a8ccharts-O3YMOW-heatmap-chart__group-label {
-  color: var(--a8c-charts-color-label-secondary);
-  font-size: var(--wpds-typography-font-size-xs, 11px);
-  line-height: var(--wpds-typography-line-height-xs, 16px);
+  color: var(--a8c-charts-color-label);
+  font-size: var(--wpds-typography-font-size-md, 13px);
+  line-height: var(--wpds-typography-line-height-sm, 20px);
   white-space: nowrap;
   text-align: center;
   padding-block-start: var(--wpds-dimension-padding-xs, 4px);

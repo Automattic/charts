@@ -7851,9 +7851,11 @@ const resolveColumnGroups = (groups, columnCount, firstLine) => {
 	const ungrouped = () => ({
 		columns: Array.from({ length: columnCount }, (_, index) => ({
 			line: firstLine + index,
+			band: 0,
 			gapBefore: false
 		})),
-		groups: []
+		groups: [],
+		bands: 1
 	});
 	if (!groups || groups.length === 0 || columnCount === 0) return ungrouped();
 	const spans = groups.map((group) => group.span);
@@ -7869,11 +7871,13 @@ const resolveColumnGroups = (groups, columnCount, firstLine) => {
 		if (groupIndex > 0) line += 1;
 		laidOut.push({
 			...group,
-			line
+			line,
+			band: 0
 		});
 		for (let offset = 0; offset < group.span; offset++) {
 			columns.push({
 				line,
+				band: 0,
 				gapBefore: groupIndex > 0 && offset === 0,
 				group: groupIndex
 			});
@@ -7883,13 +7887,99 @@ const resolveColumnGroups = (groups, columnCount, firstLine) => {
 	while (columns.length < columnCount) {
 		columns.push({
 			line,
+			band: 0,
 			gapBefore: false
 		});
 		line += 1;
 	}
 	return {
 		columns,
-		groups: laidOut
+		groups: laidOut,
+		bands: 1
+	};
+};
+/**
+* Wraps the groups onto bands of equal group count, each band starting back at
+* the first data line so the groups line up in slots down the bands.
+*
+* @param layout - The unwrapped layout from `resolveColumnGroups`.
+* @param bands  - Bands to aim for; the groups split as evenly as whole bands allow.
+* @return The wrapped layout, or null when there is nothing to wrap: one band, one group, or a column outside every group.
+*/
+const wrapColumnGroups = (layout, bands) => {
+	const { columns, groups } = layout;
+	if (bands < 2 || groups.length < 2 || columns.some((column) => column.group === void 0)) return null;
+	const perBand = Math.ceil(groups.length / bands);
+	const slotSpans = Array(perBand).fill(0);
+	groups.forEach((group, index) => {
+		const slot = index % perBand;
+		slotSpans[slot] = Math.max(slotSpans[slot], group.span);
+	});
+	const slotLines = [];
+	let line = columns[0].line;
+	slotSpans.forEach((span, slot) => {
+		if (slot > 0) line += 1;
+		slotLines.push(line);
+		line += span;
+	});
+	const wrappedGroups = groups.map((group, index) => ({
+		...group,
+		line: slotLines[index % perBand],
+		band: Math.floor(index / perBand)
+	}));
+	return {
+		columns: columns.map((column) => {
+			const group = column.group;
+			const offset = column.line - groups[group].line;
+			return {
+				...column,
+				line: wrappedGroups[group].line + offset,
+				band: wrappedGroups[group].band,
+				gapBefore: offset === 0 && group % perBand > 0
+			};
+		}),
+		groups: wrappedGroups,
+		bands: Math.ceil(groups.length / perBand),
+		slotSpans
+	};
+};
+//#endregion
+//#region src/charts/heatmap-chart/private/fit-compact-cells.ts
+/**
+* Largest whole-pixel square cell, and the band count giving it, for a compact grid in a box.
+*
+* @param input - The box, the grid's layout, and its fixed gaps and label sizes.
+* @return The fit; one band at `minCellSize` when no band count reaches it.
+*/
+const fitCompactCells = (input) => {
+	const { width, height, layout, rows, cellGap, groupGap, minCellSize } = input;
+	const columns = layout.columns.length;
+	if (columns === 0 || rows === 0) return {
+		bands: 1,
+		cellSize: minCellSize
+	};
+	const maxBands = Math.max(1, layout.groups.length);
+	const labelHeights = (input.columnLabelHeight ?? 0) + (input.groupLabelHeight ?? 0);
+	const bandTracks = (input.columnLabelHeight === null ? 0 : 1) + rows + (input.groupLabelHeight === null ? 0 : 1);
+	let best = null;
+	for (let target = 1; target <= maxBands; target++) {
+		const wrapped = target > 1 ? wrapColumnGroups(layout, target) : null;
+		const { bands } = wrapped ?? layout;
+		const cellColumns = wrapped ? wrapped.slotSpans.reduce((sum, span) => sum + span, 0) : columns;
+		const gapTracks = wrapped ? wrapped.slotSpans.length - 1 : layout.columns.filter((column) => column.gapBefore).length;
+		const columnTracks = 1 + cellColumns + gapTracks;
+		const byWidth = (width - input.rowLabelWidth - gapTracks * groupGap - (columnTracks - 1) * cellGap) / cellColumns;
+		const rowTracks = bands * bandTracks + (bands - 1);
+		const byHeight = (height - (bands * labelHeights + (bands - 1) * groupGap + (rowTracks - 1) * cellGap)) / (bands * rows);
+		const cellSize = Math.floor(Math.min(byWidth, byHeight));
+		if (cellSize >= minCellSize && (!best || cellSize > best.cellSize)) best = {
+			bands,
+			cellSize
+		};
+	}
+	return best ?? {
+		bands: 1,
+		cellSize: minCellSize
 	};
 };
 //#endregion
@@ -8033,12 +8123,26 @@ const CELL_VALUE_MODIFIER = {
 };
 const NO_ROW_LABELS = [];
 const TOOLTIP_BOX_STYLE = { zIndex: 3 };
+const largest = (root, selector, size) => Math.max(0, ...Array.from(root.querySelectorAll(selector), (el) => el[size]));
+const gridBox = (chart, grid) => {
+	let height = chart.clientHeight;
+	const rowGap = parseFloat(getComputedStyle(chart).rowGap) || 0;
+	Array.from(chart.children).forEach((child) => {
+		const { display, position } = getComputedStyle(child);
+		if (child === grid || display === "none" || position === "absolute" || position === "fixed") return;
+		height -= child.offsetHeight + rowGap;
+	});
+	return {
+		width: chart.clientWidth,
+		height
+	};
+};
 const cellName = (info) => info.cellLabel || [
 	info.groupLabel,
 	info.columnLabel,
 	info.rowLabel
 ].filter(Boolean).join(" ");
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, fitCells = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
 	const chartId = useChartId(providedChartId);
 	const tooltipBoxStyle = tooltipStyle ? {
 		...TOOLTIP_BOX_STYLE,
@@ -8052,8 +8156,9 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, showTooltip, hideTooltip } = (0, _visx_tooltip.useTooltip)();
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const containerRef = (0, react.useRef)(null);
+	const chartRef = (0, react.useRef)(null);
 	const [labelRoles, setLabelRoles] = (0, react.useState)(null);
-	const getTooltipOrigin = (0, react.useCallback)(() => containerRef.current?.closest(`[data-chart-id="heatmap-chart-${chartId}"]`)?.getBoundingClientRect() ?? null, [chartId]);
+	const getTooltipOrigin = (0, react.useCallback)(() => chartRef.current?.getBoundingClientRect() ?? null, []);
 	const { color: primaryColorHex } = getElementStyles({
 		index: 0,
 		overrideColor: primaryColor
@@ -8095,6 +8200,49 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	const groupLayout = (0, react.useMemo)(() => resolveColumnGroups(columnGroups, columns, 2), [columnGroups, columns]);
 	const { compactCellGap, compactCellSize, groupGap } = heatmapChartSettings;
 	const drawValues = showValues ?? !compact;
+	const hasColumnLabels = data.some((column) => Boolean(column.label));
+	const hasGroups = groupLayout.groups.length > 0;
+	const [fit, setFit] = (0, react.useState)(null);
+	const hasSummary = data.some((column) => column.summary);
+	const fitting = compact && fitCells && !hasSummary;
+	if (fitCells && !fitting) warnOnce("heatmap:fitCells", "fitCells applies only in compact mode without summary columns, so the cells keep their size.");
+	useIsomorphicLayoutEffect(() => {
+		const chart = chartRef.current;
+		const grid = containerRef.current;
+		if (!fitting || !chart || !grid) {
+			setFit(null);
+			return;
+		}
+		const measure = () => {
+			const next = fitCompactCells({
+				...gridBox(chart, grid),
+				layout: groupLayout,
+				rows,
+				cellGap: compactCellGap,
+				groupGap,
+				rowLabelWidth: largest(grid, `.${heatmap_chart_module_default["heatmap-chart__row-label"]}`, "offsetWidth"),
+				columnLabelHeight: hasColumnLabels ? largest(grid, `.${heatmap_chart_module_default["heatmap-chart__col-label"]}`, "offsetHeight") : null,
+				groupLabelHeight: hasGroups ? largest(grid, `.${heatmap_chart_module_default["heatmap-chart__group-label"]}`, "offsetHeight") : null,
+				minCellSize: compactCellSize
+			});
+			setFit((previous) => (0, import_fast_deep_equal.default)(previous, next) ? previous : next);
+		};
+		measure();
+		if (typeof ResizeObserver === "undefined") return;
+		const observer = new ResizeObserver(() => (0, react_dom.flushSync)(measure));
+		observer.observe(chart);
+		return () => observer.disconnect();
+	}, [
+		fitting,
+		groupLayout,
+		rows,
+		hasColumnLabels,
+		hasGroups,
+		compactCellGap,
+		compactCellSize,
+		groupGap
+	]);
+	const wrapped = (0, react.useMemo)(() => fit ? wrapColumnGroups(groupLayout, fit.bands) : null, [fit, groupLayout]);
 	const buildTooltipData = (0, react.useCallback)((columnIndex, rowIndex) => {
 		const cell = data[columnIndex]?.data[rowIndex];
 		const group = groupLayout.columns[columnIndex]?.group;
@@ -8234,21 +8382,25 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 	});
 	const columnTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellWidth ?? 0}px, ${maxCellWidth ? `${maxCellWidth}px` : "1fr"})`;
 	const rowTrack = compact ? "var(--a8c-charts-dimension-heatmap-cell-size)" : `minmax(${minCellHeight ?? 0}px, ${maxCellHeight ? `${maxCellHeight}px` : "1fr"})`;
-	const hasColumnLabels = data.some((column) => Boolean(column.label));
-	const hasGroups = groupLayout.groups.length > 0;
-	const columnLine = (columnIndex) => groupLayout.columns[columnIndex].line;
-	const firstDataRow = hasColumnLabels ? 2 : 1;
+	const placed = wrapped ?? groupLayout;
+	const columnLine = (columnIndex) => placed.columns[columnIndex].line;
+	const bandOf = (columnIndex) => placed.columns[columnIndex].band;
+	const { bands } = placed;
+	const bandRowCount = (hasColumnLabels ? 1 : 0) + rows + (hasGroups ? 1 : 0) + 1;
+	const labelRowOf = (band) => 1 + band * bandRowCount;
+	const dataRowOf = (band, rowIndex) => labelRowOf(band) + (hasColumnLabels ? 1 : 0) + rowIndex;
 	const dataTrack = (column) => column.summary ? "minmax(auto, max-content)" : columnTrack;
 	const gapTrack = compact ? `minmax(${groupGap}px, 1fr)` : `${groupGap}px`;
-	const columnTracks = data.map((column, columnIndex) => groupLayout.columns[columnIndex].gapBefore ? `${gapTrack} ${dataTrack(column)}` : dataTrack(column)).join(" ");
+	const columnTracks = wrapped ? wrapped.slotSpans.map((span, slot) => [...slot > 0 ? [gapTrack] : [], ...Array(span).fill(columnTrack)].join(" ")).join(" ") : data.map((column, columnIndex) => groupLayout.columns[columnIndex].gapBefore ? `${gapTrack} ${dataTrack(column)}` : dataTrack(column)).join(" ");
+	const bandTracks = `${hasColumnLabels ? "auto " : ""}repeat(${rows}, ${rowTrack})${hasGroups ? " auto" : ""}`;
 	const gridStyle = {
 		...fillVars,
 		gridTemplateColumns: `auto ${columnTracks}`,
-		gridTemplateRows: `${hasColumnLabels ? "auto " : ""}repeat(${rows}, ${rowTrack})${hasGroups ? " auto" : ""}`
+		gridTemplateRows: Array(bands).fill(bandTracks).join(` ${groupGap}px `)
 	};
 	if (compact) {
 		gridStyle["--a8c-charts-dimension-heatmap-cell-gap"] = `${compactCellGap}px`;
-		gridStyle["--a8c-charts-dimension-heatmap-cell-size"] = `${compactCellSize}px`;
+		gridStyle["--a8c-charts-dimension-heatmap-cell-size"] = `${fit?.cellSize ?? compactCellSize}px`;
 	}
 	const summaryGaps = (columnIndex) => {
 		if (!data[columnIndex]?.summary) return {};
@@ -8268,6 +8420,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 				legendChildren: [],
 				trailingContent: nonLegendChildren,
 				gap,
+				rootRef: chartRef,
 				className: (0, clsx.default)("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className, { [heatmap_chart_module_default["heatmap-chart--height-capped"]]: heightCapped }),
 				style: {
 					width: width || void 0,
@@ -8297,11 +8450,11 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 							className: heatmap_chart_module_default["heatmap-chart__row"],
 							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { style: {
 								gridColumn: 1,
-								gridRow: 1
+								gridRow: labelRowOf(0)
 							} }), data.map((column, columnIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								style: {
 									gridColumn: columnLine(columnIndex),
-									gridRow: 1
+									gridRow: labelRowOf(bandOf(columnIndex))
 								},
 								className: (0, clsx.default)(heatmap_chart_module_default["heatmap-chart__col-label"], {
 									[heatmap_chart_module_default["heatmap-chart__col-label--summary"]]: column.summary,
@@ -8312,24 +8465,23 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 						}),
 						Array.from({ length: rows }).map((_row, rowIndex) => {
 							const labelVisible = !compact || rowIndex % 2 === 0;
-							const gridRow = firstDataRow + rowIndex;
 							return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								role: "row",
 								"aria-rowindex": rowIndex + 1,
 								className: heatmap_chart_module_default["heatmap-chart__row"],
-								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								children: [Array.from({ length: bands }).map((_band, band) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 									"aria-hidden": "true",
 									className: heatmap_chart_module_default["heatmap-chart__row-label"],
 									style: {
 										gridColumn: 1,
-										gridRow
+										gridRow: dataRowOf(band, rowIndex)
 									},
 									children: labelVisible ? rowLabels[rowIndex] ?? "" : ""
-								}), data.map((column, columnIndex) => {
+								}, `row-label-${band}`)), data.map((column, columnIndex) => {
 									const cell = column.data[rowIndex];
 									const placement = {
 										gridColumn: columnLine(columnIndex),
-										gridRow
+										gridRow: dataRowOf(bandOf(columnIndex), rowIndex)
 									};
 									if (cell?.hidden) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 										"aria-hidden": "true",
@@ -8379,11 +8531,11 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 							role: "row",
 							"aria-hidden": "true",
 							className: heatmap_chart_module_default["heatmap-chart__row"],
-							children: groupLayout.groups.map((group, groupIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							children: placed.groups.map((group, groupIndex) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: heatmap_chart_module_default["heatmap-chart__group-label"],
 								style: {
 									gridColumn: `${group.line} / span ${group.span}`,
-									gridRow: firstDataRow + rows
+									gridRow: dataRowOf(group.band, rows)
 								},
 								children: group.label
 							}, `group-${groupIndex}`))
