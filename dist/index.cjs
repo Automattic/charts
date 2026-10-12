@@ -11770,6 +11770,7 @@ var leaderboard_chart_module_default = {
 	"interactiveRow": "a8ccharts-GovfoW-interactiveRow",
 	"is-overlay": "a8ccharts-GovfoW-is-overlay",
 	"label": "a8ccharts-GovfoW-label",
+	"layeredRow": "a8ccharts-GovfoW-layeredRow",
 	"leaderboardChart": "a8ccharts-GovfoW-leaderboardChart",
 	"leaderboardChart__content": "a8ccharts-GovfoW-leaderboardChart__content",
 	"leaderboardChart__content--fit": "a8ccharts-GovfoW-leaderboardChart__content--fit",
@@ -11778,6 +11779,7 @@ var leaderboard_chart_module_default = {
 	"overlap": "a8ccharts-GovfoW-overlap",
 	"overlayLabel": "a8ccharts-GovfoW-overlayLabel",
 	"row": "a8ccharts-GovfoW-row",
+	"rowButton": "a8ccharts-GovfoW-rowButton",
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
@@ -11828,6 +11830,16 @@ const defaultDeltaFormatter = (value) => {
 const getBarWidth = (share) => `calc(${share}% - var(--a8c-charts-dimension-leaderboard-bar-hover-inset, 0px) * ${share} / 100)`;
 const hasPreviousValue = (entry) => entry.previousValue != null && entry.previousShare != null;
 const hasDeltaValue = (entry) => hasPreviousValue(entry) && entry.delta != null;
+/**
+* A layered row's cell that takes pointer events of its own (a value tooltip)
+* sits above the row button; pass its clicks on so they still drill down.
+*
+* @param event - The click on the row.
+*/
+function forwardCellClickToRowButton(event) {
+	if (event.target.closest("a, button")) return;
+	event.currentTarget.querySelector(":scope > button")?.click();
+}
 const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: typeof label === "string" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_ui.Text, {
 	className: leaderboard_chart_module_default.label,
 	children: label
@@ -12060,6 +12072,26 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								})
 							]
 						})] });
+						if (entry.onClick && entry.hasInteractiveLabel) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+							"data-row-index": rowIndex,
+							style: rowStyle,
+							className: (0, clsx.default)(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow, leaderboard_chart_module_default.layeredRow),
+							onClick: forwardCellClickToRowButton,
+							children: [
+								rowCells,
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+									type: "button",
+									className: leaderboard_chart_module_default.rowButton,
+									onClick: entry.onClick,
+									"aria-label": entry.ariaLabel
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_icons.Icon, {
+									className: leaderboard_chart_module_default.chevron,
+									icon: _wordpress_icons.chevronRight,
+									size: 24
+								})
+							]
+						}, entry.id);
 						if (entry.onClick) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
 							type: "button",
 							"data-row-index": rowIndex,

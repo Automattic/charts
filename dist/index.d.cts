@@ -145,7 +145,7 @@ type DataPointDate = {
   /** Per-point fill override for BarChart; other built-in charts ignore it. */
   color?: string;
 };
-type LeaderboardEntry = {
+type LeaderboardEntryFields = {
   /**
    * Unique internal key (e.g., 'key-direct')
    */
@@ -191,7 +191,8 @@ type LeaderboardEntry = {
    * For links or other interactive affordances (external-link icons, info
    * tooltips), put them in the `label` render prop instead of using onClick —
    * a row is either a button (onClick) or carries interactive label content,
-   * never both, since interactive elements cannot be nested in HTML.
+   * never both, since interactive elements cannot be nested in HTML. The
+   * exception is a row that sets `hasInteractiveLabel`.
    */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   /**
@@ -205,6 +206,18 @@ type LeaderboardEntry = {
    */
   ariaLabel?: string;
 };
+type LeaderboardEntry = LeaderboardEntryFields & ({
+  hasInteractiveLabel?: false;
+} | {
+  /**
+   * Set when the `label` holds its own link or button. The row's button
+   * then sits behind the row instead of around it, so both stay operable.
+   * Requires `onClick`, and `ariaLabel` since the button wraps no text.
+   */
+  hasInteractiveLabel: true;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  ariaLabel: string;
+});
 type GradientStop = {
   offset: string;
   color?: string;
@@ -1558,7 +1571,12 @@ declare const useCalendarHeatmapData: (series: DataPointDate[], options?: Calend
 declare const useMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
 //#endregion
 //#region src/charts/leaderboard-chart/types.d.ts
-interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'data' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation'> {
+interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation'> {
+  /**
+   * Entries to display. Declared here rather than picked, since the base type
+   * would split the entry union into one array type per member.
+   */
+  data: LeaderboardEntry[];
   /**
    * Whether to show comparison data
    */
