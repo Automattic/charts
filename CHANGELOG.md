@@ -17,6 +17,7 @@ This is an alpha version! The changes listed here are not final.
 ### Changed
 - Heatmap chart: Start the legend with a swatch in the empty-cell color.
 - Line, Area and Bar charts: Change the chart container's role from `grid` to `application`, so it is valid for screen readers, and drop the inner svg's `aria-label="XYChart"`. Update any selector that targets `[role="grid"]` or `[aria-label="XYChart"]`.
+- Reject invalid values like `12.px` when resolving theme font sizes.
 
 ### Fixed
 - Pie and semi-circle charts: Let keyboard users move through segments with the arrow keys, and give the chart an accessible name with a new `ariaLabel` prop.

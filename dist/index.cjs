@@ -692,7 +692,7 @@ function readCustomProperty(varName, styles) {
 const resolveFontSize = (val) => {
 	if (typeof val === "number") return isNaN(val) ? void 0 : val;
 	if (typeof val === "string") {
-		const match = val.trim().match(/^(-?\d+\.?\d*|-?\.\d+)(px)?$/);
+		const match = val.trim().match(/^(-?(?:\d*\.)?\d+)(px)?$/);
 		if (!match) return;
 		const parsed = parseFloat(match[1]);
 		return isNaN(parsed) ? void 0 : parsed;
