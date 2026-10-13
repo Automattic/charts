@@ -22,6 +22,7 @@ This is an alpha version! The changes listed here are not final.
 ### Fixed
 - Ignore invalid theme label font sizes, such as negative values, so axis labels no longer clip. Accept a leading `+` sign, as CSS does.
 - Pie and semi-circle charts: Let keyboard users move through segments with the arrow keys, and give the chart an accessible name with a new `ariaLabel` prop.
+- Pie Chart, Pie Semi-Circle Chart: Paint the tooltip above content passed as children, such as a center total.
 
 ## [4.8.0] - 2026-10-07
 ### Added

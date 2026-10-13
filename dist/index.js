@@ -8134,7 +8134,7 @@ const CELL_VALUE_MODIFIER = {
 	white: heatmap_chart_module_default["heatmap-chart__cell-value--white"]
 };
 const NO_ROW_LABELS = [];
-const TOOLTIP_BOX_STYLE = { zIndex: 3 };
+const TOOLTIP_BOX_STYLE$1 = { zIndex: 3 };
 const largest = (root, selector, size) => Math.max(0, ...Array.from(root.querySelectorAll(selector), (el) => el[size]));
 const gridBox = (chart, grid) => {
 	let height = chart.clientHeight;
@@ -8157,9 +8157,9 @@ const cellName = (info) => info.cellLabel || [
 const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, fitCells = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
 	const chartId = useChartId(providedChartId);
 	const tooltipBoxStyle = tooltipStyle ? {
-		...TOOLTIP_BOX_STYLE,
+		...TOOLTIP_BOX_STYLE$1,
 		...tooltipStyle
-	} : TOOLTIP_BOX_STYLE;
+	} : TOOLTIP_BOX_STYLE$1;
 	const { getElementStyles, theme } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const { heatmapChart: heatmapChartSettings } = theme;
@@ -11789,11 +11789,13 @@ const PieSelectionAnnouncement = ({ data }) => /* @__PURE__ */ jsx(VisuallyHidde
 });
 //#endregion
 //#region src/charts/private/pie-keyboard-navigation/pie-tooltip.tsx
+const TOOLTIP_BOX_STYLE = { zIndex: 3 };
 const PieTooltip = ({ top, left, selectedIndex, tooltipRef, children }) => {
 	const standaloneScopeClass = useStandaloneScopeClass();
 	return /* @__PURE__ */ jsx(BoundedTooltip, {
 		top,
 		left,
+		style: TOOLTIP_BOX_STYLE,
 		children: selectedIndex === void 0 ? /* @__PURE__ */ jsx("div", {
 			className: standaloneScopeClass,
 			role: "tooltip",
@@ -12016,6 +12018,7 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 //#endregion
 //#region src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
+	"pie-chart": "a8ccharts-gnszbG-pie-chart",
 	"pie-chart__label-plate": "a8ccharts-gnszbG-pie-chart__label-plate",
 	"pie-chart__label-text": "a8ccharts-gnszbG-pie-chart__label-text",
 	"pie-chart__label-text--black": "a8ccharts-gnszbG-pie-chart__label-text--black",
