@@ -20,6 +20,7 @@ This is an alpha version! The changes listed here are not final.
 - Reject invalid values like `12.px` when resolving theme font sizes.
 
 ### Fixed
+- Ignore invalid theme label font sizes, such as negative values, so axis labels no longer clip. Accept a leading `+` sign, as CSS does.
 - Pie and semi-circle charts: Let keyboard users move through segments with the arrow keys, and give the chart an accessible name with a new `ariaLabel` prop.
 
 ## [4.8.0] - 2026-10-07

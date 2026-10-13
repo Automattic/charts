@@ -671,16 +671,17 @@ function readCustomProperty(varName, styles) {
 }
 //#endregion
 //#region src/utils/resolve-font-size.ts
+const toFontSize = (size) => Number.isFinite(size) && size >= 0 ? size : void 0;
 /**
 * Resolve a theme `fontSize` value into a plain number suitable for
 * canvas-based measurement (e.g. `getStringWidth`).
 *
 * Accepts:
-* - A number — returned as-is
+* - A finite, non-negative number — returned as-is
 * - A pixel string like `"12px"` — parsed and returned as a number
 *
-* Returns `undefined` for any other input (missing value, NaN, or
-* relative units like `rem`/`em`/`%`/`vh`) so callers can fall back to
+* Returns `undefined` for any other input (missing value, a non-finite or
+* negative size, or relative units like `rem`/`em`/`%`/`vh`) so callers can fall back to
 * their own default. Relative units are intentionally rejected because
 * we cannot resolve them to absolute pixels here without a parent
 * computed style, and silently returning the unitless prefix
@@ -690,12 +691,10 @@ function readCustomProperty(varName, styles) {
 * @return Parsed numeric font size in pixels, or `undefined` when unresolvable
 */
 const resolveFontSize = (val) => {
-	if (typeof val === "number") return isNaN(val) ? void 0 : val;
+	if (typeof val === "number") return toFontSize(val);
 	if (typeof val === "string") {
-		const match = val.trim().match(/^(-?(?:\d*\.)?\d+)(px)?$/);
-		if (!match) return;
-		const parsed = parseFloat(match[1]);
-		return isNaN(parsed) ? void 0 : parsed;
+		const match = val.trim().match(/^\+?((?:\d*\.)?\d+)(px)?$/);
+		return match ? toFontSize(parseFloat(match[1])) : void 0;
 	}
 };
 //#endregion
@@ -1574,6 +1573,20 @@ const useChartScopeElement = () => (0, react.useContext)(ChartScopeContext);
 const useStandaloneScopeClass = () => (0, react.useContext)(GlobalChartsContext) ? void 0 : CHART_SCOPE_CLASS;
 //#endregion
 //#region src/hooks/use-xychart-theme.ts
+const STARTS_LIKE_A_NUMBER = /^[+-]?[\d.]/;
+const NON_NEGATIVE_CSS_NUMBER = /^\+?(?:\d*\.)?\d+(?:e[+-]?\d+)?(?:[a-z]+|%)?$/i;
+const isRenderableFontSize = (fontSize) => {
+	if (typeof fontSize === "number") return resolveFontSize(fontSize) !== void 0;
+	const value = fontSize.trim();
+	if (!STARTS_LIKE_A_NUMBER.test(value)) return true;
+	return NON_NEGATIVE_CSS_NUMBER.test(value) && Number.isFinite(parseFloat(value));
+};
+const withRenderableFontSize = (style) => {
+	if (style?.fontSize === void 0 || isRenderableFontSize(style.fontSize)) return style;
+	const rest = { ...style };
+	delete rest.fontSize;
+	return rest;
+};
 const useXYChartTheme = (data) => {
 	const theme = useGlobalChartsTheme();
 	const scopeElement = useChartScopeElement();
@@ -1604,9 +1617,10 @@ const useXYChartTheme = (data) => {
 			yAxisLineStyles: { stroke: CATALOG_POINTERS.axisY },
 			yTickLineStyles: { stroke: CATALOG_POINTERS.tickY },
 			svgLabelSmall: {
-				...theme.svgLabelSmall,
+				...withRenderableFontSize(theme.svgLabelSmall),
 				fill: CATALOG_POINTERS.labelAxis
-			}
+			},
+			svgLabelBig: withRenderableFontSize(theme.svgLabelBig)
 		});
 	}, [
 		theme,
