@@ -2133,7 +2133,7 @@ const getLegendItemAriaLabel = (text, value, visible, interactive) => {
 	if (visible) return;
 	return (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n._x)("%s: hidden", "hidden non-interactive legend item", "jetpack-charts"), accessibleText);
 };
-const BaseLegend = (0, react.forwardRef)(({ items, className, orientation = "horizontal", alignment = "center", shape = "rect", fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform, itemStyles, itemClassName, labelStyles, labelClassName, shapeStyles, render, interactive = false, chartId }, ref) => {
+const BaseLegend = (0, react.forwardRef)(({ items: allItems, className, orientation = "horizontal", alignment = "center", shape = "rect", fill = valueOrIdentityString, size = valueOrIdentityString, labelFormat = valueOrIdentity, labelTransform, itemStyles, itemClassName, labelStyles, labelClassName, shapeStyles, render, interactive = false, chartId }, ref) => {
 	const { margin: itemMargin = "0", flexDirection: itemDirection = "row" } = itemStyles ?? {};
 	const { justifyContent: labelJustifyContent = "flex-start", flex: labelFlex = "0 0 auto", margin: labelMargin = "0 4px", maxWidth, textOverflow = "wrap" } = labelStyles ?? {};
 	const { width: shapeWidth = 16, height: shapeHeight = 16, margin: shapeMargin = "2px 4px 2px 0" } = shapeStyles ?? {};
@@ -2141,6 +2141,16 @@ const BaseLegend = (0, react.forwardRef)(({ items, className, orientation = "hor
 	const context = (0, react.useContext)(GlobalChartsContext);
 	const chartInstanceContext = (0, react.useContext)(ChartInstanceContext);
 	const standaloneScopeClass = useStandaloneScopeClass();
+	const isSeriesVisible = (0, react.useCallback)((seriesLabel) => {
+		if (chartInstanceContext?.isSeriesVisible) return chartInstanceContext.isSeriesVisible(seriesLabel);
+		if (!chartId || !context) return true;
+		return context.isSeriesVisible(chartId, seriesLabel);
+	}, [
+		chartId,
+		chartInstanceContext,
+		context
+	]);
+	const items = (0, react.useMemo)(() => allItems.filter((item) => item.interactive !== false || !item.describesSeries || isSeriesVisible(item.describesSeries)), [allItems, isSeriesVisible]);
 	const domain = items.map((item) => item.label);
 	const legendScale = (0, _visx_scale.scaleOrdinal)({
 		domain,
@@ -2161,15 +2171,6 @@ const BaseLegend = (0, react.forwardRef)(({ items, className, orientation = "hor
 	}, [
 		interactive,
 		chartId,
-		context
-	]);
-	const isSeriesVisible = (0, react.useCallback)((seriesLabel) => {
-		if (chartInstanceContext?.isSeriesVisible) return chartInstanceContext.isSeriesVisible(seriesLabel);
-		if (!chartId || !context) return true;
-		return context.isSeriesVisible(chartId, seriesLabel);
-	}, [
-		chartId,
-		chartInstanceContext,
 		context
 	]);
 	const createClickHandler = (0, react.useCallback)((seriesLabels, itemInteractive) => {
@@ -2446,6 +2447,34 @@ function buildComparisonLegendItem(seriesData, items, label, getElementStyles, l
 	};
 }
 /**
+* Builds one static item per comparison series folded into another series' item, named after
+* that item and styled like the comparison series itself.
+* @param seriesData       - The series data to search for comparison series
+* @param items            - The legend items already built from the series
+* @param formatLabel      - Names an item after the label of the item it was folded into
+* @param getElementStyles - Function to get element styles
+* @param legendShape      - The shape type for legend items (string literal or React component)
+* @return The legend items, in series order
+*/
+function buildPerSeriesComparisonItems(seriesData, items, formatLabel, getElementStyles, legendShape) {
+	return seriesData.flatMap((series, index) => {
+		const owner = items.find((item) => item.seriesLabels?.includes(series.label));
+		if (series.options?.type !== "comparison" || !owner || owner.seriesLabels?.[0] === series.label) return [];
+		const { color, shapeStyles } = getElementStyles({
+			data: series,
+			index,
+			legendShape
+		});
+		return [{
+			label: formatLabel(owner.label),
+			color,
+			shapeStyle: shapeStyles,
+			interactive: false,
+			describesSeries: series.label
+		}];
+	});
+}
+/**
 * Processes point data into legend items
 * @param pointData          - The point data to process
 * @param getElementStyles   - Function to get element styles
@@ -2481,13 +2510,14 @@ function processPointData(pointData, getElementStyles, showValues, legendValueDi
 * @return Array of legend items ready for display
 */
 function useChartLegendItems(data, options = {}, legendShape) {
-	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, comparisonItem = false, renderGlyph } = options;
+	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, comparisonItem = false, comparisonSeriesItems, renderGlyph } = options;
 	const { getElementStyles } = useGlobalChartsContext();
 	return (0, react.useMemo)(() => {
 		if (!data || !Array.isArray(data) || data.length === 0) return [];
 		if ("data" in data[0]) {
 			const seriesData = data;
 			const items = processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
+			if (comparisonSeriesItems) return [...items, ...buildPerSeriesComparisonItems(seriesData, items, comparisonSeriesItems, getElementStyles, legendShape)];
 			const comparison = comparisonItem ? buildComparisonLegendItem(seriesData, items, typeof comparisonItem === "string" ? comparisonItem : (0, _wordpress_i18n.__)("Comparison period", "jetpack-charts"), getElementStyles, legendShape) : null;
 			return comparison ? [...items, comparison] : items;
 		}
@@ -2501,6 +2531,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
 		glyphSize,
 		collapseGroups,
 		comparisonItem,
+		comparisonSeriesItems,
 		renderGlyph,
 		legendShape
 	]);
@@ -4742,6 +4773,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
+	const legendComparisonSeriesItems = legend.comparisonSeriesItems;
 	const legendShape = legend.shape ?? "line";
 	const legendPosition = legend.position ?? "bottom";
 	const formatting = useChartFormatting();
@@ -4926,12 +4958,14 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 		glyphSize: Math.max(0, toNumber(glyphStyle?.radius) ?? 4),
 		collapseGroups: legendCollapseGroups,
 		comparisonItem: legendComparisonItem,
+		comparisonSeriesItems: legendComparisonSeriesItems,
 		renderGlyph
 	}), [
 		withLegendGlyph,
 		glyphStyle?.radius,
 		legendCollapseGroups,
 		legendComparisonItem,
+		legendComparisonSeriesItems,
 		renderGlyph
 	]), legendShape);
 	const chartMetadata = (0, react.useMemo)(() => ({
@@ -5400,8 +5434,13 @@ const AreaChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 		withGlyph: false,
 		glyphSize: 0,
 		collapseGroups: legend.collapseGroups ?? false,
-		comparisonItem: legend.comparisonItem ?? false
-	}), [legend.collapseGroups, legend.comparisonItem]), legendShape);
+		comparisonItem: legend.comparisonItem ?? false,
+		comparisonSeriesItems: legend.comparisonSeriesItems
+	}), [
+		legend.collapseGroups,
+		legend.comparisonItem,
+		legend.comparisonSeriesItems
+	]), legendShape);
 	const chartMetadata = (0, react.useMemo)(() => ({
 		stacked,
 		stackOffset,
@@ -6394,6 +6433,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
+	const legendComparisonSeriesItems = legend.comparisonSeriesItems;
 	const horizontal = orientation === "horizontal";
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
@@ -6406,8 +6446,13 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	});
 	const legendItems = useChartLegendItems(dataSorted, (0, react.useMemo)(() => ({
 		collapseGroups: legendCollapseGroups,
-		comparisonItem: legendComparisonItem
-	}), [legendCollapseGroups, legendComparisonItem]));
+		comparisonItem: legendComparisonItem,
+		comparisonSeriesItems: legendComparisonSeriesItems
+	}), [
+		legendCollapseGroups,
+		legendComparisonItem,
+		legendComparisonSeriesItems
+	]));
 	const { getElementStyles } = useGlobalChartsContext();
 	const isSeriesRendered = (0, react.useCallback)((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(dataSorted.filter(isSeriesRendered)), [dataSorted, isSeriesRendered]);

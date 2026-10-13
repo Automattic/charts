@@ -12,6 +12,7 @@ This is an alpha version! The changes listed here are not final.
 ### Added
 - Heatmap chart: Add a fitCells option that grows compact cells to fill the chart, wrapping column groups onto more rows when that makes the cells larger, and draw column group labels at 13px in the body text color.
 - Leaderboard chart: Let a clickable row hold a link in its label with the new `hasInteractiveLabel` entry option.
+- Legend: Add a comparisonSeriesItems option that adds one static item per comparison series, named after its metric and hidden along with it.
 - Line, Area and Bar charts: Add an `ariaLabel` prop to name each chart for screen readers.
 
 ### Changed
