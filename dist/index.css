@@ -770,6 +770,12 @@
   inset: 0;
 }
 
+.a8ccharts-GovfoW-rowItem {
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  display: grid;
+}
+
 .a8ccharts-GovfoW-row {
   grid-column: 1 / -1;
   grid-template-columns: subgrid;

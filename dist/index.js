@@ -6961,7 +6961,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 	right: 20,
 	bottom: 0,
 	top: 0
-}, className, ...rest }) => {
+}, className, ariaLabel, ...rest }) => {
 	const { getElementStyles } = useGlobalChartsContext();
 	const tintedData = useMemo(() => {
 		if (data.length > 1) return data;
@@ -7036,6 +7036,7 @@ const BarListChartInternal = ({ data, width, height, options = {}, margin = {
 			xScale: chartOptions.xScale,
 			yScale: chartOptions.yScale
 		},
+		ariaLabel: ariaLabel ?? __("Bar list chart", "jetpack-charts"),
 		...rest
 	});
 };
@@ -7122,6 +7123,7 @@ const useFunnelSelection = (hideTooltip) => {
 * @param props.loading          - Whether the chart is in loading state
 * @param props.animation        - Whether to show chart animation on initial render or not
 * @param props.className        - Additional CSS class name
+* @param props.ariaLabel        - Accessible name for the chart group
 * @param props.height           - Height of the chart container. Falls back to style.height if set, otherwise defaults to "100%".
 * @param props.style            - Custom styling
 * @param props.renderStepLabel  - Custom render function for step labels
@@ -7131,7 +7133,7 @@ const useFunnelSelection = (hideTooltip) => {
 * @param props.tooltipStyle     - Inline styles merged over the tooltip box defaults
 * @return JSX element representing the conversion funnel chart
 */
-const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, tooltipStyle }) => {
+const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, ariaLabel, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, tooltipStyle }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, isColorPaletteResolved } = useGlobalChartsContext();
 	const chartRef = useRef(null);
@@ -7292,6 +7294,8 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "column",
 		gap: "xl",
+		role: "group",
+		"aria-label": ariaLabel ?? __("Conversion funnel chart", "jetpack-charts"),
 		ref: setChartRef,
 		className: clsx("conversion-funnel-chart", conversion_funnel_chart_module_default["conversion-funnel-chart"], loading && conversion_funnel_chart_module_default["conversion-funnel-chart--loading"], className),
 		style: {
@@ -7516,6 +7520,7 @@ function normalizeGeoChartError(eventArgs) {
 *
 * @param props                   - The props for the GeoChart component
 * @param props.data              - Data in Google Charts format (array of arrays with headers)
+* @param props.ariaLabel         - Accessible name of the chart
 * @param props.width             - Width of the chart in pixels
 * @param props.height            - Height of the chart in pixels
 * @param props.region            - Region to display ('world', 'US', or ISO 3166-1 alpha-2 code)
@@ -7527,7 +7532,7 @@ function normalizeGeoChartError(eventArgs) {
 * @param props.renderPlaceholder - Optional render function for the loading placeholder
 * @return A React component displaying an interactive map with data visualization
 */
-const GeoChartInternal = ({ className, data, width, height, region = "world", resolution = "countries", displayMode = "regions", domain, onError, renderPlaceholder }) => {
+const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = "world", resolution = "countries", displayMode = "regions", domain, onError, renderPlaceholder }) => {
 	const { getElementStyles } = useGlobalChartsContext();
 	const scopeElement = useChartScopeElement();
 	const containerRef = useRef(null);
@@ -7615,8 +7620,14 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 		sanitizedData.hasHtmlTooltips
 	]);
 	const chartEvents = useMemo(() => {
-		if (!onError) return;
-		return [{
+		const readyEvent = {
+			eventName: "ready",
+			callback: () => {
+				containerRef.current?.querySelectorAll("svg").forEach((svg) => svg.setAttribute("aria-hidden", "true"));
+			}
+		};
+		if (!onError) return [readyEvent];
+		return [readyEvent, {
 			eventName: "error",
 			callback: ({ eventArgs }) => {
 				onError(normalizeGeoChartError(eventArgs));
@@ -7625,6 +7636,8 @@ const GeoChartInternal = ({ className, data, width, height, region = "world", re
 	}, [onError]);
 	return /* @__PURE__ */ jsx(Center, {
 		ref: containerRef,
+		role: "group",
+		"aria-label": ariaLabel ?? __("Geo chart", "jetpack-charts"),
 		className: clsx("geo-chart", geo_chart_module_default.container, className),
 		style: {
 			width,
@@ -11329,8 +11342,8 @@ const SUBPIXEL_TOLERANCE = .5;
 * depends on `--a8c-charts-dimension-leaderboard-row-gap`, label wrapping, and
 * whatever a caller renders as a label, so any restated number would drift.
 *
-* Every row is a direct grid child marked with `data-row-index`; interactive rows
-* use a button wrapper and non-interactive rows use a div wrapper.
+* Every row is a `listitem` div, a direct grid child marked with `data-row-index`;
+* interactive rows hold a button inside it.
 *
 * @param enabled  - Whether to measure at all. When false every row fits.
 * @param rowCount - Total number of rows rendered.
@@ -11472,6 +11485,7 @@ var leaderboard_chart_module_default = {
 	"overlayLabel": "a8ccharts-GovfoW-overlayLabel",
 	"row": "a8ccharts-GovfoW-row",
 	"rowButton": "a8ccharts-GovfoW-rowButton",
+	"rowItem": "a8ccharts-GovfoW-rowItem",
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
@@ -11584,9 +11598,10 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 * @param props.children         - Child components for composition API
 * @param props.className        - Additional CSS class name
 * @param props.style            - Custom styling for the chart container
+* @param props.ariaLabel        - Accessible name for the list, defaulting to "Leaderboard chart"
 * @return JSX element representing the leaderboard chart
 */
-const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, fitRows = false, showLegend = false, legend = {}, legendLabels, gap = "md", className, style, children }) => {
+const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, fitRows = false, showLegend = false, legend = {}, legendLabels, gap = "md", ariaLabel, className, style, children }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendPosition = legend.position ?? "bottom";
 	const chartId = useChartId(providedChartId);
@@ -11717,6 +11732,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					className: leaderboard_chart_module_default.emptyState,
 					children: getAllHiddenMessage(legendInteractive, "series")
 				}) : /* @__PURE__ */ jsx(component_default, {
+					role: "list",
+					"aria-label": ariaLabel ?? __("Leaderboard chart", "jetpack-charts"),
 					templateColumns: "minmax(0, 1fr) auto",
 					rowGap: ROW_GAP,
 					columnGap: COLUMN_GAP,
@@ -11764,40 +11781,49 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								})
 							]
 						})] });
-						if (entry.onClick && entry.hasInteractiveLabel) return /* @__PURE__ */ jsxs("div", {
+						if (entry.onClick && entry.hasInteractiveLabel) return /* @__PURE__ */ jsx("div", {
+							role: "listitem",
 							"data-row-index": rowIndex,
 							style: rowStyle,
-							className: clsx(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow, leaderboard_chart_module_default.layeredRow),
-							onClick: forwardCellClickToRowButton,
-							children: [
-								rowCells,
-								/* @__PURE__ */ jsx("button", {
-									type: "button",
-									className: leaderboard_chart_module_default.rowButton,
-									onClick: entry.onClick,
-									"aria-label": entry.ariaLabel
-								}),
-								/* @__PURE__ */ jsx(Icon, {
+							className: leaderboard_chart_module_default.rowItem,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: clsx(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow, leaderboard_chart_module_default.layeredRow),
+								onClick: forwardCellClickToRowButton,
+								children: [
+									rowCells,
+									/* @__PURE__ */ jsx("button", {
+										type: "button",
+										className: leaderboard_chart_module_default.rowButton,
+										onClick: entry.onClick,
+										"aria-label": entry.ariaLabel
+									}),
+									/* @__PURE__ */ jsx(Icon, {
+										className: leaderboard_chart_module_default.chevron,
+										icon: chevronRight,
+										size: 24
+									})
+								]
+							})
+						}, entry.id);
+						if (entry.onClick) return /* @__PURE__ */ jsx("div", {
+							role: "listitem",
+							"data-row-index": rowIndex,
+							style: rowStyle,
+							className: leaderboard_chart_module_default.rowItem,
+							children: /* @__PURE__ */ jsxs("button", {
+								type: "button",
+								className: clsx(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow),
+								onClick: entry.onClick,
+								"aria-label": entry.ariaLabel,
+								children: [rowCells, /* @__PURE__ */ jsx(Icon, {
 									className: leaderboard_chart_module_default.chevron,
 									icon: chevronRight,
 									size: 24
-								})
-							]
-						}, entry.id);
-						if (entry.onClick) return /* @__PURE__ */ jsxs("button", {
-							type: "button",
-							"data-row-index": rowIndex,
-							style: rowStyle,
-							className: clsx(leaderboard_chart_module_default.row, leaderboard_chart_module_default.interactiveRow),
-							onClick: entry.onClick,
-							"aria-label": entry.ariaLabel,
-							children: [rowCells, /* @__PURE__ */ jsx(Icon, {
-								className: leaderboard_chart_module_default.chevron,
-								icon: chevronRight,
-								size: 24
-							})]
+								})]
+							})
 						}, entry.id);
 						return /* @__PURE__ */ jsx("div", {
+							role: "listitem",
 							"data-row-index": rowIndex,
 							style: rowStyle,
 							className: leaderboard_chart_module_default.row,

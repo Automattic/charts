@@ -636,6 +636,10 @@ type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
    */
   className?: string;
   /**
+   * Accessible name of the chart. Name it after what it shows, and give each chart on a page a different name. Each chart type has a localized default, such as "Line chart".
+   */
+  ariaLabel?: string;
+  /**
    * Width of the chart container in pixels. When omitted, the chart fills its parent's width.
    */
   width?: number;
@@ -925,8 +929,6 @@ type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
   position?: 'start' | 'end';
 };
 interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
-  /** Accessible name of the chart. Defaults to a localized "Line chart". */
-  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -982,8 +984,6 @@ type TooltipDatum = {
 //#endregion
 //#region src/charts/area-chart/types.d.ts
 interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
-  /** Accessible name of the chart. Defaults to a localized "Area chart". */
-  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -1093,8 +1093,6 @@ type BandHighlightSelection = {
   height: number;
 };
 interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
-  /** Accessible name of the chart. Defaults to a localized "Bar chart". */
-  ariaLabel?: string;
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -1251,7 +1249,7 @@ interface TooltipRenderProps {
 /**
  * Props for the ConversionFunnelChart component
  */
-interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'animation'> {
+interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'animation' | 'ariaLabel'> {
   /** Main conversion rate to highlight */
   mainRate: number;
   /** Change indicator (e.g., +2%, -1.5%) */
@@ -1311,7 +1309,7 @@ interface GeoChartError {
   detailedMessage?: string;
   options?: Record<string, unknown>;
 }
-interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'width' | 'height'> {
+interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | 'ariaLabel' | 'width' | 'height'> {
   /**
    * Data in Google Charts native format for maximum flexibility.
    * First row contains column headers, subsequent rows contain data.
@@ -1430,8 +1428,6 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
    * group past the edge, Page Up/Down by one group. Default `grid`.
    */
   keyboardNavigation?: 'grid' | 'calendar';
-  /** Accessible name of the grid. Defaults to a localized "Heatmap chart". */
-  ariaLabel?: string;
   /** Compact mode: hide in-cell values, tighten gap, thin axis labels. Default false. */
   compact?: boolean;
   /** Compact mode only: grow the cells to fill the chart's box, wrapping the column groups onto more rows when that makes them larger. Default false. */
@@ -1588,7 +1584,7 @@ declare const useCalendarHeatmapData: (series: DataPointDate[], options?: Calend
 declare const useMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
 //#endregion
 //#region src/charts/leaderboard-chart/types.d.ts
-interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation'> {
+interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation' | 'ariaLabel'> {
   /**
    * Entries to display. Declared here rather than picked, since the base type
    * would split the entry union into one array type per member.
@@ -1979,10 +1975,6 @@ interface PieChartProps extends BaseChartProps<DataPointPercentage[]> {
    * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieChartRenderTooltipParams) => ReactNode;
-  /**
-   * Accessible name of the chart. Defaults to a localized "Pie chart".
-   */
-  ariaLabel?: string;
 }
 type PieChartBaseProps = Optional<PieChartProps, 'size'>;
 type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;
@@ -2049,10 +2041,6 @@ interface PieSemiCircleChartProps extends BaseChartProps<DataPointPercentage[]> 
    * When provided, replaces the default `label: value` tooltip with custom content.
    */
   renderTooltip?: (params: PieSemiCircleChartRenderTooltipParams) => ReactNode;
-  /**
-   * Accessible name of the chart. Defaults to a localized "Semi-circle chart".
-   */
-  ariaLabel?: string;
 }
 type PieSemiCircleChartBaseProps = Optional<PieSemiCircleChartProps, 'width'>;
 type PieSemiCircleChartComponent = ChartComponentWithComposition<PieSemiCircleChartBaseProps>;

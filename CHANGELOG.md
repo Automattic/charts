@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is an alpha version! The changes listed here are not final.
 
 ### Added
+- Give the geo, leaderboard, conversion funnel and bar list charts an accessible name, and accept `ariaLabel` on every chart except Sparkline.
 - Heatmap chart: Add a fitCells option that grows compact cells to fill the chart, wrapping column groups onto more rows when that makes the cells larger, and draw column group labels at 13px in the body text color.
 - Leaderboard chart: Let a clickable row hold a link in its label with the new `hasInteractiveLabel` entry option.
 - Legend: Add a comparisonSeriesItems option that adds one static item per comparison series, named after its metric and hidden along with it.
