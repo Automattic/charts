@@ -7112,6 +7112,8 @@ const useFunnelSelection = (hideTooltip) => {
 };
 //#endregion
 //#region src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
+/** Chart height (px) below which the funnel tightens its gaps so the bars keep their room. */
+const SHORT_CHART_HEIGHT = 180;
 /**
 * Internal ConversionFunnelChart component with chart registration
 *
@@ -7142,10 +7144,13 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 	const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
 	const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
 	const standaloneScopeClass = useStandaloneScopeClass();
+	const [measureChartRef, , chartHeight] = useElementSize();
+	const gap = chartHeight > 0 && chartHeight < SHORT_CHART_HEIGHT ? "sm" : "xl";
 	const setChartRef = useCallback((node) => {
 		chartRef.current = node;
 		setScopeNode(node);
-	}, []);
+		measureChartRef(node);
+	}, [measureChartRef]);
 	const clearSelectionAndRef = useCallback(() => {
 		clearSelection();
 		selectedBarRef.current = null;
@@ -7293,7 +7298,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 	const maxRate = Math.max(...steps.map((step) => step.rate));
 	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "column",
-		gap: "xl",
+		gap,
 		role: "group",
 		"aria-label": ariaLabel ?? __("Conversion funnel chart", "jetpack-charts"),
 		ref: setChartRef,
@@ -7326,7 +7331,7 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 					return /* @__PURE__ */ jsxs(Stack, {
 						direction: "column",
 						className: clsx(conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
-						gap: "xl",
+						gap,
 						children: [/* @__PURE__ */ jsxs(Stack, {
 							direction: "column",
 							gap: "xs",
