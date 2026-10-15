@@ -2624,9 +2624,6 @@ const BaseTooltip = ({ data, top, left, component: Component = LabelValueContent
 		children: content
 	});
 };
-//#endregion
-//#region src/components/tooltip/private/bounded-tooltip.tsx
-const DEFAULT_OFFSET = 10;
 const POINTER_HEIGHT = 6;
 const clamp = (position, min, max, size) => Math.min(Math.max(position, min), Math.max(min, max - size));
 const isClipping = (element) => {
@@ -2723,7 +2720,7 @@ const getBoundedPosition = ({ left, top, offsetLeft, offsetTop, box, wrapper, bo
 * @param props.placement  - Below-axis, beside without vertical flipping, or automatic flipping.
 * @return The tooltip box.
 */
-const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = DEFAULT_OFFSET, offsetTop = DEFAULT_OFFSET, style, unstyled = false, className, children, placement = "auto", ...rest }) => {
+const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = 10, offsetTop = 10, style, unstyled = false, className, children, placement = "auto", ...rest }) => {
 	const nodeRef = useRef(null);
 	const clipRef = useRef(null);
 	const [position, setPosition] = useState(null);
@@ -7455,6 +7452,91 @@ function sanitizeHtml(html) {
 //#region src/charts/geo-chart/geo-chart.module.scss
 var geo_chart_module_default = { "container": "a8ccharts-8hS2IW-container" };
 //#endregion
+//#region src/charts/geo-chart/private/use-tooltip-position.ts
+const TOOLTIP_CLASS = "google-visualization-tooltip";
+const isTooltip = (node) => node instanceof HTMLElement && node.classList.contains(TOOLTIP_CLASS);
+/**
+* Moves Google's HTML tooltip to where the other chart tooltips sit, just off the cursor. Google places it about 30px away and has no option for it.
+*
+* @param containerRef - The element Google draws the chart into.
+*/
+function useTooltipPosition(containerRef) {
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container || typeof MutationObserver === "undefined") return;
+		let pointer = null;
+		let clip = null;
+		const ownStyles = /* @__PURE__ */ new WeakMap();
+		const place = (tooltip) => {
+			const parent = tooltip.offsetParent;
+			if (!pointer || !parent) return;
+			if (clip?.parent !== parent) clip = {
+				parent,
+				element: findClippingAncestor(parent)
+			};
+			const parentRect = parent.getBoundingClientRect();
+			const clipRect = clip.element?.getBoundingClientRect() ?? {
+				left: 0,
+				top: 0,
+				right: window.innerWidth,
+				bottom: window.innerHeight
+			};
+			const { x, y } = getBoundedPosition({
+				left: pointer.x - parentRect.left,
+				top: pointer.y - parentRect.top,
+				offsetLeft: 10,
+				offsetTop: 10,
+				box: {
+					width: tooltip.offsetWidth,
+					height: tooltip.offsetHeight
+				},
+				wrapper: {
+					left: 0,
+					top: 0,
+					right: parentRect.width,
+					bottom: parentRect.height
+				},
+				bounds: {
+					left: clipRect.left - parentRect.left,
+					top: clipRect.top - parentRect.top,
+					right: clipRect.right - parentRect.left,
+					bottom: clipRect.bottom - parentRect.top
+				}
+			});
+			tooltip.style.left = `${x}px`;
+			tooltip.style.top = `${y}px`;
+			ownStyles.set(tooltip, tooltip.style.cssText);
+		};
+		const trackPointer = (event) => {
+			pointer = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		};
+		const observer = new MutationObserver((records) => {
+			const tooltips = /* @__PURE__ */ new Set();
+			for (const record of records) {
+				if (isTooltip(record.target)) tooltips.add(record.target);
+				record.addedNodes.forEach((node) => isTooltip(node) && tooltips.add(node));
+			}
+			for (const tooltip of tooltips) if (ownStyles.get(tooltip) !== tooltip.style.cssText) place(tooltip);
+		});
+		container.addEventListener("mouseover", trackPointer, true);
+		container.addEventListener("mousemove", trackPointer, true);
+		observer.observe(container, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ["style"]
+		});
+		return () => {
+			container.removeEventListener("mouseover", trackPointer, true);
+			container.removeEventListener("mousemove", trackPointer, true);
+			observer.disconnect();
+		};
+	}, [containerRef]);
+}
+//#endregion
 //#region src/charts/geo-chart/geo-chart.tsx
 /**
 * External dependencies
@@ -7496,6 +7578,23 @@ function involvesGeoChartErrorElement(node) {
 	if (node.nodeType === Node.TEXT_NODE) return !!node.parentElement?.id.startsWith(GOOGLE_CHARTS_ERROR_ID_PREFIX);
 	if (!(node instanceof HTMLElement)) return false;
 	return node.id.startsWith(GOOGLE_CHARTS_ERROR_ID_PREFIX) || node.querySelector(`[id^="${GOOGLE_CHARTS_ERROR_ID_PREFIX}"]`) !== null;
+}
+const isTooltipColumn = (column) => typeof column === "object" && column !== null && "role" in column && column.role === "tooltip";
+const hasHtmlFlag = (columnOrCell) => typeof columnOrCell === "object" && columnOrCell !== null && "p" in columnOrCell && typeof columnOrCell.p === "object" && columnOrCell.p !== null && "html" in columnOrCell.p && !!columnOrCell.p.html;
+const sanitizeIfString = (value) => typeof value === "string" ? sanitizeHtml(value) : value;
+/**
+* Sanitizes a tooltip cell Google will render as markup, whether a string or a `{ v, f, p }` object.
+*
+* @param cell - The tooltip cell.
+* @return The cell with its markup sanitized.
+*/
+function sanitizeTooltipCell(cell) {
+	if (typeof cell !== "object" || cell === null) return sanitizeIfString(cell);
+	return {
+		...cell,
+		..."v" in cell && { v: sanitizeIfString(cell.v) },
+		..."f" in cell && { f: sanitizeIfString(cell.f) }
+	};
 }
 /**
 * Normalizes the raw Google Charts error event into the GeoChart error shape.
@@ -7542,6 +7641,7 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 	const scopeElement = useChartScopeElement();
 	const containerRef = useRef(null);
 	const reportedErrorIdsRef = useRef(/* @__PURE__ */ new Set());
+	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!onError || !container || typeof MutationObserver === "undefined") return;
@@ -7562,6 +7662,8 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 		reportRenderedErrors();
 		return () => observer.disconnect();
 	}, [onError]);
+	useTooltipPosition(containerRef);
+	const handleLoad = useCallback(() => setIsLoaded(true), []);
 	const loadingPlaceholder = /* @__PURE__ */ jsx(Center, {
 		className: clsx("geo-chart", geo_chart_module_default.container, className),
 		style: {
@@ -7575,28 +7677,18 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 	const backgroundColorHex = normalizeColorToHex(CATALOG_POINTERS.background, scopeElement, resolveCssVariable) || DEFAULT_BACKGROUND_COLOR;
 	const defaultFillColorHex = normalizeColorToHex(CATALOG_POINTERS.surfaceSecondary, scopeElement, resolveCssVariable) || DEFAULT_FEATURE_FILL_COLOR;
 	const sanitizedData = useMemo(() => {
-		if (data.length === 0) return {
-			data,
-			hasHtmlTooltips: false
-		};
-		const htmlTooltipIndices = [];
-		for (let i = 0; i < data[0].length; i++) {
-			const col = data[0][i];
-			if (typeof col === "object" && col !== null && "role" in col && col.role === "tooltip" && "p" in col && typeof col.p === "object" && col.p !== null && "html" in col.p && col.p.html === true) htmlTooltipIndices.push(i);
-		}
-		if (htmlTooltipIndices.length === 0) return {
-			data,
-			hasHtmlTooltips: false
-		};
+		if (data.length === 0) return data;
+		const tooltipColumns = data[0].flatMap((column, index) => isTooltipColumn(column) ? [{
+			index,
+			isHtml: hasHtmlFlag(column)
+		}] : []);
+		if (tooltipColumns.length === 0) return data;
 		const sanitizedRows = data.slice(1).map((row) => {
 			const newRow = [...row];
-			for (const colIndex of htmlTooltipIndices) if (typeof newRow[colIndex] === "string") newRow[colIndex] = sanitizeHtml(newRow[colIndex]);
+			for (const { index, isHtml } of tooltipColumns) if (isHtml || hasHtmlFlag(newRow[index])) newRow[index] = sanitizeTooltipCell(newRow[index]);
 			return newRow;
 		});
-		return {
-			data: [data[0], ...sanitizedRows],
-			hasHtmlTooltips: true
-		};
+		return [data[0], ...sanitizedRows];
 	}, [data]);
 	const options = useMemo(() => ({
 		...region !== "world" && { region },
@@ -7609,7 +7701,7 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 		defaultColor: defaultFillColorHex,
 		tooltip: {
 			trigger: "focus",
-			isHtml: sanitizedData.hasHtmlTooltips
+			isHtml: true
 		},
 		legend: "none",
 		keepAspectRatio: true
@@ -7621,8 +7713,7 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 		lightColorHex,
 		fullColorHex,
 		backgroundColorHex,
-		defaultFillColorHex,
-		sanitizedData.hasHtmlTooltips
+		defaultFillColorHex
 	]);
 	const chartEvents = useMemo(() => {
 		const readyEvent = {
@@ -7639,7 +7730,7 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 			}
 		}];
 	}, [onError]);
-	return /* @__PURE__ */ jsx(Center, {
+	return /* @__PURE__ */ jsxs(Center, {
 		ref: containerRef,
 		role: "group",
 		"aria-label": ariaLabel ?? __("Geo chart", "jetpack-charts"),
@@ -7648,16 +7739,16 @@ const GeoChartInternal = ({ className, data, ariaLabel, width, height, region = 
 			width,
 			height
 		},
-		children: /* @__PURE__ */ jsx(Chart, {
+		children: [!isLoaded && loadingPlaceholder, /* @__PURE__ */ jsx(TooltipTheme, { children: /* @__PURE__ */ jsx(Chart, {
 			chartType: "GeoChart",
 			chartPackages: GEO_CHART_PACKAGES,
 			width,
 			height,
-			data: sanitizedData.data,
+			data: sanitizedData,
 			options,
 			chartEvents,
-			loader: loadingPlaceholder
-		})
+			onLoad: handleLoad
+		}) })]
 	});
 };
 const GeoChartWithProvider = (props) => {

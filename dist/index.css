@@ -1,4 +1,4 @@
-:where(.a8c-charts-scope, .a8c-charts-tooltip-scope) {
+:where(.a8c-charts-scope, .a8c-charts-tooltip-scope, .geo-chart .google-visualization-tooltip) {
   --a8c-charts-color-series-1: var(--wp-admin-theme-color, var(--wpds-color-foreground-interactive-brand, var(--wp-admin-theme-color, #3858e9)));
   --a8c-charts-color-grid: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
   --a8c-charts-color-axis-x: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
@@ -40,7 +40,7 @@
 }
 
 @media (forced-colors: active) {
-  :where(.a8c-charts-scope, .a8c-charts-tooltip-scope) {
+  :where(.a8c-charts-scope, .a8c-charts-tooltip-scope, .geo-chart .google-visualization-tooltip) {
     --a8c-charts-color-label-axis: CanvasText;
     --a8c-charts-color-grid: GrayText;
     --a8c-charts-color-axis-x: GrayText;
@@ -478,6 +478,43 @@
 
 .a8ccharts-8hS2IW-container .google-visualization-tooltip {
   white-space: nowrap;
+  padding: var(--wpds-dimension-padding-xs, 4px) var(--wpds-dimension-padding-sm, 8px);
+  background-color: var(--a8c-charts-color-surface);
+  color: var(--a8c-charts-color-label);
+  border-radius: var(--wpds-border-radius-md, 4px);
+  font-family: var(--wpds-typography-font-family-body, -apple-system, system-ui, "Segoe UI", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif);
+  font-size: var(--wpds-typography-font-size-sm, 12px);
+  box-shadow: var(--a8c-charts-elevation-sm, 0 1px 2px 0 #0000000d, 0 2px 3px 0 #0000000a, 0 6px 6px 0 #00000008, 0 8px 8px 0 #00000005);
+  pointer-events: none;
+  border: 0;
+  min-width: fit-content;
+  line-height: 1.4;
+}
+
+@media (forced-colors: active) {
+  .a8ccharts-8hS2IW-container .google-visualization-tooltip {
+    border: var(--wpds-border-width-xs, 1px) solid CanvasText;
+  }
+}
+
+.a8ccharts-8hS2IW-container .google-visualization-tooltip-item-list {
+  margin: 0;
+  padding: 0;
+}
+
+.a8ccharts-8hS2IW-container .google-visualization-tooltip .google-visualization-tooltip-item-list .google-visualization-tooltip-item {
+  margin: 0;
+  padding: 0;
+}
+
+.a8ccharts-8hS2IW-container .google-visualization-tooltip .google-visualization-tooltip-item-list .google-visualization-tooltip-item:first-child {
+  padding-block-end: var(--wpds-dimension-padding-md, 12px);
+}
+
+.a8ccharts-8hS2IW-container .google-visualization-tooltip-item span {
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
 }
 .a8ccharts-O3YMOW-heatmap-chart {
   isolation: isolate;

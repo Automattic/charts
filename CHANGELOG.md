@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.11.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Geo chart: Draw tooltips on the same dark surface, and at the same distance from the cursor, as the other chart tooltips.
+
 ## [4.10.0] - 2026-10-14
 ### Added
 - Give the geo, leaderboard, conversion funnel and bar list charts an accessible name, and accept `ariaLabel` on every chart except Sparkline. [#53516]
@@ -1187,6 +1194,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[4.11.0-alpha]: https://github.com/Automattic/charts/compare/v4.10.0...v4.11.0-alpha
 [4.10.0]: https://github.com/Automattic/charts/compare/v4.9.0...v4.10.0
 [4.9.0]: https://github.com/Automattic/charts/compare/v4.8.0...v4.9.0
 [4.8.0]: https://github.com/Automattic/charts/compare/v4.7.0...v4.8.0
