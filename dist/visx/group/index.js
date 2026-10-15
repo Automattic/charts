@@ -1,2 +1,1 @@
-import { Group } from "@visx/group";
-export { Group };
+export { Group } from "@visx/group";

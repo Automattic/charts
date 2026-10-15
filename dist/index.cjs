@@ -6,7 +6,7 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
+var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod, mod.exports), cb = null), mod.exports);
 var __copyProps = (to, from, except, desc) => {
 	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
 		key = keys[i];
@@ -9249,7 +9249,7 @@ var require_dist$13 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$12 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.pascalCase = exports.pascalCaseTransformMerge = exports.pascalCaseTransform = void 0;
-	var tslib_1$10 = require("tslib");
+	var tslib_1 = require("tslib");
 	var no_case_1 = require_dist$13();
 	function pascalCaseTransform(input, index) {
 		var firstChar = input.charAt(0);
@@ -9264,7 +9264,7 @@ var require_dist$12 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.pascalCaseTransformMerge = pascalCaseTransformMerge;
 	function pascalCase(input, options) {
 		if (options === void 0) options = {};
-		return no_case_1.noCase(input, tslib_1$10.__assign({
+		return no_case_1.noCase(input, tslib_1.__assign({
 			delimiter: "",
 			transform: pascalCaseTransform
 		}, options));
@@ -9276,7 +9276,7 @@ var require_dist$12 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$11 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.camelCase = exports.camelCaseTransformMerge = exports.camelCaseTransform = void 0;
-	var tslib_1$9 = require("tslib");
+	var tslib_1 = require("tslib");
 	var pascal_case_1 = require_dist$12();
 	function camelCaseTransform(input, index) {
 		if (index === 0) return input.toLowerCase();
@@ -9290,7 +9290,7 @@ var require_dist$11 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.camelCaseTransformMerge = camelCaseTransformMerge;
 	function camelCase(input, options) {
 		if (options === void 0) options = {};
-		return pascal_case_1.pascalCase(input, tslib_1$9.__assign({ transform: camelCaseTransform }, options));
+		return pascal_case_1.pascalCase(input, tslib_1.__assign({ transform: camelCaseTransform }, options));
 	}
 	exports.camelCase = camelCase;
 }));
@@ -9312,7 +9312,7 @@ var require_dist$10 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$9 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.capitalCase = exports.capitalCaseTransform = void 0;
-	var tslib_1$8 = require("tslib");
+	var tslib_1 = require("tslib");
 	var no_case_1 = require_dist$13();
 	var upper_case_first_1 = require_dist$10();
 	function capitalCaseTransform(input) {
@@ -9321,7 +9321,7 @@ var require_dist$9 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.capitalCaseTransform = capitalCaseTransform;
 	function capitalCase(input, options) {
 		if (options === void 0) options = {};
-		return no_case_1.noCase(input, tslib_1$8.__assign({
+		return no_case_1.noCase(input, tslib_1.__assign({
 			delimiter: " ",
 			transform: capitalCaseTransform
 		}, options));
@@ -9381,12 +9381,12 @@ var require_dist$8 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$7 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.constantCase = void 0;
-	var tslib_1$7 = require("tslib");
+	var tslib_1 = require("tslib");
 	var no_case_1 = require_dist$13();
 	var upper_case_1 = require_dist$8();
 	function constantCase(input, options) {
 		if (options === void 0) options = {};
-		return no_case_1.noCase(input, tslib_1$7.__assign({
+		return no_case_1.noCase(input, tslib_1.__assign({
 			delimiter: "_",
 			transform: upper_case_1.upperCase
 		}, options));
@@ -9398,11 +9398,11 @@ var require_dist$7 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$6 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.dotCase = void 0;
-	var tslib_1$6 = require("tslib");
+	var tslib_1 = require("tslib");
 	var no_case_1 = require_dist$13();
 	function dotCase(input, options) {
 		if (options === void 0) options = {};
-		return no_case_1.noCase(input, tslib_1$6.__assign({ delimiter: "." }, options));
+		return no_case_1.noCase(input, tslib_1.__assign({ delimiter: "." }, options));
 	}
 	exports.dotCase = dotCase;
 }));
@@ -9411,11 +9411,11 @@ var require_dist$6 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$5 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.headerCase = void 0;
-	var tslib_1$5 = require("tslib");
+	var tslib_1 = require("tslib");
 	var capital_case_1 = require_dist$9();
 	function headerCase(input, options) {
 		if (options === void 0) options = {};
-		return capital_case_1.capitalCase(input, tslib_1$5.__assign({ delimiter: "-" }, options));
+		return capital_case_1.capitalCase(input, tslib_1.__assign({ delimiter: "-" }, options));
 	}
 	exports.headerCase = headerCase;
 }));
@@ -9424,11 +9424,11 @@ var require_dist$5 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$4 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.paramCase = void 0;
-	var tslib_1$4 = require("tslib");
+	var tslib_1 = require("tslib");
 	var dot_case_1 = require_dist$6();
 	function paramCase(input, options) {
 		if (options === void 0) options = {};
-		return dot_case_1.dotCase(input, tslib_1$4.__assign({ delimiter: "-" }, options));
+		return dot_case_1.dotCase(input, tslib_1.__assign({ delimiter: "-" }, options));
 	}
 	exports.paramCase = paramCase;
 }));
@@ -9437,11 +9437,11 @@ var require_dist$4 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.pathCase = void 0;
-	var tslib_1$3 = require("tslib");
+	var tslib_1 = require("tslib");
 	var dot_case_1 = require_dist$6();
 	function pathCase(input, options) {
 		if (options === void 0) options = {};
-		return dot_case_1.dotCase(input, tslib_1$3.__assign({ delimiter: "/" }, options));
+		return dot_case_1.dotCase(input, tslib_1.__assign({ delimiter: "/" }, options));
 	}
 	exports.pathCase = pathCase;
 }));
@@ -9450,7 +9450,7 @@ var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.sentenceCase = exports.sentenceCaseTransform = void 0;
-	var tslib_1$2 = require("tslib");
+	var tslib_1 = require("tslib");
 	var no_case_1 = require_dist$13();
 	var upper_case_first_1 = require_dist$10();
 	function sentenceCaseTransform(input, index) {
@@ -9461,7 +9461,7 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.sentenceCaseTransform = sentenceCaseTransform;
 	function sentenceCase(input, options) {
 		if (options === void 0) options = {};
-		return no_case_1.noCase(input, tslib_1$2.__assign({
+		return no_case_1.noCase(input, tslib_1.__assign({
 			delimiter: " ",
 			transform: sentenceCaseTransform
 		}, options));
@@ -9473,11 +9473,11 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 var require_dist$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.snakeCase = void 0;
-	var tslib_1$1 = require("tslib");
+	var tslib_1 = require("tslib");
 	var dot_case_1 = require_dist$6();
 	function snakeCase(input, options) {
 		if (options === void 0) options = {};
-		return dot_case_1.dotCase(input, tslib_1$1.__assign({ delimiter: "_" }, options));
+		return dot_case_1.dotCase(input, tslib_1.__assign({ delimiter: "_" }, options));
 	}
 	exports.snakeCase = snakeCase;
 }));
