@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Geo chart: Draw tooltips on the same dark surface, and at the same distance from the cursor, as the other chart tooltips.
 - Heatmap chart: Lighten the color scale to 2.5:1 contrast at the lowest step and 6:1 at the highest, and keep the two ends apart when the empty-cell color sits far from the background.
 - Heatmap chart: Offset the grid's focus ring by the design system focus width.
+- Update package dependencies.
 
 ### Fixed
 - Conversion funnel chart: Show a focus ring on the focused step bar.

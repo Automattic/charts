@@ -53,7 +53,6 @@ let react_google_charts = require("react-google-charts");
 let dompurify = require("dompurify");
 dompurify = __toESM(dompurify, 1);
 require("@babel/runtime/helpers/esm/extends");
-require("@babel/runtime/helpers/extends");
 let _wordpress_icons = require("@wordpress/icons");
 let _visx_shape = require("@visx/shape");
 //#region src/charts/private/chart-instance-context/chart-instance-context.ts
@@ -9500,10 +9499,10 @@ var require_dist = /* @__PURE__ */ __commonJSMin(((exports) => {
 	tslib_1.__exportStar(require_dist$1(), exports);
 }));
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.55.0/node_modules/@wordpress/warning/build-module/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.55.0/node_modules/@wordpress/warning/build-module/index.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
 	return globalThis.SCRIPT_DEBUG === true;
 }
@@ -9517,7 +9516,7 @@ function warning(message) {
 	logged.add(message);
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
 	const mountedRef = (0, react.useRef)(false);
 	(0, react.useEffect)(() => {
@@ -10126,7 +10125,7 @@ function memoize(fn) {
 }
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+cache@11.14.0/node_modules/@emotion/cache/dist/emotion-cache.esm.js
-var isBrowser$3 = typeof document !== "undefined";
+var isBrowser$2 = typeof document !== "undefined";
 var identifierWithPointTracking = function identifierWithPointTracking(begin, points, index) {
 	var previous = 0;
 	var character = 0;
@@ -10299,7 +10298,7 @@ var prefixer = function prefixer(element, index, children, callback) {
 		}
 	}
 };
-var getServerStylisCache = isBrowser$3 ? void 0 : weakMemoize(function() {
+var getServerStylisCache = isBrowser$2 ? void 0 : weakMemoize(function() {
 	return memoize(function() {
 		return {};
 	});
@@ -10307,7 +10306,7 @@ var getServerStylisCache = isBrowser$3 ? void 0 : weakMemoize(function() {
 var defaultStylisPlugins = [prefixer];
 var createCache = function createCache(options) {
 	var key = options.key;
-	if (isBrowser$3 && key === "css") {
+	if (isBrowser$2 && key === "css") {
 		var ssrStyles = document.querySelectorAll("style[data-emotion]:not([data-s])");
 		Array.prototype.forEach.call(ssrStyles, function(node) {
 			if (node.getAttribute("data-emotion").indexOf(" ") === -1) return;
@@ -10319,7 +10318,7 @@ var createCache = function createCache(options) {
 	var inserted = {};
 	var container;
 	var nodesToHydrate = [];
-	if (isBrowser$3) {
+	if (isBrowser$2) {
 		container = options.container || document.head;
 		Array.prototype.forEach.call(document.querySelectorAll("style[data-emotion^=\"" + key + " \"]"), function(node) {
 			var attrib = node.getAttribute("data-emotion").split(" ");
@@ -10384,358 +10383,8 @@ var createCache = function createCache(options) {
 	return cache;
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.production.min.js
-/** @license React v16.13.1
-* react-is.production.min.js
-*
-* Copyright (c) Facebook, Inc. and its affiliates.
-*
-* This source code is licensed under the MIT license found in the
-* LICENSE file in the root directory of this source tree.
-*/
-var require_react_is_production_min = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var b = "function" === typeof Symbol && Symbol.for;
-	var c = b ? Symbol.for("react.element") : 60103;
-	var d = b ? Symbol.for("react.portal") : 60106;
-	var e = b ? Symbol.for("react.fragment") : 60107;
-	var f = b ? Symbol.for("react.strict_mode") : 60108;
-	var g = b ? Symbol.for("react.profiler") : 60114;
-	var h = b ? Symbol.for("react.provider") : 60109;
-	var k = b ? Symbol.for("react.context") : 60110;
-	var l = b ? Symbol.for("react.async_mode") : 60111;
-	var m = b ? Symbol.for("react.concurrent_mode") : 60111;
-	var n = b ? Symbol.for("react.forward_ref") : 60112;
-	var p = b ? Symbol.for("react.suspense") : 60113;
-	var q = b ? Symbol.for("react.suspense_list") : 60120;
-	var r = b ? Symbol.for("react.memo") : 60115;
-	var t = b ? Symbol.for("react.lazy") : 60116;
-	var v = b ? Symbol.for("react.block") : 60121;
-	var w = b ? Symbol.for("react.fundamental") : 60117;
-	var x = b ? Symbol.for("react.responder") : 60118;
-	var y = b ? Symbol.for("react.scope") : 60119;
-	function z(a) {
-		if ("object" === typeof a && null !== a) {
-			var u = a.$$typeof;
-			switch (u) {
-				case c: switch (a = a.type, a) {
-					case l:
-					case m:
-					case e:
-					case g:
-					case f:
-					case p: return a;
-					default: switch (a = a && a.$$typeof, a) {
-						case k:
-						case n:
-						case t:
-						case r:
-						case h: return a;
-						default: return u;
-					}
-				}
-				case d: return u;
-			}
-		}
-	}
-	function A(a) {
-		return z(a) === m;
-	}
-	exports.AsyncMode = l;
-	exports.ConcurrentMode = m;
-	exports.ContextConsumer = k;
-	exports.ContextProvider = h;
-	exports.Element = c;
-	exports.ForwardRef = n;
-	exports.Fragment = e;
-	exports.Lazy = t;
-	exports.Memo = r;
-	exports.Portal = d;
-	exports.Profiler = g;
-	exports.StrictMode = f;
-	exports.Suspense = p;
-	exports.isAsyncMode = function(a) {
-		return A(a) || z(a) === l;
-	};
-	exports.isConcurrentMode = A;
-	exports.isContextConsumer = function(a) {
-		return z(a) === k;
-	};
-	exports.isContextProvider = function(a) {
-		return z(a) === h;
-	};
-	exports.isElement = function(a) {
-		return "object" === typeof a && null !== a && a.$$typeof === c;
-	};
-	exports.isForwardRef = function(a) {
-		return z(a) === n;
-	};
-	exports.isFragment = function(a) {
-		return z(a) === e;
-	};
-	exports.isLazy = function(a) {
-		return z(a) === t;
-	};
-	exports.isMemo = function(a) {
-		return z(a) === r;
-	};
-	exports.isPortal = function(a) {
-		return z(a) === d;
-	};
-	exports.isProfiler = function(a) {
-		return z(a) === g;
-	};
-	exports.isStrictMode = function(a) {
-		return z(a) === f;
-	};
-	exports.isSuspense = function(a) {
-		return z(a) === p;
-	};
-	exports.isValidElementType = function(a) {
-		return "string" === typeof a || "function" === typeof a || a === e || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t || a.$$typeof === r || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n || a.$$typeof === w || a.$$typeof === x || a.$$typeof === y || a.$$typeof === v);
-	};
-	exports.typeOf = z;
-}));
-//#endregion
-//#region ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/cjs/react-is.development.js
-/** @license React v16.13.1
-* react-is.development.js
-*
-* Copyright (c) Facebook, Inc. and its affiliates.
-*
-* This source code is licensed under the MIT license found in the
-* LICENSE file in the root directory of this source tree.
-*/
-var require_react_is_development = /* @__PURE__ */ __commonJSMin(((exports) => {
-	if (process.env.NODE_ENV !== "production") (function() {
-		"use strict";
-		var hasSymbol = typeof Symbol === "function" && Symbol.for;
-		var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for("react.element") : 60103;
-		var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for("react.portal") : 60106;
-		var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for("react.fragment") : 60107;
-		var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for("react.strict_mode") : 60108;
-		var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for("react.profiler") : 60114;
-		var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for("react.provider") : 60109;
-		var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for("react.context") : 60110;
-		var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for("react.async_mode") : 60111;
-		var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for("react.concurrent_mode") : 60111;
-		var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for("react.forward_ref") : 60112;
-		var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for("react.suspense") : 60113;
-		var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for("react.suspense_list") : 60120;
-		var REACT_MEMO_TYPE = hasSymbol ? Symbol.for("react.memo") : 60115;
-		var REACT_LAZY_TYPE = hasSymbol ? Symbol.for("react.lazy") : 60116;
-		var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for("react.block") : 60121;
-		var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for("react.fundamental") : 60117;
-		var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for("react.responder") : 60118;
-		var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for("react.scope") : 60119;
-		function isValidElementType(type) {
-			return typeof type === "string" || typeof type === "function" || type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
-		}
-		function typeOf(object) {
-			if (typeof object === "object" && object !== null) {
-				var $$typeof = object.$$typeof;
-				switch ($$typeof) {
-					case REACT_ELEMENT_TYPE:
-						var type = object.type;
-						switch (type) {
-							case REACT_ASYNC_MODE_TYPE:
-							case REACT_CONCURRENT_MODE_TYPE:
-							case REACT_FRAGMENT_TYPE:
-							case REACT_PROFILER_TYPE:
-							case REACT_STRICT_MODE_TYPE:
-							case REACT_SUSPENSE_TYPE: return type;
-							default:
-								var $$typeofType = type && type.$$typeof;
-								switch ($$typeofType) {
-									case REACT_CONTEXT_TYPE:
-									case REACT_FORWARD_REF_TYPE:
-									case REACT_LAZY_TYPE:
-									case REACT_MEMO_TYPE:
-									case REACT_PROVIDER_TYPE: return $$typeofType;
-									default: return $$typeof;
-								}
-						}
-					case REACT_PORTAL_TYPE: return $$typeof;
-				}
-			}
-		}
-		var AsyncMode = REACT_ASYNC_MODE_TYPE;
-		var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-		var ContextConsumer = REACT_CONTEXT_TYPE;
-		var ContextProvider = REACT_PROVIDER_TYPE;
-		var Element = REACT_ELEMENT_TYPE;
-		var ForwardRef = REACT_FORWARD_REF_TYPE;
-		var Fragment = REACT_FRAGMENT_TYPE;
-		var Lazy = REACT_LAZY_TYPE;
-		var Memo = REACT_MEMO_TYPE;
-		var Portal = REACT_PORTAL_TYPE;
-		var Profiler = REACT_PROFILER_TYPE;
-		var StrictMode = REACT_STRICT_MODE_TYPE;
-		var Suspense = REACT_SUSPENSE_TYPE;
-		var hasWarnedAboutDeprecatedIsAsyncMode = false;
-		function isAsyncMode(object) {
-			if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-				hasWarnedAboutDeprecatedIsAsyncMode = true;
-				console["warn"]("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.");
-			}
-			return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-		}
-		function isConcurrentMode(object) {
-			return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-		}
-		function isContextConsumer(object) {
-			return typeOf(object) === REACT_CONTEXT_TYPE;
-		}
-		function isContextProvider(object) {
-			return typeOf(object) === REACT_PROVIDER_TYPE;
-		}
-		function isElement(object) {
-			return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-		}
-		function isForwardRef(object) {
-			return typeOf(object) === REACT_FORWARD_REF_TYPE;
-		}
-		function isFragment(object) {
-			return typeOf(object) === REACT_FRAGMENT_TYPE;
-		}
-		function isLazy(object) {
-			return typeOf(object) === REACT_LAZY_TYPE;
-		}
-		function isMemo(object) {
-			return typeOf(object) === REACT_MEMO_TYPE;
-		}
-		function isPortal(object) {
-			return typeOf(object) === REACT_PORTAL_TYPE;
-		}
-		function isProfiler(object) {
-			return typeOf(object) === REACT_PROFILER_TYPE;
-		}
-		function isStrictMode(object) {
-			return typeOf(object) === REACT_STRICT_MODE_TYPE;
-		}
-		function isSuspense(object) {
-			return typeOf(object) === REACT_SUSPENSE_TYPE;
-		}
-		exports.AsyncMode = AsyncMode;
-		exports.ConcurrentMode = ConcurrentMode;
-		exports.ContextConsumer = ContextConsumer;
-		exports.ContextProvider = ContextProvider;
-		exports.Element = Element;
-		exports.ForwardRef = ForwardRef;
-		exports.Fragment = Fragment;
-		exports.Lazy = Lazy;
-		exports.Memo = Memo;
-		exports.Portal = Portal;
-		exports.Profiler = Profiler;
-		exports.StrictMode = StrictMode;
-		exports.Suspense = Suspense;
-		exports.isAsyncMode = isAsyncMode;
-		exports.isConcurrentMode = isConcurrentMode;
-		exports.isContextConsumer = isContextConsumer;
-		exports.isContextProvider = isContextProvider;
-		exports.isElement = isElement;
-		exports.isForwardRef = isForwardRef;
-		exports.isFragment = isFragment;
-		exports.isLazy = isLazy;
-		exports.isMemo = isMemo;
-		exports.isPortal = isPortal;
-		exports.isProfiler = isProfiler;
-		exports.isStrictMode = isStrictMode;
-		exports.isSuspense = isSuspense;
-		exports.isValidElementType = isValidElementType;
-		exports.typeOf = typeOf;
-	})();
-}));
-//#endregion
-//#region ../../../node_modules/.pnpm/react-is@16.13.1/node_modules/react-is/index.js
-var require_react_is = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	if (process.env.NODE_ENV === "production") module.exports = require_react_is_production_min();
-	else module.exports = require_react_is_development();
-}));
-//#endregion
-//#region ../../../node_modules/.pnpm/hoist-non-react-statics@3.3.2/node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-var require_hoist_non_react_statics_cjs = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var reactIs = require_react_is();
-	/**
-	* Copyright 2015, Yahoo! Inc.
-	* Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
-	*/
-	var REACT_STATICS = {
-		childContextTypes: true,
-		contextType: true,
-		contextTypes: true,
-		defaultProps: true,
-		displayName: true,
-		getDefaultProps: true,
-		getDerivedStateFromError: true,
-		getDerivedStateFromProps: true,
-		mixins: true,
-		propTypes: true,
-		type: true
-	};
-	var KNOWN_STATICS = {
-		name: true,
-		length: true,
-		prototype: true,
-		caller: true,
-		callee: true,
-		arguments: true,
-		arity: true
-	};
-	var FORWARD_REF_STATICS = {
-		"$$typeof": true,
-		render: true,
-		defaultProps: true,
-		displayName: true,
-		propTypes: true
-	};
-	var MEMO_STATICS = {
-		"$$typeof": true,
-		compare: true,
-		defaultProps: true,
-		displayName: true,
-		propTypes: true,
-		type: true
-	};
-	var TYPE_STATICS = {};
-	TYPE_STATICS[reactIs.ForwardRef] = FORWARD_REF_STATICS;
-	TYPE_STATICS[reactIs.Memo] = MEMO_STATICS;
-	function getStatics(component) {
-		if (reactIs.isMemo(component)) return MEMO_STATICS;
-		return TYPE_STATICS[component["$$typeof"]] || REACT_STATICS;
-	}
-	var defineProperty = Object.defineProperty;
-	var getOwnPropertyNames = Object.getOwnPropertyNames;
-	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-	var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-	var getPrototypeOf = Object.getPrototypeOf;
-	var objectPrototype = Object.prototype;
-	function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-		if (typeof sourceComponent !== "string") {
-			if (objectPrototype) {
-				var inheritedComponent = getPrototypeOf(sourceComponent);
-				if (inheritedComponent && inheritedComponent !== objectPrototype) hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-			}
-			var keys = getOwnPropertyNames(sourceComponent);
-			if (getOwnPropertySymbols) keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-			var targetStatics = getStatics(targetComponent);
-			var sourceStatics = getStatics(sourceComponent);
-			for (var i = 0; i < keys.length; ++i) {
-				var key = keys[i];
-				if (!KNOWN_STATICS[key] && !(blacklist && blacklist[key]) && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
-					var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-					try {
-						defineProperty(targetComponent, key, descriptor);
-					} catch (e) {}
-				}
-			}
-		}
-		return targetComponent;
-	}
-	module.exports = hoistNonReactStatics;
-}));
-//#endregion
 //#region ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.esm.js
-var isBrowser$2 = typeof document !== "undefined";
+var isBrowser$1 = typeof document !== "undefined";
 function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 	var rawClassName = "";
 	classNames.split(" ").forEach(function(className) {
@@ -10746,7 +10395,7 @@ function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 }
 var registerStyles = function registerStyles(cache, serialized, isStringTag) {
 	var className = cache.key + "-" + serialized.name;
-	if ((isStringTag === false || isBrowser$2 === false && cache.compat !== void 0) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
+	if ((isStringTag === false || isBrowser$1 === false && cache.compat !== void 0) && cache.registered[className] === void 0) cache.registered[className] = serialized.styles;
 };
 var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 	registerStyles(cache, serialized, isStringTag);
@@ -10756,10 +10405,10 @@ var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 		var current = serialized;
 		do {
 			var maybeStyles = cache.insert(serialized === current ? "." + className : "", current, cache.sheet, true);
-			if (!isBrowser$2 && maybeStyles !== void 0) stylesForSSR += maybeStyles;
+			if (!isBrowser$1 && maybeStyles !== void 0) stylesForSSR += maybeStyles;
 			current = current.next;
 		} while (current !== void 0);
-		if (!isBrowser$2 && stylesForSSR.length !== 0) return stylesForSSR;
+		if (!isBrowser$1 && stylesForSSR.length !== 0) return stylesForSSR;
 	}
 };
 //#endregion
@@ -10837,7 +10486,7 @@ var unitlessKeys = {
 };
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+serialize@1.3.3/node_modules/@emotion/serialize/dist/emotion-serialize.esm.js
-var isDevelopment$1 = false;
+var isDevelopment = false;
 var hyphenateRegex = /[A-Z]|^ms/g;
 var animationRegex = /_EMO_([^_]+?)_([^]*?)_EMO_/g;
 var isCustomProperty = function isCustomProperty(property) {
@@ -10917,7 +10566,7 @@ function createStringFromObject(mergedProps, registered, obj) {
 			if (registered != null && registered[asString] !== void 0) string += key + "{" + registered[asString] + "}";
 			else if (isProcessableValue(asString)) string += processStyleName(key) + ":" + processStyleValue(key, asString) + ";";
 		} else {
-			if (key === "NO_COMPONENT_SELECTOR" && isDevelopment$1) throw new Error(noComponentSelectorMessage);
+			if (key === "NO_COMPONENT_SELECTOR" && isDevelopment) throw new Error(noComponentSelectorMessage);
 			if (Array.isArray(value) && typeof value[0] === "string" && (registered == null || registered[value[0]] === void 0)) {
 				for (var _i = 0; _i < value.length; _i++) if (isProcessableValue(value[_i])) string += processStyleName(key) + ":" + processStyleValue(key, value[_i]) + ";";
 			} else {
@@ -10960,101 +10609,17 @@ function serializeStyles(args, registered, mergedProps) {
 		next: cursor
 	};
 }
+react["useInsertionEffect"] && react["useInsertionEffect"] || react.useLayoutEffect;
 //#endregion
-//#region ../../../node_modules/.pnpm/@emotion+use-insertion-effect-with-fallbacks@1.2.0_react@18.3.1/node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.esm.js
-var isBrowser$1 = typeof document !== "undefined";
-var syncFallback = function syncFallback(create) {
-	return create();
-};
-var useInsertionEffect = react["useInsertionEffect"] ? react["useInsertionEffect"] : false;
-var useInsertionEffectAlwaysWithSyncFallback = !isBrowser$1 ? syncFallback : useInsertionEffect || syncFallback;
-useInsertionEffect || react.useLayoutEffect;
+//#region ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@18.3.31_react@18.3.1/node_modules/@emotion/react/dist/emotion-element-d59e098f.esm.js
 var isBrowser = typeof document !== "undefined";
 var EmotionCacheContext = /* #__PURE__ */ react.createContext(typeof HTMLElement !== "undefined" ? /* #__PURE__ */ createCache({ key: "css" }) : null);
 EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
 	return (0, react.useContext)(EmotionCacheContext);
 };
-var withEmotionCache = function withEmotionCache(func) {
-	return /*#__PURE__*/ (0, react.forwardRef)(function(props, ref) {
-		return func(props, (0, react.useContext)(EmotionCacheContext), ref);
-	});
-};
-if (!isBrowser) withEmotionCache = function withEmotionCache(func) {
-	return function(props) {
-		var cache = (0, react.useContext)(EmotionCacheContext);
-		if (cache === null) {
-			cache = createCache({ key: "css" });
-			return /*#__PURE__*/ react.createElement(EmotionCacheContext.Provider, { value: cache }, func(props, cache));
-		} else return func(props, cache);
-	};
-};
-var ThemeContext = /* #__PURE__ */ react.createContext({});
-var hasOwn = {}.hasOwnProperty;
-var typePropName = "__EMOTION_TYPE_PLEASE_DO_NOT_USE__";
-var createEmotionProps = function createEmotionProps(type, props) {
-	var newProps = {};
-	for (var _key in props) if (hasOwn.call(props, _key)) newProps[_key] = props[_key];
-	newProps[typePropName] = type;
-	return newProps;
-};
-var Insertion = function Insertion(_ref) {
-	var cache = _ref.cache, serialized = _ref.serialized, isStringTag = _ref.isStringTag;
-	registerStyles(cache, serialized, isStringTag);
-	var rules = useInsertionEffectAlwaysWithSyncFallback(function() {
-		return insertStyles(cache, serialized, isStringTag);
-	});
-	if (!isBrowser && rules !== void 0) {
-		var _ref2;
-		var serializedNames = serialized.name;
-		var next = serialized.next;
-		while (next !== void 0) {
-			serializedNames += " " + next.name;
-			next = next.next;
-		}
-		return /*#__PURE__*/ react.createElement("style", (_ref2 = {}, _ref2["data-emotion"] = cache.key + " " + serializedNames, _ref2.dangerouslySetInnerHTML = { __html: rules }, _ref2.nonce = cache.sheet.nonce, _ref2));
-	}
-	return null;
-};
-var Emotion$1 = /* @__PURE__ */ withEmotionCache(function(props, cache, ref) {
-	var cssProp = props.css;
-	if (typeof cssProp === "string" && cache.registered[cssProp] !== void 0) cssProp = cache.registered[cssProp];
-	var WrappedComponent = props[typePropName];
-	var registeredStyles = [cssProp];
-	var className = "";
-	if (typeof props.className === "string") className = getRegisteredStyles$1(cache.registered, registeredStyles, props.className);
-	else if (props.className != null) className = props.className + " ";
-	var serialized = serializeStyles(registeredStyles, void 0, react.useContext(ThemeContext));
-	className += cache.key + "-" + serialized.name;
-	var newProps = {};
-	for (var _key2 in props) if (hasOwn.call(props, _key2) && _key2 !== "css" && _key2 !== typePropName && true) newProps[_key2] = props[_key2];
-	newProps.className = className;
-	if (ref) newProps.ref = ref;
-	return /*#__PURE__*/ react.createElement(react.Fragment, null, /*#__PURE__*/ react.createElement(Insertion, {
-		cache,
-		serialized,
-		isStringTag: typeof WrappedComponent === "string"
-	}), /*#__PURE__*/ react.createElement(WrappedComponent, newProps));
-});
-require_hoist_non_react_statics_cjs();
-var jsx = function jsx(type, props) {
-	var args = arguments;
-	if (props == null || !hasOwn.call(props, "css")) return react.createElement.apply(void 0, args);
-	var argsLength = args.length;
-	var createElementArgArray = new Array(argsLength);
-	createElementArgArray[0] = Emotion$1;
-	createElementArgArray[1] = createEmotionProps(type, props);
-	for (var i = 2; i < argsLength; i++) createElementArgArray[i] = args[i];
-	return react.createElement.apply(null, createElementArgArray);
-};
-(function(_jsx) {
-	var JSX;
-	JSX || (JSX = _jsx.JSX || (_jsx.JSX = {}));
-})(jsx || (jsx = {}));
-function css$1() {
-	for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) args[_key] = arguments[_key];
-	return serializeStyles(args);
-}
+if (!isBrowser);
+({}).hasOwnProperty;
 //#endregion
 //#region ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/create-instance/dist/emotion-css-create-instance.esm.js
 function insertWithoutScoping(cache, serialized) {
@@ -11155,7 +10720,7 @@ _createEmotion.css;
 _createEmotion.sheet;
 _createEmotion.cache;
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
 	const cache = __unsafe_useEmotionCache();
@@ -11262,140 +10827,7 @@ function memize(fn, options) {
 	return memoized;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/colors-values.mjs
-var white = "#fff";
-var GRAY = {
-	900: "#1e1e1e",
-	800: "#2f2f2f",
-	/** Meets 4.6:1 text contrast against white. */
-	700: "#757575",
-	/** Meets 3:1 UI or large text contrast against white. */
-	600: "#949494",
-	400: "#ccc",
-	/** Used for most borders. */
-	300: "#ddd",
-	/** Used sparingly for light borders. */
-	200: "#e0e0e0",
-	/** Used for light gray backgrounds. */
-	100: "#f0f0f0"
-};
-var ALERT = {
-	yellow: "#f0b849",
-	red: "#d94f4f",
-	green: "#4ab866"
-};
-var THEME = {
-	accent: `var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))`,
-	accentDarker10: `var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6))`,
-	accentDarker20: `var(--wp-components-color-accent-darker-20, var(--wp-admin-theme-color-darker-20, #183ad6))`,
-	/** Used when placing text on the accent color. */
-	accentInverted: `var(--wp-components-color-accent-inverted, var(--wpds-color-foreground-interactive-brand-strong, #fff))`,
-	background: `var(--wp-components-color-background, var(--wpds-color-background-surface-neutral-strong, #fff))`,
-	foreground: `var(--wp-components-color-foreground, var(--wpds-color-foreground-content-neutral, #1e1e1e))`,
-	/** Used when placing text on the foreground color. */
-	foregroundInverted: `var(--wp-components-color-foreground-inverted, var(--wpds-color-background-surface-neutral, #fcfcfc))`,
-	gray: {
-		/** @deprecated Use `COLORS.theme.foreground` instead. */
-		900: `var(--wp-components-color-foreground, var(--wpds-color-foreground-content-neutral, #1e1e1e))`,
-		800: `var(--wp-components-color-gray-800, var(--wpds-color-foreground-content-neutral, #1e1e1e))`,
-		700: `var(--wp-components-color-gray-700, var(--wpds-color-foreground-content-neutral-weak, #707070))`,
-		600: `var(--wp-components-color-gray-600, var(--wpds-color-stroke-interactive-neutral, #8d8d8d))`,
-		400: `var(--wp-components-color-gray-400, var(--wpds-color-stroke-interactive-neutral, #8d8d8d))`,
-		300: `var(--wp-components-color-gray-300, var(--wpds-color-stroke-surface-neutral, #dbdbdb))`,
-		200: `var(--wp-components-color-gray-200, var(--wpds-color-stroke-surface-neutral, #dbdbdb))`,
-		100: `var(--wp-components-color-gray-100, var(--wpds-color-background-surface-neutral, #fcfcfc))`
-	}
-};
-var UI = {
-	background: THEME.background,
-	backgroundDisabled: THEME.gray[100],
-	border: THEME.gray[600],
-	borderHover: THEME.gray[700],
-	borderFocus: THEME.accent,
-	borderDisabled: `var(--wpds-color-stroke-interactive-neutral-disabled, #dbdbdb)`,
-	textDisabled: `var(--wpds-color-foreground-interactive-neutral-disabled, #8d8d8d)`,
-	darkGrayPlaceholder: `color-mix(in srgb, ${THEME.foreground}, transparent 38%)`,
-	lightGrayPlaceholder: `color-mix(in srgb, ${THEME.background}, transparent 35%)`
-};
-var COLORS = Object.freeze({
-	/**
-	* The main gray color object.
-	*
-	* @deprecated Use semantic aliases in `COLORS.ui` or theme-ready variables in `COLORS.theme.gray`.
-	*/
-	gray: GRAY,
-	/**
-	* @deprecated Prefer theme-ready variables in `COLORS.theme`.
-	*/
-	white,
-	alert: ALERT,
-	/**
-	* Theme-ready variables with fallbacks.
-	*
-	* Prefer semantic aliases in `COLORS.ui` when applicable.
-	*/
-	theme: THEME,
-	/**
-	* Semantic aliases (prefer these over raw variables when applicable).
-	*/
-	ui: UI
-});
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/config-values.mjs
-var CONTROL_HEIGHT = "36px";
-var CONTROL_PROPS = {
-	controlPaddingX: 12,
-	controlPaddingXSmall: 8,
-	controlPaddingXLarge: 12 * 1.3334,
-	controlBoxShadowFocus: `0 0 0 0.5px ${COLORS.theme.accent}`,
-	controlHeight: CONTROL_HEIGHT,
-	controlHeightXSmall: `calc( ${CONTROL_HEIGHT} * 0.6 )`,
-	controlHeightSmall: `calc( ${CONTROL_HEIGHT} * 0.8 )`,
-	controlHeightLarge: `calc( ${CONTROL_HEIGHT} * 1.2 )`,
-	controlHeightXLarge: `calc( ${CONTROL_HEIGHT} * 1.4 )`
-};
-var config_values_default = Object.assign({}, CONTROL_PROPS, {
-	colorDivider: "rgba(0, 0, 0, 0.1)",
-	elevationIntensity: 1,
-	radiusXSmall: "1px",
-	radiusSmall: "2px",
-	radiusMedium: "4px",
-	radiusLarge: "8px",
-	radiusFull: "9999px",
-	radiusRound: "50%",
-	borderWidth: "1px",
-	borderWidthFocus: "1.5px",
-	borderWidthTab: "4px",
-	fontSize: "13px",
-	fontSizeH1: "calc(2.44 * 13px)",
-	fontSizeH2: "calc(1.95 * 13px)",
-	fontSizeH3: "calc(1.56 * 13px)",
-	fontSizeH4: "calc(1.25 * 13px)",
-	fontSizeH5: "13px",
-	fontSizeH6: "calc(0.8 * 13px)",
-	fontSizeInputMobile: "16px",
-	fontSizeMobile: "15px",
-	fontSizeSmall: "calc(0.92 * 13px)",
-	fontSizeXSmall: "calc(0.75 * 13px)",
-	fontLineHeightBase: "1.4",
-	fontWeight: "normal",
-	fontWeightEmphasis: "600",
-	gridBase: "4px",
-	elevationXSmall: `0 1px 1px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02), 0 3px 3px rgba(0, 0, 0, 0.02), 0 4px 4px rgba(0, 0, 0, 0.01)`,
-	elevationSmall: `0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 3px rgba(0, 0, 0, 0.04), 0 6px 6px rgba(0, 0, 0, 0.03), 0 8px 8px rgba(0, 0, 0, 0.02)`,
-	elevationMedium: `0 2px 3px rgba(0, 0, 0, 0.05), 0 4px 5px rgba(0, 0, 0, 0.04), 0 12px 12px rgba(0, 0, 0, 0.03), 0 16px 16px rgba(0, 0, 0, 0.02)`,
-	elevationLarge: `0 5px 15px rgba(0, 0, 0, 0.08), 0 15px 27px rgba(0, 0, 0, 0.07), 0 30px 36px rgba(0, 0, 0, 0.04), 0 50px 43px rgba(0, 0, 0, 0.02)`,
-	surfaceBorderColor: "rgba(0, 0, 0, 0.1)",
-	surfaceColor: COLORS.white,
-	transitionDuration: "200ms",
-	transitionDurationFast: "160ms",
-	transitionDurationFaster: "120ms",
-	transitionDurationFastest: "100ms",
-	transitionTimingFunction: "cubic-bezier(0.08, 0.52, 0.52, 1)",
-	transitionTimingFunctionControl: "cubic-bezier(0.12, 0.8, 0.32, 1)"
-});
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function equal(a, b) {
 		if (a === b) return true;
@@ -11463,19 +10895,19 @@ var BaseContextSystemProvider = ({ children, value }) => {
 };
 (0, react.memo)(BaseContextSystemProvider);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/constants.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 var import_dist = require_dist();
 function getStyledClassName(namespace) {
 	return `components-${(0, import_dist.paramCase)(namespace)}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/context-connect.mjs
 function contextConnect(Component, namespace) {
 	return _contextConnect(Component, namespace, { forwardsRef: true });
 }
@@ -11492,7 +10924,7 @@ function _contextConnect(Component, namespace, options) {
 	});
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
 	return { [COMPONENT_NAMESPACE]: componentName };
 }
@@ -11500,7 +10932,7 @@ function getConnectedNamespace() {
 	return { [CONNECTED_NAMESPACE]: true };
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
 	const contextSystemProps = useComponentsContext();
 	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
@@ -11522,7 +10954,7 @@ function useContextSystem(props, namespace) {
 	return finalComponentProps;
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
 var visuallyHidden = {
 	border: 0,
 	clip: "rect(1px, 1px, 1px, 1px)",
@@ -11538,7 +10970,7 @@ var visuallyHidden = {
 	wordBreak: "normal"
 };
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
 var customAttributeRegExp = /^(data|aria|x)-/i;
 var eventHandlerRegExp = /^on[A-Z]/;
 var svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
@@ -11628,7 +11060,7 @@ function UnforwardedPolymorphicElement({ as, ...props }, ref) {
 }
 var PolymorphicElement = (0, react.forwardRef)(UnforwardedPolymorphicElement);
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/view/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/view/component.mjs
 function UnforwardedView({ css, ...restProps }, ref) {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PolymorphicElement, {
 		ref,
@@ -11637,7 +11069,7 @@ function UnforwardedView({ css, ...restProps }, ref) {
 }
 var component_default$2 = Object.assign((0, react.forwardRef)(UnforwardedView), { selector: ".components-view" });
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
 function UnconnectedVisuallyHidden(props, forwardedRef) {
 	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
@@ -11652,18 +11084,19 @@ function UnconnectedVisuallyHidden(props, forwardedRef) {
 }
 var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = [
 	"40em",
 	"52em",
 	"64em"
 ];
 var useBreakpointIndex = (options = {}) => {
-	const { defaultIndex = 0 } = options;
+	const { defaultIndex = 0, enabled = true } = options;
 	if (typeof defaultIndex !== "number") throw new TypeError(`Default breakpoint index should be a number. Got: ${defaultIndex}, ${typeof defaultIndex}`);
 	else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
 	const [value, setValue] = (0, react.useState)(defaultIndex);
 	(0, react.useEffect)(() => {
+		if (!enabled) return;
 		const getIndex = () => breakpoints.filter((bp) => {
 			return typeof window !== "undefined" ? window.matchMedia(`screen and (min-width: ${bp})`).matches : false;
 		}).length;
@@ -11676,17 +11109,21 @@ var useBreakpointIndex = (options = {}) => {
 		return () => {
 			if (typeof window !== "undefined") window.removeEventListener("resize", onResize);
 		};
-	}, [value]);
+	}, [value, enabled]);
 	return value;
 };
 function useResponsiveValue(values, options = {}) {
-	const index = useBreakpointIndex(options);
+	const isResponsive = Array.isArray(values) && values.length > 1;
+	const index = useBreakpointIndex({
+		...options,
+		enabled: isResponsive
+	});
 	if (!Array.isArray(values) && typeof values !== "function") return values;
 	const array = values || [];
 	return array[index >= array.length ? array.length - 1 : index];
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/grid/utils.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
 	bottom: {
 		alignItems: "flex-end",
@@ -11731,52 +11168,155 @@ var ALIGNMENTS = {
 	}
 };
 function getAlignmentProps(alignment) {
-	return alignment ? ALIGNMENTS[alignment] : {};
+	return alignment ? ALIGNMENTS[alignment] ?? {} : {};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/grid/hook.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/grid/hook.mjs
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+	const globalScope = globalThis;
+	if (globalScope.__wpStyleRuntime) return globalScope.__wpStyleRuntime;
+	globalScope.__wpStyleRuntime = {
+		documents: /* @__PURE__ */ new Map(),
+		styles: /* @__PURE__ */ new Map(),
+		injectedStyles: /* @__PURE__ */ new WeakMap()
+	};
+	if (typeof document !== "undefined") registerDocument(document);
+	return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+	if (!targetDocument.head) return false;
+	for (const style of targetDocument.head.querySelectorAll(`style[${STYLE_HASH_ATTRIBUTE}]`)) if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) return true;
+	return false;
+}
+function injectStyle(targetDocument, hash, css) {
+	if (!targetDocument.head) return;
+	const runtime = getRuntime();
+	let injectedStyles = runtime.injectedStyles.get(targetDocument);
+	if (!injectedStyles) {
+		injectedStyles = /* @__PURE__ */ new Set();
+		runtime.injectedStyles.set(targetDocument, injectedStyles);
+	}
+	if (injectedStyles.has(hash)) return;
+	if (documentContainsStyleHash(targetDocument, hash)) {
+		injectedStyles.add(hash);
+		return;
+	}
+	const style = targetDocument.createElement("style");
+	style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+	style.appendChild(targetDocument.createTextNode(css));
+	targetDocument.head.appendChild(style);
+	injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+	const runtime = getRuntime();
+	runtime.documents.set(targetDocument, (runtime.documents.get(targetDocument) ?? 0) + 1);
+	for (const [hash, css] of runtime.styles) injectStyle(targetDocument, hash, css);
+	return () => {
+		const count = runtime.documents.get(targetDocument);
+		if (count === void 0) return;
+		if (count <= 1) {
+			runtime.documents.delete(targetDocument);
+			return;
+		}
+		runtime.documents.set(targetDocument, count - 1);
+	};
+}
+function registerStyle(hash, css) {
+	const runtime = getRuntime();
+	runtime.styles.set(hash, css);
+	for (const targetDocument of runtime.documents.keys()) injectStyle(targetDocument, hash, css);
+}
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("79bac25858", "._631b7063b4047c89__grid{--wp-components-grid-align:initial;--wp-components-grid-justify:initial;--wp-components-grid-gap:initial;--wp-components-grid-template-columns:initial;--wp-components-grid-template-rows:initial;--wp-components-grid-row-gap:initial;--wp-components-grid-column-gap:initial;display:grid}._631b7063b4047c89__grid:not(:where(._51fa5e5688d538e7__row-gap-inherit,._3940112538797bb2__row-gap-initial,._9dc0e80dad95eb11__row-gap-unset,._964ec4132d3d0776__row-gap-revert,._9219888d7c4749d5__row-gap-revert-layer)){row-gap:var(--wp-components-grid-row-gap,calc(4px*var(--wp-components-grid-gap)))}._631b7063b4047c89__grid:not(:where(._149fd947497e8690__column-gap-inherit,.a018e74b0f04c517__column-gap-initial,.b1e45f9587eb70e5__column-gap-unset,._4da312511f64af94__column-gap-revert,.b51ead67217c210a__column-gap-revert-layer)){column-gap:var(--wp-components-grid-column-gap,calc(4px*var(--wp-components-grid-gap)))}._4cae76607d36422b__has-align:not(:where(._2c693b642b24e0d9__align-inherit,.fd4c5676ad7e83d4__align-initial,.c4c0cde44ab0ed21__align-unset,._8c23efb61db2f04e__align-revert,.c3adc4c41efa56d1__align-revert-layer)){align-items:var(--wp-components-grid-align)}._9bcd99517d001b4b__has-justify:not(:where(.a72d35ee0eda5e6b__justify-inherit,.d386403fd02ebc45__justify-initial,._7d60510a69e8ddf9__justify-unset,._857dfb6521d0cae3__justify-revert,._1537fff8402f1ca1__justify-revert-layer)){justify-content:var(--wp-components-grid-justify)}._983f7df07cd35a72__has-template-columns:not(:where(.df2216db1a717825__template-columns-inherit,._9016934ed273a0b8__template-columns-initial,._74966333f352d829__template-columns-unset,.b3ce45d005011688__template-columns-revert,._9ff0250b9bed5764__template-columns-revert-layer)){grid-template-columns:var(--wp-components-grid-template-columns)}._7e0fa0c081c20f6e__has-template-rows:not(:where(._10cfd24f62672d27__template-rows-inherit,.da1333be6b2af8c3__template-rows-initial,._919938d55c0cf234__template-rows-unset,.db40efe5796b7ffb__template-rows-revert,._1080cc5b99823c58__template-rows-revert-layer)){grid-template-rows:var(--wp-components-grid-template-rows)}.f4729d54fca65af1__is-inline{display:inline-grid;vertical-align:middle}._2c693b642b24e0d9__align-inherit{align-items:inherit}.fd4c5676ad7e83d4__align-initial{align-items:normal}.c4c0cde44ab0ed21__align-unset{align-items:unset}._8c23efb61db2f04e__align-revert{align-items:revert}.c3adc4c41efa56d1__align-revert-layer{align-items:revert-layer}.a72d35ee0eda5e6b__justify-inherit{justify-content:inherit}.d386403fd02ebc45__justify-initial{justify-content:normal}._7d60510a69e8ddf9__justify-unset{justify-content:unset}._857dfb6521d0cae3__justify-revert{justify-content:revert}._1537fff8402f1ca1__justify-revert-layer{justify-content:revert-layer}.df2216db1a717825__template-columns-inherit{grid-template-columns:inherit}._9016934ed273a0b8__template-columns-initial{grid-template-columns:none}._74966333f352d829__template-columns-unset{grid-template-columns:unset}.b3ce45d005011688__template-columns-revert{grid-template-columns:revert}._9ff0250b9bed5764__template-columns-revert-layer{grid-template-columns:revert-layer}._10cfd24f62672d27__template-rows-inherit{grid-template-rows:inherit}.da1333be6b2af8c3__template-rows-initial{grid-template-rows:none}._919938d55c0cf234__template-rows-unset{grid-template-rows:unset}.db40efe5796b7ffb__template-rows-revert{grid-template-rows:revert}._1080cc5b99823c58__template-rows-revert-layer{grid-template-rows:revert-layer}._51fa5e5688d538e7__row-gap-inherit{row-gap:inherit}._3940112538797bb2__row-gap-initial{row-gap:normal}._9dc0e80dad95eb11__row-gap-unset{row-gap:unset}._964ec4132d3d0776__row-gap-revert{row-gap:revert}._9219888d7c4749d5__row-gap-revert-layer{row-gap:revert-layer}._149fd947497e8690__column-gap-inherit{column-gap:inherit}.a018e74b0f04c517__column-gap-initial{column-gap:normal}.b1e45f9587eb70e5__column-gap-unset{column-gap:unset}._4da312511f64af94__column-gap-revert{column-gap:revert}.b51ead67217c210a__column-gap-revert-layer{column-gap:revert-layer}");
+var style_module_default = {
+	"grid": "_631b7063b4047c89__grid",
+	"row-gap-inherit": "_51fa5e5688d538e7__row-gap-inherit",
+	"row-gap-initial": "_3940112538797bb2__row-gap-initial",
+	"row-gap-unset": "_9dc0e80dad95eb11__row-gap-unset",
+	"row-gap-revert": "_964ec4132d3d0776__row-gap-revert",
+	"row-gap-revert-layer": "_9219888d7c4749d5__row-gap-revert-layer",
+	"column-gap-inherit": "_149fd947497e8690__column-gap-inherit",
+	"column-gap-initial": "a018e74b0f04c517__column-gap-initial",
+	"column-gap-unset": "b1e45f9587eb70e5__column-gap-unset",
+	"column-gap-revert": "_4da312511f64af94__column-gap-revert",
+	"column-gap-revert-layer": "b51ead67217c210a__column-gap-revert-layer",
+	"has-align": "_4cae76607d36422b__has-align",
+	"align-inherit": "_2c693b642b24e0d9__align-inherit",
+	"align-initial": "fd4c5676ad7e83d4__align-initial",
+	"align-unset": "c4c0cde44ab0ed21__align-unset",
+	"align-revert": "_8c23efb61db2f04e__align-revert",
+	"align-revert-layer": "c3adc4c41efa56d1__align-revert-layer",
+	"has-justify": "_9bcd99517d001b4b__has-justify",
+	"justify-inherit": "a72d35ee0eda5e6b__justify-inherit",
+	"justify-initial": "d386403fd02ebc45__justify-initial",
+	"justify-unset": "_7d60510a69e8ddf9__justify-unset",
+	"justify-revert": "_857dfb6521d0cae3__justify-revert",
+	"justify-revert-layer": "_1537fff8402f1ca1__justify-revert-layer",
+	"has-template-columns": "_983f7df07cd35a72__has-template-columns",
+	"template-columns-inherit": "df2216db1a717825__template-columns-inherit",
+	"template-columns-initial": "_9016934ed273a0b8__template-columns-initial",
+	"template-columns-unset": "_74966333f352d829__template-columns-unset",
+	"template-columns-revert": "b3ce45d005011688__template-columns-revert",
+	"template-columns-revert-layer": "_9ff0250b9bed5764__template-columns-revert-layer",
+	"has-template-rows": "_7e0fa0c081c20f6e__has-template-rows",
+	"template-rows-inherit": "_10cfd24f62672d27__template-rows-inherit",
+	"template-rows-initial": "da1333be6b2af8c3__template-rows-initial",
+	"template-rows-unset": "_919938d55c0cf234__template-rows-unset",
+	"template-rows-revert": "db40efe5796b7ffb__template-rows-revert",
+	"template-rows-revert-layer": "_1080cc5b99823c58__template-rows-revert-layer",
+	"is-inline": "f4729d54fca65af1__is-inline"
+};
+var CSS_WIDE_KEYWORDS = /* @__PURE__ */ new Set([
+	"inherit",
+	"initial",
+	"unset",
+	"revert",
+	"revert-layer"
+]);
+function toCSSValue(value) {
+	return typeof value === "number" ? `${value}px` : value?.trim() || void 0;
+}
 function useGrid(props) {
-	const { align, alignment, className, columnGap, columns = 2, gap = 3, isInline = false, justify, rowGap, rows, templateColumns, templateRows, ...otherProps } = useContextSystem(props, "Grid");
+	const { align, alignment, className, columnGap, columns = 2, gap = 3, isInline = false, justify, rowGap, rows, style, templateColumns, templateRows, ...otherProps } = useContextSystem(props, "Grid");
 	const column = useResponsiveValue(Array.isArray(columns) ? columns : [columns]);
 	const row = useResponsiveValue(Array.isArray(rows) ? rows : [rows]);
-	const gridTemplateColumns = templateColumns || !!columns && `repeat( ${column}, 1fr )`;
-	const gridTemplateRows = templateRows || !!rows && `repeat( ${row}, 1fr )`;
-	const cx = useCx();
-	const classes = (0, react.useMemo)(() => {
-		const alignmentProps = getAlignmentProps(alignment);
-		const gridClasses = /* @__PURE__ */ css$1({
-			alignItems: align,
-			display: isInline ? "inline-grid" : "grid",
-			gap: `calc( ${config_values_default.gridBase} * ${gap} )`,
-			gridTemplateColumns: gridTemplateColumns || void 0,
-			gridTemplateRows: gridTemplateRows || void 0,
-			gridRowGap: rowGap,
-			gridColumnGap: columnGap,
-			justifyContent: justify,
-			verticalAlign: isInline ? "middle" : void 0,
-			...alignmentProps
-		}, process.env.NODE_ENV === "production" ? "" : ";label:gridClasses;", process.env.NODE_ENV === "production" ? "" : "/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImhvb2sudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBNENzQiIsImZpbGUiOiJob29rLnRzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgY3NzIH0gZnJvbSAnQGVtb3Rpb24vcmVhY3QnO1xuaW1wb3J0IHsgdXNlTWVtbyB9IGZyb20gJ0B3b3JkcHJlc3MvZWxlbWVudCc7XG5pbXBvcnQgdHlwZSB7IFdvcmRQcmVzc0NvbXBvbmVudFByb3BzIH0gZnJvbSAnLi4vY29udGV4dCc7XG5pbXBvcnQgeyB1c2VDb250ZXh0U3lzdGVtIH0gZnJvbSAnLi4vY29udGV4dCc7XG5pbXBvcnQgeyBnZXRBbGlnbm1lbnRQcm9wcyB9IGZyb20gJy4vdXRpbHMnO1xuaW1wb3J0IHsgdXNlUmVzcG9uc2l2ZVZhbHVlIH0gZnJvbSAnLi4vdXRpbHMvdXNlLXJlc3BvbnNpdmUtdmFsdWUnO1xuaW1wb3J0IENPTkZJRyBmcm9tICcuLi91dGlscy9jb25maWctdmFsdWVzJztcbmltcG9ydCB7IHVzZUN4IH0gZnJvbSAnLi4vdXRpbHMvaG9va3MvdXNlLWN4JztcbmltcG9ydCB0eXBlIHsgR3JpZFByb3BzIH0gZnJvbSAnLi90eXBlcyc7XG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIHVzZUdyaWQoXG5cdHByb3BzOiBXb3JkUHJlc3NDb21wb25lbnRQcm9wczwgR3JpZFByb3BzLCAnZGl2JyA+XG4pIHtcblx0Y29uc3Qge1xuXHRcdGFsaWduLFxuXHRcdGFsaWdubWVudCxcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sdW1uR2FwLFxuXHRcdGNvbHVtbnMgPSAyLFxuXHRcdGdhcCA9IDMsXG5cdFx0aXNJbmxpbmUgPSBmYWxzZSxcblx0XHRqdXN0aWZ5LFxuXHRcdHJvd0dhcCxcblx0XHRyb3dzLFxuXHRcdHRlbXBsYXRlQ29sdW1ucyxcblx0XHR0ZW1wbGF0ZVJvd3MsXG5cdFx0Li4ub3RoZXJQcm9wc1xuXHR9ID0gdXNlQ29udGV4dFN5c3RlbSggcHJvcHMsICdHcmlkJyApO1xuXG5cdGNvbnN0IGNvbHVtbnNBc0FycmF5ID0gQXJyYXkuaXNBcnJheSggY29sdW1ucyApID8gY29sdW1ucyA6IFsgY29sdW1ucyBdO1xuXHRjb25zdCBjb2x1bW4gPSB1c2VSZXNwb25zaXZlVmFsdWUoIGNvbHVtbnNBc0FycmF5ICk7XG5cdGNvbnN0IHJvd3NBc0FycmF5ID0gQXJyYXkuaXNBcnJheSggcm93cyApID8gcm93cyA6IFsgcm93cyBdO1xuXHRjb25zdCByb3cgPSB1c2VSZXNwb25zaXZlVmFsdWUoIHJvd3NBc0FycmF5ICk7XG5cblx0Y29uc3QgZ3JpZFRlbXBsYXRlQ29sdW1ucyA9XG5cdFx0dGVtcGxhdGVDb2x1bW5zIHx8ICggISEgY29sdW1ucyAmJiBgcmVwZWF0KCAkeyBjb2x1bW4gfSwgMWZyIClgICk7XG5cdGNvbnN0IGdyaWRUZW1wbGF0ZVJvd3MgPVxuXHRcdHRlbXBsYXRlUm93cyB8fCAoICEhIHJvd3MgJiYgYHJlcGVhdCggJHsgcm93IH0sIDFmciApYCApO1xuXG5cdGNvbnN0IGN4ID0gdXNlQ3goKTtcblxuXHRjb25zdCBjbGFzc2VzID0gdXNlTWVtbyggKCkgPT4ge1xuXHRcdGNvbnN0IGFsaWdubWVudFByb3BzID0gZ2V0QWxpZ25tZW50UHJvcHMoIGFsaWdubWVudCApO1xuXG5cdFx0Y29uc3QgZ3JpZENsYXNzZXMgPSBjc3MoIHtcblx0XHRcdGFsaWduSXRlbXM6IGFsaWduLFxuXHRcdFx0ZGlzcGxheTogaXNJbmxpbmUgPyAnaW5saW5lLWdyaWQnIDogJ2dyaWQnLFxuXHRcdFx0Z2FwOiBgY2FsYyggJHsgQ09ORklHLmdyaWRCYXNlIH0gKiAkeyBnYXAgfSApYCxcblx0XHRcdGdyaWRUZW1wbGF0ZUNvbHVtbnM6IGdyaWRUZW1wbGF0ZUNvbHVtbnMgfHwgdW5kZWZpbmVkLFxuXHRcdFx0Z3JpZFRlbXBsYXRlUm93czogZ3JpZFRlbXBsYXRlUm93cyB8fCB1bmRlZmluZWQsXG5cdFx0XHRncmlkUm93R2FwOiByb3dHYXAsXG5cdFx0XHRncmlkQ29sdW1uR2FwOiBjb2x1bW5HYXAsXG5cdFx0XHRqdXN0aWZ5Q29udGVudDoganVzdGlmeSxcblx0XHRcdHZlcnRpY2FsQWxpZ246IGlzSW5saW5lID8gJ21pZGRsZScgOiB1bmRlZmluZWQsXG5cdFx0XHQuLi5hbGlnbm1lbnRQcm9wcyxcblx0XHR9ICk7XG5cblx0XHRyZXR1cm4gY3goIGdyaWRDbGFzc2VzLCBjbGFzc05hbWUgKTtcblx0fSwgW1xuXHRcdGFsaWduLFxuXHRcdGFsaWdubWVudCxcblx0XHRjbGFzc05hbWUsXG5cdFx0Y29sdW1uR2FwLFxuXHRcdGN4LFxuXHRcdGdhcCxcblx0XHRncmlkVGVtcGxhdGVDb2x1bW5zLFxuXHRcdGdyaWRUZW1wbGF0ZVJvd3MsXG5cdFx0aXNJbmxpbmUsXG5cdFx0anVzdGlmeSxcblx0XHRyb3dHYXAsXG5cdF0gKTtcblxuXHRyZXR1cm4geyAuLi5vdGhlclByb3BzLCBjbGFzc05hbWU6IGNsYXNzZXMgfTtcbn1cbiJdfQ== */");
-		return cx(gridClasses, className);
-	}, [
-		align,
-		alignment,
-		className,
-		columnGap,
-		cx,
-		gap,
-		gridTemplateColumns,
-		gridTemplateRows,
-		isInline,
-		justify,
-		rowGap
-	]);
+	const gridTemplateColumns = templateColumns || !!column && `repeat( ${column}, 1fr )`;
+	const gridTemplateRows = templateRows || !!row && `repeat( ${row}, 1fr )`;
+	const alignmentProps = getAlignmentProps(alignment);
+	const values = {
+		align: alignmentProps.alignItems ?? align,
+		justify: alignmentProps.justifyContent ?? justify,
+		"template-columns": gridTemplateColumns || void 0,
+		"template-rows": gridTemplateRows || void 0,
+		"row-gap": rowGap,
+		"column-gap": columnGap
+	};
 	return {
 		...otherProps,
-		className: classes
+		className: (0, clsx.default)(style_module_default.grid, {
+			[style_module_default["is-inline"]]: isInline,
+			[style_module_default["has-align"]]: !!values.align?.trim(),
+			[style_module_default["has-justify"]]: !!values.justify?.trim(),
+			[style_module_default["has-template-columns"]]: !!toCSSValue(values["template-columns"]),
+			[style_module_default["has-template-rows"]]: !!toCSSValue(values["template-rows"])
+		}, Object.entries(values).map(([property, value]) => {
+			const keyword = typeof value === "string" ? value.trim().toLowerCase() : "";
+			return CSS_WIDE_KEYWORDS.has(keyword) && style_module_default[`${property}-${keyword}`];
+		}), className),
+		style: {
+			"--wp-components-grid-align": values.align,
+			"--wp-components-grid-justify": values.justify,
+			"--wp-components-grid-gap": gap,
+			"--wp-components-grid-template-columns": toCSSValue(values["template-columns"]),
+			"--wp-components-grid-template-rows": toCSSValue(values["template-rows"]),
+			"--wp-components-grid-row-gap": toCSSValue(rowGap),
+			"--wp-components-grid-column-gap": toCSSValue(columnGap),
+			...style
+		}
 	};
 }
 //#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@40.1.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_c300d25e93ed6b8d3659e83df7c1508a/node_modules/@wordpress/components/build-module/grid/component.mjs
+//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@18.3.7_@types+react@18_5beefdda355715e908adfea668830e1f/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
 	const gridProps = useGrid(props);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(component_default$2, {
