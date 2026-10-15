@@ -7925,16 +7925,10 @@ const getNormalizedValue = (value, extent) => {
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
 };
 const STEPS = 200;
-const firstMeeting = (from, to, meets) => {
-	for (let step = 0; step <= STEPS; step++) {
-		const color = mixHexColors(from, to, step / STEPS);
-		if (meets(color)) return color;
-	}
-	return null;
-};
+const ramp = (from, to) => Array.from({ length: 201 }, (_, step) => mixHexColors(from, to, step / STEPS));
 /**
-* The two ends of the heatmap fill scale: 3:1 against the background and the empty cell at the
-* low end, toward 9:1 against the background at the high end.
+* The two ends of the heatmap fill scale: toward 2.5:1 against the background and the empty cell at
+* the low end, never under 2:1 against the background or the high end, and toward 6:1 at the high end.
 *
 * @param primary    - The resolved primary color, as six-digit hex.
 * @param background - The resolved chart background, as six-digit hex.
@@ -7942,16 +7936,19 @@ const firstMeeting = (from, to, meets) => {
 * @return The scale ends, as six-digit hex.
 */
 const getHeatmapScale = (primary, background, emptyCell) => {
-	const primaryStandsOut = contrastRatio(primary, background) >= 3;
-	const extreme = (primaryStandsOut ? relativeLuminance(primary) > relativeLuminance(background) : contrastRatio("#ffffff", background) > contrastRatio("#000000", background)) ? "#ffffff" : "#000000";
-	const lowAgainst = (references) => {
-		const meets = (color) => references.every((reference) => contrastRatio(color, reference) >= 3);
-		return (primaryStandsOut ? firstMeeting(background, primary, meets) : null) ?? firstMeeting(primary, extreme, meets);
-	};
-	const high = firstMeeting(primary, extreme, (color) => contrastRatio(color, background) >= 9) ?? extreme;
-	const againstEmptyCell = emptyCell ? lowAgainst([background, emptyCell]) : null;
+	const backgroundLuminance = relativeLuminance(background);
+	const ownSide = relativeLuminance(primary) > backgroundLuminance ? "#ffffff" : "#000000";
+	const otherSide = ownSide === "#ffffff" ? "#000000" : "#ffffff";
+	const extreme = contrastRatio(ownSide, background) >= 6 || contrastRatio(ownSide, background) >= contrastRatio(otherSide, background) ? ownSide : otherSide;
+	const onExtremeSide = (color) => extreme === "#ffffff" ? relativeLuminance(color) > backgroundLuminance : relativeLuminance(color) < backgroundLuminance;
+	const deepening = ramp(primary, extreme);
+	const high = deepening.find((color) => contrastRatio(color, background) >= 6) ?? extreme;
+	const path = [...ramp(background, primary), ...deepening];
+	const spread = path.slice(0, path.indexOf(high) + 1).filter((color) => onExtremeSide(color) && contrastRatio(color, background) >= 2 && contrastRatio(color, high) >= 2);
+	const surroundings = emptyCell ? [background, emptyCell] : [background];
+	const weakest = (color) => Math.min(...surroundings.map((other) => contrastRatio(color, other)));
 	return {
-		low: (againstEmptyCell && contrastRatio(againstEmptyCell, background) <= contrastRatio(high, background) ? againstEmptyCell : lowAgainst([background])) ?? extreme,
+		low: spread.find((color) => weakest(color) >= 2.5) ?? spread.find((color) => weakest(color) >= 2) ?? spread.reduce((best, color) => weakest(color) > weakest(best) ? color : best),
 		high
 	};
 };
