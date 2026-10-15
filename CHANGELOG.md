@@ -11,6 +11,10 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Geo chart: Draw tooltips on the same dark surface, and at the same distance from the cursor, as the other chart tooltips.
+- Heatmap chart: Offset the grid's focus ring by the design system focus width.
+
+### Fixed
+- Conversion funnel chart: Show a focus ring on the focused step bar.
 
 ## [4.10.0] - 2026-10-14
 ### Added
