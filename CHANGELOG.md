@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Geo chart: Draw tooltips on the same dark surface, and at the same distance from the cursor, as the other chart tooltips.
 - Heatmap chart: Lighten the color scale to 2.5:1 contrast at the lowest step and 6:1 at the highest, and keep the two ends apart when the empty-cell color sits far from the background.
 - Heatmap chart: Offset the grid's focus ring by the design system focus width.
+- Legend: Set wrapped rows of a horizontal legend closer together than items on one row, and expose both gaps as CSS variables.
 - Update package dependencies.
 
 ### Fixed

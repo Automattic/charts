@@ -2094,6 +2094,7 @@ function valueOrIdentityString(_) {
 //#region src/components/legend/private/base-legend.module.scss
 var base_legend_module_default = {
 	"legend": "a8ccharts-04TogW-legend",
+	"legend--horizontal": "a8ccharts-04TogW-legend--horizontal",
 	"legend-item": "a8ccharts-04TogW-legend-item",
 	"legend-item--inactive": "a8ccharts-04TogW-legend-item--inactive",
 	"legend-item--interactive": "a8ccharts-04TogW-legend-item--interactive",
@@ -2195,12 +2196,12 @@ const BaseLegend = (0, react.forwardRef)(({ items: allItems, className, orientat
 		children: (labels) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_wordpress_ui.Stack, {
 			ref,
 			direction: orientation === "vertical" ? "column" : "row",
-			gap: orientation === "vertical" ? "sm" : "lg",
+			gap: orientation === "vertical" ? "sm" : void 0,
 			align: orientation === "vertical" ? flexAlignment : void 0,
 			justify: orientation === "horizontal" ? flexAlignment : void 0,
 			wrap: orientation === "horizontal" ? "wrap" : void 0,
 			role: interactive ? void 0 : "list",
-			className: (0, clsx.default)(standaloneScopeClass, base_legend_module_default.legend, className),
+			className: (0, clsx.default)(standaloneScopeClass, base_legend_module_default.legend, orientation === "horizontal" && base_legend_module_default["legend--horizontal"], className),
 			style: theme.legend?.containerStyles,
 			children: labels.map((label, i) => {
 				const matchedItem = items[i];

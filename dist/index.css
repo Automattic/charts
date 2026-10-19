@@ -37,6 +37,8 @@
   --a8c-charts-border-radius-leaderboard-bar: 9999px;
   --a8c-charts-dimension-leaderboard-row-gap: var(--wpds-dimension-gap-md, 12px);
   --a8c-charts-dimension-leaderboard-column-gap: var(--wpds-dimension-gap-xs, 4px);
+  --a8c-charts-dimension-legend-column-gap: var(--wpds-dimension-gap-lg, 16px);
+  --a8c-charts-dimension-legend-row-gap: var(--wpds-dimension-gap-sm, 8px);
 }
 
 @media (forced-colors: active) {
@@ -49,6 +51,11 @@
 }
 .a8ccharts-04TogW-legend {
   align-self: stretch;
+}
+
+.a8ccharts-04TogW-legend--horizontal {
+  column-gap: var(--a8c-charts-dimension-legend-column-gap);
+  row-gap: var(--a8c-charts-dimension-legend-row-gap);
 }
 
 .a8ccharts-04TogW-legend-item {
