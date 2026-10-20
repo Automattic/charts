@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.11.1-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
+## [4.11.1] - 2026-10-20
+### Changed
+- Internal updates.
 
 ## [4.11.0] - 2026-10-19
 ### Changed
@@ -1204,7 +1204,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.11.1-alpha]: https://github.com/Automattic/charts/compare/v4.11.0...v4.11.1-alpha
+[4.11.1]: https://github.com/Automattic/charts/compare/v4.11.0...v4.11.1
 [4.11.0]: https://github.com/Automattic/charts/compare/v4.10.0...v4.11.0
 [4.10.0]: https://github.com/Automattic/charts/compare/v4.9.0...v4.10.0
 [4.9.0]: https://github.com/Automattic/charts/compare/v4.8.0...v4.9.0
