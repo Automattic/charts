@@ -2218,7 +2218,7 @@ type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip
  * @param props.renderContainer - Deprecated; render the content alone when false.
  * @return The tooltip.
  */
-export declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | true | import("react").JSX.Element | Iterable<ReactNode>;
+export declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | bigint | true | import("react").JSX.Element | Iterable<ReactNode> | Promise<string | number | bigint | boolean | Iterable<ReactNode> | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | import("react").ReactPortal>;
 //#endregion
 //#region src/components/tooltip/xy-chart-tooltip.d.ts
 type FlattenedTooltipData = {
