@@ -66,7 +66,7 @@
 		"@automattic/number-formatters": "^1.2.12",
 		"@babel/runtime": "7.29.7",
 		"@date-fns/tz": "1.5.0",
-		"@react-spring/web": "10.1.1",
+		"@react-spring/web": "10.1.2",
 		"@visx/annotation": "^4.0.0",
 		"@visx/axis": "^4.0.0",
 		"@visx/curve": "^4.0.0",
