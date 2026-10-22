@@ -1296,10 +1296,7 @@ const defaultTheme = {
 		strokeDasharray: "4 4",
 		strokeLinecap: "square"
 	} } },
-	barChart: { barStyles: { comparison: {
-		widthFactor: 1.5,
-		opacity: .5
-	} } },
+	barChart: { barStyles: { comparison: { widthFactor: 1.5 } } },
 	sparkline: {
 		margin: {
 			top: 2,
@@ -1457,6 +1454,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		theme: providerTheme,
 		formatting,
 		getElementStyles,
+		backgroundColor: colorCache.background,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
@@ -1473,6 +1471,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		providerTheme,
 		formatting,
 		getElementStyles,
+		colorCache.background,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
@@ -2297,6 +2296,21 @@ const Legend = forwardRef(({ chartId, items, shape, ...props }, ref) => {
 //#endregion
 //#region src/components/legend/hooks/use-chart-legend-items.ts
 /**
+* Wraps `getElementStyles` so a swatch takes the color given for its series.
+* @param getElementStyles - Function to get element styles
+* @param seriesColors     - Each series' swatch color, by index
+* @return Element styles with the given color
+*/
+function withSeriesColors(getElementStyles, seriesColors) {
+	return (params) => {
+		const styles = getElementStyles(params);
+		return {
+			...styles,
+			color: seriesColors[params.index] ?? styles.color
+		};
+	};
+}
+/**
 * Formats the value for a data point based on its type and display preference
 * @param point              - The data point to format
 * @param showValues         - Whether to show values or return empty string
@@ -2508,21 +2522,22 @@ function processPointData(pointData, getElementStyles, showValues, legendValueDi
 * @return Array of legend items ready for display
 */
 function useChartLegendItems(data, options = {}, legendShape) {
-	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, comparisonItem = false, comparisonSeriesItems, renderGlyph } = options;
-	const { getElementStyles } = useGlobalChartsContext();
+	const { showValues = false, legendValueDisplay = "percentage", withGlyph = false, glyphSize = 8, collapseGroups = false, comparisonItem = false, comparisonSeriesItems, seriesColors, renderGlyph } = options;
+	const { getElementStyles: getSeriesStyles } = useGlobalChartsContext();
 	return useMemo(() => {
 		if (!data || !Array.isArray(data) || data.length === 0) return [];
 		if ("data" in data[0]) {
 			const seriesData = data;
+			const getElementStyles = seriesColors ? withSeriesColors(getSeriesStyles, seriesColors) : getSeriesStyles;
 			const items = processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
 			if (comparisonSeriesItems) return [...items, ...buildPerSeriesComparisonItems(seriesData, items, comparisonSeriesItems, getElementStyles, legendShape)];
 			const comparison = comparisonItem ? buildComparisonLegendItem(seriesData, items, typeof comparisonItem === "string" ? comparisonItem : __("Comparison period", "jetpack-charts"), getElementStyles, legendShape) : null;
 			return comparison ? [...items, comparison] : items;
 		}
-		return processPointData(data, getElementStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape);
+		return processPointData(data, getSeriesStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape);
 	}, [
 		data,
-		getElementStyles,
+		getSeriesStyles,
 		showValues,
 		legendValueDisplay,
 		withGlyph,
@@ -2530,6 +2545,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
 		collapseGroups,
 		comparisonItem,
 		comparisonSeriesItems,
+		seriesColors,
 		renderGlyph,
 		legendShape
 	]);
@@ -5673,6 +5689,7 @@ var bar_chart_module_default = {
 	"bar-chart--animated": "a8ccharts-97yN9W-bar-chart--animated",
 	"bar-chart--animated-horizontal": "a8ccharts-97yN9W-bar-chart--animated-horizontal",
 	"rise": "a8ccharts-97yN9W-rise",
+	"selected-ring": "a8ccharts-97yN9W-selected-ring",
 	"stretch": "a8ccharts-97yN9W-stretch"
 };
 //#endregion
@@ -6083,8 +6100,7 @@ const createGroupScale = (keys, bandwidth, padding) => scaleBand({
 //#endregion
 //#region src/charts/bar-chart/private/comparison-bars-geometry.ts
 /**
-* Mirrors visx's getScaleBaseline so comparison shadows and primary bars
-* share the same baseline, including out-of-domain zero values.
+* Mirrors visx's getScaleBaseline so bars drawn outside visx share the baseline of its bars, including out-of-domain zero values.
 *
 * @param {ValueScale} scale - The continuous value scale.
 * @return {number} The baseline output position in pixels.
@@ -6098,36 +6114,33 @@ function getValueScaleBaseline(scale) {
 	return Number.isFinite(maybeZero) ? Math.max(maybeZero, minOutput) : minOutput;
 }
 /**
-* Compute the rect for a comparison "shadow" bar, centered on the paired
-* primary bar slot and scaled by `widthFactor`.
+* Compute the rect that spans `valuePositions` along the value axis, centered on a slot and scaled by `widthFactor` across it.
 *
-* @param {object}  params               - Geometry inputs.
-* @param {boolean} params.horizontal    - True for a horizontal bar chart, false for vertical.
-* @param {number}  params.bandPosition  - bandScale(category): start px of the category band.
-* @param {number}  params.slotOffset    - groupScale(primaryKey): offset of the primary slot within the band.
-* @param {number}  params.slotThickness - groupScale.bandwidth(): primary bar thickness in px.
-* @param {number}  params.valuePosition - valueScale(value): output px for the bar's data value.
-* @param {number}  params.baseline      - getValueScaleBaseline(valueScale): zero-line output px.
-* @param {number}  params.widthFactor   - Shadow thickness multiplier, e.g. 1.5 for 150% width.
-* @return {ComparisonRect} The {x, y, width, height} of the shadow rect.
+* @param {object}   params                - Geometry inputs.
+* @param {boolean}  params.horizontal     - True for a horizontal bar chart, false for vertical.
+* @param {number}   params.bandPosition   - bandScale(category): start px of the category band.
+* @param {number}   params.slotOffset     - groupScale(slotKey): offset of the slot within the band.
+* @param {number}   params.slotThickness  - groupScale.bandwidth(): slot thickness in px.
+* @param {number[]} params.valuePositions - Output px the rect must reach, such as the baseline and each bar's value.
+* @param {number}   params.widthFactor    - Thickness multiplier, e.g. 0.5 for half the slot.
+* @return {SlotRect} The {x, y, width, height} of the rect.
 */
-function computeComparisonRect(params) {
-	const { horizontal, bandPosition, slotOffset, slotThickness, valuePosition, baseline, widthFactor } = params;
-	const slotStart = bandPosition + slotOffset;
-	const shadowThickness = slotThickness * widthFactor;
-	const shadowStart = slotStart + slotThickness / 2 - shadowThickness / 2;
-	const valueStart = Math.min(valuePosition, baseline);
-	const valueLength = Math.abs(baseline - valuePosition);
+function computeSlotRect(params) {
+	const { horizontal, bandPosition, slotOffset, slotThickness, valuePositions, widthFactor } = params;
+	const thickness = slotThickness * widthFactor;
+	const start = bandPosition + slotOffset + slotThickness / 2 - thickness / 2;
+	const valueStart = Math.min(...valuePositions);
+	const valueLength = Math.max(...valuePositions) - valueStart;
 	if (horizontal) return {
 		x: valueStart,
-		y: shadowStart,
+		y: start,
 		width: valueLength,
-		height: shadowThickness
+		height: thickness
 	};
 	return {
-		x: shadowStart,
+		x: start,
 		y: valueStart,
-		width: shadowThickness,
+		width: thickness,
 		height: valueLength
 	};
 }
@@ -6176,6 +6189,457 @@ const ClassifiedBarSeries = ({ barClassName, primaryKeys, groupPadding, ...props
 		renderGlyph
 	});
 };
+//#endregion
+//#region src/charts/bar-chart/private/slotted-bar-series.tsx
+const SlottedBarSeries = ({ barClassName, slotKeys, slotKey, thickness, groupPadding, ...props }) => {
+	const { xScale, yScale, horizontal } = useContext(DataContext);
+	const bandScale = horizontal ? yScale : xScale;
+	const valueScale = horizontal ? xScale : yScale;
+	const groupScale = useMemo(() => createGroupScale(slotKeys, bandScale?.bandwidth?.() ?? 0, groupPadding), [
+		slotKeys,
+		bandScale,
+		groupPadding
+	]);
+	const renderGlyph = useCallback(({ datum, x, y, color }) => {
+		if (!bandScale?.bandwidth || !valueScale) return null;
+		const baseline = getValueScaleBaseline(valueScale);
+		const rect = computeSlotRect({
+			horizontal: !!horizontal,
+			bandPosition: Number(bandScale((horizontal ? props.yAccessor : props.xAccessor)(datum))),
+			slotOffset: groupScale(slotKey) ?? 0,
+			slotThickness: groupScale.bandwidth(),
+			valuePositions: [baseline, horizontal ? x : y],
+			widthFactor: thickness
+		});
+		return /* @__PURE__ */ jsx("rect", {
+			...rect,
+			className: clsx("visx-bar", barClassName?.(datum)),
+			fill: color
+		});
+	}, [
+		bandScale,
+		valueScale,
+		horizontal,
+		groupScale,
+		slotKey,
+		thickness,
+		props.xAccessor,
+		props.yAccessor,
+		barClassName
+	]);
+	return /* @__PURE__ */ jsx(GlyphSeries, {
+		...props,
+		enableEvents: false,
+		renderGlyph
+	});
+};
+//#endregion
+//#region src/charts/bar-chart/private/selected-bar-ring.tsx
+/**
+* Outlines every bar in the keyboard-selected slot.
+*
+* @param props              - Component props.
+* @param props.selected     - The selected slot.
+* @param props.slotKeys     - The slots, in the order the band lays them out.
+* @param props.groupPadding - The padding between slots.
+* @param props.horizontal   - Whether the bars run horizontally.
+* @param props.xAccessor    - Reads a datum's x value.
+* @param props.yAccessor    - Reads a datum's y value.
+* @return The ring, or nothing when the slot has no position.
+*/
+const SelectedBarRing = ({ selected, slotKeys, groupPadding, horizontal, xAccessor, yAccessor }) => {
+	const context = useContext(DataContext);
+	const bandScale = horizontal ? context?.yScale : context?.xScale;
+	const valueScale = horizontal ? context?.xScale : context?.yScale;
+	const bandwidth = bandScale?.bandwidth?.() ?? 0;
+	const [category] = selected.data;
+	if (!bandScale || !valueScale || !bandwidth || !category) return null;
+	const groupScale = createGroupScale(slotKeys, bandwidth, groupPadding);
+	const slotOffset = groupScale(selected.slotKey);
+	const bandPosition = Number(bandScale((horizontal ? yAccessor : xAccessor)(category)));
+	const valuePositions = selected.data.map((datum) => Number(valueScale(Number((horizontal ? xAccessor : yAccessor)(datum))))).filter(Number.isFinite);
+	if (slotOffset == null || !Number.isFinite(bandPosition) || !valuePositions.length) return null;
+	const rect = computeSlotRect({
+		horizontal,
+		bandPosition,
+		slotOffset,
+		slotThickness: groupScale.bandwidth(),
+		valuePositions: [getValueScaleBaseline(valueScale), ...valuePositions],
+		widthFactor: selected.thickness
+	});
+	return /* @__PURE__ */ jsx("rect", {
+		...rect,
+		pointerEvents: "none",
+		"aria-hidden": "true",
+		className: bar_chart_module_default["selected-ring"]
+	});
+};
+//#endregion
+//#region src/charts/bar-chart/private/bar-layer.tsx
+/**
+* Draws the bars in front of any comparison shadows: slotted bars and their ring for an overlap layout, else visx's grouped bars.
+*
+* @param props                  - Component props.
+* @param props.overlapSlots     - The overlap layout, or undefined for a grouped one.
+* @param props.selectedSlot     - The overlap slot the keyboard has selected.
+* @param props.primaryEntries   - The visible primary series, for a grouped layout.
+* @param props.primaryKeys      - Their labels, in group order.
+* @param props.getBarBackground - Reads a series' bar fill.
+* @param props.barClassName     - Adds classes to a bar.
+* @param props.groupPadding     - The padding between the bars of a category.
+* @param props.horizontal       - Whether the bars run horizontally.
+* @param props.xAccessor        - Reads a datum's x value.
+* @param props.yAccessor        - Reads a datum's y value.
+* @return The bars.
+*/
+const BarLayer = ({ overlapSlots, selectedSlot, primaryEntries, primaryKeys, getBarBackground, barClassName, groupPadding, horizontal, xAccessor, yAccessor }) => {
+	if (overlapSlots) return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("g", {
+		className: "visx-bar-group",
+		children: overlapSlots.entries.map(({ series, index }) => /* @__PURE__ */ jsx(SlottedBarSeries, {
+			dataKey: series.label,
+			data: series.data,
+			xAccessor,
+			yAccessor,
+			colorAccessor: getBarBackground(index),
+			barClassName,
+			slotKeys: overlapSlots.slotKeys,
+			slotKey: overlapSlots.slotOf(series.label),
+			thickness: overlapSlots.thicknessOf(series.label),
+			groupPadding
+		}, series.label))
+	}), selectedSlot && /* @__PURE__ */ jsx(SelectedBarRing, {
+		selected: selectedSlot,
+		slotKeys: overlapSlots.slotKeys,
+		groupPadding,
+		horizontal,
+		xAccessor,
+		yAccessor
+	})] });
+	if (barClassName) return /* @__PURE__ */ jsx("g", {
+		className: "visx-bar-group",
+		children: primaryEntries.map(({ series, index }) => /* @__PURE__ */ jsx(ClassifiedBarSeries, {
+			dataKey: series.label,
+			data: series.data,
+			xAccessor,
+			yAccessor,
+			colorAccessor: getBarBackground(index),
+			barClassName,
+			primaryKeys,
+			groupPadding
+		}, series.label))
+	});
+	return /* @__PURE__ */ jsx(BarGroup, {
+		padding: groupPadding,
+		children: primaryEntries.map(({ series, index }) => /* @__PURE__ */ jsx(BarSeries, {
+			dataKey: series.label,
+			data: series.data,
+			xAccessor,
+			yAccessor,
+			colorAccessor: getBarBackground(index)
+		}, series.label))
+	});
+};
+//#endregion
+//#region src/charts/bar-chart/private/slot-tooltip-members.tsx
+/**
+* Fills the tooltip with every bar of the keyboard-selected category, and only those.
+*
+* The last member shown becomes the tooltip's nearest datum, so the caller lists the keyboard stop last.
+*
+* @param props         - Component props.
+* @param props.members - The category's bars, the keyboard stop last.
+* @param props.index   - The selected data point.
+* @return No visual content.
+*/
+function SlotTooltipMembers({ members, index }) {
+	const { showTooltip, updateTooltip } = useContext(TooltipContext) ?? {};
+	useEffect(() => {
+		updateTooltip?.((state) => ({
+			...state,
+			tooltipData: void 0
+		}));
+		members.forEach(({ key, datum }) => showTooltip?.({
+			key,
+			datum,
+			index
+		}));
+	}, [members, index]);
+	return null;
+}
+//#endregion
+//#region src/charts/bar-chart/private/overlap-bars.ts
+const PRIMARY_SLOT = "primary";
+const COMPARISON_SLOT = "comparison";
+const OVERLAP_SLOTS = [PRIMARY_SLOT, COMPARISON_SLOT];
+const SEARCH_STEPS = 16;
+/**
+* Places each series of an overlap layout: primaries in one slot and comparisons in the other, with each `group` a layer, back to front in order of first appearance.
+*
+* @param series - The series to place.
+* @return Each series' placement, by index.
+*/
+function getOverlapPlacements(series) {
+	const layerByGroup = /* @__PURE__ */ new Map();
+	series.forEach(({ group }) => {
+		if (!layerByGroup.has(group)) layerByGroup.set(group, layerByGroup.size);
+	});
+	const layerCount = layerByGroup.size;
+	return series.map((item) => {
+		const layer = layerByGroup.get(item.group) ?? 0;
+		return {
+			slot: item.options?.type === "comparison" ? COMPARISON_SLOT : PRIMARY_SLOT,
+			layer,
+			thickness: layerCount > 1 ? 1 - layer * .5 / (layerCount - 1) : 1
+		};
+	});
+}
+/**
+* Blends `from` toward `to` and returns the blend nearest the point where `passes` changes, on its passing side.
+*
+* @param from   - Where the blend starts.
+* @param to     - Where the blend ends.
+* @param passes - A test that changes at most once along the blend.
+* @return A hex color.
+*/
+function blendToEdge(from, to, passes) {
+	const passesAtStart = passes(from);
+	let low = 0;
+	let high = 1;
+	for (let step = 0; step < SEARCH_STEPS; step++) {
+		const middle = (low + high) / 2;
+		if (passes(mixHexColors(from, to, middle)) === passesAtStart) low = middle;
+		else high = middle;
+	}
+	return mixHexColors(from, to, passesAtStart ? low : high);
+}
+const awayFrom = (background) => contrastRatio(background, "#000000") >= contrastRatio(background, "#ffffff") ? "#000000" : "#ffffff";
+const opposite = (end) => end === "#000000" ? "#ffffff" : "#000000";
+/**
+* The tone of a color nearest the background that keeps 3:1 against it.
+*
+* @param color      - A hex color.
+* @param background - The hex chart background.
+* @return A hex color.
+*/
+function tintWithContrast(color, background) {
+	const passes = (tone) => contrastRatio(tone, background) >= 3;
+	return blendToEdge(color, passes(color) ? background : awayFrom(background), passes);
+}
+/**
+* The tone of a color nearest the original that keeps 3:1 against the bar it is drawn over, on the far side of that bar from the background when that side can reach 3:1.
+*
+* @param color      - A hex color.
+* @param under      - The hex color of the bar behind it.
+* @param background - The hex chart background.
+* @return A hex color.
+*/
+function shadeWithContrast(color, under, background) {
+	const passes = (tone) => contrastRatio(tone, under) >= 3;
+	const start = contrastRatio(color, background) > contrastRatio(under, background) ? color : under;
+	if (passes(start)) return start;
+	const away = awayFrom(background);
+	return blendToEdge(start, passes(away) ? away : opposite(away), passes);
+}
+/**
+* The colors an overlap layout fills its series with: per slot, the back layer tinted to 3:1 against the background and each layer in front shaded to 3:1 against the one behind. A slot whose front-most series has its own `stroke` keeps its colors as given.
+*
+* @param series     - Every series of the chart.
+* @param colors     - Each series' resolved color.
+* @param slotColors - The palette color of each slot, primaries first.
+* @param background - The hex chart background.
+* @return Each series' fill, by index.
+*/
+function getOverlapBarColors(series, colors, slotColors, background) {
+	const placements = getOverlapPlacements(series);
+	const barColors = [...colors];
+	OVERLAP_SLOTS.forEach((slot, slotIndex) => {
+		const members = placements.flatMap((placement, index) => placement.slot === slot ? [{
+			index,
+			layer: placement.layer
+		}] : []);
+		if (!members.length) return;
+		const layers = [...new Set(members.map(({ layer }) => layer))].sort((a, b) => a - b);
+		const back = members.find(({ layer }) => layer === layers[0]);
+		const base = back && series[back.index].options?.stroke ? colors[back.index] : slotColors[slotIndex];
+		if (members.some(({ index, layer }) => layer === layers[layers.length - 1] && !!series[index].options?.stroke) || !isValidHexColor(base) || !isValidHexColor(background)) return;
+		const toneByLayer = /* @__PURE__ */ new Map();
+		let under;
+		layers.forEach((layer) => {
+			const tone = under === void 0 ? tintWithContrast(base, background) : shadeWithContrast(base, under, background);
+			toneByLayer.set(layer, tone);
+			under = tone;
+		});
+		members.forEach(({ index, layer }) => {
+			barColors[index] = toneByLayer.get(layer) ?? colors[index];
+		});
+	});
+	return barColors;
+}
+//#endregion
+//#region src/charts/bar-chart/private/use-overlap-slots.ts
+/**
+* Whether two data points sit at the same category: the same label, or the same date.
+*
+* @param point    - A data point.
+* @param category - The data point naming the category.
+* @return Whether `point` is at `category`.
+*/
+function isSameCategory(point, category) {
+	return category.label != null ? point.label === category.label : !!category.date && !!point.date && point.date.getTime() === category.date.getTime();
+}
+/**
+* Lays out the visible series of an overlap layout in slots and layers.
+*
+* @param enabled              - Whether the chart draws an overlap layout.
+* @param seriesWithVisibility - Every series, with its index and whether it is visible.
+* @return The layout, or undefined when the chart is not an overlap layout.
+*/
+function useOverlapSlots(enabled, seriesWithVisibility) {
+	return useMemo(() => {
+		if (!enabled) return;
+		const visible = seriesWithVisibility.filter(({ isVisible }) => isVisible);
+		const placements = getOverlapPlacements(visible.map(({ series }) => series));
+		const placed = visible.map(({ series, index }, position) => ({
+			entry: {
+				series,
+				index
+			},
+			placement: placements[position]
+		})).sort((a, b) => a.placement.layer - b.placement.layer);
+		const entries = placed.map(({ entry }) => entry);
+		const placementByKey = new Map(placed.map(({ entry, placement }) => [entry.series.label, placement]));
+		const slotOf = (key) => placementByKey.get(key)?.slot ?? "primary";
+		const thicknessOf = (key) => placementByKey.get(key)?.thickness ?? 1;
+		const hasPrimaries = seriesWithVisibility.some(({ series }) => series.options?.type !== "comparison");
+		const showsComparisons = entries.some(({ series }) => slotOf(series.label) === COMPARISON_SLOT);
+		const slotKeys = [...hasPrimaries ? [PRIMARY_SLOT] : [], ...showsComparisons ? [COMPARISON_SLOT] : []];
+		return {
+			entries,
+			keys: entries.map(({ series }) => series.label),
+			slotKeys,
+			slotOf,
+			thicknessOf,
+			positions: getStopPositions(entries, slotKeys, slotOf)
+		};
+	}, [enabled, seriesWithVisibility]);
+}
+/**
+* The category a data point sits at, as a key two points share when `isSameCategory` holds.
+*
+* @param point - A data point.
+* @return The category key.
+*/
+function categoryKey(point) {
+	return point.label != null ? `label:${point.label}` : `date:${point.date?.getTime()}`;
+}
+/**
+* Lists a stop for every slot at every category that slot draws a bar at, category by category.
+*
+* @param entries  - The visible series, back to front.
+* @param slotKeys - The slots, in band order.
+* @param slotOf   - The slot a series sits in.
+* @return The positions, in keyboard order.
+*/
+function getStopPositions(entries, slotKeys, slotOf) {
+	const categories = /* @__PURE__ */ new Map();
+	entries.forEach(({ series }) => {
+		series.data.forEach((datum, dataPointIndex) => {
+			const key = categoryKey(datum);
+			const slots = categories.get(key) ?? /* @__PURE__ */ new Map();
+			categories.set(key, slots);
+			if (!isBarRendered(datum)) return;
+			const slotKey = slotOf(series.label);
+			slots.set(slotKey, {
+				slotKey,
+				key: series.label,
+				datum,
+				dataPointIndex
+			});
+		});
+	});
+	const ordered = [...categories.values()].filter((slots) => slots.size > 0);
+	if (ordered.every((slots) => [...slots.values()].every(({ datum }) => datum.label == null && datum.date))) {
+		const time = (slots) => [...slots.values()][0].datum.date?.getTime() ?? 0;
+		ordered.sort((a, b) => time(a) - time(b));
+	}
+	return ordered.flatMap((slots) => slotKeys.flatMap((slotKey) => {
+		const position = slots.get(slotKey);
+		return position ? [position] : [];
+	}));
+}
+/**
+* The slot a keyboard index selects, and every bar at its category.
+*
+* @param slots         - The overlap layout.
+* @param selectedIndex - The keyboard index into `slots.positions`.
+* @return The selected slot, or undefined when nothing is selected or drawn there.
+*/
+function getSelectedSlot(slots, selectedIndex) {
+	const position = selectedIndex === void 0 ? void 0 : slots?.positions[selectedIndex];
+	if (!slots || !position) return;
+	const { slotKey, key: stopKey, datum: category, dataPointIndex } = position;
+	const members = slots.entries.flatMap(({ series }) => {
+		const datum = series.data.find((point) => isSameCategory(point, category));
+		return datum ? [{
+			key: series.label,
+			datum
+		}] : [];
+	});
+	const slotBars = members.filter(({ key, datum }) => isBarRendered(datum) && slots.slotOf(key) === slotKey);
+	return {
+		data: slotBars.map(({ datum }) => datum),
+		slotKey,
+		thickness: Math.max(...slotBars.map(({ key }) => slots.thicknessOf(key))),
+		index: dataPointIndex,
+		members: [...members.filter(({ key }) => key !== stopKey), ...members.filter(({ key }) => key === stopKey)]
+	};
+}
+//#endregion
+//#region src/charts/bar-chart/private/use-bar-stops.ts
+/**
+* Lays out the keyboard stops: one per slot and category in an overlap layout, else one per primary bar, series-major within each category.
+*
+* @param overlapSlots   - The overlap layout, or undefined for a grouped one.
+* @param primaryEntries - The visible primary series.
+* @return The stops.
+*/
+function useBarStops(overlapSlots, primaryEntries) {
+	const series = useMemo(() => overlapSlots ? [] : primaryEntries.map((entry) => entry.series), [overlapSlots, primaryEntries]);
+	return {
+		count: overlapSlots?.positions.length ?? Math.max(0, ...series.map((item) => item.data.length)) * series.length,
+		series,
+		key: useMemo(() => JSON.stringify(overlapSlots?.keys ?? series.map((item) => item.label)), [overlapSlots, series]),
+		barAt: useCallback((stop) => {
+			if (overlapSlots) {
+				const position = overlapSlots.positions[stop];
+				return position && {
+					datum: position.datum,
+					index: position.dataPointIndex,
+					key: position.key
+				};
+			}
+			if (!series.length) return;
+			const index = Math.floor(stop / series.length);
+			const item = series[stop % series.length];
+			const datum = item?.data[index];
+			return item && datum ? {
+				datum,
+				index,
+				key: item.label
+			} : void 0;
+		}, [overlapSlots, series]),
+		stopOf: useCallback((seriesKey, dataPointIndex) => {
+			if (overlapSlots) {
+				const hovered = overlapSlots.entries.find((entry) => entry.series.label === seriesKey)?.series.data[dataPointIndex];
+				const slotKey = overlapSlots.slotOf(seriesKey);
+				const stop = hovered ? overlapSlots.positions.findIndex((position) => position.slotKey === slotKey && isSameCategory(position.datum, hovered)) : -1;
+				return stop >= 0 ? stop : void 0;
+			}
+			const seriesIndex = series.findIndex((item) => item.label === seriesKey);
+			return seriesIndex >= 0 ? dataPointIndex * series.length + seriesIndex : void 0;
+		}, [overlapSlots, series])
+	};
+}
 /**
 * Upper clamp on the computed group padding, so bars can never collapse to zero width
 * even at very large `widthFactor` values.
@@ -6211,9 +6675,7 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 			data: series,
 			index
 		});
-		const opacity = barStyles?.opacity ?? .5;
 		const widthFactor = barStyles?.widthFactor ?? 1.5;
-		const fill = resolveFill(entry);
 		series.data.forEach((datum, i) => {
 			const bandPosition = Number(bandScale(bandAccessor(datum)));
 			const valuePosition = Number(valueScale(Number(valueAccessor(datum))));
@@ -6221,13 +6683,12 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 				if (process.env.NODE_ENV !== "production" && !Number.isFinite(bandPosition)) console.warn(`[Charts] ComparisonBars: datum key "${String(bandAccessor(datum))}" did not match any primary category. Shadow will not be rendered. Ensure comparison series data uses the same label/date keys as the primary series.`);
 				return;
 			}
-			const rect = computeComparisonRect({
+			const rect = computeSlotRect({
 				horizontal,
 				bandPosition,
 				slotOffset,
 				slotThickness,
-				valuePosition,
-				baseline,
+				valuePositions: [baseline, valuePosition],
 				widthFactor
 			});
 			rects.push(/* @__PURE__ */ jsx("rect", {
@@ -6236,8 +6697,8 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 				y: rect.y,
 				width: rect.width,
 				height: rect.height,
-				fill,
-				opacity
+				fill: resolveFill(entry, datum),
+				opacity: barStyles?.opacity
 			}, `${index}-${i}`));
 		});
 	});
@@ -6336,7 +6797,8 @@ function nearestBandIndex(data, accessor, scale, position) {
 /**
 * Correct visx's range-based band inversion, which omits outer padding.
 * @param root0               - Registered series selection.
-* @param root0.keys          - Visible series keys.
+* @param root0.keys          - Visible series keys, back to front where bars overlap.
+* @param root0.slots         - Where series share slots: the slots of a category, in the order the band lays them out, and the slot each series sits in.
 * @param root0.groupPadding  - Padding between grouped bars.
 * @param root0.withTooltips  - Whether pointer events update the tooltip.
 * @param root0.onPointerDown - Receives the corrected pointer-down datum.
@@ -6344,12 +6806,13 @@ function nearestBandIndex(data, accessor, scale, position) {
 * @param root0.onPointerMove - Receives the corrected datum under a moving pointer.
 * @return No visual content.
 */
-function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointerUp, onPointerMove }) {
+function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, onPointerUp, onPointerMove }) {
 	const { xScale, yScale, dataRegistry, horizontal } = useContext(DataContext);
-	const { showTooltip } = useContext(TooltipContext);
+	const { showTooltip, hideTooltip, updateTooltip } = useContext(TooltipContext);
 	const scale = horizontal ? yScale : xScale;
 	const bandwidth = scale?.bandwidth?.() ?? 0;
-	const groupScale = useMemo(() => createGroupScale(keys, bandwidth, groupPadding), [
+	const groupScale = useMemo(() => createGroupScale(slots?.keys ?? keys, bandwidth, groupPadding), [
+		slots,
 		keys,
 		bandwidth,
 		groupPadding
@@ -6357,18 +6820,21 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 	const getSelections = useCallback((params) => {
 		const point = params?.svgPoint;
 		if (!point || !scale?.bandwidth) return [];
+		const position = horizontal ? point.y : point.x;
 		const selections = [];
+		const bands = [];
 		for (const key of keys) {
 			const entry = dataRegistry?.get(key);
 			if (!entry) continue;
 			const accessor = horizontal ? entry.yAccessor : entry.xAccessor;
-			const index = nearestBandIndex(entry.data, accessor, scale, horizontal ? point.y : point.x);
+			const index = nearestBandIndex(entry.data, accessor, scale, position);
 			if (index < 0) continue;
 			const datum = entry.data[index];
-			const start = Number(scale(accessor(datum))) + Number(groupScale(key));
+			const band = Number(scale(accessor(datum)));
+			const start = band + Number(groupScale(slots ? slots.slotOf(key) : key));
 			const end = start + groupScale.step();
-			const position = horizontal ? point.y : point.x;
 			const distance = position >= start && position <= end ? 0 : Math.abs(position - (start + end) / 2);
+			bands.push(band);
 			selections.push({
 				event: params.event,
 				key,
@@ -6379,12 +6845,16 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 				distanceY: horizontal ? distance : 0
 			});
 		}
-		return selections;
+		if (!slots) return selections;
+		const bandDistance = (band) => Math.abs(band + scale.bandwidth() / 2 - position);
+		const hoveredBand = bands.reduce((best, band) => best === void 0 || bandDistance(band) < bandDistance(best) ? band : best, void 0);
+		return selections.filter((_, index) => bands[index] === hoveredBand);
 	}, [
 		scale,
 		dataRegistry,
 		horizontal,
 		keys,
+		slots,
 		groupScale
 	]);
 	const handlePointer = useCallback((params) => {
@@ -6394,22 +6864,160 @@ function BandTooltip({ keys, groupPadding, withTooltips, onPointerDown, onPointe
 			return !best || distance(selection) <= distance(best) ? selection : best;
 		}, void 0);
 		if (params?.event.type === "pointermove" && nearest) onPointerMove?.(nearest);
-		if (withTooltips && params?.event.type !== "pointerup") selections.forEach(showTooltip);
+		if (withTooltips && params?.event.type !== "pointerup") {
+			if (slots) updateTooltip((state) => ({
+				...state,
+				tooltipData: void 0
+			}));
+			selections.forEach(showTooltip);
+		}
 		const callback = params?.event.type === "pointerdown" ? onPointerDown : onPointerUp;
 		if (params?.event.type === "pointermove" || !callback) return;
 		if (nearest) callback(nearest);
 	}, [
 		getSelections,
 		withTooltips,
+		slots,
 		showTooltip,
+		updateTooltip,
 		onPointerDown,
 		onPointerUp,
 		onPointerMove
 	]);
 	useEventEmitter("pointermove", withTooltips ? handlePointer : void 0);
+	useEventEmitter("pointerout", withTooltips && slots ? hideTooltip : void 0);
 	useEventEmitter("pointerdown", handlePointer);
 	useEventEmitter("pointerup", onPointerUp ? handlePointer : void 0);
 	return null;
+}
+//#endregion
+//#region src/charts/bar-chart/private/grouped-bars.ts
+/**
+* Pairs each comparison series with the primary of its `group`, or with the only primary.
+*
+* @param series - The chart's series.
+* @return The index of each paired comparison's primary, keyed by the comparison's index.
+*/
+function getComparisonPrimaries(series) {
+	const primaries = series.flatMap((item, index) => item.options?.type === "comparison" ? [] : [{
+		group: item.group,
+		index
+	}]);
+	const primaryByGroup = new Map(primaries.map(({ group, index }) => [group, index]));
+	const onlyPrimary = primaries.length === 1 ? primaries[0].index : void 0;
+	const pairs = /* @__PURE__ */ new Map();
+	series.forEach((item, index) => {
+		const primary = item.options?.type === "comparison" ? primaryByGroup.get(item.group) ?? onlyPrimary : void 0;
+		if (primary !== void 0) pairs.set(index, primary);
+	});
+	return pairs;
+}
+/**
+* The colors a grouped bar chart fills its series with. A comparison takes the lightest tint of its primary's color that keeps 3:1 against the background, and the primary in front of it the shade that keeps 3:1 against that tint. A primary with its own `stroke` keeps it, and a comparison with its own, different `stroke` keeps the pair's colors as given.
+*
+* @param series     - The chart's series.
+* @param colors     - Each series' resolved color.
+* @param background - The hex chart background.
+* @return Each series' fill, by index.
+*/
+function getGroupedBarColors(series, colors, background) {
+	const barColors = [...colors];
+	getComparisonPrimaries(series).forEach((primary, comparison) => {
+		const base = colors[primary];
+		if (!!series[comparison].options?.stroke && colors[comparison].toLowerCase() !== base.toLowerCase() || !isValidHexColor(base) || !isValidHexColor(background)) return;
+		const tint = tintWithContrast(base, background);
+		barColors[comparison] = tint;
+		if (!series[primary].options?.stroke) barColors[primary] = shadeWithContrast(base, tint, background);
+	});
+	return barColors;
+}
+//#endregion
+//#region src/charts/bar-chart/use-bar-colors.ts
+/**
+* Reads the colors `BarChart` fills series with, so a custom tooltip or legend can match the bars.
+*
+* @return A function from series and a layout to each series' bar color, by index.
+*/
+function useBarColors() {
+	const { getElementStyles, backgroundColor = BACKGROUND_FALLBACK, theme } = useGlobalChartsContext();
+	const comparisonOpacity = theme.barChart?.barStyles?.comparison?.opacity;
+	return useCallback((series, { layout = "grouped" } = {}) => {
+		const colors = series.map((data, index) => getElementStyles({
+			data,
+			index
+		}).color);
+		if (layout !== "overlap") return comparisonOpacity === void 0 ? getGroupedBarColors(series, colors, backgroundColor) : colors;
+		return getOverlapBarColors(series, colors, [getElementStyles({ index: 0 }).color, getElementStyles({ index: 1 }).color], backgroundColor);
+	}, [
+		getElementStyles,
+		backgroundColor,
+		comparisonOpacity
+	]);
+}
+//#endregion
+//#region src/charts/bar-chart/use-bar-legend-items.ts
+const isComparison = (data, label) => data.some((series) => series.label === label && series.options?.type === "comparison");
+/**
+* Applies what a bar layout changes about a legend: overlap lists every primary before every comparison, as it draws their slots, with every swatch opaque like its bar; a collapsed grouped item takes its comparison's tint, the wider bar that frames the group.
+*
+* @param data         - The series the items were built from.
+* @param items        - The legend items.
+* @param layout       - The layout the bars are drawn in.
+* @param seriesColors - Each series' bar color, by index.
+* @return The legend items.
+*/
+function forBarLayout(data, items, layout, seriesColors) {
+	if (layout === "overlap") {
+		const opaque = items.map((item) => item.shapeStyle ? {
+			...item,
+			shapeStyle: {
+				...item.shapeStyle,
+				opacity: void 0
+			}
+		} : item);
+		const seriesItems = opaque.filter((item) => item.seriesLabels);
+		const firstLabel = (item) => item.seriesLabels?.[0];
+		return [
+			...seriesItems.filter((item) => !isComparison(data, firstLabel(item))),
+			...seriesItems.filter((item) => isComparison(data, firstLabel(item))),
+			...opaque.filter((item) => !item.seriesLabels)
+		];
+	}
+	return items.map((item) => {
+		if ((item.seriesLabels?.length ?? 0) < 2) return item;
+		const comparisonIndex = data.findIndex((series) => series.options?.type === "comparison" && item.seriesLabels?.includes(series.label));
+		return comparisonIndex === -1 ? item : {
+			...item,
+			color: seriesColors[comparisonIndex]
+		};
+	});
+}
+/**
+* Builds legend items that match `BarChart`'s bars in a layout, for a custom legend or a chart's own.
+*
+* @param data        - The series the chart draws.
+* @param options     - The legend options, and the layout the bars are drawn in.
+* @param legendShape - The shape of the legend swatches.
+* @return The legend items.
+*/
+function useBarLegendItems(data, options = {}, legendShape) {
+	const { layout } = options;
+	const getBarColors = useBarColors();
+	const seriesColors = useMemo(() => layout ? getBarColors(data, { layout }) : void 0, [
+		data,
+		layout,
+		getBarColors
+	]);
+	const items = useChartLegendItems(data, useMemo(() => ({
+		...options,
+		seriesColors
+	}), [options, seriesColors]), legendShape);
+	return useMemo(() => layout && seriesColors ? forBarLayout(data, items, layout, seriesColors) : items, [
+		data,
+		items,
+		layout,
+		seriesColors
+	]);
 }
 //#endregion
 //#region src/charts/bar-chart/bar-chart.tsx
@@ -6423,13 +7031,14 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", layout = "grouped", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
 	const legendComparisonSeriesItems = legend.comparisonSeriesItems;
 	const horizontal = orientation === "horizontal";
+	const isOverlap = layout === "overlap";
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
 	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
@@ -6439,16 +7048,25 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		enabled: showZeroValues,
 		valueAxisLength: horizontal ? width : height
 	});
-	const legendItems = useChartLegendItems(dataSorted, useMemo(() => ({
+	const legendItems = useBarLegendItems(dataSorted, useMemo(() => ({
 		collapseGroups: legendCollapseGroups,
 		comparisonItem: legendComparisonItem,
-		comparisonSeriesItems: legendComparisonSeriesItems
+		comparisonSeriesItems: legendComparisonSeriesItems,
+		layout
 	}), [
 		legendCollapseGroups,
 		legendComparisonItem,
-		legendComparisonSeriesItems
+		legendComparisonSeriesItems,
+		layout
 	]));
-	const { getElementStyles } = useGlobalChartsContext();
+	const { getElementStyles, theme: providerTheme } = useGlobalChartsContext();
+	const getBarColors = useBarColors();
+	const barColors = useMemo(() => getBarColors(dataSorted, { layout }), [
+		layout,
+		getBarColors,
+		dataSorted
+	]);
+	if (providerTheme.barChart?.barStyles?.comparison?.opacity !== void 0) warnOnce("bar-chart-comparison-opacity", "BarChart: theme.barChart.barStyles.comparison.opacity is deprecated. Comparison bars are opaque; leave it unset.");
 	const isSeriesRendered = useCallback((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const hasWholeNumberValues = useMemo(() => hasOnlyWholeNumbers(dataSorted.filter(isSeriesRendered)), [dataSorted, isSeriesRendered]);
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
@@ -6477,37 +7095,30 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
 	const primaryEntries = useMemo(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
-	const totalPoints = Math.max(0, ...primaryEntries.map((e) => e.series.data.length)) * primaryEntries.length;
+	const overlapSlots = useOverlapSlots(isOverlap, seriesWithVisibility);
 	const primaryKeys = useMemo(() => primaryEntries.map(({ series }) => series.label), [primaryEntries]);
-	const primarySeries = useMemo(() => primaryEntries.map(({ series }) => series), [primaryEntries]);
-	const activateSelectedBar = useCallback((index) => {
-		const primaryCount = primaryEntries.length;
-		if (!primaryCount) return;
-		const dataPointIndex = Math.floor(index / primaryCount);
-		const series = primaryEntries[index % primaryCount]?.series;
-		const datum = series?.data[dataPointIndex];
-		if (series && datum) onDatumActivate?.({
-			datum,
-			index: dataPointIndex,
-			key: series.label
-		});
-	}, [primaryEntries, onDatumActivate]);
-	const visibleSeriesKey = useMemo(() => JSON.stringify(primaryKeys), [primaryKeys]);
+	const stops = useBarStops(overlapSlots, primaryEntries);
+	const { barAt, stopOf } = stops;
+	const activateSelectedBar = useCallback((stop) => {
+		const bar = barAt(stop);
+		if (bar) onDatumActivate?.(bar);
+	}, [barAt, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown, onChartPointerMove } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints,
+		totalPoints: stops.count,
 		onActivate: activateSelectedBar,
-		visibleSeriesKey
+		visibleSeriesKey: stops.key
 	});
 	const handlePointerMove = useCallback(({ key, index }) => {
-		const seriesIndex = primaryKeys.indexOf(key);
-		if (seriesIndex >= 0) onChartPointerMove(index * primaryKeys.length + seriesIndex);
-	}, [primaryKeys, onChartPointerMove]);
+		const stop = stopOf(key, index);
+		if (stop !== void 0) onChartPointerMove(stop);
+	}, [stopOf, onChartPointerMove]);
 	const comparisonEntries = useMemo(() => {
+		if (isOverlap) return [];
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
 			label: series.label,
 			index
@@ -6523,12 +7134,12 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			entries.push({
 				series,
 				index,
-				primaryKey: primary.label,
-				primaryIndex: primary.index
+				primaryKey: primary.label
 			});
 		});
 		return entries;
 	}, [
+		isOverlap,
 		seriesWithVisibility,
 		primaryEntries,
 		primaryKeys
@@ -6568,23 +7179,32 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		chartOptions.yScale,
 		horizontal
 	]);
-	const getBarBackground = useCallback((index) => (datum) => withPatterns ? `url(#${getPatternId(chartId, index)})` : datum.color ?? getElementStyles({
-		data: dataSorted[index],
-		index
-	}).color, [
+	const getBarBackground = useCallback((index) => (datum) => withPatterns ? `url(#${getPatternId(chartId, index)})` : datum.color ?? barColors[index] ?? "", [
 		withPatterns,
-		getElementStyles,
-		dataSorted,
+		barColors,
 		chartId
 	]);
-	const resolveComparisonFill = useCallback((entry) => withPatterns ? `url(#${getPatternId(chartId, entry.primaryIndex)})` : getElementStyles({
-		data: entry.series,
-		index: entry.index
-	}).color, [
+	const resolveComparisonFill = useCallback((entry, datum) => withPatterns ? `url(#${getPatternId(chartId, entry.index)})` : datum.color ?? barColors[entry.index] ?? "", [
 		withPatterns,
 		chartId,
-		getElementStyles
+		barColors
 	]);
+	const renderOverlapTooltip = useCallback(({ tooltipData }) => {
+		const nearestDatum = tooltipData?.nearestDatum?.datum;
+		if (!nearestDatum) return null;
+		const datumByKey = tooltipData?.datumByKey ?? {};
+		const categoryLabel = chartOptions.tooltip.labelFormatter(nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0), 0, []);
+		return /* @__PURE__ */ jsxs("div", {
+			className: bar_chart_module_default["bar-chart__tooltip"],
+			children: [/* @__PURE__ */ jsx("div", {
+				className: bar_chart_module_default["bar-chart__tooltip-header"],
+				children: categoryLabel
+			}), dataSorted.flatMap(({ label }) => {
+				const datum = datumByKey[label]?.datum;
+				return datum ? [/* @__PURE__ */ jsx(Fragment, { children: renderTooltipRow(label, formatReading(datum.value)) }, label)] : [];
+			})]
+		});
+	}, [chartOptions.tooltip, dataSorted]);
 	const renderDefaultTooltip = useCallback(({ tooltipData }) => {
 		const nearestDatum = tooltipData?.nearestDatum?.datum;
 		if (!nearestDatum) return null;
@@ -6659,8 +7279,13 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 				}
 			`;
 	}, [chartId]);
+	const overlapBandSlots = useMemo(() => overlapSlots && {
+		keys: overlapSlots.slotKeys,
+		slotOf: overlapSlots.slotOf
+	}, [overlapSlots]);
+	const selectedSlot = useMemo(() => getSelectedSlot(overlapSlots, selectedIndex), [overlapSlots, selectedIndex]);
 	const createKeyboardHighlightStyle = useCallback(() => {
-		if (selectedIndex === void 0) return "";
+		if (selectedIndex === void 0 || isOverlap) return "";
 		const primaryCount = primaryEntries.length;
 		if (!primaryCount) return "";
 		const dataPointIndex = Math.floor(selectedIndex / primaryCount);
@@ -6677,6 +7302,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		`;
 	}, [
 		selectedIndex,
+		isOverlap,
 		primaryEntries,
 		chartId
 	]);
@@ -6779,13 +7405,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 										tickValues: (horizontal ? void 0 : valueTicks) ?? chartOptions.axis.y.tickValues
 									})] })
 								}),
-								withPatterns && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("defs", { children: dataSorted.map((seriesData, index) => renderPattern(index, getElementStyles({
-									data: seriesData,
-									index
-								}).color)) }), /* @__PURE__ */ jsx("style", { children: dataSorted.map((seriesData, index) => createPatternBorderStyle(index, getElementStyles({
-									data: seriesData,
-									index
-								}).color)) })] }),
+								withPatterns && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("defs", { children: barColors.map((color, index) => renderPattern(index, color)) }), /* @__PURE__ */ jsx("style", { children: barColors.map((color, index) => createPatternBorderStyle(index, color)) })] }),
 								highlightedBarStyle && /* @__PURE__ */ jsx("style", { children: highlightedBarStyle }),
 								allSeriesHidden ? /* @__PURE__ */ jsx(SvgEmptyState, {
 									x: width / 2,
@@ -6804,30 +7424,21 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									getElementStyles,
 									resolveFill: resolveComparisonFill
 								}),
-								barClassName ? /* @__PURE__ */ jsx("g", {
-									className: "visx-bar-group",
-									children: primaryEntries.map(({ series: seriesData, index }) => /* @__PURE__ */ jsx(ClassifiedBarSeries, {
-										dataKey: seriesData.label,
-										data: seriesData.data,
-										xAccessor: chartOptions.accessors.xAccessor,
-										yAccessor: chartOptions.accessors.yAccessor,
-										colorAccessor: getBarBackground(index),
-										barClassName,
-										primaryKeys,
-										groupPadding
-									}, seriesData.label))
-								}) : /* @__PURE__ */ jsx(BarGroup, {
-									padding: groupPadding,
-									children: primaryEntries.map(({ series: seriesData, index }) => /* @__PURE__ */ jsx(BarSeries, {
-										dataKey: seriesData?.label,
-										data: seriesData.data,
-										yAccessor: chartOptions.accessors.yAccessor,
-										xAccessor: chartOptions.accessors.xAccessor,
-										colorAccessor: getBarBackground(index)
-									}, seriesData?.label))
+								/* @__PURE__ */ jsx(BarLayer, {
+									overlapSlots,
+									selectedSlot,
+									primaryEntries,
+									primaryKeys,
+									getBarBackground,
+									barClassName,
+									groupPadding,
+									horizontal,
+									xAccessor: chartOptions.accessors.xAccessor,
+									yAccessor: chartOptions.accessors.yAccessor
 								}),
 								(withTooltips || onPointerDown || onPointerUp) && /* @__PURE__ */ jsx(BandTooltip, {
-									keys: primaryKeys,
+									keys: overlapSlots?.keys ?? primaryKeys,
+									slots: overlapBandSlots,
 									groupPadding,
 									withTooltips,
 									onPointerDown,
@@ -6844,6 +7455,10 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
 									})] })
 								}),
+								withTooltips && selectedSlot && /* @__PURE__ */ jsx(SlotTooltipMembers, {
+									members: selectedSlot.members,
+									index: selectedSlot.index
+								}),
 								withTooltips && /* @__PURE__ */ jsx(XYChartTooltip, {
 									tooltipPlacement,
 									tooltipAnchorTop,
@@ -6851,11 +7466,11 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: true,
-									renderTooltip: renderTooltip || renderDefaultTooltip,
+									renderTooltip: renderTooltip || (isOverlap ? renderOverlapTooltip : renderDefaultTooltip),
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: bar_chart_module_default["bar-chart__tooltip--keyboard-focused"],
-									series: primarySeries,
+									series: stops.series,
 									mode: "individual"
 								})
 							]
@@ -12488,6 +13103,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 	});
 }
 //#endregion
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TooltipBox, TrendIndicator, XYChartTooltip, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TooltipBox, TrendIndicator, XYChartTooltip, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useBarColors, useBarLegendItems, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 
 //# sourceMappingURL=index.js.map

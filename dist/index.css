@@ -309,6 +309,12 @@
     transform: scaleY(1);
   }
 }
+.a8ccharts-97yN9W-selected-ring {
+  fill: none;
+  stroke: var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
+  stroke-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px));
+}
+
 .a8ccharts-97yN9W-bar-chart svg {
   overflow: visible;
 }

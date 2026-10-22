@@ -244,13 +244,20 @@ type SeriesData = {
 };
 /**
  * Visual styling for a bar series of a given semantic type (e.g. 'comparison').
- * `widthFactor` is the bar width relative to the primary bar slot (1.5 = 150%);
- * `opacity` sets the shadow translucency.
+ * `widthFactor` is the bar width relative to the primary bar slot (1.5 = 150%).
  */
 type BarStyles = {
   widthFactor?: number;
+  /**
+   * Draws the comparison bar translucent, in its primary's color, instead of the opaque tones the chart picks.
+   * @deprecated Comparison bars are opaque. Leave this unset; set the comparison series' `options.stroke` for a color of its own.
+   */
   opacity?: number;
 };
+/**
+ * How a bar chart places its series in a category. `grouped` puts each primary series in a slot of its own; `overlap` puts every primary in one slot and every comparison in a second, and overlaps the `group`s within each slot.
+ */
+type BarChartLayout = 'grouped' | 'overlap';
 type MultipleDataPointsDate = {
   label: string;
   data: DataPointDate[];
@@ -810,6 +817,8 @@ interface ChartLegendOptions {
   comparisonItem?: SeriesChartLegendConfig['comparisonItem'];
   /** One static item per comparison series instead; see `SeriesChartLegendConfig`. */
   comparisonSeriesItems?: SeriesChartLegendConfig['comparisonSeriesItems'];
+  /** Each series' swatch color, by index, in place of its series color. */
+  seriesColors?: string[];
 }
 /**
  * Hook to transform chart data into legend items
@@ -1107,6 +1116,8 @@ interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityPr
   /** CSS class for each primary bar, in addition to visx-bar. */
   barClassName?: (datum: DataPointDate) => string | undefined;
   orientation?: 'horizontal' | 'vertical';
+  /** Defaults to `grouped`. */
+  layout?: BarChartLayout;
   withPatterns?: boolean;
   showZeroValues?: boolean;
   /** Highlight the active band across the plot when tooltips are enabled. */
@@ -1125,6 +1136,32 @@ type BarChartComponent = FC<BarChartBaseProps> & BarChartSubComponents;
 type BarChartResponsiveComponent = FC<BarChartBaseProps & ResponsiveConfig> & BarChartSubComponents;
 declare const BarChart: BarChartComponent;
 declare const BarChartResponsive: BarChartResponsiveComponent;
+//#endregion
+//#region src/charts/bar-chart/use-bar-colors.d.ts
+type GetBarColors = (series: SeriesData[], options?: {
+  layout?: BarChartLayout;
+}) => string[];
+/**
+ * Reads the colors `BarChart` fills series with, so a custom tooltip or legend can match the bars.
+ *
+ * @return A function from series and a layout to each series' bar color, by index.
+ */
+export declare function useBarColors(): GetBarColors;
+//#endregion
+//#region src/charts/bar-chart/use-bar-legend-items.d.ts
+type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
+  /** The layout the bars are drawn in. Unset, the items are the chart legend's own. */
+  layout?: BarChartLayout;
+};
+/**
+ * Builds legend items that match `BarChart`'s bars in a layout, for a custom legend or a chart's own.
+ *
+ * @param data        - The series the chart draws.
+ * @param options     - The legend options, and the layout the bars are drawn in.
+ * @param legendShape - The shape of the legend swatches.
+ * @return The legend items.
+ */
+export declare function useBarLegendItems(data: SeriesData[], options?: BarLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 //#endregion
 //#region src/charts/bar-list-chart/bar-list-chart.d.ts
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
@@ -2341,6 +2378,8 @@ interface GlobalChartsContextValue {
   /** Locale and time zone every date the charts print is rendered in. */
   formatting: ChartFormatting;
   getElementStyles: (params: GetElementStylesParams) => ElementStyles;
+  /** The chart background as an opaque hex, for colors that must keep contrast against it. Optional so a hand-built context value still type-checks. */
+  backgroundColor?: string;
   toggleSeriesVisibility: (chartId: string, seriesLabel: string) => void;
   setSeriesVisibility: (chartId: string, seriesLabel: string, visible: boolean) => void;
   setChartHiddenSeries: (chartId: string, seriesLabels: readonly string[]) => void;
@@ -2420,5 +2459,5 @@ declare const defaultTheme: CompleteChartTheme;
  */
 export declare const useChartScopeElement: () => HTMLElement | null;
 //#endregion
-export { type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartProps, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ComparisonItemLabel, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme };
+export { type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartLayout, type BarChartProps, BarChart as BarChartUnresponsive, type BarLegendOptions, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ComparisonItemLabel, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme };
 //# sourceMappingURL=index.d.cts.map
