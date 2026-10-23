@@ -3073,17 +3073,19 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 			return;
 		}
 		hasKeyboardSelection.current = true;
-		if (mode === "group") series.forEach((s, index) => {
-			if (selectedIndex < s.data.length) {
-				const datum = s.data[selectedIndex];
-				tooltipContext?.showTooltip({
-					datum,
-					key: s.label,
-					index
-				});
-			}
-		});
-		else if (mode === "individual") {
+		if (mode === "group") {
+			closeTooltipNow();
+			series.forEach((s, index) => {
+				if (selectedIndex < s.data.length) {
+					const datum = s.data[selectedIndex];
+					tooltipContext?.showTooltip({
+						datum,
+						key: s.label,
+						index
+					});
+				}
+			});
+		} else if (mode === "individual") {
 			if (selectedIndex < tooltipData.length) {
 				const tooltipItem = tooltipData[selectedIndex];
 				tooltipContext?.showTooltip({
@@ -4830,6 +4832,8 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 			isVisible: !hiddenSeries.has(series.label)
 		}));
 	}, [dataSorted, hiddenSeries]);
+	const visibleSeries = (0, react.useMemo)(() => dataSorted.filter((series) => isSeriesVisible(series.label)), [dataSorted, isSeriesVisible]);
+	const visibleSeriesKey = (0, react.useMemo)(() => JSON.stringify(visibleSeries.map((series) => series.label)), [visibleSeries]);
 	const allSeriesHidden = (0, react.useMemo)(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
@@ -4860,21 +4864,21 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 		options?.yScale
 	]);
 	const activateSelectedPoint = (0, react.useCallback)((index) => {
-		const series = dataSorted[0];
-		const datum = series?.data[index];
-		if (series && datum) onDatumActivate?.({
-			datum,
+		const series = visibleSeries.find((candidate) => candidate.data[index]);
+		if (series) onDatumActivate?.({
+			datum: series.data[index],
 			index,
 			key: series.label
 		});
-	}, [dataSorted, onDatumActivate]);
+	}, [visibleSeries, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints: dataSorted[0]?.data.length || 0,
+		totalPoints: Math.max(0, ...visibleSeries.map((series) => series.data.length)),
+		visibleSeriesKey,
 		onActivate: activateSelectedPoint,
 		preventTooltipScroll: tooltipPlacement === "below-axis"
 	});
@@ -4893,7 +4897,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 		}
 		return min <= max ? [min, max] : void 0;
 	}, [dataSorted, isSeriesVisible]);
-	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(dataSorted.filter((series) => isSeriesVisible(series.label))), [dataSorted, isSeriesVisible]);
+	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(visibleSeries), [visibleSeries]);
 	const chartOptions = (0, react.useMemo)(() => {
 		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, options?.yScale?.type === "log");
 		return {
@@ -4939,11 +4943,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 		formatting,
 		isSeriesVisible
 	]);
-	const bucketInfo = (0, react.useMemo)(() => getBucketInfo(dataSorted.filter((series) => isSeriesVisible(series.label)), options?.axis?.x?.tickResolution), [
-		dataSorted,
-		isSeriesVisible,
-		options?.axis?.x?.tickResolution
-	]);
+	const bucketInfo = (0, react.useMemo)(() => getBucketInfo(visibleSeries, options?.axis?.x?.tickResolution), [visibleSeries, options?.axis?.x?.tickResolution]);
 	const tooltipRenderGlyph = (0, react.useMemo)(() => {
 		return (props) => {
 			const seriesIndex = dataSorted.findIndex((series) => series.label === props.key || series.data.includes(props.datum));
@@ -5173,7 +5173,7 @@ const LineChartInternal = (0, react.forwardRef)(({ data, ariaLabel, chartId: pro
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
-									series: dataSorted
+									series: visibleSeries
 								}),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(LineChartScalesRef, {
 									chartRef: internalChartRef,

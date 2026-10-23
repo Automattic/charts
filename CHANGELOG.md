@@ -17,6 +17,9 @@ This is an alpha version! The changes listed here are not final.
 - Bar chart: Mark the keyboard-selected bar with a two-tone focus ring in the design system's focus color, so it shows on any bar color.
 - Update package dependencies.
 
+### Fixed
+- Line chart: Leave hidden series out of the keyboard tooltip.
+
 ## [4.11.1] - 2026-10-20
 ### Changed
 - Internal updates.

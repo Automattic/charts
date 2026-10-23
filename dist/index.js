@@ -3071,17 +3071,19 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 			return;
 		}
 		hasKeyboardSelection.current = true;
-		if (mode === "group") series.forEach((s, index) => {
-			if (selectedIndex < s.data.length) {
-				const datum = s.data[selectedIndex];
-				tooltipContext?.showTooltip({
-					datum,
-					key: s.label,
-					index
-				});
-			}
-		});
-		else if (mode === "individual") {
+		if (mode === "group") {
+			closeTooltipNow();
+			series.forEach((s, index) => {
+				if (selectedIndex < s.data.length) {
+					const datum = s.data[selectedIndex];
+					tooltipContext?.showTooltip({
+						datum,
+						key: s.label,
+						index
+					});
+				}
+			});
+		} else if (mode === "individual") {
 			if (selectedIndex < tooltipData.length) {
 				const tooltipItem = tooltipData[selectedIndex];
 				tooltipContext?.showTooltip({
@@ -4828,6 +4830,8 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 			isVisible: !hiddenSeries.has(series.label)
 		}));
 	}, [dataSorted, hiddenSeries]);
+	const visibleSeries = useMemo(() => dataSorted.filter((series) => isSeriesVisible(series.label)), [dataSorted, isSeriesVisible]);
+	const visibleSeriesKey = useMemo(() => JSON.stringify(visibleSeries.map((series) => series.label)), [visibleSeries]);
 	const allSeriesHidden = useMemo(() => {
 		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
 	}, [seriesWithVisibility]);
@@ -4858,21 +4862,21 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		options?.yScale
 	]);
 	const activateSelectedPoint = useCallback((index) => {
-		const series = dataSorted[0];
-		const datum = series?.data[index];
-		if (series && datum) onDatumActivate?.({
-			datum,
+		const series = visibleSeries.find((candidate) => candidate.data[index]);
+		if (series) onDatumActivate?.({
+			datum: series.data[index],
 			index,
 			key: series.label
 		});
-	}, [dataSorted, onDatumActivate]);
+	}, [visibleSeries, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints: dataSorted[0]?.data.length || 0,
+		totalPoints: Math.max(0, ...visibleSeries.map((series) => series.data.length)),
+		visibleSeriesKey,
 		onActivate: activateSelectedPoint,
 		preventTooltipScroll: tooltipPlacement === "below-axis"
 	});
@@ -4891,7 +4895,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		}
 		return min <= max ? [min, max] : void 0;
 	}, [dataSorted, isSeriesVisible]);
-	const hasWholeNumberValues = useMemo(() => hasOnlyWholeNumbers(dataSorted.filter((series) => isSeriesVisible(series.label))), [dataSorted, isSeriesVisible]);
+	const hasWholeNumberValues = useMemo(() => hasOnlyWholeNumbers(visibleSeries), [visibleSeries]);
 	const chartOptions = useMemo(() => {
 		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, options?.yScale?.type === "log");
 		return {
@@ -4937,11 +4941,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		formatting,
 		isSeriesVisible
 	]);
-	const bucketInfo = useMemo(() => getBucketInfo(dataSorted.filter((series) => isSeriesVisible(series.label)), options?.axis?.x?.tickResolution), [
-		dataSorted,
-		isSeriesVisible,
-		options?.axis?.x?.tickResolution
-	]);
+	const bucketInfo = useMemo(() => getBucketInfo(visibleSeries, options?.axis?.x?.tickResolution), [visibleSeries, options?.axis?.x?.tickResolution]);
 	const tooltipRenderGlyph = useMemo(() => {
 		return (props) => {
 			const seriesIndex = dataSorted.findIndex((series) => series.label === props.key || series.data.includes(props.datum));
@@ -5171,7 +5171,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: line_chart_module_default["line-chart__tooltip--keyboard-focused"],
-									series: dataSorted
+									series: visibleSeries
 								}),
 								/* @__PURE__ */ jsx(LineChartScalesRef, {
 									chartRef: internalChartRef,
