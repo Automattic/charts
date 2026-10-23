@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Bar chart: Draw comparison bars opaque, in a tint of their primary's color that keeps 3:1 contrast, and deprecate the theme's `barChart.barStyles.comparison.opacity`.
+- Bar chart: Mark the keyboard-selected bar with a two-tone focus ring in the design system's focus color, so it shows on any bar color.
 - Update package dependencies.
 
 ## [4.11.1] - 2026-10-20

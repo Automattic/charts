@@ -5689,7 +5689,6 @@ var bar_chart_module_default = {
 	"bar-chart--animated": "a8ccharts-97yN9W-bar-chart--animated",
 	"bar-chart--animated-horizontal": "a8ccharts-97yN9W-bar-chart--animated-horizontal",
 	"rise": "a8ccharts-97yN9W-rise",
-	"selected-ring": "a8ccharts-97yN9W-selected-ring",
 	"stretch": "a8ccharts-97yN9W-stretch"
 };
 //#endregion
@@ -5831,13 +5830,6 @@ const getBarValue = (point) => {
 * @return True when the point has a finite bar value.
 */
 const isBarRendered = (point) => Number.isFinite(getBarValue(point));
-/**
-* How many bars visx renders for a list of points.
-*
-* @param points - Data points handed to visx.
-* @return The number of points that get a bar.
-*/
-const countRenderedBars = (points) => points.filter(isBarRendered).length;
 /**
 * An explicit domain for the value scale, or null to let visx fit one to the data.
 *
@@ -6234,11 +6226,68 @@ const SlottedBarSeries = ({ barClassName, slotKeys, slotKey, thickness, groupPad
 	});
 };
 //#endregion
+//#region src/charts/private/selected-ring/selected-ring.module.scss
+var selected_ring_module_default = {
+	"selected-ring__contrast": "a8ccharts-gx1_AW-selected-ring__contrast",
+	"selected-ring__edge": "a8ccharts-gx1_AW-selected-ring__edge",
+	"selected-ring__far": "a8ccharts-gx1_AW-selected-ring__far",
+	"selected-ring__focus": "a8ccharts-gx1_AW-selected-ring__focus"
+};
+//#endregion
+//#region src/charts/private/selected-ring/selected-ring.tsx
+const TONES = {
+	inside: ["contrast", "focus"],
+	outside: ["focus", "contrast"]
+};
+const EVERYWHERE = "M-1e6 -1e6H1e6V1e6H-1e6Z";
+/**
+* Encodes `value` for an SVG id, losslessly so distinct chart ids never share a clip path.
+*
+* @param value - Any string.
+* @return `value` with each character outside `[A-Za-z0-9-]` written as `_<hex code point>_`.
+*/
+const toSvgId = (value) => Array.from(value, (character) => /[A-Za-z0-9-]/.test(character) ? character : `_${character.codePointAt(0)?.toString(16)}_`).join("");
+/**
+* Marks a selected shape with a focus-colored ring and a contrast ring, so it reads against any fill.
+*
+* @param {SelectedRingProps} props - Component props
+* @return {JSX.Element} The ring
+*/
+const SelectedRing = ({ chartId, d, side, testId }) => {
+	const clipId = `selected-ring-clip-${toSvgId(chartId)}`;
+	const clipPath = `url(#${clipId})`;
+	const [far, edge] = TONES[side];
+	return /* @__PURE__ */ jsxs("g", {
+		pointerEvents: "none",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("clipPath", {
+				id: clipId,
+				children: side === "inside" ? /* @__PURE__ */ jsx("path", { d }) : /* @__PURE__ */ jsx("path", {
+					d: `${EVERYWHERE} ${d}`,
+					clipRule: "evenodd"
+				})
+			}),
+			/* @__PURE__ */ jsx("path", {
+				d,
+				clipPath,
+				className: clsx(selected_ring_module_default["selected-ring__far"], selected_ring_module_default[`selected-ring__${far}`])
+			}),
+			/* @__PURE__ */ jsx("path", {
+				d,
+				clipPath,
+				className: clsx(selected_ring_module_default["selected-ring__edge"], selected_ring_module_default[`selected-ring__${edge}`])
+			})
+		]
+	});
+};
+//#endregion
 //#region src/charts/bar-chart/private/selected-bar-ring.tsx
 /**
-* Outlines every bar in the keyboard-selected slot.
+* Marks the keyboard-selected slot with a two-tone ring outside its edge, so the ring reads against any bar color.
 *
 * @param props              - Component props.
+* @param props.chartId      - The chart's id, which keeps the clip path unique on a page with several charts.
 * @param props.selected     - The selected slot.
 * @param props.slotKeys     - The slots, in the order the band lays them out.
 * @param props.groupPadding - The padding between slots.
@@ -6247,7 +6296,7 @@ const SlottedBarSeries = ({ barClassName, slotKeys, slotKey, thickness, groupPad
 * @param props.yAccessor    - Reads a datum's y value.
 * @return The ring, or nothing when the slot has no position.
 */
-const SelectedBarRing = ({ selected, slotKeys, groupPadding, horizontal, xAccessor, yAccessor }) => {
+const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal, xAccessor, yAccessor }) => {
 	const context = useContext(DataContext);
 	const bandScale = horizontal ? context?.yScale : context?.xScale;
 	const valueScale = horizontal ? context?.xScale : context?.yScale;
@@ -6257,8 +6306,8 @@ const SelectedBarRing = ({ selected, slotKeys, groupPadding, horizontal, xAccess
 	const groupScale = createGroupScale(slotKeys, bandwidth, groupPadding);
 	const slotOffset = groupScale(selected.slotKey);
 	const bandPosition = Number(bandScale((horizontal ? yAccessor : xAccessor)(category)));
-	const valuePositions = selected.data.map((datum) => Number(valueScale(Number((horizontal ? xAccessor : yAccessor)(datum))))).filter(Number.isFinite);
-	if (slotOffset == null || !Number.isFinite(bandPosition) || !valuePositions.length) return null;
+	if (slotOffset == null || !Number.isFinite(bandPosition)) return null;
+	const valuePositions = selected.data.map((datum) => Number(valueScale(Number((horizontal ? xAccessor : yAccessor)(datum)))));
 	const rect = computeSlotRect({
 		horizontal,
 		bandPosition,
@@ -6267,21 +6316,22 @@ const SelectedBarRing = ({ selected, slotKeys, groupPadding, horizontal, xAccess
 		valuePositions: [getValueScaleBaseline(valueScale), ...valuePositions],
 		widthFactor: selected.thickness
 	});
-	return /* @__PURE__ */ jsx("rect", {
-		...rect,
-		pointerEvents: "none",
-		"aria-hidden": "true",
-		className: bar_chart_module_default["selected-ring"]
+	return /* @__PURE__ */ jsx(SelectedRing, {
+		chartId,
+		d: `M${rect.x} ${rect.y}h${rect.width}v${rect.height}h${-rect.width}Z`,
+		side: "outside",
+		testId: "bar-chart-selected-ring"
 	});
 };
 //#endregion
 //#region src/charts/bar-chart/private/bar-layer.tsx
 /**
-* Draws the bars in front of any comparison shadows: slotted bars and their ring for an overlap layout, else visx's grouped bars.
+* Draws the bars in front of any comparison shadows, slotted for an overlap layout and grouped by visx otherwise, then the selected bar's ring.
 *
 * @param props                  - Component props.
+* @param props.chartId          - The chart's id, which keeps the ring's clip path unique on a page with several charts.
 * @param props.overlapSlots     - The overlap layout, or undefined for a grouped one.
-* @param props.selectedSlot     - The overlap slot the keyboard has selected.
+* @param props.selectedBar      - The bar or slot the keyboard has selected.
 * @param props.primaryEntries   - The visible primary series, for a grouped layout.
 * @param props.primaryKeys      - Their labels, in group order.
 * @param props.getBarBackground - Reads a series' bar fill.
@@ -6292,8 +6342,9 @@ const SelectedBarRing = ({ selected, slotKeys, groupPadding, horizontal, xAccess
 * @param props.yAccessor        - Reads a datum's y value.
 * @return The bars.
 */
-const BarLayer = ({ overlapSlots, selectedSlot, primaryEntries, primaryKeys, getBarBackground, barClassName, groupPadding, horizontal, xAccessor, yAccessor }) => {
-	if (overlapSlots) return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("g", {
+const BarLayer = ({ chartId, overlapSlots, selectedBar, primaryEntries, primaryKeys, getBarBackground, barClassName, groupPadding, horizontal, xAccessor, yAccessor }) => {
+	let bars;
+	if (overlapSlots) bars = /* @__PURE__ */ jsx("g", {
 		className: "visx-bar-group",
 		children: overlapSlots.entries.map(({ series, index }) => /* @__PURE__ */ jsx(SlottedBarSeries, {
 			dataKey: series.label,
@@ -6307,15 +6358,8 @@ const BarLayer = ({ overlapSlots, selectedSlot, primaryEntries, primaryKeys, get
 			thickness: overlapSlots.thicknessOf(series.label),
 			groupPadding
 		}, series.label))
-	}), selectedSlot && /* @__PURE__ */ jsx(SelectedBarRing, {
-		selected: selectedSlot,
-		slotKeys: overlapSlots.slotKeys,
-		groupPadding,
-		horizontal,
-		xAccessor,
-		yAccessor
-	})] });
-	if (barClassName) return /* @__PURE__ */ jsx("g", {
+	});
+	else if (barClassName) bars = /* @__PURE__ */ jsx("g", {
 		className: "visx-bar-group",
 		children: primaryEntries.map(({ series, index }) => /* @__PURE__ */ jsx(ClassifiedBarSeries, {
 			dataKey: series.label,
@@ -6328,7 +6372,7 @@ const BarLayer = ({ overlapSlots, selectedSlot, primaryEntries, primaryKeys, get
 			groupPadding
 		}, series.label))
 	});
-	return /* @__PURE__ */ jsx(BarGroup, {
+	else bars = /* @__PURE__ */ jsx(BarGroup, {
 		padding: groupPadding,
 		children: primaryEntries.map(({ series, index }) => /* @__PURE__ */ jsx(BarSeries, {
 			dataKey: series.label,
@@ -6338,6 +6382,15 @@ const BarLayer = ({ overlapSlots, selectedSlot, primaryEntries, primaryKeys, get
 			colorAccessor: getBarBackground(index)
 		}, series.label))
 	});
+	return /* @__PURE__ */ jsxs(Fragment$1, { children: [bars, selectedBar && /* @__PURE__ */ jsx(SelectedBarRing, {
+		chartId,
+		selected: selectedBar,
+		slotKeys: overlapSlots?.slotKeys ?? primaryKeys,
+		groupPadding,
+		horizontal,
+		xAccessor,
+		yAccessor
+	})] });
 };
 //#endregion
 //#region src/charts/bar-chart/private/slot-tooltip-members.tsx
@@ -7284,27 +7337,19 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		slotOf: overlapSlots.slotOf
 	}, [overlapSlots]);
 	const selectedSlot = useMemo(() => getSelectedSlot(overlapSlots, selectedIndex), [overlapSlots, selectedIndex]);
-	const createKeyboardHighlightStyle = useCallback(() => {
-		if (selectedIndex === void 0 || isOverlap) return "";
-		const primaryCount = primaryEntries.length;
-		if (!primaryCount) return "";
-		const dataPointIndex = Math.floor(selectedIndex / primaryCount);
-		const seriesIndex = selectedIndex % primaryCount;
-		const seriesData = primaryEntries[seriesIndex]?.series;
-		const datum = seriesData?.data[dataPointIndex];
-		if (!seriesData || !datum || !isBarRendered(datum)) return "";
-		const domBarIndex = primaryEntries.slice(0, seriesIndex).reduce((count, { series }) => count + countRenderedBars(series.data), 0) + countRenderedBars(seriesData.data.slice(0, dataPointIndex));
-		return `
-			.bar-chart[data-chart-id="bar-chart-${chartId}"] .visx-bar-group .visx-bar:nth-child(${domBarIndex + 1}) {
-				stroke: #005fcc;
-				stroke-width: 2px;
-			}
-		`;
+	const selectedBar = useMemo(() => {
+		if (overlapSlots) return selectedSlot;
+		const bar = selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
+		return bar && isBarRendered(bar.datum) ? {
+			data: [bar.datum],
+			slotKey: bar.key,
+			thickness: 1
+		} : void 0;
 	}, [
+		overlapSlots,
+		selectedSlot,
 		selectedIndex,
-		isOverlap,
-		primaryEntries,
-		chartId
+		barAt
 	]);
 	const error = validateData$2(dataSorted);
 	const isDataValid = !error;
@@ -7325,7 +7370,6 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		children: error
 	});
 	const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
-	const highlightedBarStyle = createKeyboardHighlightStyle();
 	const legendPosition = legend.position ?? "bottom";
 	const legendElement = showLegend && /* @__PURE__ */ jsx(Legend, {
 		orientation: legend.orientation ?? "horizontal",
@@ -7406,7 +7450,6 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									})] })
 								}),
 								withPatterns && /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("defs", { children: barColors.map((color, index) => renderPattern(index, color)) }), /* @__PURE__ */ jsx("style", { children: barColors.map((color, index) => createPatternBorderStyle(index, color)) })] }),
-								highlightedBarStyle && /* @__PURE__ */ jsx("style", { children: highlightedBarStyle }),
 								allSeriesHidden ? /* @__PURE__ */ jsx(SvgEmptyState, {
 									x: width / 2,
 									y: chartHeight / 2,
@@ -7425,8 +7468,9 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									resolveFill: resolveComparisonFill
 								}),
 								/* @__PURE__ */ jsx(BarLayer, {
+									chartId,
 									overlapSlots,
-									selectedSlot,
+									selectedBar,
 									primaryEntries,
 									primaryKeys,
 									getBarBackground,
@@ -12191,51 +12235,6 @@ const PieSelectionOutput = ({ withTooltips, selectedIndex, selectedData, keyboar
 	] });
 };
 //#endregion
-//#region src/charts/private/pie-keyboard-navigation/pie-keyboard-navigation.module.scss
-var pie_keyboard_navigation_module_default = {
-	"selected-ring__contrast": "a8ccharts-V2HDKq-selected-ring__contrast",
-	"selected-ring__focus": "a8ccharts-V2HDKq-selected-ring__focus"
-};
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/selected-segment-ring.tsx
-/**
-* Encodes `value` for an SVG id, losslessly so distinct chart ids never share a clip path.
-*
-* @param value - Any string.
-* @return `value` with each character outside `[A-Za-z0-9-]` written as `_<hex code point>_`.
-*/
-const toSvgId = (value) => Array.from(value, (character) => /[A-Za-z0-9-]/.test(character) ? character : `_${character.codePointAt(0)?.toString(16)}_`).join("");
-/**
-* Marks the selected segment with a two-tone ring drawn inside its edge, so the SVG edge cannot cut it off.
-*
-* @param {SelectedSegmentRingProps} props - Component props
-* @return {JSX.Element} The ring
-*/
-const SelectedSegmentRing = ({ chartId, d }) => {
-	const clipId = `pie-selected-ring-clip-${toSvgId(chartId)}`;
-	const clipPath = `url(#${clipId})`;
-	return /* @__PURE__ */ jsxs("g", {
-		pointerEvents: "none",
-		"aria-hidden": "true",
-		children: [
-			/* @__PURE__ */ jsx("clipPath", {
-				id: clipId,
-				children: /* @__PURE__ */ jsx("path", { d })
-			}),
-			/* @__PURE__ */ jsx("path", {
-				d,
-				clipPath,
-				className: pie_keyboard_navigation_module_default["selected-ring__contrast"]
-			}),
-			/* @__PURE__ */ jsx("path", {
-				d,
-				clipPath,
-				className: pie_keyboard_navigation_module_default["selected-ring__focus"]
-			})
-		]
-	});
-};
-//#endregion
 //#region src/charts/private/pie-keyboard-navigation/use-pie-keyboard-navigation.ts
 const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX, tooltipOffsetY }) => {
 	const chartRef = useRef(null);
@@ -12611,9 +12610,11 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 							selectedArc && /* @__PURE__ */ jsx(Group, {
 								top: centerY,
 								left: centerX,
-								children: /* @__PURE__ */ jsx(SelectedSegmentRing, {
+								children: /* @__PURE__ */ jsx(SelectedRing, {
 									chartId,
-									d: path(selectedArc) || ""
+									d: path(selectedArc) || "",
+									side: "inside",
+									testId: "pie-selected-ring"
 								})
 							}),
 							!allSegmentsHidden && /* @__PURE__ */ jsxs(Group, {
@@ -12850,9 +12851,11 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 							selectedArc && /* @__PURE__ */ jsx(Group, {
 								top: height,
 								left: width / 2,
-								children: /* @__PURE__ */ jsx(SelectedSegmentRing, {
+								children: /* @__PURE__ */ jsx(SelectedRing, {
 									chartId,
-									d: path(selectedArc) || ""
+									d: path(selectedArc) || "",
+									side: "inside",
+									testId: "pie-selected-ring"
 								})
 							}),
 							!allSegmentsHidden && /* @__PURE__ */ jsxs(Group, {

@@ -309,12 +309,6 @@
     transform: scaleY(1);
   }
 }
-.a8ccharts-97yN9W-selected-ring {
-  fill: none;
-  stroke: var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
-  stroke-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px));
-}
-
 .a8ccharts-97yN9W-bar-chart svg {
   overflow: visible;
 }
@@ -353,6 +347,25 @@
   to {
     transform: scaleX(1);
   }
+}
+.a8ccharts-gx1_AW-selected-ring__far, .a8ccharts-gx1_AW-selected-ring__edge {
+  fill: none;
+}
+
+.a8ccharts-gx1_AW-selected-ring__far {
+  stroke-width: calc(4 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
+}
+
+.a8ccharts-gx1_AW-selected-ring__edge {
+  stroke-width: calc(2 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
+}
+
+.a8ccharts-gx1_AW-selected-ring__contrast {
+  stroke: var(--a8c-charts-color-background, #fff);
+}
+
+.a8ccharts-gx1_AW-selected-ring__focus {
+  stroke: var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
 }
 .a8ccharts-mGEVca-conversion-funnel-chart {
   position: relative;
@@ -937,19 +950,6 @@
   .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-chevron {
     transition: none;
   }
-}
-.a8ccharts-V2HDKq-selected-ring__contrast, .a8ccharts-V2HDKq-selected-ring__focus {
-  fill: none;
-}
-
-.a8ccharts-V2HDKq-selected-ring__contrast {
-  stroke: var(--a8c-charts-color-background, #fff);
-  stroke-width: calc(4 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
-}
-
-.a8ccharts-V2HDKq-selected-ring__focus {
-  stroke: var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
-  stroke-width: calc(2 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));
 }
 .a8ccharts-gnszbG-pie-chart {
   isolation: isolate;
