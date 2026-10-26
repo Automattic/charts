@@ -30,7 +30,7 @@ import { __assign } from "tslib";
 import "@babel/runtime/helpers/esm/extends";
 import { Icon, chevronRight } from "@wordpress/icons";
 import { arc, pie } from "@visx/shape";
-//#region \0rolldown/runtime.js
+// \0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -52,26 +52,22 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 	value: mod,
 	enumerable: true
 }) : target, mod));
-//#endregion
-//#region src/charts/private/chart-instance-context/chart-instance-context.ts
+// src/charts/private/chart-instance-context/chart-instance-context.ts
 const ChartInstanceContext = createContext(null);
-//#endregion
-//#region src/charts/private/chart-instance-context/use-chart-instance-context.ts
+// src/charts/private/chart-instance-context/use-chart-instance-context.ts
 const useChartInstanceContext = () => {
 	const context = useContext(ChartInstanceContext);
 	if (!context) throw new Error("useChartInstanceContext must be used within a Chart component");
 	return context;
 };
-//#endregion
-//#region src/styles/chart-scope-class.ts
+// src/styles/chart-scope-class.ts
 /**
 * Stable class that carries the `--a8c-charts-*` catalog. Applied to the `GlobalChartsProvider` wrapper, to portal-rendered surfaces (which sit outside the provider tree), and to standalone components when no provider is above them.
 *
 * Deliberately unhashed: consumers are documented as being able to target it to override a token on the provider element.
 */
 const CHART_SCOPE_CLASS = "a8c-charts-scope";
-//#endregion
-//#region src/utils/create-composition.ts
+// src/utils/create-composition.ts
 /**
 * Utility function to create chart components with composition API.
 *
@@ -85,8 +81,7 @@ const CHART_SCOPE_CLASS = "a8c-charts-scope";
 function attachSubComponents(Chart, subComponents) {
 	return Object.assign(Chart, subComponents);
 }
-//#endregion
-//#region src/utils/warn-once.ts
+// src/utils/warn-once.ts
 const warned = /* @__PURE__ */ new Set();
 /**
 * Warns about a host-supplied value once per process, and never in production.
@@ -99,8 +94,7 @@ const warnOnce = (key, message) => {
 	warned.add(key);
 	console.warn(`[Charts] ${message}`);
 };
-//#endregion
-//#region src/utils/date-parsing.ts
+// src/utils/date-parsing.ts
 /**
 * @file Date parsing: a naive string is dated in a supplied IANA zone, or the runtime's own
 *
@@ -195,8 +189,7 @@ const parseAsLocalDate = (dateString, timeZone) => {
 	}
 	return /* @__PURE__ */ new Date(NaN);
 };
-//#endregion
-//#region src/utils/bucket-info.ts
+// src/utils/bucket-info.ts
 const getInstant = (point) => {
 	if (!point) return;
 	if ("date" in point && point.date) return point.date.getTime();
@@ -228,8 +221,7 @@ const getBucketInfo = (data, tickResolution) => ({
 	bucket: tickResolution ?? getBucketResolution(data),
 	displayResolution: getBucketResolution(data, tickResolution)
 });
-//#endregion
-//#region src/utils/format-metric-value.ts
+// src/utils/format-metric-value.ts
 /**
 * Format a numeric metric value based on type, precision and scale.
 * Supports currency, number and percentage, using `@automattic/number-formatters`.
@@ -278,8 +270,7 @@ const formatMetricValue = (value, type = "number", { decimals, useMultipliers = 
 		});
 	}
 };
-//#endregion
-//#region src/utils/format-percentage.ts
+// src/utils/format-percentage.ts
 /**
 * Format a percentage value with smart decimal handling.
 * Uses `@automattic/number-formatters` for consistent formatting.
@@ -295,8 +286,7 @@ const formatPercentage = (value) => {
 		maximumFractionDigits: 2
 	} });
 };
-//#endregion
-//#region src/utils/get-edge-tick-widths.ts
+// src/utils/get-edge-tick-widths.ts
 /**
 * Rendered widths of the first and last tick labels on an axis.
 *
@@ -320,8 +310,7 @@ const getEdgeTickWidths = (ticks, formatTick, labelStyle) => {
 		last: getStringWidth(label(ticks[lastIndex], lastIndex), labelStyle) ?? 0
 	};
 };
-//#endregion
-//#region src/utils/get-longest-tick-width.ts
+// src/utils/get-longest-tick-width.ts
 /**
 * Returns the width of the longest tick.
 *
@@ -335,8 +324,7 @@ const getLongestTickWidth = (ticks, formatTick, labelStyle) => {
 	const longestTick = formattedTicks.reduce((longest, current) => longest.length >= current.length ? longest : current, formattedTicks[0]);
 	return getStringWidth(longestTick, labelStyle);
 };
-//#endregion
-//#region src/utils/get-styles.ts
+// src/utils/get-styles.ts
 /**
 * Utility function to get consolidated line styles for a series
 * This consolidates the logic used by both LineChart and Legend components
@@ -389,19 +377,16 @@ function getItemShapeStyles(series, index, theme, legendShape) {
 		...barShapeStyles
 	};
 }
-//#endregion
-//#region src/utils/is-safari.ts
+// src/utils/is-safari.ts
 const isSafari = () => {
 	if (typeof navigator !== "undefined" && navigator.userAgent) return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 	return false;
 };
-//#endregion
-//#region src/utils/merge-themes.ts
+// src/utils/merge-themes.ts
 function mergeThemes(baseTheme, overrideTheme) {
 	return deepmerge(baseTheme, overrideTheme, { arrayMerge: (_destinationArray, sourceArray) => sourceArray });
 }
-//#endregion
-//#region src/utils/color-utils.ts
+// src/utils/color-utils.ts
 /**
 * Check if a value is a valid 6-digit hex color
 * @param hex - The value to check
@@ -568,8 +553,7 @@ const prefersLightText = (backgroundHex) => {
 	if (!isValidHexColor(backgroundHex)) return false;
 	return relativeLuminance(backgroundHex) <= .179;
 };
-//#endregion
-//#region src/utils/resolve-css-var.ts
+// src/utils/resolve-css-var.ts
 /**
 * Pattern for valid CSS custom property names (e.g., '--my-color', '--jp-gray-10')
 */
@@ -666,8 +650,7 @@ function readCustomProperty(varName, styles) {
 		return null;
 	}
 }
-//#endregion
-//#region src/utils/resolve-font-size.ts
+// src/utils/resolve-font-size.ts
 const toFontSize = (size) => Number.isFinite(size) && size >= 0 ? size : void 0;
 /**
 * Resolve a theme `fontSize` value into a plain number suitable for
@@ -694,8 +677,7 @@ const resolveFontSize = (val) => {
 		return match ? toFontSize(parseFloat(match[1])) : void 0;
 	}
 };
-//#endregion
-//#region src/utils/date-formatting.ts
+// src/utils/date-formatting.ts
 const formatters = /* @__PURE__ */ new Map();
 const getFormatter$1 = (options, { locale, timeZone }) => {
 	const key = `${locale ?? ""}|${timeZone ?? ""}|${JSON.stringify(options)}`;
@@ -794,8 +776,7 @@ const createZonedClock = (timeZone) => {
 		};
 	};
 };
-//#endregion
-//#region src/providers/chart-scope/chart-scope-context.ts
+// src/providers/chart-scope/chart-scope-context.ts
 /**
 * The nearest chart element, published so JS token resolution reads the same CSS cascade that paints the chart's own colours.
 *
@@ -812,8 +793,7 @@ const seriesRole = (slot) => `--a8c-charts-color-series-${slot}`;
 const SERIES_SLOT_1_FALLBACK = "#3858e9";
 /** The catalog pointer for every slot, in slot order. */
 const SERIES_PALETTE_POINTERS = Array.from({ length: 5 }, (_, index) => index === 0 ? `var(${seriesRole(1)}, ${SERIES_SLOT_1_FALLBACK})` : `var(${seriesRole(index + 1)})`);
-//#endregion
-//#region src/providers/chart-context/private/catalog-pointers.ts
+// src/providers/chart-context/private/catalog-pointers.ts
 /** Terminal literals the provider also generates from before its first read, so SSR and the first client render agree. */
 const BACKGROUND_FALLBACK = "#ffffff";
 const LABEL_FALLBACK = "#1e1e1e";
@@ -853,8 +833,7 @@ const ANNOTATION_POINTERS = {
 		radius: 5
 	}
 };
-//#endregion
-//#region src/providers/chart-context/private/perceptual-color.ts
+// src/providers/chart-context/private/perceptual-color.ts
 const DEUTERANOPIA = [
 	.367322,
 	.860646,
@@ -1260,16 +1239,14 @@ const buildPaletteGenerator = (normalizedSeeds, background, labelColors) => {
 		return palette[index].hex;
 	};
 };
-//#endregion
-//#region src/providers/chart-context/private/resolve-opaque-hex.ts
+// src/providers/chart-context/private/resolve-opaque-hex.ts
 const resolveOpaqueHex = (pointer, resolve) => {
 	const raw = resolve(pointer);
 	if (!raw || color(raw)?.opacity !== 1) return null;
 	const hex = normalizeColorToHex(raw);
 	return isValidHexColor(hex) ? hex : null;
 };
-//#endregion
-//#region src/providers/chart-context/themes.ts
+// src/providers/chart-context/themes.ts
 /**
 * Default theme configuration: the shape and spacing a consumer can override.
 *
@@ -1312,8 +1289,7 @@ const defaultTheme = {
 		groupGap: 24
 	}
 };
-//#endregion
-//#region src/providers/chart-context/global-charts-provider.tsx
+// src/providers/chart-context/global-charts-provider.tsx
 const PLACEHOLDER_LABEL_COLORS = [LABEL_FALLBACK, LABEL_INVERSE_FALLBACK];
 const GlobalChartsContext = createContext(null);
 const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
@@ -1494,21 +1470,18 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		})
 	});
 };
-//#endregion
-//#region src/providers/chart-context/hooks/use-global-charts-context.ts
+// src/providers/chart-context/hooks/use-global-charts-context.ts
 const useGlobalChartsContext = () => {
 	const context = useContext(GlobalChartsContext);
 	if (!context) throw new Error("useGlobalChartsContext must be used within a GlobalChartsProvider");
 	return context;
 };
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-id.ts
+// src/providers/chart-context/hooks/use-chart-id.ts
 const useChartId = (providedId) => {
 	const generatedId = useId();
 	return providedId || generatedId;
 };
-//#endregion
-//#region src/hooks/use-deep-memo.ts
+// src/hooks/use-deep-memo.ts
 var import_fast_deep_equal = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function equal(a, b) {
 		if (a === b) return true;
@@ -1549,16 +1522,14 @@ const useDeepMemo = (value) => {
 	if (!(0, import_fast_deep_equal.default)(ref.current, value)) ref.current = value;
 	return ref.current;
 };
-//#endregion
-//#region src/providers/chart-scope/use-chart-scope-element.ts
+// src/providers/chart-scope/use-chart-scope-element.ts
 /**
 * Returns the nearest chart scope element, or `null` when rendered outside any scope (and during SSR, before the ref is attached).
 *
 * @return {HTMLElement | null} The nearest chart scope element, or `null`.
 */
 const useChartScopeElement = () => useContext(ChartScopeContext);
-//#endregion
-//#region src/providers/chart-scope/use-standalone-scope-class.ts
+// src/providers/chart-scope/use-standalone-scope-class.ts
 /**
 * Returns the catalog class when there is no `GlobalChartsProvider` above this component, and `undefined` when there is.
 *
@@ -1567,8 +1538,7 @@ const useChartScopeElement = () => useContext(ChartScopeContext);
 * @return The scope class name, or undefined when a provider is present.
 */
 const useStandaloneScopeClass = () => useContext(GlobalChartsContext) ? void 0 : CHART_SCOPE_CLASS;
-//#endregion
-//#region src/hooks/use-xychart-theme.ts
+// src/hooks/use-xychart-theme.ts
 const STARTS_LIKE_A_NUMBER = /^[+-]?[\d.]/;
 const NON_NEGATIVE_CSS_NUMBER = /^\+?(?:\d*\.)?\d+(?:e[+-]?\d+)?(?:[a-z]+|%)?$/i;
 const isRenderableFontSize = (fontSize) => {
@@ -1624,8 +1594,7 @@ const useXYChartTheme = (data) => {
 		scopeElement
 	]);
 };
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-formatting.ts
+// src/providers/chart-context/hooks/use-chart-formatting.ts
 const RUNTIME_FORMATTING = {};
 /**
 * The locale and time zone dates are rendered in, as set on `GlobalChartsProvider`.
@@ -1639,8 +1608,7 @@ const RUNTIME_FORMATTING = {};
 const useChartFormatting = () => {
 	return useContext(GlobalChartsContext)?.formatting ?? RUNTIME_FORMATTING;
 };
-//#endregion
-//#region src/hooks/use-chart-data-transform.ts
+// src/hooks/use-chart-data-transform.ts
 /**
 * Hook that transforms and sorts chart data, handling date parsing and sorting
 *
@@ -1675,8 +1643,7 @@ const useChartDataTransform = (data) => {
 		}));
 	}, [data, timeZone]);
 };
-//#endregion
-//#region src/hooks/use-chart-margin.tsx
+// src/hooks/use-chart-margin.tsx
 /**
 * Base top margin used when no dynamic adjustments are necessary.
 */
@@ -1798,8 +1765,7 @@ const useChartMargin = (height, options, data, theme, horizontal = false) => {
 		yTicks
 	]);
 };
-//#endregion
-//#region src/hooks/use-element-size.ts
+// src/hooks/use-element-size.ts
 /**
 * Hook to measure the width and height of a DOM element.
 * Returns a ref callback to attach to the element and the current dimensions in pixels.
@@ -1836,8 +1802,7 @@ function useElementSize({ initialWidth = 0, initialHeight = 0 } = {}) {
 		height
 	];
 }
-//#endregion
-//#region src/hooks/use-text-truncation.ts
+// src/hooks/use-text-truncation.ts
 /**
 * Hook to detect if text content is truncated within its container.
 * Uses ResizeObserver to dynamically track changes in element size.
@@ -1878,8 +1843,7 @@ function useTextTruncation(enabled = true) {
 		} else setIsTruncated(false);
 	}, [enabled]), isTruncated];
 }
-//#endregion
-//#region src/hooks/use-zero-value-display.ts
+// src/hooks/use-zero-value-display.ts
 /**
 * Minimum pixel size for near-zero bars (non-zero values that would render too small).
 * Using 3px to be visible but not misleading - larger values might look like actual data.
@@ -1919,8 +1883,7 @@ const useZeroValueDisplay = (data, options = { enabled: false }) => {
 		valueAxisLength
 	]);
 };
-//#endregion
-//#region src/hooks/use-data-with-percentages.ts
+// src/hooks/use-data-with-percentages.ts
 /**
 * Hook to calculate percentages from values for chart data.
 * Ensures percentages are always derived from values (single source of truth).
@@ -1937,8 +1900,7 @@ const useDataWithPercentages = (data) => {
 		}));
 	}, [data]);
 };
-//#endregion
-//#region src/hooks/use-legend-visibility-data.ts
+// src/hooks/use-legend-visibility-data.ts
 /**
 * Custom hook to filter and recalculate chart data based on series visibility.
 *
@@ -2010,8 +1972,7 @@ const useLegendVisibilityData = ({ data, chartId, isSeriesVisible }) => {
 		])
 	};
 };
-//#endregion
-//#region src/hooks/use-prefers-reduced-motion.ts
+// src/hooks/use-prefers-reduced-motion.ts
 const QUERY = "(prefers-reduced-motion: no-preference)";
 const getInitialState = () => !window.matchMedia(QUERY).matches;
 /**
@@ -2032,11 +1993,9 @@ function usePrefersReducedMotion() {
 	}, []);
 	return prefersReducedMotion;
 }
-//#endregion
-//#region src/hooks/use-isomorphic-layout-effect.ts
+// src/hooks/use-isomorphic-layout-effect.ts
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-registration.ts
+// src/providers/chart-context/hooks/use-chart-registration.ts
 const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, metadata }) => {
 	const { registerChart, unregisterChart } = useGlobalChartsContext();
 	const stableLegendItems = useDeepMemo(legendItems);
@@ -2058,8 +2017,7 @@ const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, me
 		isDataValid
 	]);
 };
-//#endregion
-//#region src/providers/chart-context/hooks/use-global-charts-theme.ts
+// src/providers/chart-context/hooks/use-global-charts-theme.ts
 /**
 * Hook to get the global chart theme from GlobalChartsProvider
 *
@@ -2068,8 +2026,7 @@ const useChartRegistration = ({ chartId, legendItems, chartType, isDataValid, me
 const useGlobalChartsTheme = () => {
 	return useContext(GlobalChartsContext)?.theme ?? defaultTheme;
 };
-//#endregion
-//#region src/components/legend/utils/value-or-identity.ts
+// src/components/legend/utils/value-or-identity.ts
 /**
 * Returns an object's value if defined, or the object.
 * @param _ - The object to return the value of.
@@ -2087,8 +2044,7 @@ function valueOrIdentity(_) {
 function valueOrIdentityString(_) {
 	return String(valueOrIdentity(_));
 }
-//#endregion
-//#region src/components/legend/private/base-legend.module.scss
+// src/components/legend/private/base-legend.module.scss
 var base_legend_module_default = {
 	"legend": "a8ccharts-04TogW-legend",
 	"legend--horizontal": "a8ccharts-04TogW-legend--horizontal",
@@ -2100,8 +2056,7 @@ var base_legend_module_default = {
 	"legend-item-text--wrap": "a8ccharts-04TogW-legend-item-text--wrap",
 	"legend-item-value": "a8ccharts-04TogW-legend-item-value"
 };
-//#endregion
-//#region src/components/legend/private/base-legend.tsx
+// src/components/legend/private/base-legend.tsx
 const ALIGNMENT_TO_FLEX = {
 	start: "flex-start",
 	center: "center",
@@ -2266,8 +2221,7 @@ const BaseLegend = forwardRef(({ items: allItems, className, orientation = "hori
 		})
 	});
 });
-//#endregion
-//#region src/components/legend/legend.tsx
+// src/components/legend/legend.tsx
 const defaultShapeByChartType = {
 	area: "rect",
 	line: "line",
@@ -2293,8 +2247,7 @@ const Legend = forwardRef(({ chartId, items, shape, ...props }, ref) => {
 		chartId: contextChartId
 	});
 });
-//#endregion
-//#region src/components/legend/hooks/use-chart-legend-items.ts
+// src/components/legend/hooks/use-chart-legend-items.ts
 /**
 * Wraps `getElementStyles` so a swatch takes the color given for its series.
 * @param getElementStyles - Function to get element styles
@@ -2550,15 +2503,13 @@ function useChartLegendItems(data, options = {}, legendShape) {
 		legendShape
 	]);
 }
-//#endregion
-//#region src/components/tooltip/private/label-value-content.tsx
+// src/components/tooltip/private/label-value-content.tsx
 const LabelValueContent = ({ data }) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
 	data.label,
 	": ",
 	data.valueDisplay || formatNumber(data.value)
 ] });
-//#endregion
-//#region src/components/tooltip/private/tooltip-theme.tsx
+// src/components/tooltip/private/tooltip-theme.tsx
 const DEFAULT_SURFACE = "#1e1e1e";
 const TOOLTIP_SURFACE = `var(--a8c-charts-color-tooltip-surface, ${DEFAULT_SURFACE})`;
 const toSeed = (value) => {
@@ -2581,11 +2532,9 @@ const TooltipTheme = ({ children }) => {
 		children
 	});
 };
-//#endregion
-//#region src/components/tooltip/tooltip-box.module.scss
+// src/components/tooltip/tooltip-box.module.scss
 var tooltip_box_module_default = { "surface": "a8ccharts-ddpU1W-surface" };
-//#endregion
-//#region src/components/tooltip/tooltip-box.tsx
+// src/components/tooltip/tooltip-box.tsx
 /**
 * The chart tooltip box: the dark surface every chart tooltip draws. It does not position itself; place it with `style` or a wrapper.
 *
@@ -2605,8 +2554,7 @@ const TooltipBox = forwardRef(({ unstyled = false, role = "tooltip", className, 
 	return unstyled ? box : /* @__PURE__ */ jsx(TooltipTheme, { children: box });
 });
 TooltipBox.displayName = "TooltipBox";
-//#endregion
-//#region src/components/tooltip/base-tooltip.tsx
+// src/components/tooltip/base-tooltip.tsx
 /**
 * A tooltip box with children or `label: value` content. Prefer `TooltipBox`.
 *
@@ -2818,8 +2766,7 @@ const BoundedTooltip = ({ left = 0, top = 0, offsetLeft = 10, offsetTop = 10, st
 		}), children]
 	});
 };
-//#endregion
-//#region src/components/tooltip/private/xy-chart-tooltip-overlay.tsx
+// src/components/tooltip/private/xy-chart-tooltip-overlay.tsx
 const CROSSHAIR_STROKE_WIDTH = 1.5;
 const CROSSHAIR_PAINT_PROPERTIES = /* @__PURE__ */ new Set([
 	"stroke",
@@ -3014,8 +2961,7 @@ const XyChartTooltipOverlay = (props) => {
 		container
 	})] });
 };
-//#endregion
-//#region src/components/tooltip/xy-chart-tooltip.tsx
+// src/components/tooltip/xy-chart-tooltip.tsx
 const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocusedClassName, series = [], mode = "group", verticalCrosshairStyle, horizontalCrosshairStyle, ...props }) => {
 	const tooltipContext = useContext(TooltipContext);
 	const scopeElement = useChartScopeElement();
@@ -3246,8 +3192,7 @@ const useKeyboardNavigation = ({ selectedIndex, setSelectedIndex, isNavigating, 
 		onChartPointerMove
 	};
 };
-//#endregion
-//#region src/providers/chart-context/hooks/use-default-hidden-series.ts
+// src/providers/chart-context/hooks/use-default-hidden-series.ts
 /**
 * Seeds a chart's hidden series once per chart ID, the first time the provider
 * sees that ID.
@@ -3282,8 +3227,7 @@ const useDefaultHiddenSeries = (chartId, seriesLabels) => {
 		chartId
 	]);
 };
-//#endregion
-//#region src/charts/private/chart-composition/chart-svg.tsx
+// src/charts/private/chart-composition/chart-svg.tsx
 /**
 * Compound component for SVG children in charts.
 * This component serves as a marker for SVG content that should be rendered
@@ -3297,8 +3241,7 @@ const ChartSVG = ({ children }) => {
 	return /* @__PURE__ */ jsx(Fragment$1, { children });
 };
 ChartSVG.displayName = "Chart.SVG";
-//#endregion
-//#region src/charts/private/chart-composition/chart-html.tsx
+// src/charts/private/chart-composition/chart-html.tsx
 /**
 * Compound component for HTML children in charts.
 * This component serves as a marker for HTML content that should be rendered
@@ -3312,8 +3255,7 @@ const ChartHTML = ({ children }) => {
 	return /* @__PURE__ */ jsx(Fragment$1, { children });
 };
 ChartHTML.displayName = "Chart.HTML";
-//#endregion
-//#region src/charts/private/chart-composition/render-legend-slot.ts
+// src/charts/private/chart-composition/render-legend-slot.ts
 /**
 * Renders legend children filtered by position slot.
 *
@@ -3324,8 +3266,7 @@ ChartHTML.displayName = "Chart.HTML";
 function renderLegendSlot(legendChildren, position) {
 	return legendChildren.filter((l) => l.position === position).map((l, i) => createElement(Fragment, { key: `legend-${position}-${i}` }, l.element));
 }
-//#endregion
-//#region src/charts/private/chart-composition/use-chart-children.ts
+// src/charts/private/chart-composition/use-chart-children.ts
 /**
 * Custom hook to process and categorize chart children for composition API.
 * Extracts children from compound components (Chart.SVG, Chart.HTML) and
@@ -3378,11 +3319,9 @@ function useChartChildren(children, chartType) {
 		};
 	}, [children, chartType]);
 }
-//#endregion
-//#region src/charts/private/chart-layout/chart-layout.module.scss
+// src/charts/private/chart-layout/chart-layout.module.scss
 var chart_layout_module_default = { "chart-layout__content": "a8ccharts-fpNVAq-chart-layout__content" };
-//#endregion
-//#region src/charts/private/chart-layout/chart-layout.tsx
+// src/charts/private/chart-layout/chart-layout.tsx
 const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, trailingContent, onContentHeightChange, gap, className, rootRef, style, "data-testid": dataTestId, "data-chart-id": dataChartId }) => {
 	const [contentRef, contentWidth, contentHeight] = useElementSize();
 	const isRenderProp = typeof children === "function";
@@ -3425,8 +3364,7 @@ const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, 
 		]
 	});
 };
-//#endregion
-//#region src/charts/private/default-glyph/default-glyph.tsx
+// src/charts/private/default-glyph/default-glyph.tsx
 const DefaultGlyph = (props) => {
 	const { theme } = useContext(DataContext) || {};
 	props.position;
@@ -3441,8 +3379,7 @@ const DefaultGlyph = (props) => {
 		...props.glyphStyle
 	});
 };
-//#endregion
-//#region src/charts/private/readings.ts
+// src/charts/private/readings.ts
 /**
 * Whether a value is a reading a scale can place.
 *
@@ -3466,11 +3403,9 @@ const isInvalidReading = (value, { allowMissing }) => value === null ? !allowMis
 * @return The formatted value.
 */
 const formatReading = (value) => value == null ? __("No data", "jetpack-charts") : formatNumber(value);
-//#endregion
-//#region src/charts/private/center/center.module.scss
+// src/charts/private/center/center.module.scss
 var center_module_default = { "center": "a8ccharts-w3qxlG-center" };
-//#endregion
-//#region src/charts/private/center/center.tsx
+// src/charts/private/center/center.tsx
 /**
 * Centers its children on both axes and fills its parent.
 *
@@ -3492,11 +3427,9 @@ const Center = forwardRef(({ align = "center", justify = "center", className, ..
 	...props
 }));
 Center.displayName = "Center";
-//#endregion
-//#region src/charts/private/svg-empty-state/svg-empty-state.module.scss
+// src/charts/private/svg-empty-state/svg-empty-state.module.scss
 var svg_empty_state_module_default = { "svg-empty-state": "a8ccharts-udGPVq-svg-empty-state" };
-//#endregion
-//#region src/charts/private/svg-empty-state/svg-empty-state.tsx
+// src/charts/private/svg-empty-state/svg-empty-state.tsx
 /**
 * Renders empty-state text inside an SVG using foreignObject so that the
 * message wraps onto multiple lines instead of being clipped.
@@ -3523,8 +3456,7 @@ const SvgEmptyState = ({ x, y, width, height, children }) => {
 		})
 	});
 };
-//#endregion
-//#region src/charts/private/svg-empty-state/get-all-hidden-message.ts
+// src/charts/private/svg-empty-state/get-all-hidden-message.ts
 /**
 * Return the empty-state message for a chart whose items are all hidden.
 *
@@ -3544,8 +3476,7 @@ const getAllHiddenMessage = (interactive, itemType) => {
 	if (interactive) return _x("All series are hidden. Click legend items to show data.", "chart empty state: interactive series", "jetpack-charts");
 	return _x("All series are hidden.", "chart empty state: series", "jetpack-charts");
 };
-//#endregion
-//#region src/charts/private/time-axis.ts
+// src/charts/private/time-axis.ts
 const X_TICK_WIDTH = 60;
 const getCurveType = (type, smoothing) => {
 	if (!type) return smoothing ? curveCatmullRom : curveLinear;
@@ -3802,8 +3733,7 @@ const guessOptimalNumTicks = (data, chartWidth, tickFormatter) => {
 	}
 	return Math.max(1, secondBestGuess);
 };
-//#endregion
-//#region src/charts/private/time-axis-options.ts
+// src/charts/private/time-axis-options.ts
 const toDateDomain = (domain) => domain ? [new Date(domain[0]), new Date(domain[1])] : void 0;
 /**
 * The x-axis options for a continuous time chart, shared by LineChart and AreaChart.
@@ -3838,8 +3768,7 @@ const buildTimeAxisOptions = ({ dataSorted, width, axisOptions, scaleDomain, zoo
 		...numTicks === void 0 ? {} : { numTicks }
 	};
 };
-//#endregion
-//#region src/charts/private/whole-number-ticks.tsx
+// src/charts/private/whole-number-ticks.tsx
 /**
 * Whether every reading in the series is a whole number.
 *
@@ -3886,15 +3815,13 @@ const WholeNumberTicks = ({ axis, numTicks, enabled, children }) => {
 	const tickValues = enabled ? getWholeNumberTickValues(axis === "x" ? xScale : yScale, numTicks) : void 0;
 	return /* @__PURE__ */ jsx(Fragment$1, { children: children(tickValues) });
 };
-//#endregion
-//#region src/charts/private/with-responsive/with-responsive.module.scss
+// src/charts/private/with-responsive/with-responsive.module.scss
 var with_responsive_module_default = {
 	"container": "a8ccharts-sP1gHa-container",
 	"content": "a8ccharts-sP1gHa-content",
 	"isContained": "a8ccharts-sP1gHa-isContained"
 };
-//#endregion
-//#region src/charts/private/with-responsive/with-responsive.tsx
+// src/charts/private/with-responsive/with-responsive.tsx
 /**
 * A higher-order component that provides responsive dimensions
 * to the wrapped chart component using useParentSize from `@visx/responsive`.
@@ -3973,14 +3900,12 @@ function withResponsive(WrappedComponent) {
 		});
 	};
 }
-//#endregion
-//#region src/charts/private/x-zoom/x-zoom.module.scss
+// src/charts/private/x-zoom/x-zoom.module.scss
 var x_zoom_module_default = {
 	"x-zoom__reset": "a8ccharts-ur9dWW-x-zoom__reset",
 	"x-zoom__selection": "a8ccharts-ur9dWW-x-zoom__selection"
 };
-//#endregion
-//#region src/charts/private/x-zoom/x-zoom.tsx
+// src/charts/private/x-zoom/x-zoom.tsx
 const MIN_DRAG_PIXELS = 6;
 /**
 * Drag-to-zoom state + pointer handlers for an XY chart. Designed to be
@@ -4163,11 +4088,9 @@ function ZoomResetButton({ onClick }) {
 		})
 	});
 }
-//#endregion
-//#region src/charts/private/xy-plot/xy-plot.module.scss
+// src/charts/private/xy-plot/xy-plot.module.scss
 var xy_plot_module_default = { "xy-plot": "a8ccharts-bIyhgG-xy-plot" };
-//#endregion
-//#region src/charts/line-chart/line-chart.module.scss
+// src/charts/line-chart/line-chart.module.scss
 var line_chart_module_default = {
 	"line-chart": "a8ccharts-inuQka-line-chart",
 	"line-chart__annotation-label": "a8ccharts-inuQka-line-chart__annotation-label",
@@ -4269,8 +4192,7 @@ const LineChartAnnotationLabelWithPopover = ({ title, subtitle, renderLabel, ren
 		})]
 	});
 };
-//#endregion
-//#region src/charts/line-chart/private/line-chart-annotations-overlay.tsx
+// src/charts/line-chart/private/line-chart-annotations-overlay.tsx
 const LineChartAnnotationsOverlay = ({ children }) => {
 	const { chartRef, chartWidth, chartHeight } = useChartInstanceContext();
 	const [scales, setScales] = useState(null);
@@ -4353,8 +4275,7 @@ const LineChartAnnotationsOverlay = ({ children }) => {
 		})
 	});
 };
-//#endregion
-//#region src/charts/line-chart/private/line-chart-annotation.tsx
+// src/charts/line-chart/private/line-chart-annotation.tsx
 const ANNOTATION_MAX_WIDTH = 125;
 const ANNOTATION_INIT_HEIGHT = 100;
 const getLabelPosition = ({ subjectType, x, xMax, y, yMin, yMax, maxWidth, height }) => {
@@ -4547,8 +4468,7 @@ const LineChartAnnotation = ({ datum, title, subtitle, subjectType = "circle", s
 		]
 	}) });
 };
-//#endregion
-//#region src/charts/line-chart/private/line-chart-glyph.tsx
+// src/charts/line-chart/private/line-chart-glyph.tsx
 const toNumber$1 = (val) => {
 	const num = typeof val === "number" ? val : parseFloat(val);
 	return isNaN(num) ? void 0 : num;
@@ -4578,8 +4498,7 @@ const LineChartGlyph = ({ data, index, color, glyphStyle, renderGlyph, accessors
 		position
 	});
 };
-//#endregion
-//#region src/charts/line-chart/private/nearest-pointer-events.tsx
+// src/charts/line-chart/private/nearest-pointer-events.tsx
 /**
 * Find the datum nearest a pointer along x, in one series sorted by x.
 *
@@ -4678,8 +4597,7 @@ function NearestPointerEvents({ onPointerDown, onPointerMove, onPointerUp }) {
 	useEventEmitter("pointerup", handlers.pointerup);
 	return null;
 }
-//#endregion
-//#region src/charts/line-chart/line-chart.tsx
+// src/charts/line-chart/line-chart.tsx
 const defaultRenderGlyph = (props) => {
 	return /* @__PURE__ */ createElement(DefaultGlyph, {
 		...props,
@@ -5209,15 +5127,13 @@ const LineChartResponsive = attachSubComponents(withResponsive(LineChartWithProv
 	AnnotationsOverlay: LineChartAnnotationsOverlay,
 	Annotation: LineChartAnnotation
 });
-//#endregion
-//#region src/charts/area-chart/area-chart.module.scss
+// src/charts/area-chart/area-chart.module.scss
 var area_chart_module_default = {
 	"area-chart": "a8ccharts-jlynaq-area-chart",
 	"area-chart--animated": "a8ccharts-jlynaq-area-chart--animated",
 	"rise": "a8ccharts-jlynaq-rise"
 };
-//#endregion
-//#region src/charts/area-chart/private/validate-data.ts
+// src/charts/area-chart/private/validate-data.ts
 /**
 * Up-front data validation. Returns a localised error message when the chart
 * cannot safely render, otherwise `null`. Catches the cases that would
@@ -5233,8 +5149,7 @@ const validateData$3 = (data) => {
 	if (data.some((series) => series.data.some((point) => isInvalidReading(point.value, { allowMissing: false }) || "date" in point && point.date && isNaN(point.date.getTime())))) return __("Invalid data", "jetpack-charts");
 	return null;
 };
-//#endregion
-//#region src/charts/area-chart/private/overlays.tsx
+// src/charts/area-chart/private/overlays.tsx
 const AreaChartScalesRef = ({ chartRef, width, height, margin }) => {
 	const context = useContext(DataContext);
 	useImperativeHandle(chartRef, () => ({
@@ -5299,8 +5214,7 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 		children: circles
 	});
 };
-//#endregion
-//#region src/charts/area-chart/area-chart.tsx
+// src/charts/area-chart/area-chart.tsx
 const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
@@ -5682,8 +5596,7 @@ const AreaChartWithProvider = forwardRef((props, ref) => {
 AreaChartWithProvider.displayName = "AreaChart";
 const AreaChart = attachSubComponents(AreaChartWithProvider, { Legend });
 const AreaChartResponsive = attachSubComponents(withResponsive(AreaChartWithProvider), { Legend });
-//#endregion
-//#region src/charts/bar-chart/bar-chart.module.scss
+// src/charts/bar-chart/bar-chart.module.scss
 var bar_chart_module_default = {
 	"bar-chart": "a8ccharts-97yN9W-bar-chart",
 	"bar-chart--animated": "a8ccharts-97yN9W-bar-chart--animated",
@@ -5691,8 +5604,7 @@ var bar_chart_module_default = {
 	"rise": "a8ccharts-97yN9W-rise",
 	"stretch": "a8ccharts-97yN9W-stretch"
 };
-//#endregion
-//#region src/charts/bar-chart/private/truncated-tick-component.tsx
+// src/charts/bar-chart/private/truncated-tick-component.tsx
 /**
 * Get the bandwidth of a scale
 *
@@ -5806,8 +5718,7 @@ const createTruncatedTickComponent = (axis) => (props) => {
 */
 const TruncatedXTickComponent = createTruncatedTickComponent("x");
 const TruncatedYTickComponent = createTruncatedTickComponent("y");
-//#endregion
-//#region src/charts/bar-chart/private/value-domain.ts
+// src/charts/bar-chart/private/value-domain.ts
 /** Domain for a value axis that has nothing to scale, so its ticks still read 0 to 1. */
 const EMPTY_DOMAIN = [0, 1];
 /**
@@ -5858,8 +5769,7 @@ const getValueScaleDomain = (data, includeZero, isSeriesRendered) => {
 	if (includeZero) return [Math.min(0, min), Math.max(0, max)];
 	return null;
 };
-//#endregion
-//#region src/charts/bar-chart/private/use-bar-chart-options.ts
+// src/charts/bar-chart/private/use-bar-chart-options.ts
 /** Outer padding of the category band scale (space at the chart edges). */
 const BASE_BAND_PADDING = .2;
 /** Inner padding of the category band scale (the base gap between ticks). */
@@ -6075,8 +5985,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		isSeriesRendered
 	]);
 }
-//#endregion
-//#region src/charts/bar-chart/private/band-scale.ts
+// src/charts/bar-chart/private/band-scale.ts
 /**
 * Match the inner slot scale used by visx BarGroup.
 * @param keys      - Visible primary series keys.
@@ -6089,8 +5998,7 @@ const createGroupScale = (keys, bandwidth, padding) => scaleBand({
 	range: [0, bandwidth],
 	padding
 });
-//#endregion
-//#region src/charts/bar-chart/private/comparison-bars-geometry.ts
+// src/charts/bar-chart/private/comparison-bars-geometry.ts
 /**
 * Mirrors visx's getScaleBaseline so bars drawn outside visx share the baseline of its bars, including out-of-domain zero values.
 *
@@ -6136,8 +6044,7 @@ function computeSlotRect(params) {
 		height: valueLength
 	};
 }
-//#endregion
-//#region src/charts/bar-chart/private/classified-bar-series.tsx
+// src/charts/bar-chart/private/classified-bar-series.tsx
 const ClassifiedBarSeries = ({ barClassName, primaryKeys, groupPadding, ...props }) => {
 	const { xScale, yScale, horizontal } = useContext(DataContext);
 	const bandScale = horizontal ? yScale : xScale;
@@ -6181,8 +6088,7 @@ const ClassifiedBarSeries = ({ barClassName, primaryKeys, groupPadding, ...props
 		renderGlyph
 	});
 };
-//#endregion
-//#region src/charts/bar-chart/private/slotted-bar-series.tsx
+// src/charts/bar-chart/private/slotted-bar-series.tsx
 const SlottedBarSeries = ({ barClassName, slotKeys, slotKey, thickness, groupPadding, ...props }) => {
 	const { xScale, yScale, horizontal } = useContext(DataContext);
 	const bandScale = horizontal ? yScale : xScale;
@@ -6225,16 +6131,14 @@ const SlottedBarSeries = ({ barClassName, slotKeys, slotKey, thickness, groupPad
 		renderGlyph
 	});
 };
-//#endregion
-//#region src/charts/private/selected-ring/selected-ring.module.scss
+// src/charts/private/selected-ring/selected-ring.module.scss
 var selected_ring_module_default = {
 	"selected-ring__contrast": "a8ccharts-gx1_AW-selected-ring__contrast",
 	"selected-ring__edge": "a8ccharts-gx1_AW-selected-ring__edge",
 	"selected-ring__far": "a8ccharts-gx1_AW-selected-ring__far",
 	"selected-ring__focus": "a8ccharts-gx1_AW-selected-ring__focus"
 };
-//#endregion
-//#region src/charts/private/selected-ring/selected-ring.tsx
+// src/charts/private/selected-ring/selected-ring.tsx
 const TONES = {
 	inside: ["contrast", "focus"],
 	outside: ["focus", "contrast"]
@@ -6281,8 +6185,7 @@ const SelectedRing = ({ chartId, d, side, testId }) => {
 		]
 	});
 };
-//#endregion
-//#region src/charts/bar-chart/private/selected-bar-ring.tsx
+// src/charts/bar-chart/private/selected-bar-ring.tsx
 /**
 * Marks the keyboard-selected slot with a two-tone ring outside its edge, so the ring reads against any bar color.
 *
@@ -6323,8 +6226,7 @@ const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal
 		testId: "bar-chart-selected-ring"
 	});
 };
-//#endregion
-//#region src/charts/bar-chart/private/bar-layer.tsx
+// src/charts/bar-chart/private/bar-layer.tsx
 /**
 * Draws the bars in front of any comparison shadows, slotted for an overlap layout and grouped by visx otherwise, then the selected bar's ring.
 *
@@ -6392,8 +6294,7 @@ const BarLayer = ({ chartId, overlapSlots, selectedBar, primaryEntries, primaryK
 		yAccessor
 	})] });
 };
-//#endregion
-//#region src/charts/bar-chart/private/slot-tooltip-members.tsx
+// src/charts/bar-chart/private/slot-tooltip-members.tsx
 /**
 * Fills the tooltip with every bar of the keyboard-selected category, and only those.
 *
@@ -6419,8 +6320,7 @@ function SlotTooltipMembers({ members, index }) {
 	}, [members, index]);
 	return null;
 }
-//#endregion
-//#region src/charts/bar-chart/private/overlap-bars.ts
+// src/charts/bar-chart/private/overlap-bars.ts
 const PRIMARY_SLOT = "primary";
 const COMPARISON_SLOT = "comparison";
 const OVERLAP_SLOTS = [PRIMARY_SLOT, COMPARISON_SLOT];
@@ -6528,8 +6428,7 @@ function getOverlapBarColors(series, colors, slotColors, background) {
 	});
 	return barColors;
 }
-//#endregion
-//#region src/charts/bar-chart/private/use-overlap-slots.ts
+// src/charts/bar-chart/private/use-overlap-slots.ts
 /**
 * Whether two data points sit at the same category: the same label, or the same date.
 *
@@ -6647,8 +6546,7 @@ function getSelectedSlot(slots, selectedIndex) {
 		members: [...members.filter(({ key }) => key !== stopKey), ...members.filter(({ key }) => key === stopKey)]
 	};
 }
-//#endregion
-//#region src/charts/bar-chart/private/use-bar-stops.ts
+// src/charts/bar-chart/private/use-bar-stops.ts
 /**
 * Lays out the keyboard stops: one per slot and category in an overlap layout, else one per primary bar, series-major within each category.
 *
@@ -6703,8 +6601,7 @@ const MAX_GROUP_PADDING = .9;
 * gap between ticks. `0.75` = a 25% reduction of the tick-gap padding.
 */
 const COMPARISON_TICK_GAP_FACTOR = .75;
-//#endregion
-//#region src/charts/bar-chart/private/comparison-bars.tsx
+// src/charts/bar-chart/private/comparison-bars.tsx
 const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizontal, xAccessor, yAccessor, getElementStyles, resolveFill }) => {
 	const context = useContext(DataContext);
 	const xScale = context?.xScale;
@@ -6763,8 +6660,7 @@ const ComparisonBars = ({ comparisonEntries, primaryKeys, groupPadding, horizont
 		children: rects
 	});
 };
-//#endregion
-//#region src/charts/bar-chart/private/band-highlight.tsx
+// src/charts/bar-chart/private/band-highlight.tsx
 /**
 * Render and report the active band using the chart’s registered scales.
 * @param root0            - Highlight options.
@@ -6823,8 +6719,7 @@ function BandHighlight({ visible, horizontal, onChange }) {
 		fill: CATALOG_POINTERS.surfaceSecondary
 	});
 }
-//#endregion
-//#region src/charts/bar-chart/private/band-tooltip.tsx
+// src/charts/bar-chart/private/band-tooltip.tsx
 /**
 * Find a category by its painted center, including outer padding and reversed ranges.
 * @param data     - Registered series points.
@@ -6943,8 +6838,7 @@ function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, o
 	useEventEmitter("pointerup", onPointerUp ? handlePointer : void 0);
 	return null;
 }
-//#endregion
-//#region src/charts/bar-chart/private/grouped-bars.ts
+// src/charts/bar-chart/private/grouped-bars.ts
 /**
 * Pairs each comparison series with the primary of its `group`, or with the only primary.
 *
@@ -6984,8 +6878,7 @@ function getGroupedBarColors(series, colors, background) {
 	});
 	return barColors;
 }
-//#endregion
-//#region src/charts/bar-chart/use-bar-colors.ts
+// src/charts/bar-chart/use-bar-colors.ts
 /**
 * Reads the colors `BarChart` fills series with, so a custom tooltip or legend can match the bars.
 *
@@ -7007,8 +6900,7 @@ function useBarColors() {
 		comparisonOpacity
 	]);
 }
-//#endregion
-//#region src/charts/bar-chart/use-bar-legend-items.ts
+// src/charts/bar-chart/use-bar-legend-items.ts
 const isComparison = (data, label) => data.some((series) => series.label === label && series.options?.type === "comparison");
 /**
 * Applies what a bar layout changes about a legend: overlap lists every primary before every comparison, as it draws their slots, with every swatch opaque like its bar; a collapsed grouped item takes its comparison's tint, the wider bar that frames the group.
@@ -7072,8 +6964,7 @@ function useBarLegendItems(data, options = {}, legendShape) {
 		seriesColors
 	]);
 }
-//#endregion
-//#region src/charts/bar-chart/bar-chart.tsx
+// src/charts/bar-chart/bar-chart.tsx
 const validateData$2 = (data) => {
 	if (!data?.length) return __("No data available", "jetpack-charts");
 	if (data.some((series) => series.data.some((point) => isInvalidReading(point.value, { allowMissing: true }) || !point.label && (!("date" in point && point.date) || isNaN(point.date.getTime()))))) return __("Invalid data", "jetpack-charts");
@@ -7532,8 +7423,7 @@ const BarChartWithProvider = (props) => {
 BarChartWithProvider.displayName = "BarChart";
 const BarChart = attachSubComponents(BarChartWithProvider, { Legend });
 const BarChartResponsive = attachSubComponents(withResponsive(BarChartWithProvider), { Legend });
-//#endregion
-//#region src/charts/bar-list-chart/bar-list-chart.tsx
+// src/charts/bar-list-chart/bar-list-chart.tsx
 /**
 * Get the bandwidth of a scale
 * @param scale - The scale to get the bandwidth of
@@ -7702,8 +7592,7 @@ const BarListChart = (props) => {
 };
 BarListChart.displayName = "BarListChart";
 const BarListChartResponsive = withResponsive(BarListChart);
-//#endregion
-//#region src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
+// src/charts/conversion-funnel-chart/conversion-funnel-chart.module.scss
 var conversion_funnel_chart_module_default = {
 	"bar-container": "a8ccharts-mGEVca-bar-container",
 	"change-indicator": "a8ccharts-mGEVca-change-indicator",
@@ -7726,8 +7615,7 @@ var conversion_funnel_chart_module_default = {
 	"tooltip-content": "a8ccharts-mGEVca-tooltip-content",
 	"tooltip-title": "a8ccharts-mGEVca-tooltip-title"
 };
-//#endregion
-//#region src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
+// src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
 /**
 * Custom hook to manage funnel bar selection state and interactions
 * @param hideTooltip - Function to hide tooltip when selection is cleared
@@ -7766,8 +7654,7 @@ const useFunnelSelection = (hideTooltip) => {
 		}), [clickedStep])
 	};
 };
-//#endregion
-//#region src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
+// src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
 /** Chart height (px) below which the funnel tightens its gaps so the bars keep their room. */
 const SHORT_CHART_HEIGHT = 180;
 /**
@@ -8058,8 +7945,7 @@ const ConversionFunnelChartWithProvider = (props) => {
 	return /* @__PURE__ */ jsx(GlobalChartsProvider, { children: /* @__PURE__ */ jsx(ConversionFunnelChartInternal, { ...props }) });
 };
 ConversionFunnelChartWithProvider.displayName = "ConversionFunnelChart";
-//#endregion
-//#region src/utils/sanitize-html.ts
+// src/utils/sanitize-html.ts
 /**
 * External dependencies
 */
@@ -8107,11 +7993,9 @@ function sanitizeHtml(html) {
 		]
 	});
 }
-//#endregion
-//#region src/charts/geo-chart/geo-chart.module.scss
+// src/charts/geo-chart/geo-chart.module.scss
 var geo_chart_module_default = { "container": "a8ccharts-8hS2IW-container" };
-//#endregion
-//#region src/charts/geo-chart/private/use-tooltip-position.ts
+// src/charts/geo-chart/private/use-tooltip-position.ts
 const TOOLTIP_CLASS = "google-visualization-tooltip";
 const isTooltip = (node) => node instanceof HTMLElement && node.classList.contains(TOOLTIP_CLASS);
 /**
@@ -8195,8 +8079,7 @@ function useTooltipPosition(containerRef) {
 		};
 	}, [containerRef]);
 }
-//#endregion
-//#region src/charts/geo-chart/geo-chart.tsx
+// src/charts/geo-chart/geo-chart.tsx
 /**
 * External dependencies
 */
@@ -8416,8 +8299,7 @@ const GeoChartWithProvider = (props) => {
 };
 GeoChartWithProvider.displayName = "GeoChart";
 const GeoChartResponsive = withResponsive(GeoChartWithProvider);
-//#endregion
-//#region src/types.ts
+// src/types.ts
 let GoogleDataTableColumnRoleType = /* @__PURE__ */ function(GoogleDataTableColumnRoleType) {
 	GoogleDataTableColumnRoleType["annotation"] = "annotation";
 	GoogleDataTableColumnRoleType["annotationText"] = "annotationText";
@@ -8497,8 +8379,7 @@ const pickLabelTextColor = (fill, roles, defaultRole) => {
 	if (!isValidHexColor(fillHex)) return defaultRole;
 	return pickLabelTextColorForFill(hexToRgb(fillHex), roles, defaultRole);
 };
-//#endregion
-//#region src/charts/heatmap-chart/heatmap-chart.module.scss
+// src/charts/heatmap-chart/heatmap-chart.module.scss
 var heatmap_chart_module_default = {
 	"heatmap-chart": "a8ccharts-O3YMOW-heatmap-chart",
 	"heatmap-chart__cell": "a8ccharts-O3YMOW-heatmap-chart__cell",
@@ -8529,8 +8410,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__row-label": "a8ccharts-O3YMOW-heatmap-chart__row-label",
 	"heatmap-chart--height-capped": "a8ccharts-O3YMOW-heatmap-chart--height-capped"
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/use-heatmap-colors.ts
+// src/charts/heatmap-chart/private/use-heatmap-colors.ts
 const isPresent = (value) => value !== null && value !== void 0 && !isNaN(value);
 /**
 * Get the min and max values from heatmap data, ignoring null/NaN and the zeros
@@ -8609,12 +8489,10 @@ const getHeatmapScale = (primary, background, emptyCell) => {
 		high
 	};
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/heatmap-context.ts
+// src/charts/heatmap-chart/private/heatmap-context.ts
 /** Shared by the chart and legend without importing back from `heatmap-chart.tsx`. */
 const HeatmapContext = createContext(null);
-//#endregion
-//#region src/charts/heatmap-chart/private/heatmap-legend.tsx
+// src/charts/heatmap-chart/private/heatmap-legend.tsx
 const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }) => {
 	const context = useContext(HeatmapContext);
 	const { legend } = useGlobalChartsTheme();
@@ -8658,8 +8536,7 @@ const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }
 		]
 	});
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/column-groups.ts
+// src/charts/heatmap-chart/private/column-groups.ts
 const isSpan = (span) => Number.isInteger(span) && span > 0;
 /**
 * Validates column groups and lays them over the columns.
@@ -8765,8 +8642,7 @@ const wrapColumnGroups = (layout, bands) => {
 		slotSpans
 	};
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/fit-compact-cells.ts
+// src/charts/heatmap-chart/private/fit-compact-cells.ts
 /**
 * Largest whole-pixel square cell, and the band count giving it, for a compact grid in a box.
 *
@@ -8804,8 +8680,7 @@ const fitCompactCells = (input) => {
 		cellSize: minCellSize
 	};
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/keyboard-navigation.ts
+// src/charts/heatmap-chart/private/keyboard-navigation.ts
 const ARROW_KEYS = [
 	"ArrowLeft",
 	"ArrowRight",
@@ -8935,8 +8810,7 @@ const stepCalendarCell = (grid, blocks, from, key) => {
 	const before = page.slice(0, at === -1 ? page.length : at).reverse();
 	return firstSelectable(grid, after) ?? firstSelectable(grid, before);
 };
-//#endregion
-//#region src/charts/heatmap-chart/heatmap-chart.tsx
+// src/charts/heatmap-chart/heatmap-chart.tsx
 const CELL_VALUE_MODIFIER = {
 	label: void 0,
 	"label-inverse": heatmap_chart_module_default["heatmap-chart__cell-value--inverse"],
@@ -9391,8 +9265,7 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ jsx(HeatmapChartW
 });
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
 const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
-//#endregion
-//#region src/charts/heatmap-chart/private/civil-day.ts
+// src/charts/heatmap-chart/private/civil-day.ts
 const DAY_MS = 864e5;
 const KEY_OPTIONS = {
 	calendar: "gregory",
@@ -9541,8 +9414,7 @@ const startOfCivilWeek = (date, weekStartsOn) => {
 * @return Columns needed to cover the span, inclusive.
 */
 const civilWeekSpan = (from, to, weekStartsOn) => Math.floor((startOfCivilWeek(to, weekStartsOn).getTime() - startOfCivilWeek(from, weekStartsOn).getTime()) / (7 * DAY_MS)) + 1;
-//#endregion
-//#region src/charts/heatmap-chart/build-calendar-data.ts
+// src/charts/heatmap-chart/build-calendar-data.ts
 /** Rows that get a weekday label (Mon, Wed, Fri with a Monday week start). */
 const LABELLED_ROWS = [
 	0,
@@ -9644,8 +9516,7 @@ const buildCalendarHeatmapData = (series, options = {}) => {
 		rowLabels
 	};
 };
-//#endregion
-//#region src/charts/heatmap-chart/build-month-calendar-data.ts
+// src/charts/heatmap-chart/build-month-calendar-data.ts
 /** Week rows per month, fixed so every month block is the same height. */
 const MONTH_ROWS = 6;
 const DAYS_PER_WEEK = 7;
@@ -9727,8 +9598,7 @@ const buildMonthCalendarHeatmapData = (valueByDay, range, options = {}) => {
 		columnGroups
 	};
 };
-//#endregion
-//#region src/charts/heatmap-chart/use-calendar-heatmap-data.ts
+// src/charts/heatmap-chart/use-calendar-heatmap-data.ts
 /**
 * `buildCalendarHeatmapData` with the locale and zone taken from
 * `GlobalChartsProvider` where the caller names neither.
@@ -9763,8 +9633,7 @@ const useCalendarHeatmapData = (series, options = {}) => {
 		gridEnd
 	]);
 };
-//#endregion
-//#region src/charts/heatmap-chart/use-month-calendar-heatmap-data.ts
+// src/charts/heatmap-chart/use-month-calendar-heatmap-data.ts
 /**
 * `buildMonthCalendarHeatmapData` with the locale taken from `GlobalChartsProvider`
 * where the caller names none.
@@ -9793,8 +9662,7 @@ const useMonthCalendarHeatmapData = (valueByDay, range, options = {}) => {
 		weekStartsOn
 	]);
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/is-plain-object@5.1.0/node_modules/is-plain-object/dist/is-plain-object.mjs
+// ../../../node_modules/.pnpm/is-plain-object@5.1.0/node_modules/is-plain-object/dist/is-plain-object.mjs
 /*!
 * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
 *
@@ -9814,16 +9682,14 @@ function isPlainObject(o) {
 	if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
 	return true;
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
+// ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
 /**
 * Lower case as a function.
 */
 function lowerCase(str) {
 	return str.toLowerCase();
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
+// ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
 var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
 var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
 /**
@@ -9848,23 +9714,19 @@ function replace$1(input, re, value) {
 		return input.replace(re, value);
 	}, input);
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
+// ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
 function dotCase(input, options) {
 	if (options === void 0) options = {};
 	return noCase(input, __assign({ delimiter: "." }, options));
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
+// ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
 function paramCase(input, options) {
 	if (options === void 0) options = {};
 	return dotCase(input, __assign({ delimiter: "-" }, options));
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/utils.mjs
 var logged = /* @__PURE__ */ new Set();
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/@wordpress+warning@3.57.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
 	return globalThis.SCRIPT_DEBUG === true;
 }
@@ -9877,8 +9739,7 @@ function warning(message) {
 	} catch {}
 	logged.add(message);
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
 function useUpdateEffect(effect, deps) {
 	const mountedRef = useRef$1(false);
 	useEffect$1(() => {
@@ -9890,8 +9751,7 @@ function useUpdateEffect(effect, deps) {
 	}, []);
 }
 var use_update_effect_default = useUpdateEffect;
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
+// ../../../node_modules/.pnpm/@emotion+sheet@1.4.0/node_modules/@emotion/sheet/dist/emotion-sheet.esm.js
 function sheetForTag(tag) {
 	if (tag.sheet) return tag.sheet;
 	/* istanbul ignore next */
@@ -9953,8 +9813,7 @@ var StyleSheet = /*#__PURE__*/ function() {
 	};
 	return StyleSheet;
 }();
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Enum.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Enum.js
 var MS = "-ms-";
 var MOZ = "-moz-";
 var WEBKIT = "-webkit-";
@@ -9964,8 +9823,7 @@ var DECLARATION = "decl";
 var IMPORT = "@import";
 var KEYFRAMES = "@keyframes";
 var LAYER = "@layer";
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Utility.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Utility.js
 /**
 * @param {number}
 * @return {number}
@@ -10068,8 +9926,7 @@ function append(value, array) {
 function combine(array, callback) {
 	return array.map(callback).join("");
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Tokenizer.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Tokenizer.js
 var line = 1;
 var column = 1;
 var length = 0;
@@ -10255,8 +10112,7 @@ function identifier(index) {
 	while (!token(peek())) next();
 	return slice(index, position);
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Parser.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Parser.js
 /**
 * @param {string} value
 * @return {object[]}
@@ -10409,8 +10265,7 @@ function comment(value, root, parent) {
 function declaration(value, root, parent, length) {
 	return node(value, root, parent, DECLARATION, substr(value, 0, length), substr(value, length + 1, -1), length);
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Serializer.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Serializer.js
 /**
 * @param {object[]} children
 * @param {function} callback
@@ -10440,8 +10295,7 @@ function stringify(element, index, children, callback) {
 	}
 	return strlen(children = serialize(element.children, callback)) ? element.return = element.value + "{" + children + "}" : "";
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Middleware.js
+// ../../../node_modules/.pnpm/stylis@4.2.0/node_modules/stylis/src/Middleware.js
 /**
 * @param {function[]} collection
 * @return {function}
@@ -10465,8 +10319,7 @@ function rulesheet(callback) {
 		}
 	};
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+memoize@0.9.0/node_modules/@emotion/memoize/dist/emotion-memoize.esm.js
+// ../../../node_modules/.pnpm/@emotion+memoize@0.9.0/node_modules/@emotion/memoize/dist/emotion-memoize.esm.js
 function memoize(fn) {
 	var cache = Object.create(null);
 	return function(arg) {
@@ -10474,8 +10327,7 @@ function memoize(fn) {
 		return cache[arg];
 	};
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+cache@11.14.0/node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js
+// ../../../node_modules/.pnpm/@emotion+cache@11.14.0/node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js
 var identifierWithPointTracking = function identifierWithPointTracking(begin, points, index) {
 	var previous = 0;
 	var character = 0;
@@ -10701,8 +10553,7 @@ var createCache = function createCache(options) {
 	cache.sheet.hydrate(nodesToHydrate);
 	return cache;
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.browser.esm.js
+// ../../../node_modules/.pnpm/@emotion+utils@1.4.2/node_modules/@emotion/utils/dist/emotion-utils.browser.esm.js
 function getRegisteredStyles$1(registered, registeredStyles, classNames) {
 	var rawClassName = "";
 	classNames.split(" ").forEach(function(className) {
@@ -10726,8 +10577,7 @@ var insertStyles = function insertStyles(cache, serialized, isStringTag) {
 		} while (current !== void 0);
 	}
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+hash@0.9.2/node_modules/@emotion/hash/dist/emotion-hash.esm.js
+// ../../../node_modules/.pnpm/@emotion+hash@0.9.2/node_modules/@emotion/hash/dist/emotion-hash.esm.js
 function murmur2(str) {
 	var h = 0;
 	var k, i = 0, len = str.length;
@@ -10748,8 +10598,7 @@ function murmur2(str) {
 	h = (h & 65535) * 1540483477 + ((h >>> 16) * 59797 << 16);
 	return ((h ^ h >>> 15) >>> 0).toString(36);
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+unitless@0.10.0/node_modules/@emotion/unitless/dist/emotion-unitless.esm.js
+// ../../../node_modules/.pnpm/@emotion+unitless@0.10.0/node_modules/@emotion/unitless/dist/emotion-unitless.esm.js
 var unitlessKeys = {
 	animationIterationCount: 1,
 	aspectRatio: 1,
@@ -10799,8 +10648,7 @@ var unitlessKeys = {
 	strokeOpacity: 1,
 	strokeWidth: 1
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+serialize@1.3.3/node_modules/@emotion/serialize/dist/emotion-serialize.esm.js
+// ../../../node_modules/.pnpm/@emotion+serialize@1.3.3/node_modules/@emotion/serialize/dist/emotion-serialize.esm.js
 var isDevelopment = false;
 var hyphenateRegex = /[A-Z]|^ms/g;
 var animationRegex = /_EMO_([^_]+?)_([^]*?)_EMO_/g;
@@ -10925,16 +10773,14 @@ function serializeStyles(args, registered, mergedProps) {
 	};
 }
 React["useInsertionEffect"] && React["useInsertionEffect"] || React.useLayoutEffect;
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@19.3.0_react@19.3.0/node_modules/@emotion/react/dist/emotion-element-f0de968e.browser.esm.js
+// ../../../node_modules/.pnpm/@emotion+react@11.14.0_@types+react@19.3.0_react@19.3.0/node_modules/@emotion/react/dist/emotion-element-f0de968e.browser.esm.js
 var EmotionCacheContext = /* #__PURE__ */ React.createContext(typeof HTMLElement !== "undefined" ? /* #__PURE__ */ createCache({ key: "css" }) : null);
 EmotionCacheContext.Provider;
 var __unsafe_useEmotionCache = function useEmotionCache() {
 	return useContext(EmotionCacheContext);
 };
 ({}).hasOwnProperty;
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/create-instance/dist/emotion-css-create-instance.esm.js
+// ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/create-instance/dist/emotion-css-create-instance.esm.js
 function insertWithoutScoping(cache, serialized) {
 	if (cache.inserted[serialized.name] === void 0) return cache.insert("", serialized, cache.sheet, true);
 }
@@ -11019,8 +10865,7 @@ var classnames = function classnames(args) {
 	}
 	return cls;
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/dist/emotion-css.esm.js
+// ../../../node_modules/.pnpm/@emotion+css@11.13.5/node_modules/@emotion/css/dist/emotion-css.esm.js
 var _createEmotion = createEmotion({ key: "css" });
 _createEmotion.flush;
 _createEmotion.hydrate;
@@ -11032,8 +10877,7 @@ _createEmotion.keyframes;
 _createEmotion.css;
 _createEmotion.sheet;
 _createEmotion.cache;
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/hooks/use-cx.mjs
 var isSerializedStyles = (o) => typeof o !== "undefined" && o !== null && ["name", "styles"].every((p) => typeof o[p] !== "undefined");
 var useCx = () => {
 	const cache = __unsafe_useEmotionCache();
@@ -11048,8 +10892,7 @@ var useCx = () => {
 		}));
 	}, [cache]);
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/memize@2.1.1/node_modules/memize/dist/index.js
+// ../../../node_modules/.pnpm/memize@2.1.1/node_modules/memize/dist/index.js
 /**
 * Memize options object.
 *
@@ -11139,8 +10982,7 @@ function memize(fn, options) {
 	};
 	return memoized;
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function equal(a, b) {
 		if (a === b) return true;
@@ -11207,19 +11049,16 @@ var BaseContextSystemProvider = ({ children, value }) => {
 	});
 };
 memo(BaseContextSystemProvider);
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/constants.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/constants.mjs
 var COMPONENT_NAMESPACE = "data-wp-component";
 var CONNECTED_NAMESPACE = "data-wp-c16t";
 var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
 function getStyledClassName(namespace) {
 	return `components-${paramCase(namespace)}`;
 }
 var getStyledClassNameFromKey = memize(getStyledClassName);
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/context-connect.mjs
 function contextConnect(Component, namespace) {
 	return _contextConnect(Component, namespace, { forwardsRef: true });
 }
@@ -11235,16 +11074,14 @@ function _contextConnect(Component, namespace, options) {
 		selector: `.${getStyledClassNameFromKey(namespace)}`
 	});
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/utils.mjs
 function getNamespace(componentName) {
 	return { [COMPONENT_NAMESPACE]: componentName };
 }
 function getConnectedNamespace() {
 	return { [CONNECTED_NAMESPACE]: true };
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
 function useContextSystem(props, namespace) {
 	const contextSystemProps = useComponentsContext();
 	if (typeof namespace === "undefined") globalThis.SCRIPT_DEBUG === true && warning("useContextSystem: Please provide a namespace");
@@ -11265,8 +11102,7 @@ function useContextSystem(props, namespace) {
 	finalComponentProps.className = classes;
 	return finalComponentProps;
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
 var visuallyHidden = {
 	border: 0,
 	clip: "rect(1px, 1px, 1px, 1px)",
@@ -11281,8 +11117,7 @@ var visuallyHidden = {
 	wordWrap: "normal",
 	wordBreak: "normal"
 };
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
 var customAttributeRegExp = /^(data|aria|x)-/i;
 var eventHandlerRegExp = /^on[A-Z]/;
 var svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
@@ -11371,8 +11206,7 @@ function UnforwardedPolymorphicElement({ as, ...props }, ref) {
 	});
 }
 var PolymorphicElement = forwardRef$1(UnforwardedPolymorphicElement);
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/view/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/view/component.mjs
 function UnforwardedView({ css, ...restProps }, ref) {
 	return /* @__PURE__ */ jsx(PolymorphicElement, {
 		ref,
@@ -11380,8 +11214,7 @@ function UnforwardedView({ css, ...restProps }, ref) {
 	});
 }
 var component_default$2 = Object.assign(forwardRef$1(UnforwardedView), { selector: ".components-view" });
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
 function UnconnectedVisuallyHidden(props, forwardedRef) {
 	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
 	return /* @__PURE__ */ jsx(component_default$2, {
@@ -11395,8 +11228,7 @@ function UnconnectedVisuallyHidden(props, forwardedRef) {
 	});
 }
 var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
 var breakpoints = [
 	"40em",
 	"52em",
@@ -11434,8 +11266,7 @@ function useResponsiveValue(values, options = {}) {
 	const array = values || [];
 	return array[index >= array.length ? array.length - 1 : index];
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/utils.mjs
 var ALIGNMENTS = {
 	bottom: {
 		alignItems: "flex-end",
@@ -11482,8 +11313,7 @@ var ALIGNMENTS = {
 function getAlignmentProps(alignment) {
 	return alignment ? ALIGNMENTS[alignment] ?? {} : {};
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/hook.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/hook.mjs
 var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
 function getRuntime() {
 	const globalScope = globalThis;
@@ -11627,8 +11457,7 @@ function useGrid(props) {
 		}
 	};
 }
-//#endregion
-//#region ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@42.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_6d0393a58a031b78f608040e2ecbe6e0/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
 	const gridProps = useGrid(props);
 	return /* @__PURE__ */ jsx(component_default$2, {
@@ -11637,8 +11466,7 @@ function UnconnectedGrid(props, forwardedRef) {
 	});
 }
 var component_default = contextConnect(UnconnectedGrid, "Grid");
-//#endregion
-//#region src/charts/leaderboard-chart/hooks/use-fitted-row-count.ts
+// src/charts/leaderboard-chart/hooks/use-fitted-row-count.ts
 /**
 * Fractional layout rounding can put a row's bottom a hair past the container's
 * without any visible clipping. Allow that much slack before hiding a row.
@@ -11721,8 +11549,7 @@ function useFittedRowCount(enabled, rowCount, data) {
 		isMeasurable
 	};
 }
-//#endregion
-//#region src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
+// src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.ts
 /**
 * Hook to create legend items from leaderboard data
 * @param root0                         - Configuration object
@@ -11770,8 +11597,7 @@ function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withCom
 		withOverlayLabel
 	]);
 }
-//#endregion
-//#region src/charts/leaderboard-chart/leaderboard-chart.module.scss
+// src/charts/leaderboard-chart/leaderboard-chart.module.scss
 var leaderboard_chart_module_default = {
 	"bar": "a8ccharts-GovfoW-bar",
 	"bar--animated": "a8ccharts-GovfoW-bar--animated",
@@ -11801,8 +11627,7 @@ var leaderboard_chart_module_default = {
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
-//#endregion
-//#region src/charts/leaderboard-chart/leaderboard-chart.tsx
+// src/charts/leaderboard-chart/leaderboard-chart.tsx
 const ROW_GAP = "var(--a8c-charts-dimension-leaderboard-row-gap, 12px)";
 const COLUMN_GAP = "var(--a8c-charts-dimension-leaderboard-column-gap, 4px)";
 /** Indexed by `Math.sign( delta ) + 1`, so [negative, neutral, positive]. */
@@ -12154,8 +11979,7 @@ const LeaderboardChartWithProvider = (props) => {
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
 const LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, { Legend });
 const LeaderboardChartResponsive = attachSubComponents(withResponsive(LeaderboardChartWithProvider), { Legend });
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/order-arcs-for-navigation.ts
+// src/charts/private/pie-keyboard-navigation/order-arcs-for-navigation.ts
 /**
 * Orders arcs the way they appear: clockwise from 12 o'clock, which for a semi-circle is left to right.
 *
@@ -12163,15 +11987,13 @@ const LeaderboardChartResponsive = attachSubComponents(withResponsive(Leaderboar
 * @return A copy of `arcs` sorted by angular midpoint.
 */
 const orderArcsForNavigation = (arcs) => [...arcs].sort((a, b) => a.startAngle + a.endAngle - (b.startAngle + b.endAngle));
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/pie-selection-announcement.tsx
+// src/charts/private/pie-keyboard-navigation/pie-selection-announcement.tsx
 const PieSelectionAnnouncement = ({ data }) => /* @__PURE__ */ jsx(VisuallyHidden, {
 	role: "status",
 	"aria-atomic": "true",
 	children: data && /* @__PURE__ */ jsx(LabelValueContent, { data })
 });
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/pie-tooltip.tsx
+// src/charts/private/pie-keyboard-navigation/pie-tooltip.tsx
 const TOOLTIP_BOX_STYLE = { zIndex: 3 };
 const PieTooltip = ({ top, left, selectedIndex, tooltipRef, children }) => {
 	const standaloneScopeClass = useStandaloneScopeClass();
@@ -12193,8 +12015,7 @@ const PieTooltip = ({ top, left, selectedIndex, tooltipRef, children }) => {
 		}, `chart-tooltip-${selectedIndex}`)
 	});
 };
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/pie-selection-output.tsx
+// src/charts/private/pie-keyboard-navigation/pie-selection-output.tsx
 /**
 * Reports the selected segment: a focused tooltip for a keyboard selection, a pointer tooltip on hover, or a screen reader announcement without tooltips.
 *
@@ -12234,8 +12055,7 @@ const PieSelectionOutput = ({ withTooltips, selectedIndex, selectedData, keyboar
 		})
 	] });
 };
-//#endregion
-//#region src/charts/private/pie-keyboard-navigation/use-pie-keyboard-navigation.ts
+// src/charts/private/pie-keyboard-navigation/use-pie-keyboard-navigation.ts
 const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX, tooltipOffsetY }) => {
 	const chartRef = useRef(null);
 	const svgRef = useRef(null);
@@ -12315,8 +12135,7 @@ const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX
 		}
 	};
 };
-//#endregion
-//#region src/charts/private/radial-wipe-animation/radial-wipe-animation.tsx
+// src/charts/private/radial-wipe-animation/radial-wipe-animation.tsx
 /**
 * Renders a SVG mask that creates a radial wipe animation effect.
 *
@@ -12353,8 +12172,7 @@ function RadialWipeAnimation({ id, radius, innerRadius = 0, durationMs = 1e3, wi
 		})
 	});
 }
-//#endregion
-//#region src/charts/pie-chart/pie-chart.module.scss
+// src/charts/pie-chart/pie-chart.module.scss
 var pie_chart_module_default = {
 	"pie-chart": "a8ccharts-gnszbG-pie-chart",
 	"pie-chart__label-plate": "a8ccharts-gnszbG-pie-chart__label-plate",
@@ -12365,8 +12183,7 @@ var pie_chart_module_default = {
 	"pie-chart__plot": "a8ccharts-gnszbG-pie-chart__plot",
 	"pie-chart--responsive": "a8ccharts-gnszbG-pie-chart--responsive"
 };
-//#endregion
-//#region src/charts/pie-chart/pie-chart.tsx
+// src/charts/pie-chart/pie-chart.tsx
 /**
 * Default tooltip renderer for pie charts.
 * Renders the default `label: value` tooltip content for the hovered segment.
@@ -12649,8 +12466,7 @@ const PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvid
 	SVG: ChartSVG,
 	HTML: ChartHTML
 });
-//#endregion
-//#region src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
+// src/charts/pie-semi-circle-chart/pie-semi-circle-chart.module.scss
 var pie_semi_circle_chart_module_default = {
 	"label": "a8ccharts-YtTOxW-label",
 	"note": "a8ccharts-YtTOxW-note",
@@ -12658,8 +12474,7 @@ var pie_semi_circle_chart_module_default = {
 	"pie-semi-circle-chart__plot": "a8ccharts-YtTOxW-pie-semi-circle-chart__plot",
 	"pie-semi-circle-chart--responsive": "a8ccharts-YtTOxW-pie-semi-circle-chart--responsive"
 };
-//#endregion
-//#region src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
+// src/charts/pie-semi-circle-chart/pie-semi-circle-chart.tsx
 /**
 * Default tooltip renderer for semi-circle pie charts.
 * Renders the default `label: value` tooltip content for the hovered segment.
@@ -12902,14 +12717,12 @@ const PieSemiCircleChartResponsive = attachSubComponents(withResponsive(PieSemiC
 	SVG: ChartSVG,
 	HTML: ChartHTML
 });
-//#endregion
-//#region src/charts/sparkline/sparkline.module.scss
+// src/charts/sparkline/sparkline.module.scss
 var sparkline_module_default = {
 	"sparkline": "a8ccharts-GtgAVa-sparkline",
 	"sparkline--empty": "a8ccharts-GtgAVa-sparkline--empty"
 };
-//#endregion
-//#region src/charts/sparkline/sparkline.tsx
+// src/charts/sparkline/sparkline.tsx
 const DEFAULT_WIDTH = 100;
 const DEFAULT_HEIGHT = 40;
 /**
@@ -13051,8 +12864,7 @@ SparklineUnresponsive.displayName = "SparklineUnresponsive";
 * Responsive Sparkline chart component
 */
 const Sparkline = withResponsive(SparklineUnresponsive);
-//#endregion
-//#region src/components/trend-indicator/trend-indicator.module.scss
+// src/components/trend-indicator/trend-indicator.module.scss
 var trend_indicator_module_default = {
 	"trend-indicator": "a8ccharts-zR7F7G-trend-indicator",
 	"trend-indicator__icon": "a8ccharts-zR7F7G-trend-indicator__icon",
@@ -13061,8 +12873,7 @@ var trend_indicator_module_default = {
 	"trend-indicator--neutral": "a8ccharts-zR7F7G-trend-indicator--neutral",
 	"trend-indicator--up": "a8ccharts-zR7F7G-trend-indicator--up"
 };
-//#endregion
-//#region src/components/trend-indicator/trend-indicator.tsx
+// src/components/trend-indicator/trend-indicator.tsx
 const DIRECTION_LABELS = {
 	up: "Increase",
 	down: "Decrease",
@@ -13105,7 +12916,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 		})]
 	});
 }
-//#endregion
 export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TooltipBox, TrendIndicator, XYChartTooltip, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useBarColors, useBarLegendItems, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 
 //# sourceMappingURL=index.js.map

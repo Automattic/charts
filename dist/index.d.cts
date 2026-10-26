@@ -7,7 +7,6 @@ import { EventHandlerParams, EventHandlerParams as EventHandlerParams$1, GlyphPr
 import { CSSProperties, ComponentClass, ComponentProps, ComponentType, FC, HTMLAttributes, JSX, MouseEvent, PointerEvent, PropsWithChildren, ReactElement, ReactNode, SVGProps } from "react";
 import { TooltipProps as TooltipProps$1, UseTooltipPortalOptions } from "@visx/tooltip";
 import { PieProvidedProps } from "@visx/shape";
-//#region src/types.d.ts
 type ValueOf<T> = T[keyof T];
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 /**
@@ -734,8 +733,6 @@ type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
     };
   };
 };
-//#endregion
-//#region src/components/legend/types.d.ts
 type VisxLegendProps = Pick<ComponentProps<typeof LegendOrdinal>, 'className' | 'shape' | 'fill' | 'size' | 'labelFormat' | 'labelTransform'>;
 type BaseLegendProps = VisxLegendProps & {
   items: BaseLegendItem[];
@@ -788,14 +785,10 @@ type BaseLegendItem = {
   /** Label of the series this static item describes; the item is left out while it is hidden. */
   describesSeries?: string;
 };
-//#endregion
-//#region src/components/legend/legend.d.ts
 export declare const Legend: import("react").ForwardRefExoticComponent<Omit<BaseLegendProps, "items"> & {
   items?: BaseLegendItem[];
   chartId?: string;
 } & import("react").RefAttributes<HTMLDivElement>>;
-//#endregion
-//#region src/components/legend/hooks/use-chart-legend-items.d.ts
 type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';
 interface ChartLegendOptions {
   withGlyph?: boolean;
@@ -828,8 +821,6 @@ interface ChartLegendOptions {
  * @return Array of legend items ready for display
  */
 export declare function useChartLegendItems<T extends SeriesData[] | DataPointDate[] | DataPointPercentageCalculated[]>(data: T, options?: ChartLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
-//#endregion
-//#region src/charts/private/chart-instance-context/chart-instance-context.d.ts
 interface ChartInstanceRef {
   getScales: () => {
     xScale: unknown;
@@ -846,8 +837,6 @@ interface ChartInstanceRef {
     };
   };
 }
-//#endregion
-//#region src/visx/types.d.ts
 type RenderTooltipParams<Datum extends object> = TooltipContextType<Datum> & {
   colorScale?: PickD3Scale<'ordinal', string, string>;
 };
@@ -914,8 +903,6 @@ type XyChartTooltipProps<Datum extends object> = {
    */
   resizeObserverPolyfill?: UseTooltipPortalOptions['polyfill'];
 } & Omit<TooltipProps$1, 'left' | 'top' | 'children' | 'applyPositionStyle'>;
-//#endregion
-//#region src/charts/line-chart/types.d.ts
 type LineChartAnnotationProps = {
   datum: DataPointDate;
   title: string;
@@ -990,8 +977,6 @@ type TooltipDatum = {
   /** The series' reading, or null when the bucket has none. */
   value: number | null;
 };
-//#endregion
-//#region src/charts/area-chart/types.d.ts
 interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
@@ -1058,8 +1043,6 @@ interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityP
   rescaleYOnVisibilityChange?: boolean;
   children?: ReactNode;
 }
-//#endregion
-//#region src/charts/private/with-responsive/with-responsive.d.ts
 type ResponsiveConfig = {
   /**
    * The maximum width of the chart. Defaults to 1200.
@@ -1080,8 +1063,6 @@ type ResponsiveConfig = {
    */
   resizeDebounceTime?: number;
 };
-//#endregion
-//#region src/charts/area-chart/area-chart.d.ts
 type AreaChartSubComponents = {
   Legend: typeof Legend;
 };
@@ -1090,8 +1071,6 @@ type AreaChartComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & R
 type AreaChartResponsiveComponent = React.ForwardRefExoticComponent<AreaChartBaseProps & ResponsiveConfig & React.RefAttributes<ChartInstanceRef>> & AreaChartSubComponents;
 declare const AreaChart: AreaChartComponent;
 declare const AreaChartResponsive: AreaChartResponsiveComponent;
-//#endregion
-//#region src/charts/bar-chart/types.d.ts
 type BandHighlightSelection = {
   datum: DataPointDate;
   key: string;
@@ -1126,8 +1105,6 @@ interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityPr
   onBandHighlightChange?: (selection: BandHighlightSelection | null) => void;
   children?: ReactNode;
 }
-//#endregion
-//#region src/charts/bar-chart/bar-chart.d.ts
 type BarChartBaseProps = Optional<BarChartProps, 'width' | 'height' | 'size'>;
 interface BarChartSubComponents {
   Legend: ComponentType<React.ComponentProps<typeof Legend>>;
@@ -1136,8 +1113,6 @@ type BarChartComponent = FC<BarChartBaseProps> & BarChartSubComponents;
 type BarChartResponsiveComponent = FC<BarChartBaseProps & ResponsiveConfig> & BarChartSubComponents;
 declare const BarChart: BarChartComponent;
 declare const BarChartResponsive: BarChartResponsiveComponent;
-//#endregion
-//#region src/charts/bar-chart/use-bar-colors.d.ts
 type GetBarColors = (series: SeriesData[], options?: {
   layout?: BarChartLayout;
 }) => string[];
@@ -1147,8 +1122,6 @@ type GetBarColors = (series: SeriesData[], options?: {
  * @return A function from series and a layout to each series' bar color, by index.
  */
 export declare function useBarColors(): GetBarColors;
-//#endregion
-//#region src/charts/bar-chart/use-bar-legend-items.d.ts
 type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
   /** The layout the bars are drawn in. Unset, the items are the chart legend's own. */
   layout?: BarChartLayout;
@@ -1162,8 +1135,6 @@ type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
  * @return The legend items.
  */
 export declare function useBarLegendItems(data: SeriesData[], options?: BarLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
-//#endregion
-//#region src/charts/bar-list-chart/bar-list-chart.d.ts
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
   options?: {
     /**
@@ -1232,8 +1203,6 @@ declare const BarListChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRat
   height?: number;
   size?: number;
 } & ResponsiveConfig) => import("react").JSX.Element;
-//#endregion
-//#region src/charts/conversion-funnel-chart/types.d.ts
 /**
  * Represents a single step in the conversion funnel
  */
@@ -1310,8 +1279,6 @@ interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 
   /** Inline styles merged over the tooltip box defaults. */
   tooltipStyle?: React.CSSProperties;
 }
-//#endregion
-//#region src/charts/conversion-funnel-chart/conversion-funnel-chart.d.ts
 /**
  * ConversionFunnelChart component with provider wrapper
  *
@@ -1319,8 +1286,6 @@ interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 
  * @return JSX element representing the conversion funnel chart
  */
 declare const ConversionFunnelChartWithProvider: FC<ConversionFunnelChartProps>;
-//#endregion
-//#region src/charts/geo-chart/types.d.ts
 /**
  * Region to display on the map.
  * Use 'world' for global view or any ISO 3166-1 alpha-2 country code
@@ -1389,16 +1354,12 @@ interface GeoChartProps extends Pick<BaseChartProps, 'className' | 'chartId' | '
    */
   renderPlaceholder?: () => React.ReactNode;
 }
-//#endregion
-//#region src/charts/geo-chart/geo-chart.d.ts
 declare const GeoChartWithProvider: FC<GeoChartProps>;
 declare const GeoChartResponsive: ({ resizeDebounceTime, maxWidth, aspectRatio, size, width, height, ...chartProps }: Omit<GeoChartProps, "height" | "size" | "width"> & {
   width?: number;
   height?: number;
   size?: number;
 } & ResponsiveConfig) => import("react").JSX.Element;
-//#endregion
-//#region src/charts/heatmap-chart/types.d.ts
 /** A single heatmap cell. `value: null` marks an empty cell, as does a zero when no value is negative. */
 type HeatmapCell = {
   /** Per-cell label used in the tooltip / accessible name. */
@@ -1553,8 +1514,6 @@ type MonthCalendarHeatmapResult = {
   /** For `HeatmapChart`'s `columnGroups`: one per month, in order. */
   columnGroups: HeatmapColumnGroup[];
 };
-//#endregion
-//#region src/charts/heatmap-chart/private/heatmap-legend.d.ts
 interface HeatmapLegendProps {
   /** Number of color swatches in the scale, not counting the empty-cell swatch. Default 5. */
   steps?: number;
@@ -1567,15 +1526,11 @@ interface HeatmapLegendProps {
   moreLabel?: string;
 }
 declare const HeatmapLegend: FC<HeatmapLegendProps>;
-//#endregion
-//#region src/charts/heatmap-chart/heatmap-chart.d.ts
 interface HeatmapChartSubComponents {
   Legend: typeof HeatmapLegend;
 }
 declare const HeatmapChart: FC<HeatmapChartProps> & HeatmapChartSubComponents;
 declare const HeatmapChartResponsive: FC<HeatmapChartProps & ResponsiveConfig> & HeatmapChartSubComponents;
-//#endregion
-//#region src/charts/heatmap-chart/build-calendar-data.d.ts
 /**
  * Lay a day-bucketed series out as calendar columns.
  *
@@ -1584,8 +1539,6 @@ declare const HeatmapChartResponsive: FC<HeatmapChartProps & ResponsiveConfig> &
  * @return Columns and row labels for `HeatmapChart`.
  */
 export declare const buildCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
-//#endregion
-//#region src/charts/heatmap-chart/build-month-calendar-data.d.ts
 /**
  * Lay a day-keyed map out as one month calendar per month, weekdays across and
  * weeks down, for `HeatmapChart` with `columnGroups`.
@@ -1596,8 +1549,6 @@ export declare const buildCalendarHeatmapData: (series: DataPointDate[], options
  * @return Columns and one group per month; empty for an invalid or reversed range.
  */
 export declare const buildMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
-//#endregion
-//#region src/charts/heatmap-chart/use-calendar-heatmap-data.d.ts
 /**
  * `buildCalendarHeatmapData` with the locale and zone taken from
  * `GlobalChartsProvider` where the caller names neither.
@@ -1607,8 +1558,6 @@ export declare const buildMonthCalendarHeatmapData: (valueByDay: Record<string, 
  * @return Columns and row labels for `HeatmapChart`.
  */
 export declare const useCalendarHeatmapData: (series: DataPointDate[], options?: CalendarHeatmapOptions) => CalendarHeatmapResult;
-//#endregion
-//#region src/charts/heatmap-chart/use-month-calendar-heatmap-data.d.ts
 /**
  * `buildMonthCalendarHeatmapData` with the locale taken from `GlobalChartsProvider`
  * where the caller names none.
@@ -1619,8 +1568,6 @@ export declare const useCalendarHeatmapData: (series: DataPointDate[], options?:
  * @return Columns and groups for `HeatmapChart`.
  */
 export declare const useMonthCalendarHeatmapData: (valueByDay: Record<string, number | null>, range: MonthCalendarHeatmapRange, options?: MonthCalendarHeatmapOptions) => MonthCalendarHeatmapResult;
-//#endregion
-//#region src/charts/leaderboard-chart/types.d.ts
 interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, 'className' | 'showLegend' | 'legend' | 'chartId' | 'width' | 'height' | 'size' | 'gap' | 'animation' | 'ariaLabel'> {
   /**
    * Entries to display. Declared here rather than picked, since the base type
@@ -1688,8 +1635,6 @@ interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, '
    */
   children?: ReactNode;
 }
-//#endregion
-//#region src/charts/leaderboard-chart/leaderboard-chart.d.ts
 declare const LeaderboardChart: FC<LeaderboardChartProps> & {
   Legend: import("react").ForwardRefExoticComponent<Omit<BaseLegendProps, "items"> & {
     items?: BaseLegendItem[];
@@ -1706,8 +1651,6 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
     chartId?: string;
   } & import("react").RefAttributes<HTMLDivElement>>;
 };
-//#endregion
-//#region src/utils/bucket-info.d.ts
 /**
  * How this data was classified, for consumers that render their own labels.
  *
@@ -1716,8 +1659,6 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
  * @return The declared or inferred bucket, and the resolution formats key on.
  */
 export declare const getBucketInfo: (data: SeriesData[], tickResolution?: TickResolution) => BucketInfo;
-//#endregion
-//#region src/utils/date-parsing.d.ts
 /**
  * Parses any supported date string format into an instant, dated in `timeZone` or the runtime's own
  *
@@ -1735,8 +1676,6 @@ export declare const getBucketInfo: (data: SeriesData[], tickResolution?: TickRe
  * @return {Date} A Date object representing the parsed instant, or an invalid Date if parsing fails
  */
 export declare const parseAsLocalDate: (dateString: string, timeZone?: string) => Date;
-//#endregion
-//#region src/utils/format-metric-value.d.ts
 /**
  * Types for formatMetricValue
  */
@@ -1759,8 +1698,6 @@ type FormatMetricValueOptions = {
  * @return Formatted string
  */
 export declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
-//#endregion
-//#region src/utils/format-percentage.d.ts
 /**
  * Format a percentage value with smart decimal handling.
  * Uses `@automattic/number-formatters` for consistent formatting.
@@ -1770,8 +1707,6 @@ export declare const formatMetricValue: (value: string | number, type?: MetricVa
  * @return Formatted percentage string (e.g., "30%", "30.1%", "30.25%")
  */
 export declare const formatPercentage: (value: number) => string;
-//#endregion
-//#region src/utils/merge-themes.d.ts
 /**
  * Merges chart themes with proper precedence.
  * The second theme (override) takes precedence over the first theme (base).
@@ -1782,8 +1717,6 @@ export declare const formatPercentage: (value: number) => string;
  */
 export declare function mergeThemes(baseTheme: CompleteChartTheme, overrideTheme: Partial<ChartTheme>): CompleteChartTheme;
 export declare function mergeThemes(baseTheme: ChartTheme, overrideTheme: Partial<ChartTheme>): ChartTheme;
-//#endregion
-//#region src/utils/color-utils.d.ts
 /**
  * Check if a value is a valid 6-digit hex color
  * @param hex - The value to check
@@ -1869,8 +1802,6 @@ export declare const relativeLuminance: (hex: string) => number;
  * @return true if light text should be used; false (dark text) for malformed colors
  */
 export declare const prefersLightText: (backgroundHex: string) => boolean;
-//#endregion
-//#region src/utils/resolve-css-var.d.ts
 /**
  * Resolves a CSS custom property (variable) to its computed value.
  * Handles multiple formats:
@@ -1884,8 +1815,6 @@ export declare const prefersLightText: (backgroundHex: string) => boolean;
  * @return The resolved value, fallback value, or null if unresolvable
  */
 export declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
-//#endregion
-//#region src/charts/leaderboard-chart/hooks/use-leaderboard-legend-items.d.ts
 /**
  * Hook to create legend items from leaderboard data
  * @param root0                         - Configuration object
@@ -1910,17 +1839,11 @@ export declare function useLeaderboardLegendItems({ data, primaryColor, secondar
     comparison?: string;
   };
 }): BaseLegendItem[];
-//#endregion
-//#region src/charts/line-chart/private/line-chart-annotations-overlay.d.ts
 interface LineChartAnnotationsProps {
   children?: ReactNode;
 }
 declare const LineChartAnnotationsOverlay: FC<LineChartAnnotationsProps>;
-//#endregion
-//#region src/charts/line-chart/private/line-chart-annotation.d.ts
 declare const LineChartAnnotation: FC<LineChartAnnotationProps>;
-//#endregion
-//#region src/charts/line-chart/line-chart.d.ts
 type LineChartAnnotationComponents = {
   AnnotationsOverlay: typeof LineChartAnnotationsOverlay;
   Annotation: typeof LineChartAnnotation;
@@ -1931,8 +1854,6 @@ type LineChartComponent = React.ForwardRefExoticComponent<LineChartBaseProps & R
 type LineChartResponsiveComponent = React.ForwardRefExoticComponent<LineChartBaseProps & ResponsiveConfig & React.RefAttributes<ChartInstanceRef>> & LineChartAnnotationComponents;
 declare const LineChart: LineChartComponent;
 declare const LineChartResponsive: LineChartResponsiveComponent;
-//#endregion
-//#region src/charts/private/chart-composition/types.d.ts
 /**
  * Base interface for chart subcomponents in the composition API
  */
@@ -1947,8 +1868,6 @@ interface BaseChartSubComponents {
  * @template TSubComponents - Additional subcomponents beyond the base ones
  */
 type ChartComponentWithComposition<TProps, TSubComponents extends BaseChartSubComponents = BaseChartSubComponents> = FC<TProps> & TSubComponents;
-//#endregion
-//#region src/charts/pie-chart/pie-chart.d.ts
 /**
  * Parameters passed to the renderTooltip function for pie charts.
  */
@@ -2018,8 +1937,6 @@ type PieChartComponent = ChartComponentWithComposition<PieChartBaseProps>;
 type PieChartResponsiveComponent = ChartComponentWithComposition<PieChartBaseProps & ResponsiveConfig>;
 declare const PieChart: PieChartComponent;
 declare const PieChartResponsive: PieChartResponsiveComponent;
-//#endregion
-//#region src/charts/pie-semi-circle-chart/pie-semi-circle-chart.d.ts
 /**
  * Parameters passed to the renderTooltip function for semi-circle charts.
  */
@@ -2085,8 +2002,6 @@ type PieSemiCircleChartResponsiveComponent = ChartComponentWithComposition<PieSe
 type ArcData = PieProvidedProps<DataPointPercentageCalculated>['arcs'][number];
 declare const PieSemiCircleChart: PieSemiCircleChartComponent;
 declare const PieSemiCircleChartResponsive: PieSemiCircleChartResponsiveComponent;
-//#endregion
-//#region src/charts/sparkline/types.d.ts
 type SparklineDataPoint = number;
 type GradientConfig = {
   /**
@@ -2174,8 +2089,6 @@ interface SparklineProps {
    */
   animation?: boolean;
 }
-//#endregion
-//#region src/charts/sparkline/sparkline.d.ts
 /**
  * Sparkline - A minimal line chart for inline data visualization.
  *
@@ -2195,8 +2108,6 @@ declare const Sparkline: ({ resizeDebounceTime, maxWidth, aspectRatio, size, wid
   height?: number;
   size?: number;
 } & ResponsiveConfig) => import("react").JSX.Element;
-//#endregion
-//#region src/components/tooltip/types.d.ts
 type TooltipProps = {
   data: {
     label: string;
@@ -2208,8 +2119,6 @@ type TooltipData = {
   value: number;
   valueDisplay?: string;
 };
-//#endregion
-//#region src/components/tooltip/base-tooltip.d.ts
 type TooltipComponentProps = {
   data: TooltipData;
   className?: string;
@@ -2256,8 +2165,6 @@ type BaseTooltipProps = TooltipCommonProps & (DefaultDataTooltip | CustomTooltip
  * @return The tooltip.
  */
 export declare const BaseTooltip: ({ data, top, left, component: Component, children, className, style, renderContainer }: BaseTooltipProps) => string | number | bigint | true | import("react").JSX.Element | Iterable<ReactNode> | Promise<string | number | bigint | boolean | Iterable<ReactNode> | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | import("react").ReactPortal>;
-//#endregion
-//#region src/components/tooltip/xy-chart-tooltip.d.ts
 type FlattenedTooltipData = {
   datum: DataPointDate;
   seriesLabel: string;
@@ -2289,8 +2196,6 @@ interface XYChartTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>, '
 export declare const XYChartTooltip: React.FC<XYChartTooltipProps>;
 /** @deprecated Use `XYChartTooltip`. */
 export declare const AccessibleTooltip: import("react").FC<XYChartTooltipProps>;
-//#endregion
-//#region src/components/tooltip/tooltip-box.d.ts
 type TooltipBoxProps = HTMLAttributes<HTMLDivElement> & {
   /** Drop the chart surface, scope class and dark theme, leaving a bare box. */
   unstyled?: boolean;
@@ -2307,8 +2212,6 @@ export declare const TooltipBox: import("react").ForwardRefExoticComponent<HTMLA
   /** Drop the chart surface, scope class and dark theme, leaving a bare box. */
   unstyled?: boolean;
 } & import("react").RefAttributes<HTMLDivElement>>;
-//#endregion
-//#region src/components/trend-indicator/types.d.ts
 /**
  * The direction of the trend
  */
@@ -2339,8 +2242,6 @@ type TrendIndicatorProps = {
    */
   showIcon?: boolean;
 };
-//#endregion
-//#region src/components/trend-indicator/trend-indicator.d.ts
 /**
  * TrendIndicator displays a directional trend with a value.
  * Used to show percentage changes or growth metrics.
@@ -2349,8 +2250,6 @@ type TrendIndicatorProps = {
  * @return {JSX.Element} The rendered trend indicator
  */
 export declare function TrendIndicator({ direction, value, className, style, showIcon }: TrendIndicatorProps): JSX.Element;
-//#endregion
-//#region src/providers/chart-context/types.d.ts
 interface ChartRegistration {
   legendItems: BaseLegendItem[];
   chartType: ChartType;
@@ -2391,8 +2290,6 @@ interface GlobalChartsContextValue {
   getHiddenSeries: (chartId: string) => Set<string>;
   isColorPaletteResolved: boolean;
 }
-//#endregion
-//#region src/providers/chart-context/global-charts-provider.d.ts
 export declare const GlobalChartsContext: import("react").Context<GlobalChartsContextValue>;
 interface GlobalChartsProviderProps {
   children: ReactNode;
@@ -2409,11 +2306,7 @@ interface GlobalChartsProviderProps {
   timeZone?: string;
 }
 export declare const GlobalChartsProvider: FC<GlobalChartsProviderProps>;
-//#endregion
-//#region src/providers/chart-context/hooks/use-global-charts-context.d.ts
 export declare const useGlobalChartsContext: () => GlobalChartsContextValue;
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-registration.d.ts
 export declare const useChartRegistration: ({ chartId, legendItems, chartType, isDataValid, metadata }: {
   chartId: string;
   legendItems: BaseLegendItem[];
@@ -2421,16 +2314,12 @@ export declare const useChartRegistration: ({ chartId, legendItems, chartType, i
   isDataValid: boolean;
   metadata?: Record<string, unknown>;
 }) => void;
-//#endregion
-//#region src/providers/chart-context/hooks/use-global-charts-theme.d.ts
 /**
  * Hook to get the global chart theme from GlobalChartsProvider
  *
  * @return The global chart theme
  */
 export declare const useGlobalChartsTheme: () => CompleteChartTheme;
-//#endregion
-//#region src/providers/chart-context/hooks/use-chart-formatting.d.ts
 /**
  * The locale and time zone dates are rendered in, as set on `GlobalChartsProvider`.
  *
@@ -2441,8 +2330,6 @@ export declare const useGlobalChartsTheme: () => CompleteChartTheme;
  * @return The host's formatting context.
  */
 export declare const useChartFormatting: () => ChartFormatting;
-//#endregion
-//#region src/providers/chart-context/themes.d.ts
 /**
  * Default theme configuration: the shape and spacing a consumer can override.
  *
@@ -2450,14 +2337,11 @@ export declare const useChartFormatting: () => ChartFormatting;
  * chains that deliver those live in `private/catalog-pointers.ts`.
  */
 declare const defaultTheme: CompleteChartTheme;
-//#endregion
-//#region src/providers/chart-scope/use-chart-scope-element.d.ts
 /**
  * Returns the nearest chart scope element, or `null` when rendered outside any scope (and during SSR, before the ref is attached).
  *
  * @return {HTMLElement | null} The nearest chart scope element, or `null`.
  */
 export declare const useChartScopeElement: () => HTMLElement | null;
-//#endregion
 export { type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartLayout, type BarChartProps, BarChart as BarChartUnresponsive, type BarLegendOptions, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ComparisonItemLabel, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme };
 //# sourceMappingURL=index.d.cts.map
