@@ -1242,11 +1242,29 @@ interface MainMetricRenderProps {
   changeColor?: string;
 }
 /**
+ * A labeled line in a funnel step's tooltip
+ */
+interface FunnelTooltipRow {
+  label: string;
+  value: string;
+}
+/**
+ * What a funnel step's tooltip shows below or beside the step's name. Screen readers read the same content after the name.
+ */
+interface FunnelTooltipContent {
+  /** Shown on the name's line, e.g. the step's count */
+  value?: string;
+  /** Labeled lines below the name */
+  rows?: FunnelTooltipRow[];
+}
+/**
  * Render prop for customizing tooltip content
  */
 interface TooltipRenderProps {
   step: FunnelStep;
   index: number;
+  /** The step's tooltip content. Screen readers read the whole rendered tooltip as the step's description. */
+  content: FunnelTooltipContent;
   top: number;
   left: number;
   /** @deprecated The tooltip box draws the package surface; this is no longer set. */
@@ -1276,6 +1294,8 @@ interface ConversionFunnelChartProps extends Pick<BaseChartProps, 'className' | 
   renderMainMetric?: (props: MainMetricRenderProps) => React.ReactNode;
   /** Custom render function for tooltip content */
   renderTooltip?: (props: TooltipRenderProps) => React.ReactNode;
+  /** What each step's tooltip shows, which screen readers also read after the step's name. Defaults to the count and the conversion rate. */
+  getTooltipContent?: (step: FunnelStep, index: number) => FunnelTooltipContent;
   /** Inline styles merged over the tooltip box defaults. */
   tooltipStyle?: React.CSSProperties;
 }
@@ -2343,5 +2363,5 @@ declare const defaultTheme: CompleteChartTheme;
  * @return {HTMLElement | null} The nearest chart scope element, or `null`.
  */
 export declare const useChartScopeElement: () => HTMLElement | null;
-export { type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartLayout, type BarChartProps, BarChart as BarChartUnresponsive, type BarLegendOptions, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ComparisonItemLabel, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme };
+export { type AnnotationStyles, type ArcData, AreaChartResponsive as AreaChart, type AreaChartProps, AreaChart as AreaChartUnresponsive, type AxisOptions, type BandHighlightSelection, BarChartResponsive as BarChart, type BarChartLayout, type BarChartProps, BarChart as BarChartUnresponsive, type BarLegendOptions, BarListChartResponsive as BarListChart, type BarListChartProps, BarListChart as BarListChartUnresponsive, type BaseChartProps, type BaseLegendItem, type BaseLegendProps, type BaseTooltipProps, type BucketInfo, type CalendarHeatmapOptions, type CalendarHeatmapResult, type ChartFormatting, type ChartLegendConfig, type ChartLegendOptions, type ChartTheme, type ComparisonItemLabel, type CompleteChartTheme, ConversionFunnelChartWithProvider as ConversionFunnelChart, type ConversionFunnelChartProps, type CrosshairStyle, type CurveType, type DataPoint, type DataPointDate, type DataPointPercentage, type EventHandlerParams, type FunnelStep, type FunnelTooltipContent, type FunnelTooltipRow, GeoChartResponsive as GeoChart, type GeoChartError, type GeoChartProps, GeoChartWithProvider as GeoChartUnresponsive, type GeoData, type GeoDisplayMode, type GeoRegion, type GeoResolution, GlobalChartsProvider as ThemeProvider, type GoogleDataTableColumn, type GoogleDataTableRow, type GradientConfig, type GradientStop, type GridStyles, type HeatmapCell, HeatmapChartResponsive as HeatmapChart, type HeatmapChartProps, HeatmapChart as HeatmapChartUnresponsive, type HeatmapColumn, type HeatmapColumnGroup, type HeatmapTooltipData, LeaderboardChartResponsive as LeaderboardChart, type LeaderboardChartProps, LeaderboardChart as LeaderboardChartUnresponsive, type LeaderboardEntry, type LegendItemStyles, type LegendLabelStyles, type LegendPosition, type LegendProps, type LegendShape, type LegendShapeLabel, type LegendShapeRenderProps, type LegendShapeStyles, type LegendValueDisplay, LineChartResponsive as LineChart, type LineChartAnnotationProps, type LineChartProps, LineChart as LineChartUnresponsive, type LineStyles, type MainMetricRenderProps, type MetricValueType, type MonthCalendarHeatmapOptions, type MonthCalendarHeatmapRange, type MonthCalendarHeatmapResult, type MultipleDataPointsDate, type Optional, type OrientationType, PieChartResponsive as PieChart, type PieChartProps, type PieChartRenderTooltipParams, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, type PieSemiCircleChartProps, type PieSemiCircleChartRenderTooltipParams, PieSemiCircleChart as PieSemiCircleChartUnresponsive, type RenderLabelProps, type RenderLineGlyphProps, type RenderTooltipGlyphProps, type RenderTooltipParams, type RenderValueProps, type ScaleOptions, type SeriesChartLegendConfig, type SeriesData, type SeriesDataOptions, type SeriesVisibilityProps, Sparkline, type SparklineDataPoint, type SparklineProps, SparklineUnresponsive, type StepLabelRenderProps, type StepRateRenderProps, type TickResolution, type TooltipBoxProps, type TooltipData, type TooltipDatum, type TooltipPlacement, type TooltipProps, type TooltipRenderProps, type TrendDirection, type TrendIndicatorProps, type XyChartTooltipProps, defaultTheme };
 //# sourceMappingURL=index.d.ts.map

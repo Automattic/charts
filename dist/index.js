@@ -1,7 +1,7 @@
 import { getStringWidth as getStringWidth$1 } from "./visx/text/index.js";
 import { formatNumber, formatNumberCompact } from "@automattic/number-formatters";
 import { AnimatedAreaSeries, AnimatedAreaStack, AreaSeries, Axis, BarGroup, BarSeries, DataContext, GlyphSeries, Grid, TooltipContext, XYChart, buildChartTheme, useEventEmitter } from "@visx/xychart";
-import { __, _x, sprintf } from "@wordpress/i18n";
+import { __, _n, _x, sprintf } from "@wordpress/i18n";
 import clsx from "clsx";
 import * as React from "react";
 import { Children, Fragment, createContext, createContext as createContext$1, createElement, forwardRef, forwardRef as forwardRef$1, isValidElement, memo, useCallback, useCallback as useCallback$1, useContext, useContext as useContext$1, useEffect, useEffect as useEffect$1, useId, useImperativeHandle, useLayoutEffect, useMemo, useMemo as useMemo$1, useRef, useRef as useRef$1, useState, useState as useState$1, version } from "react";
@@ -7611,81 +7611,131 @@ var conversion_funnel_chart_module_default = {
 	"main-rate": "a8ccharts-mGEVca-main-rate",
 	"step-label": "a8ccharts-mGEVca-step-label",
 	"step-rate": "a8ccharts-mGEVca-step-rate",
+	"step-text": "a8ccharts-mGEVca-step-text",
 	"stretch": "a8ccharts-mGEVca-stretch",
-	"tooltip-content": "a8ccharts-mGEVca-tooltip-content",
-	"tooltip-title": "a8ccharts-mGEVca-tooltip-title"
+	"tooltip-label": "a8ccharts-mGEVca-tooltip-label",
+	"tooltip-title": "a8ccharts-mGEVca-tooltip-title",
+	"tooltip-value": "a8ccharts-mGEVca-tooltip-value"
 };
 // src/charts/conversion-funnel-chart/private/use-funnel-selection.ts
 /**
-* Custom hook to manage funnel bar selection state and interactions
+* Custom hook to manage funnel step selection state
 * @param hideTooltip - Function to hide tooltip when selection is cleared
-* @return Object containing selection state and event handlers
+* @return Object containing selection state and its setters
 */
 const useFunnelSelection = (hideTooltip) => {
-	const [clickedStep, setClickedStep] = useState(null);
+	const [selectedStepId, setSelectedStepId] = useState(null);
 	return {
-		clickedStep,
-		handleBarClick: useCallback((stepId) => {
-			if (clickedStep === stepId) {
-				setClickedStep(null);
-				hideTooltip?.();
-			} else setClickedStep(stepId);
-		}, [clickedStep, hideTooltip]),
-		handleBarKeyDown: useCallback((stepId, event) => {
-			if (event.key === "Enter" || event.key === " ") {
-				event.preventDefault();
-				if (clickedStep === stepId) {
-					setClickedStep(null);
-					hideTooltip?.();
-				} else setClickedStep(stepId);
-			} else if (event.key === "Escape") {
-				event.preventDefault();
-				setClickedStep(null);
-				hideTooltip?.();
-			}
-		}, [clickedStep, hideTooltip]),
+		selectedStepId,
+		selectStep: setSelectedStepId,
 		clearSelection: useCallback(() => {
-			setClickedStep(null);
+			setSelectedStepId(null);
 			hideTooltip?.();
 		}, [hideTooltip]),
 		getStepState: useCallback((stepId) => ({
-			isClicked: clickedStep === stepId,
-			isBlurred: clickedStep !== null && clickedStep !== stepId
-		}), [clickedStep])
+			isSelected: selectedStepId === stepId,
+			isBlurred: selectedStepId !== null && selectedStepId !== stepId
+		}), [selectedStepId])
+	};
+};
+// src/charts/conversion-funnel-chart/private/use-roving-step-focus.ts
+const getTargetIndex = (key, index, count, isRtl) => {
+	const nextKey = isRtl ? "ArrowLeft" : "ArrowRight";
+	const previousKey = isRtl ? "ArrowRight" : "ArrowLeft";
+	switch (key) {
+		case nextKey: return Math.min(index + 1, count - 1);
+		case previousKey: return Math.max(index - 1, 0);
+		case "Home": return 0;
+		case "End": return count - 1;
+		default: return;
+	}
+};
+/**
+* Roving tabindex for the funnel steps: one Tab stop, and arrow keys, Home and End move focus between steps.
+*
+* @param stepIds        - Step ids in visual order.
+* @param selectedStepId - The selected step, which holds the Tab stop until any step has taken focus.
+* @return Tab index, element registration, focus and key handlers for each step.
+*/
+const useRovingStepFocus = (stepIds, selectedStepId) => {
+	const [focusedStepId, setFocusedStepId] = useState(null);
+	const stepElements = useRef(/* @__PURE__ */ new Map());
+	const tabStopId = [focusedStepId, selectedStepId].find((id) => id !== null && stepIds.includes(id)) ?? stepIds[0];
+	return {
+		getTabIndex: useCallback((stepId) => stepId === tabStopId ? 0 : -1, [tabStopId]),
+		setStepElement: useCallback((stepId, element) => {
+			if (element) stepElements.current.set(stepId, element);
+			else stepElements.current.delete(stepId);
+		}, []),
+		handleStepFocus: useCallback((stepId) => {
+			setFocusedStepId(stepId);
+		}, []),
+		handleNavigationKey: useCallback((stepId, event) => {
+			if (event.altKey || event.ctrlKey || event.metaKey) return false;
+			const isRtl = getComputedStyle(event.currentTarget).direction === "rtl";
+			const targetIndex = getTargetIndex(event.key, stepIds.indexOf(stepId), stepIds.length, isRtl);
+			if (targetIndex === void 0) return false;
+			event.preventDefault();
+			stepElements.current.get(stepIds[targetIndex])?.focus();
+			return true;
+		}, [stepIds])
 	};
 };
 // src/charts/conversion-funnel-chart/conversion-funnel-chart.tsx
 /** Chart height (px) below which the funnel tightens its gaps so the bars keep their room. */
 const SHORT_CHART_HEIGHT = 180;
+const formatStepCount = (count) => sprintf(_n("%s item", "%s items", count, "jetpack-charts"), formatMetricValue(count));
+const getDefaultTooltipContent = (step) => ({
+	value: step.count === void 0 ? void 0 : formatStepCount(step.count),
+	rows: [{
+		label: __("Conversion rate", "jetpack-charts"),
+		value: formatPercentage(step.rate)
+	}]
+});
+const getDefaultTooltipIds = (tooltipId, { rows = [] }) => ({
+	value: `${tooltipId}-value`,
+	rows: rows.map((_, index) => ({
+		label: `${tooltipId}-row-${index}-label`,
+		value: `${tooltipId}-row-${index}-value`
+	}))
+});
+const getDefaultTooltipDescriptionIds = (tooltipId, content) => {
+	const ids = getDefaultTooltipIds(tooltipId, content);
+	return [...content.value ? [ids.value] : [], ...ids.rows.flatMap((row) => [row.label, row.value])].join(" ");
+};
 /**
 * Internal ConversionFunnelChart component with chart registration
 *
-* @param props                  - Component props
-* @param props.chartId          - Optional unique identifier for the chart
-* @param props.mainRate         - Main conversion rate to highlight
-* @param props.changeIndicator  - Change indicator (e.g., +2%, -1.5%)
-* @param props.steps            - Array of funnel steps
-* @param props.loading          - Whether the chart is in loading state
-* @param props.animation        - Whether to show chart animation on initial render or not
-* @param props.className        - Additional CSS class name
-* @param props.ariaLabel        - Accessible name for the chart group
-* @param props.height           - Height of the chart container. Falls back to style.height if set, otherwise defaults to "100%".
-* @param props.style            - Custom styling
-* @param props.renderStepLabel  - Custom render function for step labels
-* @param props.renderStepRate   - Custom render function for step rates
-* @param props.renderMainMetric - Custom render function for the entire main metric section
-* @param props.renderTooltip    - Custom render function for tooltip content
-* @param props.tooltipStyle     - Inline styles merged over the tooltip box defaults
+* @param props                   - Component props
+* @param props.chartId           - Optional unique identifier for the chart
+* @param props.mainRate          - Main conversion rate to highlight
+* @param props.changeIndicator   - Change indicator (e.g., +2%, -1.5%)
+* @param props.steps             - Array of funnel steps
+* @param props.loading           - Whether the chart is in loading state
+* @param props.animation         - Whether to show chart animation on initial render or not
+* @param props.className         - Additional CSS class name
+* @param props.ariaLabel         - Accessible name for the chart group
+* @param props.height            - Height of the chart container. Falls back to style.height if set, otherwise defaults to "100%".
+* @param props.style             - Custom styling
+* @param props.renderStepLabel   - Custom render function for step labels
+* @param props.renderStepRate    - Custom render function for step rates
+* @param props.renderMainMetric  - Custom render function for the entire main metric section
+* @param props.renderTooltip     - Custom render function for tooltip content
+* @param props.tooltipStyle      - Inline styles merged over the tooltip box defaults
+* @param props.getTooltipContent - What each step's tooltip shows, which screen readers also read
 * @return JSX element representing the conversion funnel chart
 */
-const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, ariaLabel, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, tooltipStyle }) => {
+const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loading = false, animation, className, ariaLabel, chartId: providedChartId, height, style, renderStepLabel, renderStepRate, renderMainMetric, renderTooltip, tooltipStyle, getTooltipContent = getDefaultTooltipContent }) => {
 	const chartId = useChartId(providedChartId);
 	const { getElementStyles, isColorPaletteResolved } = useGlobalChartsContext();
 	const chartRef = useRef(null);
-	const selectedBarRef = useRef(null);
+	const isPointerFocusRef = useRef(false);
 	const [scopeNode, setScopeNode] = useState(null);
+	const tooltipId = useId();
 	const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip();
-	const { handleBarClick, handleBarKeyDown, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
+	const { selectedStepId, selectStep, clearSelection, getStepState } = useFunnelSelection(hideTooltip);
+	const stepIds = useMemo(() => steps?.map((step) => step.id) ?? [], [steps]);
+	const { getTabIndex, setStepElement, handleStepFocus, handleNavigationKey } = useRovingStepFocus(stepIds, selectedStepId);
 	const standaloneScopeClass = useStandaloneScopeClass();
 	const [measureChartRef, , chartHeight] = useElementSize();
 	const gap = chartHeight > 0 && chartHeight < SHORT_CHART_HEIGHT ? "sm" : "xl";
@@ -7694,94 +7744,71 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		setScopeNode(node);
 		measureChartRef(node);
 	}, [measureChartRef]);
-	const clearSelectionAndRef = useCallback(() => {
-		clearSelection();
-		selectedBarRef.current = null;
-		hideTooltip();
-	}, [clearSelection, hideTooltip]);
-	const showTooltipAt = useCallback((step, x, y) => {
-		showTooltip({
+	const selectStepAt = useCallback((step, x, y) => {
+		selectStep(step.id);
+		const bounds = chartRef.current?.getBoundingClientRect();
+		if (bounds) showTooltip({
 			tooltipData: step,
-			tooltipLeft: x,
-			tooltipTop: y - 10
+			tooltipLeft: x - bounds.left,
+			tooltipTop: y - bounds.top - 10
 		});
-	}, [showTooltip]);
-	const getMouseTooltipCoords = useCallback((event) => {
-		const bounds = chartRef.current?.getBoundingClientRect();
-		if (!bounds) return null;
-		return {
-			x: event.clientX - bounds.left,
-			y: event.clientY - bounds.top
-		};
-	}, []);
-	const getKeyboardTooltipCoords = useCallback((event) => {
-		const bounds = chartRef.current?.getBoundingClientRect();
-		if (!bounds) return null;
-		const rect = event.currentTarget.getBoundingClientRect();
-		return {
-			x: rect.left + rect.width / 2 - bounds.left,
-			y: rect.top - bounds.top
-		};
-	}, []);
-	const handleStepInteraction = useCallback((step, event, interactionType) => {
-		selectedBarRef.current = event.currentTarget;
-		const { isClicked } = getStepState(step.id);
-		if (isClicked) {
-			if (interactionType === "click") handleBarClick(step.id);
-			else handleBarKeyDown(step.id, event);
-			return;
-		}
-		if (interactionType === "click") {
-			handleBarClick(step.id);
-			const coords = getMouseTooltipCoords(event);
-			if (coords) showTooltipAt(step, coords.x, coords.y);
-		} else {
-			handleBarKeyDown(step.id, event);
-			const coords = getKeyboardTooltipCoords(event);
-			if (coords) showTooltipAt(step, coords.x, coords.y);
-		}
-	}, [
-		getStepState,
-		handleBarClick,
-		handleBarKeyDown,
-		showTooltipAt,
-		getMouseTooltipCoords,
-		getKeyboardTooltipCoords
-	]);
+	}, [selectStep, showTooltip]);
+	const selectStepAtElement = useCallback((step, element) => {
+		const rect = element.getBoundingClientRect();
+		selectStepAt(step, rect.left + rect.width / 2, rect.top);
+	}, [selectStepAt]);
 	const stepHandlers = useMemo(() => {
 		const handlers = /* @__PURE__ */ new Map();
 		steps.forEach((step) => {
+			const onPointerDown = () => {
+				isPointerFocusRef.current = true;
+			};
 			const onClick = (event) => {
-				event.stopPropagation();
-				handleStepInteraction(step, event, "click");
+				isPointerFocusRef.current = false;
+				selectStepAt(step, event.clientX, event.clientY);
+			};
+			const onFocus = (event) => {
+				handleStepFocus(step.id);
+				if (isPointerFocusRef.current) isPointerFocusRef.current = false;
+				else if (step.id !== selectedStepId) selectStepAtElement(step, event.currentTarget);
 			};
 			const onKeyDown = (event) => {
-				if (event.key === "Enter" || event.key === " ") handleStepInteraction(step, event, "keyboard");
-				else {
-					selectedBarRef.current = event.currentTarget;
-					handleBarKeyDown(step.id, event);
+				isPointerFocusRef.current = false;
+				if (handleNavigationKey(step.id, event)) return;
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					selectStepAtElement(step, event.currentTarget);
+				} else if (event.key === "Escape" && selectedStepId !== null) {
+					event.preventDefault();
+					clearSelection();
 				}
 			};
+			const ref = (element) => setStepElement(step.id, element);
 			handlers.set(step.id, {
+				onPointerDown,
 				onClick,
-				onKeyDown
+				onKeyDown,
+				onFocus,
+				ref
 			});
 		});
 		return handlers;
 	}, [
 		steps,
-		handleStepInteraction,
-		handleBarKeyDown
+		selectedStepId,
+		selectStepAt,
+		selectStepAtElement,
+		clearSelection,
+		handleNavigationKey,
+		handleStepFocus,
+		setStepElement
 	]);
-	useEffect(() => {
-		const handleDocumentClick = (event) => {
-			if (selectedBarRef.current && !selectedBarRef.current.contains(event.target)) clearSelectionAndRef();
-		};
-		document.addEventListener("mousedown", handleDocumentClick);
-		return () => {
-			document.removeEventListener("mousedown", handleDocumentClick);
-		};
-	}, [clearSelectionAndRef]);
+	const handleStepsBlur = useCallback((event) => {
+		if (!event.currentTarget.contains(event.relatedTarget) && document.hasFocus()) {
+			isPointerFocusRef.current = false;
+			clearSelection();
+		}
+	}, [clearSelection]);
 	const resolvedHeight = height ?? style?.height ?? "100%";
 	const { color: barColor } = getElementStyles ? getElementStyles({ index: 0 }) : { color: "#000000" };
 	const isPositiveChange = changeIndicator?.startsWith("+");
@@ -7793,18 +7820,41 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		className: clsx(conversion_funnel_chart_module_default["change-indicator"], conversion_funnel_chart_module_default[isPositiveChange ? "change-indicator--positive" : "change-indicator--negative"]),
 		children: changeIndicator
 	})] });
-	const renderDefaultTooltip = (step) => /* @__PURE__ */ jsxs(Stack, {
-		direction: "column",
-		align: "flex-start",
-		gap: "xs",
-		children: [/* @__PURE__ */ jsx("div", {
-			className: conversion_funnel_chart_module_default["tooltip-title"],
-			children: step.label
-		}), /* @__PURE__ */ jsxs("div", {
-			className: conversion_funnel_chart_module_default["tooltip-content"],
-			children: [formatPercentage(step.rate), ` • ${step.count ?? "no"} items`]
-		})]
-	});
+	const renderDefaultTooltip = (step, content) => {
+		const ids = getDefaultTooltipIds(tooltipId, content);
+		return /* @__PURE__ */ jsxs(Stack, {
+			direction: "column",
+			gap: "xs",
+			children: [/* @__PURE__ */ jsxs(Stack, {
+				direction: "row",
+				justify: "space-between",
+				align: "baseline",
+				gap: "sm",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: conversion_funnel_chart_module_default["tooltip-title"],
+					children: step.label
+				}), content.value && /* @__PURE__ */ jsx("span", {
+					id: ids.value,
+					className: conversion_funnel_chart_module_default["tooltip-value"],
+					children: content.value
+				})]
+			}), content.rows?.map((row, index) => /* @__PURE__ */ jsxs(Stack, {
+				direction: "row",
+				justify: "space-between",
+				align: "baseline",
+				gap: "sm",
+				children: [/* @__PURE__ */ jsx("span", {
+					id: ids.rows[index].label,
+					className: conversion_funnel_chart_module_default["tooltip-label"],
+					children: row.label
+				}), /* @__PURE__ */ jsx("span", {
+					id: ids.rows[index].value,
+					className: conversion_funnel_chart_module_default["tooltip-value"],
+					children: row.value
+				})]
+			}, row.label))]
+		});
+	};
 	const isDataValid = Boolean(steps && steps.length > 0);
 	const chartMetadata = useMemo(() => ({
 		mainRate,
@@ -7839,6 +7889,26 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 		})
 	});
 	const maxRate = Math.max(...steps.map((step) => step.rate));
+	const tooltipStep = tooltipOpen ? tooltipData : void 0;
+	let tooltipContent = null;
+	let tooltipDescriptionIds = "";
+	if (tooltipStep) {
+		const index = steps.findIndex((s) => s.id === tooltipStep.id);
+		const content = getTooltipContent(tooltipStep, index);
+		if (renderTooltip) {
+			tooltipContent = renderTooltip({
+				step: tooltipStep,
+				index,
+				content,
+				top: tooltipTop,
+				left: tooltipLeft
+			});
+			tooltipDescriptionIds = tooltipId;
+		} else {
+			tooltipContent = renderDefaultTooltip(tooltipStep, content);
+			tooltipDescriptionIds = getDefaultTooltipDescriptionIds(tooltipId, content);
+		}
+	}
 	return /* @__PURE__ */ jsxs(Stack, {
 		direction: "column",
 		gap,
@@ -7867,10 +7937,16 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 				direction: "row",
 				align: "flex-end",
 				gap: "lg",
+				role: "listbox",
+				"aria-label": __("Funnel steps", "jetpack-charts"),
+				"aria-orientation": "horizontal",
+				onBlur: handleStepsBlur,
 				className: conversion_funnel_chart_module_default["funnel-container"],
 				children: steps.map((step, index) => {
 					const barHeight = step.rate / maxRate * 100;
-					const { isBlurred } = getStepState(step.id);
+					const { isSelected, isBlurred } = getStepState(step.id);
+					const handlers = stepHandlers.get(step.id);
+					const isDescribedByTooltip = Boolean(tooltipContent && tooltipDescriptionIds) && tooltipStep?.id === step.id;
 					return /* @__PURE__ */ jsxs(Stack, {
 						direction: "column",
 						className: clsx(conversion_funnel_chart_module_default["funnel-step"], isColorPaletteResolved && conversion_funnel_chart_module_default["funnel-step--animated"], isBlurred && conversion_funnel_chart_module_default["funnel-step--blurred"]),
@@ -7878,6 +7954,8 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 						children: [/* @__PURE__ */ jsxs(Stack, {
 							direction: "column",
 							gap: "xs",
+							className: conversion_funnel_chart_module_default["step-text"],
+							"aria-hidden": "true",
 							children: [renderStepLabel ? renderStepLabel({
 								step,
 								index,
@@ -7897,11 +7975,16 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 							direction: "column",
 							justify: "flex-end",
 							className: conversion_funnel_chart_module_default["bar-container"],
-							onClick: stepHandlers.get(step.id)?.onClick,
-							onKeyDown: stepHandlers.get(step.id)?.onKeyDown,
-							role: "button",
-							tabIndex: isBlurred ? -1 : 0,
-							"aria-label": step.label,
+							ref: handlers?.ref,
+							onPointerDown: handlers?.onPointerDown,
+							onClick: handlers?.onClick,
+							onKeyDown: handlers?.onKeyDown,
+							onFocus: handlers?.onFocus,
+							role: "option",
+							tabIndex: getTabIndex(step.id),
+							"aria-label": sprintf(__("%1$s, %2$s", "jetpack-charts"), step.label, formatPercentage(step.rate)),
+							"aria-selected": isSelected,
+							"aria-describedby": isDescribedByTooltip ? tooltipDescriptionIds : void 0,
 							children: /* @__PURE__ */ jsx("div", {
 								className: clsx(conversion_funnel_chart_module_default["funnel-bar"], { [conversion_funnel_chart_module_default["funnel-bar--animated"]]: animation && !loading && !prefersReducedMotion }),
 								style: {
@@ -7913,25 +7996,17 @@ const ConversionFunnelChartInternal = ({ mainRate, changeIndicator, steps, loadi
 					}, step.id);
 				})
 			})]
-		}), tooltipOpen && tooltipData && (() => {
-			const tooltipContent = renderTooltip ? renderTooltip({
-				step: tooltipData,
-				index: steps.findIndex((s) => s.id === tooltipData.id),
-				top: tooltipTop,
-				left: tooltipLeft
-			}) : renderDefaultTooltip(tooltipData);
-			if (!tooltipContent) return null;
-			return /* @__PURE__ */ jsx(BoundedTooltip, {
-				top: tooltipTop,
-				left: tooltipLeft,
-				className: standaloneScopeClass,
-				style: tooltipStyle,
-				children: /* @__PURE__ */ jsx("div", {
-					role: "tooltip",
-					children: tooltipContent
-				})
-			});
-		})()]
+		}), tooltipContent && /* @__PURE__ */ jsx(BoundedTooltip, {
+			top: tooltipTop,
+			left: tooltipLeft,
+			className: standaloneScopeClass,
+			style: tooltipStyle,
+			children: /* @__PURE__ */ jsx("div", {
+				id: tooltipId,
+				"aria-hidden": "true",
+				children: tooltipContent
+			})
+		})]
 	});
 };
 /**
