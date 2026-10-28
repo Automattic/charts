@@ -765,6 +765,10 @@
   padding-left: var(--wpds-dimension-padding-sm, 8px);
 }
 
+.a8ccharts-GovfoW-barWithLabelContainer.a8ccharts-GovfoW-is-overlay .a8ccharts-GovfoW-barTrack {
+  align-self: stretch;
+}
+
 .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar {
   height: 100%;
   min-height: 6px;
@@ -779,6 +783,14 @@
   animation: a8ccharts-GovfoW-stretch var(--a8c-charts-motion-duration-entrance) var(--a8c-charts-motion-easing-entrance) both;
 }
 
+.a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar--negative, [dir="rtl"] .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar--animated {
+  transform-origin: 100%;
+}
+
+[dir="rtl"] .a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-bar--negative {
+  transform-origin: 0;
+}
+
 @keyframes a8ccharts-GovfoW-stretch {
   from {
     transform: scaleX(0);
@@ -787,6 +799,20 @@
   to {
     transform: scaleX(1);
   }
+}
+
+.a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-barTrack {
+  display: grid;
+}
+
+.a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-barTrack .a8ccharts-GovfoW-bar {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.a8ccharts-GovfoW-barWithLabelContainer .a8ccharts-GovfoW-barTrack .a8ccharts-GovfoW-bar--negative {
+  grid-column: 1;
+  justify-self: end;
 }
 
 .a8ccharts-GovfoW-valueContainer {

@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Conversion funnel chart: Add `getTooltipContent` to set what each step's tooltip shows, which screen readers also read, and show the default tooltip's count and conversion rate as labeled lines.
+- Leaderboard Chart: Show negative values as bars extending left of a shared zero point.
 
 ### Fixed
 - Conversion funnel chart: Select a step and show its tooltip when it takes keyboard focus, move between steps with the arrow keys, and have screen readers read the tooltip as the step's description.

@@ -12106,6 +12106,8 @@ function useLeaderboardLegendItems({ data, primaryColor, secondaryColor, withCom
 var leaderboard_chart_module_default = {
 	"bar": "a8ccharts-GovfoW-bar",
 	"bar--animated": "a8ccharts-GovfoW-bar--animated",
+	"bar--negative": "a8ccharts-GovfoW-bar--negative",
+	"barTrack": "a8ccharts-GovfoW-barTrack",
 	"barWithLabelContainer": "a8ccharts-GovfoW-barWithLabelContainer",
 	"chevron": "a8ccharts-GovfoW-chevron",
 	"deltaPlaceholder": "a8ccharts-GovfoW-deltaPlaceholder",
@@ -12192,27 +12194,43 @@ const BarLabel = ({ label }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react
 	className: leaderboard_chart_module_default.label,
 	children: label
 }) : label });
-const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, secondaryColor, animation, isPrimaryVisible = true, isComparisonVisible = true }) => {
+const Bar = ({ share, color, animation, divergingScale }) => {
+	const isNegative = share < 0;
+	const sideMax = divergingScale?.[isNegative ? "negative" : "positive"];
+	const width = sideMax ? Math.abs(share) / sideMax * 100 : Math.abs(share);
+	const bar = /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: (0, clsx.default)(leaderboard_chart_module_default.bar, {
+			[leaderboard_chart_module_default["bar--animated"]]: animation,
+			[leaderboard_chart_module_default["bar--negative"]]: divergingScale && isNegative
+		}),
+		style: {
+			width: getBarWidth(width),
+			backgroundColor: color
+		}
+	});
+	if (!divergingScale) return bar;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: leaderboard_chart_module_default.barTrack,
+		style: { gridTemplateColumns: `${divergingScale.negative}fr ${divergingScale.positive}fr` },
+		children: bar
+	});
+};
+const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, secondaryColor, animation, divergingScale, isPrimaryVisible = true, isComparisonVisible = true }) => {
 	const showComparisonBar = withComparison && !withOverlayLabel && isComparisonVisible;
+	const bars = /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Bar, {
+		share: entry.currentShare,
+		color: primaryColor,
+		animation,
+		divergingScale
+	}), showComparisonBar && hasPreviousValue(entry) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Bar, {
+		share: entry.previousShare,
+		color: secondaryColor,
+		animation,
+		divergingScale
+	})] });
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: (0, clsx.default)(leaderboard_chart_module_default.barWithLabelContainer, { [leaderboard_chart_module_default["is-overlay"]]: withOverlayLabel }),
-		children: [
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarLabel, { label: entry.label }),
-			isPrimaryVisible && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-				className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
-				style: {
-					width: getBarWidth(entry.currentShare),
-					backgroundColor: primaryColor
-				}
-			}),
-			showComparisonBar && hasPreviousValue(entry) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-				className: (0, clsx.default)(leaderboard_chart_module_default.bar, { [leaderboard_chart_module_default["bar--animated"]]: animation }),
-				style: {
-					width: getBarWidth(entry.previousShare),
-					backgroundColor: secondaryColor
-				}
-			})
-		]
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarLabel, { label: entry.label }), bars]
 	});
 };
 /**
@@ -12294,6 +12312,26 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 	}, [
 		isPrimaryVisible,
 		isComparisonVisible,
+		withComparison,
+		withOverlayLabel
+	]);
+	const divergingScale = (0, react.useMemo)(() => {
+		const withComparisonBars = withComparison && !withOverlayLabel;
+		const scale = {
+			negative: 0,
+			positive: 0
+		};
+		for (const entry of data ?? []) {
+			const shares = [entry.currentShare];
+			if (withComparisonBars && hasPreviousValue(entry)) shares.push(entry.previousShare);
+			for (const share of shares) {
+				const side = share < 0 ? "negative" : "positive";
+				scale[side] = Math.max(scale[side], Math.abs(share));
+			}
+		}
+		return scale.negative > 0 ? scale : void 0;
+	}, [
+		data,
 		withComparison,
 		withOverlayLabel
 	]);
@@ -12397,6 +12435,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								withOverlayLabel,
 								primaryColor: resolvedPrimaryColor,
 								secondaryColor: resolvedSecondaryColor,
+								divergingScale,
 								isPrimaryVisible,
 								isComparisonVisible,
 								animation: animation && !loading && !prefersReducedMotion
