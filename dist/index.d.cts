@@ -2203,7 +2203,7 @@ interface XYChartTooltipProps extends Omit<XyChartTooltipProps<DataPointDate>, '
    */
   tooltipData?: FlattenedTooltipData[];
   /**
-   * For line charts: series data to show all series at selected data point
+   * For line charts: series data to show every series at the selected date
    * When provided, shows all series instead of individual tooltips
    */
   series?: SeriesData[];

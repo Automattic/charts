@@ -14,6 +14,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Fixed
 - Conversion funnel chart: Select a step and show its tooltip when it takes keyboard focus, move between steps with the arrow keys, and have screen readers read the tooltip as the step's description.
+- Read every series at the selected or hovered date in tooltips, so series that skip a date no longer pair points from different dates.
 
 ## [4.12.0] - 2026-10-26
 ### Added

@@ -2588,6 +2588,80 @@ const BaseTooltip = ({ data, top, left, component: Component = LabelValueContent
 		children: content
 	});
 };
+// src/components/tooltip/private/keyboard-stops.ts
+const timeOf$1 = (point) => point?.date?.getTime();
+const getXPositions = (series) => {
+	const positions = /* @__PURE__ */ new Set();
+	for (const { data } of series) for (const point of data) {
+		const time = timeOf$1(point);
+		if (time !== void 0) positions.add(time);
+	}
+	return [...positions].sort((a, b) => a - b);
+};
+/**
+* Keyboard stops over the series: the sorted union of their dates, or array indexes when no point has a date.
+*
+* Once any point has a date, a series of undated points has no stop.
+*
+* @param series - The series to step through.
+* @return The stop count, and each series' point at a stop.
+*/
+const getKeyboardStops = (series) => {
+	const positions = getXPositions(series);
+	if (positions.length === 0) return {
+		count: Math.max(0, ...series.map(({ data }) => data.length)),
+		membersAt: (stop) => series.flatMap((s) => stop < s.data.length ? [{
+			series: s,
+			datum: s.data[stop],
+			index: stop
+		}] : [])
+	};
+	return {
+		count: positions.length,
+		membersAt: (stop) => {
+			const time = positions[stop];
+			if (time === void 0) return [];
+			return series.flatMap((s) => {
+				const index = s.data.findIndex((point) => timeOf$1(point) === time);
+				return index === -1 ? [] : [{
+					series: s,
+					datum: s.data[index],
+					index
+				}];
+			});
+		}
+	};
+};
+// src/components/tooltip/private/at-nearest-date.ts
+const timeOf = (datum) => datum.date?.getTime();
+/**
+* Lists every registered series at the nearest datum's date, each with its own point there.
+*
+* The pointer hands each series its own nearest point, which for a series that skips that date, or that the pointer sits nearer another date of, is a neighbor's.
+*
+* @param tooltipData - The tooltip data visx collected.
+* @param registry    - The chart's data registry.
+* @return The tooltip data, unchanged when the nearest datum has no date.
+*/
+const atNearestDate = (tooltipData, registry) => {
+	const nearest = tooltipData?.nearestDatum?.datum;
+	const time = nearest ? timeOf(nearest) : void 0;
+	if (!tooltipData || time === void 0) return tooltipData;
+	const datumByKey = {};
+	for (const { key, data } of registry?.entries() ?? []) {
+		const index = data.findIndex((datum) => timeOf(datum) === time);
+		if (index !== -1) datumByKey[key] = {
+			key,
+			index,
+			datum: data[index]
+		};
+	}
+	for (const [key, entry] of Object.entries(tooltipData.datumByKey)) if (!datumByKey[key] && timeOf(entry.datum) === time) datumByKey[key] = entry;
+	return {
+		...tooltipData,
+		datumByKey
+	};
+};
 const POINTER_HEIGHT = 6;
 const clamp = (position, min, max, size) => Math.min(Math.max(position, min), Math.max(min, max - size));
 const isClipping = (element) => {
@@ -2951,13 +3025,17 @@ const XyChartTooltipContent = ({ tooltipContext, container, renderTooltip, rende
 */
 const XyChartTooltipOverlay = (props) => {
 	const tooltipContext = useContext(TooltipContext);
+	const dataRegistry = useContext(DataContext)?.dataRegistry;
 	const [container, setContainer] = useState(null);
 	const anchorRef = useCallback((node) => {
 		setContainer(node?.ownerSVGElement?.parentElement ?? null);
 	}, []);
 	return /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx("g", { ref: anchorRef }), tooltipContext?.tooltipOpen && /* @__PURE__ */ jsx(XyChartTooltipContent, {
 		...props,
-		tooltipContext,
+		tooltipContext: {
+			...tooltipContext,
+			tooltipData: atNearestDate(tooltipContext.tooltipData, dataRegistry)
+		},
 		container
 	})] });
 };
@@ -2986,6 +3064,7 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 		}
 		return flattened;
 	}, [series, mode]);
+	const stops = useMemo(() => getKeyboardStops(series), [series]);
 	const hasKeyboardSelection = useRef(false);
 	const closeTooltipNow = useCallback(() => {
 		tooltipContext?.updateTooltip({
@@ -3019,19 +3098,20 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 		hasKeyboardSelection.current = true;
 		if (mode === "group") {
 			closeTooltipNow();
-			series.forEach((s, index) => {
-				if (selectedIndex < s.data.length) {
-					const datum = s.data[selectedIndex];
-					tooltipContext?.showTooltip({
-						datum,
-						key: s.label,
-						index
-					});
-				}
+			stops.membersAt(selectedIndex).forEach(({ series: member, datum, index }) => {
+				tooltipContext?.showTooltip({
+					datum,
+					key: member.label,
+					index
+				});
 			});
 		} else if (mode === "individual") {
 			if (selectedIndex < tooltipData.length) {
 				const tooltipItem = tooltipData[selectedIndex];
+				tooltipContext?.updateTooltip((state) => ({
+					...state,
+					tooltipData: void 0
+				}));
 				tooltipContext?.showTooltip({
 					datum: tooltipItem.datum,
 					key: tooltipItem.seriesLabel,
@@ -3042,7 +3122,7 @@ const XYChartTooltip = ({ renderTooltip, selectedIndex, tooltipRef, keyboardFocu
 	}, [
 		selectedIndex,
 		tooltipData,
-		series
+		stops
 	]);
 	const focusableRenderTooltip = useMemo(() => {
 		if (!renderTooltip) return void 0;
@@ -4779,21 +4859,22 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		isSeriesVisible,
 		options?.yScale
 	]);
-	const activateSelectedPoint = useCallback((index) => {
-		const series = visibleSeries.find((candidate) => candidate.data[index]);
-		if (series) onDatumActivate?.({
-			datum: series.data[index],
-			index,
-			key: series.label
+	const stops = useMemo(() => getKeyboardStops(visibleSeries), [visibleSeries]);
+	const activateSelectedPoint = useCallback((stop) => {
+		const match = stops.membersAt(stop)[0];
+		if (match) onDatumActivate?.({
+			datum: match.datum,
+			index: match.index,
+			key: match.series.label
 		});
-	}, [visibleSeries, onDatumActivate]);
+	}, [stops, onDatumActivate]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints: Math.max(0, ...visibleSeries.map((series) => series.data.length)),
+		totalPoints: stops.count,
 		visibleSeriesKey,
 		onActivate: activateSelectedPoint,
 		preventTooltipScroll: tooltipPlacement === "below-axis"
@@ -5260,19 +5341,22 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		}));
 	}, [dataSorted, hiddenSeries]);
 	const allSeriesHidden = useMemo(() => seriesWithVisibility.every(({ isVisible }) => !isVisible), [seriesWithVisibility]);
-	const hasWholeNumberValues = useMemo(() => (!stacked || stackOffset === "none") && hasOnlyWholeNumbers(dataSorted.filter((series) => isSeriesVisible(series.label))), [
-		dataSorted,
-		isSeriesVisible,
+	const visibleDataSeries = useMemo(() => dataSorted.filter((series) => isSeriesVisible(series.label)), [dataSorted, isSeriesVisible]);
+	const hasWholeNumberValues = useMemo(() => (!stacked || stackOffset === "none") && hasOnlyWholeNumbers(visibleDataSeries), [
+		visibleDataSeries,
 		stacked,
 		stackOffset
 	]);
+	const visibleSeriesKey = useMemo(() => JSON.stringify(visibleDataSeries.map((series) => series.label)), [visibleDataSeries]);
+	const stops = useMemo(() => getKeyboardStops(visibleDataSeries), [visibleDataSeries]);
 	const { tooltipRef, onChartFocus, onChartBlur, onChartKeyDown } = useKeyboardNavigation({
 		selectedIndex,
 		setSelectedIndex,
 		isNavigating,
 		setIsNavigating,
 		chartRef,
-		totalPoints: dataSorted[0]?.data.length || 0
+		totalPoints: stops.count,
+		visibleSeriesKey
 	});
 	const fixedYDomain = useMemo(() => {
 		if (rescaleYOnVisibilityChange || !dataSorted.length || !dataSorted[0].data.length || stacked && stackOffset !== "none") return;
@@ -5560,7 +5644,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: area_chart_module_default["area-chart__tooltip--keyboard-focused"],
-									series: dataSorted
+									series: visibleDataSeries
 								}), /* @__PURE__ */ jsx(HoverGlyphs, {
 									visibleSeries,
 									stacked,
@@ -6302,22 +6386,17 @@ const BarLayer = ({ chartId, overlapSlots, selectedBar, primaryEntries, primaryK
 *
 * @param props         - Component props.
 * @param props.members - The category's bars, the keyboard stop last.
-* @param props.index   - The selected data point.
 * @return No visual content.
 */
-function SlotTooltipMembers({ members, index }) {
+function SlotTooltipMembers({ members }) {
 	const { showTooltip, updateTooltip } = useContext(TooltipContext) ?? {};
 	useEffect(() => {
 		updateTooltip?.((state) => ({
 			...state,
 			tooltipData: void 0
 		}));
-		members.forEach(({ key, datum }) => showTooltip?.({
-			key,
-			datum,
-			index
-		}));
-	}, [members, index]);
+		members.forEach((member) => showTooltip?.(member));
+	}, [members]);
 	return null;
 }
 // src/charts/bar-chart/private/overlap-bars.ts
@@ -6437,7 +6516,7 @@ function getOverlapBarColors(series, colors, slotColors, background) {
 * @return Whether `point` is at `category`.
 */
 function isSameCategory(point, category) {
-	return category.label != null ? point.label === category.label : !!category.date && !!point.date && point.date.getTime() === category.date.getTime();
+	return category.label ? point.label === category.label : !!category.date && !!point.date && point.date.getTime() === category.date.getTime();
 }
 /**
 * Lays out the visible series of an overlap layout in slots and layers.
@@ -6482,7 +6561,7 @@ function useOverlapSlots(enabled, seriesWithVisibility) {
 * @return The category key.
 */
 function categoryKey(point) {
-	return point.label != null ? `label:${point.label}` : `date:${point.date?.getTime()}`;
+	return point.label ? `label:${point.label}` : `date:${point.date?.getTime()}`;
 }
 /**
 * Lists a stop for every slot at every category that slot draws a bar at, category by category.
@@ -6520,6 +6599,25 @@ function getStopPositions(entries, slotKeys, slotOf) {
 	}));
 }
 /**
+* Every bar at a category, each with its own data point index, the keyboard stop last.
+*
+* @param entries  - The visible series.
+* @param category - The data point naming the category.
+* @param stopKey  - The series the keyboard stop is on.
+* @return The category's bars; the last one shown becomes the tooltip's nearest datum.
+*/
+function membersAt(entries, category, stopKey) {
+	const members = entries.flatMap(({ series }) => {
+		const index = series.data.findIndex((point) => isSameCategory(point, category));
+		return index === -1 ? [] : [{
+			key: series.label,
+			datum: series.data[index],
+			index
+		}];
+	});
+	return [...members.filter(({ key }) => key !== stopKey), ...members.filter(({ key }) => key === stopKey)];
+}
+/**
 * The slot a keyboard index selects, and every bar at its category.
 *
 * @param slots         - The overlap layout.
@@ -6529,21 +6627,14 @@ function getStopPositions(entries, slotKeys, slotOf) {
 function getSelectedSlot(slots, selectedIndex) {
 	const position = selectedIndex === void 0 ? void 0 : slots?.positions[selectedIndex];
 	if (!slots || !position) return;
-	const { slotKey, key: stopKey, datum: category, dataPointIndex } = position;
-	const members = slots.entries.flatMap(({ series }) => {
-		const datum = series.data.find((point) => isSameCategory(point, category));
-		return datum ? [{
-			key: series.label,
-			datum
-		}] : [];
-	});
+	const { slotKey, key: stopKey, datum: category } = position;
+	const members = membersAt(slots.entries, category, stopKey);
 	const slotBars = members.filter(({ key, datum }) => isBarRendered(datum) && slots.slotOf(key) === slotKey);
 	return {
 		data: slotBars.map(({ datum }) => datum),
 		slotKey,
 		thickness: Math.max(...slotBars.map(({ key }) => slots.thicknessOf(key))),
-		index: dataPointIndex,
-		members: [...members.filter(({ key }) => key !== stopKey), ...members.filter(({ key }) => key === stopKey)]
+		members
 	};
 }
 // src/charts/bar-chart/private/use-bar-stops.ts
@@ -6558,7 +6649,6 @@ function useBarStops(overlapSlots, primaryEntries) {
 	const series = useMemo(() => overlapSlots ? [] : primaryEntries.map((entry) => entry.series), [overlapSlots, primaryEntries]);
 	return {
 		count: overlapSlots?.positions.length ?? Math.max(0, ...series.map((item) => item.data.length)) * series.length,
-		series,
 		key: useMemo(() => JSON.stringify(overlapSlots?.keys ?? series.map((item) => item.label)), [overlapSlots, series]),
 		barAt: useCallback((stop) => {
 			if (overlapSlots) {
@@ -7155,10 +7245,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		const primaryKey = tooltipData?.nearestDatum?.key;
 		const categoryLabel = chartOptions.tooltip.labelFormatter(nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0), 0, []);
 		const comparisonEntry = comparisonEntries.find((entry) => entry.primaryKey === primaryKey);
-		const comparisonDatum = comparisonEntry?.series.data.find((point) => {
-			const p = point;
-			return nearestDatum.label != null ? p.label === nearestDatum.label : !!nearestDatum.date && !!p.date && p.date.getTime() === nearestDatum.date.getTime();
-		});
+		const comparisonDatum = comparisonEntry?.series.data.find((point) => isSameCategory(point, nearestDatum));
 		if (comparisonEntry && comparisonDatum) return /* @__PURE__ */ jsxs("div", {
 			className: bar_chart_module_default["bar-chart__tooltip"],
 			children: [
@@ -7228,6 +7315,17 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		slotOf: overlapSlots.slotOf
 	}, [overlapSlots]);
 	const selectedSlot = useMemo(() => getSelectedSlot(overlapSlots, selectedIndex), [overlapSlots, selectedIndex]);
+	const selectedGroup = useMemo(() => {
+		const stop = overlapSlots || selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
+		if (!stop) return;
+		return membersAt(primaryEntries, stop.datum, stop.key);
+	}, [
+		overlapSlots,
+		selectedIndex,
+		barAt,
+		primaryEntries
+	]);
+	const selectedMembers = selectedSlot?.members ?? selectedGroup;
 	const selectedBar = useMemo(() => {
 		if (overlapSlots) return selectedSlot;
 		const bar = selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
@@ -7390,10 +7488,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 										...!horizontal && valueTicks ? { tickValues: valueTicks } : {}
 									})] })
 								}),
-								withTooltips && selectedSlot && /* @__PURE__ */ jsx(SlotTooltipMembers, {
-									members: selectedSlot.members,
-									index: selectedSlot.index
-								}),
+								withTooltips && selectedMembers && /* @__PURE__ */ jsx(SlotTooltipMembers, { members: selectedMembers }),
 								withTooltips && /* @__PURE__ */ jsx(XYChartTooltip, {
 									tooltipPlacement,
 									tooltipAnchorTop,
@@ -7405,7 +7500,6 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: bar_chart_module_default["bar-chart__tooltip--keyboard-focused"],
-									series: stops.series,
 									mode: "individual"
 								})
 							]
