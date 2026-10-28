@@ -816,8 +816,10 @@
 }
 
 .a8ccharts-GovfoW-valueContainer {
-  justify-content: flex-end;
-  align-items: center;
+  grid-column: 2 / -1;
+  grid-template-columns: subgrid;
+  place-items: center end;
+  display: grid;
 }
 
 .a8ccharts-GovfoW-deltaValue {

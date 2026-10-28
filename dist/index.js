@@ -12014,6 +12014,8 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const { contentRef, fittedCount, isMeasurable } = useFittedRowCount(fitRows && !allSeriesHidden, data?.length ?? 0, data);
 	const shouldFitRows = fitRows && isMeasurable;
+	const showComparisonColumn = withComparison && isComparisonVisible;
+	const templateColumns = showComparisonColumn && isPrimaryVisible ? "minmax(0, 1fr) auto auto" : "minmax(0, 1fr) auto";
 	if (!data || data.length === 0) return /* @__PURE__ */ jsx(ChartInstanceContext.Provider, {
 		value: { chartId },
 		children: /* @__PURE__ */ jsx(ChartLayout, {
@@ -12078,13 +12080,12 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 				}) : /* @__PURE__ */ jsx(component_default, {
 					role: "list",
 					"aria-label": ariaLabel ?? __("Leaderboard chart", "jetpack-charts"),
-					templateColumns: "minmax(0, 1fr) auto",
+					templateColumns,
 					rowGap: ROW_GAP,
 					columnGap: COLUMN_GAP,
 					"data-leaderboard-grid": true,
 					children: data.map((entry, rowIndex) => {
 						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;
-						const showComparisonColumn = withComparison && isComparisonVisible;
 						const hasPreviousPeriodValue = hasPreviousValue(entry);
 						const hasDelta = hasDeltaValue(entry);
 						const showComparisonValue = showComparisonColumn && hasDelta;
@@ -12104,9 +12105,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 								isComparisonVisible,
 								animation: animation && !loading && !prefersReducedMotion
 							})
-						}), /* @__PURE__ */ jsxs(Stack, {
-							direction: "row",
-							gap: "xs",
+						}), /* @__PURE__ */ jsxs("div", {
 							className: clsx(leaderboard_chart_module_default.valueContainer, { [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel }),
 							children: [
 								isPrimaryVisible && /* @__PURE__ */ jsx(Text$1, { children: valueFormatter(entry.currentValue) }),
