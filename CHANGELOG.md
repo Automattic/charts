@@ -395,7 +395,7 @@ This is an alpha version! The changes listed here are not final.
 
 ## [1.4.3] - 2026-05-25
 ### Changed
-- Update dependencies. [#43811]
+- Update dependencies.
 
 ## [1.4.2] - 2026-05-21
 ### Changed
@@ -416,7 +416,7 @@ This is an alpha version! The changes listed here are not final.
 
 ## [1.3.1] - 2026-05-11
 ### Changed
-- Update dependencies. [#43811]
+- Update dependencies.
 
 ## [1.3.0] - 2026-05-04
 ### Added
@@ -596,7 +596,7 @@ This is an alpha version! The changes listed here are not final.
 
 ## [0.54.1] - 2026-01-26
 ### Changed
-- Update dependencies. [#43811]
+- Update dependencies.
 
 ## [0.54.0] - 2026-01-21
 ### Added
@@ -760,7 +760,7 @@ This is an alpha version! The changes listed here are not final.
 
 ## [0.38.2] - 2025-09-22
 ### Changed
-- Update dependencies. [#43811]
+- Update dependencies.
 
 ## [0.38.1] - 2025-09-19
 ### Changed
