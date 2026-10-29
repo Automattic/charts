@@ -37,6 +37,7 @@
   --a8c-charts-border-radius-leaderboard-bar: 9999px;
   --a8c-charts-dimension-leaderboard-row-gap: var(--wpds-dimension-gap-md, 12px);
   --a8c-charts-dimension-leaderboard-column-gap: var(--wpds-dimension-gap-xs, 4px);
+  --a8c-charts-dimension-leaderboard-label-inset: var(--wpds-dimension-padding-sm, 8px);
   --a8c-charts-dimension-legend-column-gap: var(--wpds-dimension-gap-lg, 16px);
   --a8c-charts-dimension-legend-row-gap: var(--wpds-dimension-gap-sm, 8px);
 }
@@ -762,7 +763,7 @@
 }
 
 .a8ccharts-GovfoW-barWithLabelContainer.a8ccharts-GovfoW-is-overlay .a8ccharts-GovfoW-label {
-  padding-left: var(--wpds-dimension-padding-sm, 8px);
+  padding-inline-start: var(--a8c-charts-dimension-leaderboard-label-inset);
 }
 
 .a8ccharts-GovfoW-barWithLabelContainer.a8ccharts-GovfoW-is-overlay .a8ccharts-GovfoW-barTrack {
