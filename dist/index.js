@@ -11798,6 +11798,41 @@ var leaderboard_chart_module_default = {
 	"stretch": "a8ccharts-GovfoW-stretch",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
+// src/charts/leaderboard-chart/private/resolve-leaderboard-entries.ts
+const toShare = (value, max) => max === 0 ? 0 : value / max * 100;
+const toDelta = (currentValue, previousValue) => {
+	if (previousValue == null) return;
+	if (previousValue === 0) return currentValue === 0 ? 0 : void 0;
+	return (currentValue - previousValue) / Math.abs(previousValue) * 100;
+};
+/**
+* Fills in the shares and delta an entry omits, derived from its values.
+*
+* @param data                    - Leaderboard entries; passed shares and delta win over derived ones.
+* @param options                 - Resolver options.
+* @param options.includePrevious - Whether previous values count toward the shared max.
+* @param options.clampNegative   - Whether a negative share draws as an empty bar instead of below zero.
+* @return Entries with `currentShare` always set.
+*/
+function resolveLeaderboardEntries(data, { includePrevious, clampNegative = false }) {
+	const magnitude = clampNegative ? (value) => Math.max(value, 0) : Math.abs;
+	const clamp = (share) => clampNegative ? Math.max(share, 0) : share;
+	const max = data.reduce((largest, { currentValue, previousValue }) => {
+		const previous = includePrevious && previousValue != null ? magnitude(previousValue) : 0;
+		return Math.max(largest, magnitude(currentValue), previous);
+	}, 0);
+	return data.map((entry) => {
+		const passedOrDerivedPrevious = entry.previousShare ?? (entry.previousValue != null ? toShare(entry.previousValue, max) : void 0);
+		const previousShare = passedOrDerivedPrevious !== void 0 ? clamp(passedOrDerivedPrevious) : void 0;
+		const delta = entry.delta ?? toDelta(entry.currentValue, entry.previousValue);
+		return {
+			...entry,
+			currentShare: clamp(entry.currentShare ?? toShare(entry.currentValue, max)),
+			...previousShare !== void 0 && { previousShare },
+			...delta !== void 0 && { delta }
+		};
+	});
+}
 // src/charts/leaderboard-chart/leaderboard-chart.tsx
 const ROW_GAP = "var(--a8c-charts-dimension-leaderboard-row-gap, 12px)";
 const COLUMN_GAP = "var(--a8c-charts-dimension-leaderboard-column-gap, 4px)";
@@ -11908,6 +11943,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 * @param props.height           - Optional height of the chart container in pixels
 * @param props.withComparison   - Whether to show comparison data
 * @param props.withOverlayLabel - Whether to overlay the label on top of the bar
+* @param props.negativeBars     - How a negative value draws: from a shared zero point, or as an empty bar
 * @param props.primaryColor     - Primary color for current period bars
 * @param props.secondaryColor   - Secondary color for comparison period bars
 * @param props.valueFormatter   - Custom formatter for values
@@ -11925,7 +11961,7 @@ const BarWithLabel = ({ entry, withComparison, withOverlayLabel, primaryColor, s
 * @param props.ariaLabel        - Accessible name for the list, defaulting to "Leaderboard chart"
 * @return JSX element representing the leaderboard chart
 */
-const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, fitRows = false, showLegend = false, legend = {}, legendLabels, gap = "md", ariaLabel, className, style, children }) => {
+const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propWidth, height: propHeight, withComparison = false, withOverlayLabel = false, negativeBars = "diverge", primaryColor, secondaryColor, valueFormatter = defaultValueFormatter, deltaFormatter = defaultDeltaFormatter, animation, loading = false, fitRows = false, showLegend = false, legend = {}, legendLabels, gap = "md", ariaLabel, className, style, children }) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendPosition = legend.position ?? "bottom";
 	const chartId = useChartId(providedChartId);
@@ -11979,13 +12015,21 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		withComparison,
 		withOverlayLabel
 	]);
+	const withComparisonBars = withComparison && !withOverlayLabel;
+	const resolvedData = useMemo(() => resolveLeaderboardEntries(data ?? [], {
+		includePrevious: withComparisonBars,
+		clampNegative: negativeBars === "clamp"
+	}), [
+		data,
+		withComparisonBars,
+		negativeBars
+	]);
 	const divergingScale = useMemo(() => {
-		const withComparisonBars = withComparison && !withOverlayLabel;
 		const scale = {
 			negative: 0,
 			positive: 0
 		};
-		for (const entry of data ?? []) {
+		for (const entry of resolvedData) {
 			const shares = [entry.currentShare];
 			if (withComparisonBars && hasPreviousValue(entry)) shares.push(entry.previousShare);
 			for (const share of shares) {
@@ -11994,11 +12038,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 			}
 		}
 		return scale.negative > 0 ? scale : void 0;
-	}, [
-		data,
-		withComparison,
-		withOverlayLabel
-	]);
+	}, [resolvedData, withComparisonBars]);
 	const isDataValid = Boolean(data && data.length > 0);
 	const chartMetadata = useMemo(() => ({
 		withComparison,
@@ -12084,7 +12124,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 					rowGap: ROW_GAP,
 					columnGap: COLUMN_GAP,
 					"data-leaderboard-grid": true,
-					children: data.map((entry, rowIndex) => {
+					children: resolvedData.map((entry, rowIndex) => {
 						const rowStyle = shouldFitRows && rowIndex >= fittedCount ? { visibility: "hidden" } : void 0;
 						const hasPreviousPeriodValue = hasPreviousValue(entry);
 						const hasDelta = hasDeltaValue(entry);

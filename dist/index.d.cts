@@ -163,18 +163,16 @@ type LeaderboardEntryFields = {
    */
   previousValue?: number;
   /**
-   * Width of current bar, as % of the largest absolute value across rows. A negative share
-   * extends the bar from a shared zero point toward the inline start, for every row.
+   * Width of current bar, as %. Derived from the values when omitted; a passed value wins.
+   * A negative share extends the bar from a shared zero point toward the inline start, for every row.
    */
-  currentShare: number;
+  currentShare?: number;
   /**
-   * Width of previous bar, as % of the largest absolute value across rows. Omit when this
-   * row has no matching comparison-period value.
+   * Width of previous bar, as %. Derived from `previousValue` when omitted; a passed value wins.
    */
   previousShare?: number;
   /**
-   * Delta of the entry. Omit when the percentage change is unavailable, such
-   * as when the row has no comparison value or its previous value is zero.
+   * Percentage change. Derived from the values when omitted; a passed value wins.
    */
   delta?: number;
   /**
@@ -1603,6 +1601,11 @@ interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, '
    * Whether to overlay the label on top of bar
    */
   withOverlayLabel?: boolean;
+  /**
+   * How a negative value draws: `diverge` puts every row on a shared zero point, `clamp` draws it as an empty bar.
+   * @default 'diverge'
+   */
+  negativeBars?: 'diverge' | 'clamp';
   /**
    * Primary color for current period bars
    */
