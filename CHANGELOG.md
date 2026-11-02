@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.14.1-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Changed
+- Update package dependencies.
+
 ## [4.14.0] - 2026-11-02
 ### Added
 - Leaderboard chart: Derive bar shares and percentage change from the values when an entry omits them, and add a `negativeBars` option to draw negative values as empty bars. [#54250]
@@ -1220,6 +1227,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[4.14.1-alpha]: https://github.com/Automattic/charts/compare/v4.14.0...v4.14.1-alpha
 [4.14.0]: https://github.com/Automattic/charts/compare/v4.13.0...v4.14.0
 [4.13.0]: https://github.com/Automattic/charts/compare/v4.12.0...v4.13.0
 [4.12.0]: https://github.com/Automattic/charts/compare/v4.11.1...v4.12.0
