@@ -2125,16 +2125,17 @@ const BaseLegend = (0, react.forwardRef)(({ items: allItems, className, orientat
 		chartId,
 		context
 	]);
-	const createClickHandler = (0, react.useCallback)((seriesLabels, itemInteractive) => {
+	const createClickHandler = (0, react.useCallback)((seriesLabels, itemInteractive, onToggle) => {
 		if (!itemInteractive) return;
-		return () => handleLegendClick(seriesLabels);
+		return onToggle ? () => onToggle() : () => handleLegendClick(seriesLabels);
 	}, [handleLegendClick]);
-	const createKeyDownHandler = (0, react.useCallback)((seriesLabels, itemInteractive) => {
+	const createKeyDownHandler = (0, react.useCallback)((seriesLabels, itemInteractive, onToggle) => {
 		if (!itemInteractive) return;
+		const toggle = onToggle ?? (() => handleLegendClick(seriesLabels));
 		return (event) => {
 			if (event.key === "Enter" || event.key === " ") {
 				event.preventDefault();
-				handleLegendClick(seriesLabels);
+				if (!event.repeat) toggle();
 			}
 		};
 	}, [handleLegendClick]);
@@ -2158,10 +2159,11 @@ const BaseLegend = (0, react.forwardRef)(({ items: allItems, className, orientat
 			children: labels.map((label, i) => {
 				const matchedItem = items[i];
 				const seriesLabels = matchedItem?.seriesLabels?.length ? matchedItem.seriesLabels : [label.text];
-				const visible = matchedItem?.interactive === false || isSeriesVisible(seriesLabels[0]);
 				const itemInteractive = interactive && matchedItem?.interactive !== false;
-				const handleClick = createClickHandler(seriesLabels, itemInteractive);
-				const handleKeyDown = createKeyDownHandler(seriesLabels, itemInteractive);
+				const onToggle = itemInteractive ? matchedItem?.onToggle : void 0;
+				const visible = matchedItem?.onToggle ? matchedItem.pressed : matchedItem?.interactive === false || isSeriesVisible(seriesLabels[0]);
+				const handleClick = createClickHandler(seriesLabels, itemInteractive, onToggle);
+				const handleKeyDown = createKeyDownHandler(seriesLabels, itemInteractive, onToggle);
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_visx_legend.LegendItem, {
 					className: (0, clsx.default)("visx-legend-item", base_legend_module_default["legend-item"], itemInteractive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
 					margin: itemMargin,

@@ -2122,16 +2122,17 @@ const BaseLegend = forwardRef(({ items: allItems, className, orientation = "hori
 		chartId,
 		context
 	]);
-	const createClickHandler = useCallback((seriesLabels, itemInteractive) => {
+	const createClickHandler = useCallback((seriesLabels, itemInteractive, onToggle) => {
 		if (!itemInteractive) return;
-		return () => handleLegendClick(seriesLabels);
+		return onToggle ? () => onToggle() : () => handleLegendClick(seriesLabels);
 	}, [handleLegendClick]);
-	const createKeyDownHandler = useCallback((seriesLabels, itemInteractive) => {
+	const createKeyDownHandler = useCallback((seriesLabels, itemInteractive, onToggle) => {
 		if (!itemInteractive) return;
+		const toggle = onToggle ?? (() => handleLegendClick(seriesLabels));
 		return (event) => {
 			if (event.key === "Enter" || event.key === " ") {
 				event.preventDefault();
-				handleLegendClick(seriesLabels);
+				if (!event.repeat) toggle();
 			}
 		};
 	}, [handleLegendClick]);
@@ -2155,10 +2156,11 @@ const BaseLegend = forwardRef(({ items: allItems, className, orientation = "hori
 			children: labels.map((label, i) => {
 				const matchedItem = items[i];
 				const seriesLabels = matchedItem?.seriesLabels?.length ? matchedItem.seriesLabels : [label.text];
-				const visible = matchedItem?.interactive === false || isSeriesVisible(seriesLabels[0]);
 				const itemInteractive = interactive && matchedItem?.interactive !== false;
-				const handleClick = createClickHandler(seriesLabels, itemInteractive);
-				const handleKeyDown = createKeyDownHandler(seriesLabels, itemInteractive);
+				const onToggle = itemInteractive ? matchedItem?.onToggle : void 0;
+				const visible = matchedItem?.onToggle ? matchedItem.pressed : matchedItem?.interactive === false || isSeriesVisible(seriesLabels[0]);
+				const handleClick = createClickHandler(seriesLabels, itemInteractive, onToggle);
+				const handleKeyDown = createKeyDownHandler(seriesLabels, itemInteractive, onToggle);
 				return /* @__PURE__ */ jsxs(LegendItem, {
 					className: clsx("visx-legend-item", base_legend_module_default["legend-item"], itemInteractive && base_legend_module_default["legend-item--interactive"], !visible && base_legend_module_default["legend-item--inactive"], itemClassName),
 					margin: itemMargin,

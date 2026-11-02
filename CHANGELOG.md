@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Leaderboard chart: Derive bar shares and percentage change from the values when an entry omits them, and add a `negativeBars` option to draw negative values as empty bars.
+- Legend: Let an interactive legend item own its pressed state and toggle handler.
 
 ### Changed
 - Update package dependencies.
