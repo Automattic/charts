@@ -5,19 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.14.0-alpha] - unreleased
-
-This is an alpha version! The changes listed here are not final.
-
+## [4.14.0] - 2026-11-02
 ### Added
-- Leaderboard chart: Derive bar shares and percentage change from the values when an entry omits them, and add a `negativeBars` option to draw negative values as empty bars.
-- Legend: Let an interactive legend item own its pressed state and toggle handler.
+- Leaderboard chart: Derive bar shares and percentage change from the values when an entry omits them, and add a `negativeBars` option to draw negative values as empty bars. [#54250]
+- Legend: Let an interactive legend item own its pressed state and toggle handler. [#54328]
 
 ### Changed
-- Update package dependencies.
+- Update package dependencies. [#53869]
 
 ### Fixed
-- Leaderboard chart: Inset overlay labels from the inline start, so they keep their padding in right-to-left languages, and expose the label inset as a CSS custom property.
+- Leaderboard chart: Inset overlay labels from the inline start, so they keep their padding in right-to-left languages, and expose the label inset as a CSS custom property. [#54192]
 
 ## [4.13.0] - 2026-10-28
 ### Added
@@ -1223,7 +1220,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.14.0-alpha]: https://github.com/Automattic/charts/compare/v4.13.0...v4.14.0-alpha
+[4.14.0]: https://github.com/Automattic/charts/compare/v4.13.0...v4.14.0
 [4.13.0]: https://github.com/Automattic/charts/compare/v4.12.0...v4.13.0
 [4.12.0]: https://github.com/Automattic/charts/compare/v4.11.1...v4.12.0
 [4.11.1]: https://github.com/Automattic/charts/compare/v4.11.0...v4.11.1
