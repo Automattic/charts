@@ -3555,6 +3555,89 @@ const getAllHiddenMessage = (interactive, itemType) => {
 	if (interactive) return _x("All series are hidden. Click legend items to show data.", "chart empty state: interactive series", "jetpack-charts");
 	return _x("All series are hidden.", "chart empty state: series", "jetpack-charts");
 };
+// src/charts/private/tick-decimals.tsx
+/**
+* Whether every reading in the series is a whole number.
+*
+* @param series - The series visx renders.
+* @return True when at least one reading exists and none has a fraction.
+*/
+const hasOnlyWholeNumbers = (series) => {
+	let sawReading = false;
+	for (const { data } of series) for (const point of data) {
+		const value = point?.value;
+		if (!isReading(value)) continue;
+		if (!Number.isInteger(value)) return false;
+		sawReading = true;
+	}
+	return sawReading;
+};
+const EPSILON = 1e-12;
+const tolerance = (scaled) => EPSILON * Math.max(1, Math.abs(scaled));
+const isValidDecimals = (decimals) => Number.isInteger(decimals) && decimals >= 0;
+const isOnDecimals = (value, decimals) => {
+	const scaled = value * 10 ** decimals;
+	return Math.abs(scaled - Math.round(scaled)) < tolerance(scaled);
+};
+/**
+* The scale's ticks with those finer than `decimals` places dropped.
+*
+* d3 steps by 1, 2 or 5 times a power of ten, so every multiple of 10^-decimals inside the domain is one of its ticks.
+*
+* @param scale    - The value scale visx built.
+* @param count    - Ticks to ask the scale for; undefined uses the scale's own default, as visx does.
+* @param decimals - Decimal places a tick may carry; 0 keeps whole numbers.
+* @return The kept ticks, or undefined when visx's own ticks need no change.
+*/
+const getTickDecimalValues = (scale, count, decimals = 0) => {
+	const ticks = scale?.ticks?.(count);
+	if (!ticks?.every((tick) => typeof tick === "number")) return;
+	const kept = ticks.filter((tick) => isOnDecimals(tick, decimals));
+	return kept.length > 1 && kept.length < ticks.length ? kept : void 0;
+};
+/**
+* A value domain widened to the nearest `decimals` steps when fewer than two fit inside it, so the axis shows at least two ticks.
+*
+* @param domain   - The domain the chart would scale to.
+* @param decimals - The axis's `tickDecimals`.
+* @return The widened domain, or undefined when `domain` needs no change.
+*/
+const getTickDecimalsDomain = (domain, decimals) => {
+	if (!domain || !isValidDecimals(decimals)) return;
+	const scale = 10 ** decimals;
+	const low = domain[0] * scale;
+	const high = domain[1] * scale;
+	if (Math.floor(high + tolerance(high)) - Math.ceil(low - tolerance(low)) >= 1) return;
+	const floor = Math.floor(low + tolerance(low));
+	const ceil = Math.max(Math.ceil(high - tolerance(high)), floor + 1);
+	return [floor / scale, ceil / scale];
+};
+/**
+* The decimals a value axis's ticks are held to: 0 for whole-number data, else the caller's `tickDecimals`.
+*
+* @param hasWholeNumberValues - Whether every plotted value is a whole number.
+* @param tickDecimals         - The axis's `tickDecimals`.
+* @return Decimal places, or undefined to keep visx's ticks.
+*/
+const getTickDecimals = (hasWholeNumberValues, tickDecimals) => {
+	if (hasWholeNumberValues) return 0;
+	return isValidDecimals(tickDecimals) ? tickDecimals : void 0;
+};
+/**
+* Hands its children the chart's value-scale ticks, held to `decimals` places.
+*
+* @param props          - Component props.
+* @param props.axis     - Which scale carries the values.
+* @param props.numTicks - Ticks to ask the scale for.
+* @param props.decimals - Decimal places a tick may carry, or undefined to keep visx's ticks.
+* @param props.children - Renders the axis and grid with the tick values.
+* @return The rendered children.
+*/
+const TickDecimals = ({ axis, numTicks, decimals, children }) => {
+	const { xScale, yScale } = useContext(DataContext);
+	const tickValues = decimals === void 0 ? void 0 : getTickDecimalValues(axis === "x" ? xScale : yScale, numTicks, decimals);
+	return /* @__PURE__ */ jsx(Fragment$1, { children: children(tickValues) });
+};
 // src/charts/private/time-axis.ts
 const X_TICK_WIDTH = 60;
 const getCurveType = (type, smoothing) => {
@@ -3846,53 +3929,6 @@ const buildTimeAxisOptions = ({ dataSorted, width, axisOptions, scaleDomain, zoo
 		...tickValues ? { tickValues } : {},
 		...numTicks === void 0 ? {} : { numTicks }
 	};
-};
-// src/charts/private/whole-number-ticks.tsx
-/**
-* Whether every reading in the series is a whole number.
-*
-* @param series - The series visx renders.
-* @return True when at least one reading exists and none has a fraction.
-*/
-const hasOnlyWholeNumbers = (series) => {
-	let sawReading = false;
-	for (const { data } of series) for (const point of data) {
-		const value = point?.value;
-		if (!isReading(value)) continue;
-		if (!Number.isInteger(value)) return false;
-		sawReading = true;
-	}
-	return sawReading;
-};
-/**
-* The scale's ticks with the fractional ones dropped.
-*
-* d3 steps by 1, 2 or 5 times a power of ten, so every whole number inside the domain is one of its ticks.
-*
-* @param scale - The value scale visx built.
-* @param count - Ticks to ask the scale for; undefined uses the scale's own default, as visx does.
-* @return Whole-number ticks, or undefined when visx's own ticks need no change.
-*/
-const getWholeNumberTickValues = (scale, count) => {
-	const ticks = scale?.ticks?.(count);
-	if (!ticks?.every((tick) => typeof tick === "number")) return;
-	const whole = ticks.filter((tick) => Number.isInteger(tick));
-	return whole.length > 1 && whole.length < ticks.length ? whole : void 0;
-};
-/**
-* Hands its children the whole-number ticks of the chart's value scale.
-*
-* @param props          - Component props.
-* @param props.axis     - Which scale carries the values.
-* @param props.numTicks - Ticks to ask the scale for.
-* @param props.enabled  - Whether the plotted values are all whole numbers and the caller pinned neither the ticks nor the value domain.
-* @param props.children - Renders the axis and grid with the tick values.
-* @return The rendered children.
-*/
-const WholeNumberTicks = ({ axis, numTicks, enabled, children }) => {
-	const { xScale, yScale } = useContext(DataContext);
-	const tickValues = enabled ? getWholeNumberTickValues(axis === "x" ? xScale : yScale, numTicks) : void 0;
-	return /* @__PURE__ */ jsx(Fragment$1, { children: children(tickValues) });
 };
 // src/charts/private/with-responsive/with-responsive.module.scss
 var with_responsive_module_default = {
@@ -4894,8 +4930,13 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		return min <= max ? [min, max] : void 0;
 	}, [dataSorted, isSeriesVisible]);
 	const hasWholeNumberValues = useMemo(() => hasOnlyWholeNumbers(visibleSeries), [visibleSeries]);
+	const isLogScale = options?.yScale?.type === "log";
+	const callerTickDecimals = isLogScale ? void 0 : options?.axis?.y?.tickDecimals;
+	const yTickDecimals = getTickDecimals(hasWholeNumberValues, callerTickDecimals);
 	const chartOptions = useMemo(() => {
-		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, options?.yScale?.type === "log");
+		const fallbackYDomain = getFallbackYDomain(visibleReadingExtent, isLogScale);
+		const { tickDecimals, ...yAxisOptions } = options?.axis?.y ?? {};
+		const tickDecimalsDomain = isLogScale || tickDecimals === void 0 || options?.yScale?.domain || yAxisOptions.tickValues ? void 0 : getTickDecimalsDomain(yDomain ?? fallbackYDomain ?? visibleReadingExtent, yTickDecimals);
 		return {
 			axis: {
 				x: buildTimeAxisOptions({
@@ -4912,7 +4953,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 					numTicks: 4,
 					tickFormat: formatNumberCompact,
 					display: true,
-					...options?.axis?.y
+					...yAxisOptions
 				}
 			},
 			xScale: {
@@ -4926,6 +4967,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 				zero: false,
 				...fallbackYDomain ? { domain: fallbackYDomain } : {},
 				...yDomain ? { domain: yDomain } : {},
+				...tickDecimalsDomain ? { domain: tickDecimalsDomain } : {},
 				...options?.yScale
 			}
 		};
@@ -4936,6 +4978,8 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		zoom.domain,
 		yDomain,
 		visibleReadingExtent,
+		isLogScale,
+		yTickDecimals,
 		formatting,
 		isSeriesVisible
 	]);
@@ -5071,10 +5115,10 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 							onPointerOut,
 							children: [
 								/* @__PURE__ */ jsx(NearestPointerEvents, { ...zoom.handlers }),
-								/* @__PURE__ */ jsx(WholeNumberTicks, {
+								/* @__PURE__ */ jsx(TickDecimals, {
 									axis: "y",
 									numTicks: chartOptions.axis.y.numTicks,
-									enabled: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain,
+									decimals: !chartOptions.axis.y.tickValues && !options?.yScale?.domain ? yTickDecimals : void 0,
 									children: (tickValues) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
 										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
 											columns: false,
@@ -5599,10 +5643,10 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 							onPointerOut,
 							pointerEventsDataKey: "nearest",
 							children: [
-								/* @__PURE__ */ jsx(WholeNumberTicks, {
+								/* @__PURE__ */ jsx(TickDecimals, {
 									axis: "y",
 									numTicks: chartOptions.axis.y.numTicks,
-									enabled: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain,
+									decimals: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain ? 0 : void 0,
 									children: (tickValues) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
 										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
 											columns: false,
@@ -5833,9 +5877,10 @@ const isBarRendered = (point) => Number.isFinite(getBarValue(point));
 * @param data             - Every series handed to the chart.
 * @param includeZero      - Whether the domain must span zero.
 * @param isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it.
+* @param tickDecimals     - The value axis's `tickDecimals`.
 * @return Value domain, or null when visx should fit its own.
 */
-const getValueScaleDomain = (data, includeZero, isSeriesRendered) => {
+const getValueScaleDomain = (data, includeZero, isSeriesRendered, tickDecimals) => {
 	let min = Infinity;
 	let max = -Infinity;
 	for (const series of data) {
@@ -5848,9 +5893,10 @@ const getValueScaleDomain = (data, includeZero, isSeriesRendered) => {
 		}
 	}
 	if (min === Infinity) return [...EMPTY_DOMAIN];
-	if (min === max) return min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
-	if (includeZero) return [Math.min(0, min), Math.max(0, max)];
-	return null;
+	let domain = null;
+	if (min === max) domain = min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
+	else if (includeZero) domain = [Math.min(0, min), Math.max(0, max)];
+	return getTickDecimalsDomain(domain ?? [min, max], tickDecimals) ?? domain;
 };
 // src/charts/bar-chart/private/use-bar-chart-options.ts
 /** Outer padding of the category band scale (space at the chart edges). */
@@ -5946,8 +5992,10 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 	const stableOptions = useDeepMemo(options);
 	const formatting = useChartFormatting();
 	const axisConfig = useMemo(() => {
-		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, tickFormat: xTickFormat, ...xAxisOptions } = stableOptions.axis?.x || {};
-		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, tickFormat: yTickFormat, ...yAxisOptions } = stableOptions.axis?.y || {};
+		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, tickFormat: xTickFormat, tickDecimals: xTickDecimals, ...xAxisOptions } = stableOptions.axis?.x || {};
+		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, tickFormat: yTickFormat, tickDecimals: yTickDecimals, ...yAxisOptions } = stableOptions.axis?.y || {};
+		const [valueAxisOptions, valueTickDecimals] = horizontal ? [xAxisOptions, xTickDecimals] : [yAxisOptions, yTickDecimals];
+		const valueScaleType = (horizontal ? stableOptions.xScale : stableOptions.yScale)?.type;
 		return {
 			xLabelOverflow,
 			yLabelOverflow,
@@ -5955,7 +6003,8 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 			yTickFormat,
 			xAxisOptions,
 			yAxisOptions,
-			tickResolution: horizontal ? yTickResolution : xTickResolution
+			tickResolution: horizontal ? yTickResolution : xTickResolution,
+			valueTickDecimals: valueAxisOptions.tickValues || valueScaleType === "log" ? void 0 : valueTickDecimals
 		};
 	}, [stableOptions, horizontal]);
 	const { tickResolution } = axisConfig;
@@ -6012,7 +6061,7 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
 		const valueScaleOptions = horizontal ? stableOptions.xScale : stableOptions.yScale;
 		const includeZero = data.some((s) => s.options?.type === "comparison") || valueScaleOptions?.zero !== false;
-		const domain = valueScaleOptions?.domain ? null : getValueScaleDomain(data, includeZero, isSeriesRendered);
+		const domain = valueScaleOptions?.domain ? null : getValueScaleDomain(data, includeZero, isSeriesRendered, axisConfig.valueTickDecimals);
 		const valueScaleDomainOverride = domain ? { domain } : {};
 		const xScale = {
 			...baseXScale,
@@ -6057,7 +6106,8 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 				}
 			},
 			barGroup: { padding: getGroupPadding(horizontal ? yScale : xScale) },
-			tooltip: { labelFormatter: dateAxisTickFormat || defaultTooltipLabelFormatter }
+			tooltip: { labelFormatter: dateAxisTickFormat || defaultTooltipLabelFormatter },
+			valueTickDecimals: axisConfig.valueTickDecimals
 		};
 	}, [
 		defaultOptions,
@@ -7105,10 +7155,11 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
 	const valueAxis = horizontal ? chartOptions.axis.x : chartOptions.axis.y;
 	const callerValueDomain = horizontal ? options.xScale?.domain : options.yScale?.domain;
-	const wholeNumberTicksProps = {
+	const valueTickDecimals = getTickDecimals(hasWholeNumberValues, chartOptions.valueTickDecimals);
+	const tickDecimalsProps = {
 		axis: horizontal ? "x" : "y",
 		numTicks: valueAxis.numTicks,
-		enabled: hasWholeNumberValues && !valueAxis.tickValues && !callerValueDomain
+		decimals: !valueAxis.tickValues && !callerValueDomain ? valueTickDecimals : void 0
 	};
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme, horizontal);
 	const chartRef = useRef(null);
@@ -7423,8 +7474,8 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									horizontal,
 									onChange: onBandHighlightChange
 								}),
-								!allSeriesHidden && /* @__PURE__ */ jsx(WholeNumberTicks, {
-									...wholeNumberTicksProps,
+								!allSeriesHidden && /* @__PURE__ */ jsx(TickDecimals, {
+									...tickDecimalsProps,
 									children: (valueTicks) => /* @__PURE__ */ jsxs(Fragment$1, { children: [/* @__PURE__ */ jsx(Grid, {
 										columns: gridVisibility.includes("y"),
 										rows: false,
@@ -7477,8 +7528,8 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									onPointerUp,
 									onPointerMove: handlePointerMove
 								}),
-								!allSeriesHidden && /* @__PURE__ */ jsx(WholeNumberTicks, {
-									...wholeNumberTicksProps,
+								!allSeriesHidden && /* @__PURE__ */ jsx(TickDecimals, {
+									...tickDecimalsProps,
 									children: (valueTicks) => /* @__PURE__ */ jsxs(Fragment$1, { children: [chartOptions.axis.x.display !== false && /* @__PURE__ */ jsx(Axis, {
 										...chartOptions.axis.x,
 										...horizontal && valueTicks ? { tickValues: valueTicks } : {}
