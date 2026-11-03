@@ -1280,6 +1280,15 @@ const defaultTheme = {
 		},
 		strokeWidth: 1.5
 	},
+	compactWhenShort: {
+		below: 140,
+		margin: {
+			top: 2,
+			right: 2,
+			bottom: 2,
+			left: 2
+		}
+	},
 	heatmapChart: {
 		compactCellGap: 2,
 		compactCellSize: 11,
@@ -3930,6 +3939,25 @@ const buildTimeAxisOptions = ({ dataSorted, width, axisOptions, scaleDomain, zoo
 		...numTicks === void 0 ? {} : { numTicks }
 	};
 };
+// src/charts/private/use-compact-when-short.ts
+/**
+* Whether a `compactWhenShort` chart is compact, and the margin it then defaults to.
+*
+* Reads the height the chart was given, not the measured plot area: that grows once the legend
+* is hidden and would flip the chart straight back. A zero height is unmeasured, not short.
+*
+* @param enabled - The chart's `compactWhenShort` prop.
+* @param height  - The height the chart was given.
+* @return Whether the chart is compact, and the compact margin when it is.
+*/
+const useCompactWhenShort = (enabled, height) => {
+	const { compactWhenShort } = useGlobalChartsTheme();
+	const isCompact = enabled && (height ?? 0) > 0 && height < compactWhenShort.below;
+	return {
+		isCompact,
+		compactMargin: isCompact ? compactWhenShort.margin : void 0
+	};
+};
 // src/charts/private/with-responsive/with-responsive.module.scss
 var with_responsive_module_default = {
 	"container": "a8ccharts-sP1gHa-container",
@@ -4815,7 +4843,7 @@ const LineChartScalesRef = ({ chartRef, width, height, margin }) => {
 	]);
 	return null;
 };
-const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, renderGlyph = defaultRenderGlyph, glyphStyle = {}, withLegendGlyph = false, withGradientFill = false, smoothing = true, curveType, renderTooltip = renderDefaultTooltip, tooltipPlacement, tooltipStyle, withStartGlyphs = false, withEndGlyphs = false, animation, options = {}, onPointerDown = void 0, onPointerUp = void 0, onPointerMove = void 0, onPointerOut = void 0, onDatumActivate = void 0, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md", compactWhenShort = false }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
 	const legendComparisonItem = legend.comparisonItem ?? false;
@@ -4842,6 +4870,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		}
 	});
 	const { legendChildren, nonLegendChildren } = useChartChildren(children, "LineChart");
+	const { isCompact, compactMargin } = useCompactWhenShort(compactWhenShort, height);
 	const [measuredChartHeight, setMeasuredChartHeight] = useState();
 	const handleContentHeightChange = useCallback((contentHeight) => {
 		setMeasuredChartHeight(contentHeight > 0 ? contentHeight : height);
@@ -4939,21 +4968,25 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		const tickDecimalsDomain = isLogScale || tickDecimals === void 0 || options?.yScale?.domain || yAxisOptions.tickValues ? void 0 : getTickDecimalsDomain(yDomain ?? fallbackYDomain ?? visibleReadingExtent, yTickDecimals);
 		return {
 			axis: {
-				x: buildTimeAxisOptions({
-					dataSorted,
-					width,
-					axisOptions: options?.axis?.x,
-					scaleDomain: options?.xScale?.domain,
-					zoomDomain: zoom.domain,
-					formatting,
-					isSeriesRendered: (series) => isSeriesVisible(series.label)
-				}),
+				x: {
+					...buildTimeAxisOptions({
+						dataSorted,
+						width,
+						axisOptions: options?.axis?.x,
+						scaleDomain: options?.xScale?.domain,
+						zoomDomain: zoom.domain,
+						formatting,
+						isSeriesRendered: (series) => isSeriesVisible(series.label)
+					}),
+					...isCompact && { display: false }
+				},
 				y: {
 					orientation: "left",
 					numTicks: 4,
 					tickFormat: formatNumberCompact,
 					display: true,
-					...yAxisOptions
+					...yAxisOptions,
+					...isCompact && { display: false }
 				}
 			},
 			xScale: {
@@ -4981,7 +5014,8 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		isLogScale,
 		yTickDecimals,
 		formatting,
-		isSeriesVisible
+		isSeriesVisible,
+		isCompact
 	]);
 	const bucketInfo = useMemo(() => getBucketInfo(visibleSeries, options?.axis?.x?.tickResolution), [visibleSeries, options?.axis?.x?.tickResolution]);
 	const tooltipRenderGlyph = useMemo(() => {
@@ -5056,7 +5090,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		className: clsx("line-chart", line_chart_module_default["line-chart"]),
 		children: error
 	});
-	const legendElement = showLegend && /* @__PURE__ */ jsx(Legend, {
+	const legendElement = showLegend && !isCompact && /* @__PURE__ */ jsx(Legend, {
 		orientation: legend.orientation ?? "horizontal",
 		alignment: legend.alignment ?? "center",
 		position: legendPosition,
@@ -5080,7 +5114,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
-			legendChildren,
+			legendChildren: isCompact ? [] : legendChildren,
 			gap,
 			className: clsx("line-chart", line_chart_module_default["line-chart"], { [line_chart_module_default["line-chart--animated"]]: animation && !prefersReducedMotion }, className),
 			style: {
@@ -5108,6 +5142,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 							height: chartHeight,
 							margin: {
 								...defaultMargin,
+								...compactMargin,
 								...margin
 							},
 							xScale: chartOptions.xScale,
@@ -5120,7 +5155,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									numTicks: chartOptions.axis.y.numTicks,
 									decimals: !chartOptions.axis.y.tickValues && !options?.yScale?.domain ? yTickDecimals : void 0,
 									children: (tickValues) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
-										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
+										!allSeriesHidden && gridVisibility !== "none" && !isCompact && /* @__PURE__ */ jsx(Grid, {
 											columns: false,
 											numTicks: chartOptions.axis.y.numTicks,
 											tickValues: tickValues ?? chartOptions.axis.y.tickValues
@@ -5137,7 +5172,7 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: getAllHiddenMessage(legendInteractive, "series")
+									children: getAllHiddenMessage(legendInteractive && !isCompact, "series")
 								}) : null,
 								/* @__PURE__ */ jsx(ZoomClip, {
 									active: zoomable && !!zoom.domain,
@@ -5339,7 +5374,7 @@ const HoverGlyphs = ({ visibleSeries, stacked, stackOffset, getElementStyles, st
 	});
 };
 // src/charts/area-chart/area-chart.tsx
-const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md" }, ref) => {
+const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = true, withTooltipCrosshairs, showLegend = false, legend = {}, stacked = true, stackOffset = "none", smoothing = true, curveType, fillOpacity, withStroke, renderTooltip = renderDefaultTooltip, animation, options = {}, onPointerDown, onPointerUp, onPointerMove, onPointerOut, zoomable = false, rescaleYOnVisibilityChange = true, defaultHiddenSeries, children, gridVisibility, gap = "md", compactWhenShort = false }, ref) => {
 	const legendInteractive = legend.interactive ?? false;
 	const legendShape = legend.shape ?? "rect";
 	const legendPosition = legend.position ?? "bottom";
@@ -5362,6 +5397,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		}
 	});
 	const { legendChildren, nonLegendChildren } = useChartChildren(children, "AreaChart");
+	const { isCompact, compactMargin } = useCompactWhenShort(compactWhenShort, height);
 	const [measuredChartHeight, setMeasuredChartHeight] = useState();
 	const handleContentHeightChange = useCallback((contentHeight) => {
 		setMeasuredChartHeight(contentHeight > 0 ? contentHeight : height);
@@ -5441,20 +5477,24 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 	const chartOptions = useMemo(() => {
 		return {
 			axis: {
-				x: buildTimeAxisOptions({
-					dataSorted,
-					width,
-					axisOptions: options?.axis?.x,
-					scaleDomain: options?.xScale?.domain,
-					zoomDomain: zoom.domain,
-					formatting
-				}),
+				x: {
+					...buildTimeAxisOptions({
+						dataSorted,
+						width,
+						axisOptions: options?.axis?.x,
+						scaleDomain: options?.xScale?.domain,
+						zoomDomain: zoom.domain,
+						formatting
+					}),
+					...isCompact && { display: false }
+				},
 				y: {
 					orientation: "left",
 					numTicks: 4,
 					tickFormat: formatNumberCompact,
 					display: true,
-					...options?.axis?.y
+					...options?.axis?.y,
+					...isCompact && { display: false }
 				}
 			},
 			xScale: {
@@ -5477,7 +5517,8 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		stacked,
 		fixedYDomain,
 		zoom.domain,
-		formatting
+		formatting,
+		isCompact
 	]);
 	const defaultMargin = useChartMargin(height, chartOptions, dataSorted, theme);
 	const error = validateData$3(dataSorted);
@@ -5557,7 +5598,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		className: clsx("area-chart", area_chart_module_default["area-chart"]),
 		children: error
 	});
-	const legendElement = showLegend && /* @__PURE__ */ jsx(Legend, {
+	const legendElement = showLegend && !isCompact && /* @__PURE__ */ jsx(Legend, {
 		orientation: legend.orientation ?? "horizontal",
 		alignment: legend.alignment ?? "center",
 		position: legendPosition,
@@ -5605,7 +5646,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
-			legendChildren,
+			legendChildren: isCompact ? [] : legendChildren,
 			gap,
 			className: clsx("area-chart", area_chart_module_default["area-chart"], { [area_chart_module_default["area-chart--animated"]]: animationEnabled }, className),
 			style: {
@@ -5633,6 +5674,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 							height: chartHeight,
 							margin: {
 								...defaultMargin,
+								...compactMargin,
 								...margin
 							},
 							xScale: chartOptions.xScale,
@@ -5648,7 +5690,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									numTicks: chartOptions.axis.y.numTicks,
 									decimals: hasWholeNumberValues && !chartOptions.axis.y.tickValues && !options?.yScale?.domain ? 0 : void 0,
 									children: (tickValues) => /* @__PURE__ */ jsxs(Fragment$1, { children: [
-										!allSeriesHidden && gridVisibility !== "none" && /* @__PURE__ */ jsx(Grid, {
+										!allSeriesHidden && gridVisibility !== "none" && !isCompact && /* @__PURE__ */ jsx(Grid, {
 											columns: false,
 											numTicks: chartOptions.axis.y.numTicks,
 											tickValues: tickValues ?? chartOptions.axis.y.tickValues
@@ -5665,7 +5707,7 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: getAllHiddenMessage(legendInteractive, "series")
+									children: getAllHiddenMessage(legendInteractive && !isCompact, "series")
 								}) : null,
 								/* @__PURE__ */ jsxs(ZoomClip, {
 									active: zoomable,
@@ -7114,7 +7156,7 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 	className: bar_chart_module_default["bar-chart__tooltip-row"],
 	children: sprintf(__("%1$s: %2$s", "jetpack-charts"), label, value)
 });
-const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", layout = "grouped", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", onPointerDown, onPointerUp, onDatumActivate }) => {
+const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", layout = "grouped", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", compactWhenShort = false, onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -7152,7 +7194,21 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	if (providerTheme.barChart?.barStyles?.comparison?.opacity !== void 0) warnOnce("bar-chart-comparison-opacity", "BarChart: theme.barChart.barStyles.comparison.opacity is deprecated. Comparison bars are opaque; leave it unset.");
 	const isSeriesRendered = useCallback((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const hasWholeNumberValues = useMemo(() => hasOnlyWholeNumbers(dataSorted.filter(isSeriesRendered)), [dataSorted, isSeriesRendered]);
-	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, options, isSeriesRendered);
+	const { isCompact, compactMargin } = useCompactWhenShort(compactWhenShort && !horizontal, height);
+	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, useMemo(() => isCompact ? {
+		...options,
+		axis: {
+			...options.axis,
+			x: {
+				...options.axis?.x,
+				display: false
+			},
+			y: {
+				...options.axis?.y,
+				display: false
+			}
+		}
+	} : options, [isCompact, options]), isSeriesRendered);
 	const valueAxis = horizontal ? chartOptions.axis.x : chartOptions.axis.y;
 	const callerValueDomain = horizontal ? options.xScale?.domain : options.yScale?.domain;
 	const valueTickDecimals = getTickDecimals(hasWholeNumberValues, chartOptions.valueTickDecimals);
@@ -7408,9 +7464,9 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		className: clsx("bar-chart", bar_chart_module_default["bar-chart"]),
 		children: error
 	});
-	const gridVisibility = gridVisibilityProp ?? chartOptions.gridVisibility;
+	const gridVisibility = isCompact ? "none" : gridVisibilityProp ?? chartOptions.gridVisibility;
 	const legendPosition = legend.position ?? "bottom";
-	const legendElement = showLegend && /* @__PURE__ */ jsx(Legend, {
+	const legendElement = showLegend && !isCompact && /* @__PURE__ */ jsx(Legend, {
 		orientation: legend.orientation ?? "horizontal",
 		position: legendPosition,
 		alignment: legend.alignment ?? "center",
@@ -7433,7 +7489,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
-			legendChildren,
+			legendChildren: isCompact ? [] : legendChildren,
 			gap,
 			className: clsx("bar-chart", bar_chart_module_default["bar-chart"], { [bar_chart_module_default[`bar-chart--animated${horizontal ? "-horizontal" : ""}`]]: animation && !prefersReducedMotion }, className),
 			style: {
@@ -7462,6 +7518,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 							height: chartHeight,
 							margin: {
 								...defaultMargin,
+								...compactMargin,
 								...margin
 							},
 							xScale,
@@ -7494,7 +7551,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									y: chartHeight / 2,
 									width,
 									height: chartHeight,
-									children: getAllHiddenMessage(legendInteractive, "series")
+									children: getAllHiddenMessage(legendInteractive && !isCompact, "series")
 								}) : null,
 								/* @__PURE__ */ jsx(ComparisonBars, {
 									comparisonEntries,

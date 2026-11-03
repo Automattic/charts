@@ -367,6 +367,18 @@ type ChartTheme = {
     /** Stroke width for the sparkline line */
     strokeWidth?: number;
   };
+  /** Compact mode for `compactWhenShort` line, area and bar charts */
+  compactWhenShort?: {
+    /** Height (px) below which the chart turns compact */
+    below?: number;
+    /** Margin the chart defaults to while compact */
+    margin?: {
+      top?: number;
+      right?: number;
+      bottom?: number;
+      left?: number;
+    };
+  };
   /**
    * HeatmapChart settings. Cell gap, radius, value size and the selection ring come from
    * WPDS tokens in CSS, so only the compact sizing lives here.
@@ -395,6 +407,9 @@ type CompleteChartTheme = Required<ChartTheme> & {
   legend: Required<NonNullable<ChartTheme['legend']>>;
   sparkline: Required<NonNullable<ChartTheme['sparkline']>> & {
     margin: Required<NonNullable<ChartTheme['sparkline']>['margin']>;
+  };
+  compactWhenShort: Required<NonNullable<ChartTheme['compactWhenShort']>> & {
+    margin: Required<NonNullable<ChartTheme['compactWhenShort']>['margin']>;
   };
   heatmapChart: Required<NonNullable<ChartTheme['heatmapChart']>>;
 };
@@ -629,6 +644,17 @@ interface SeriesVisibilityProps {
    * Omit to retain the provider's existing visibility for the chart ID.
    */
   defaultHiddenSeries?: readonly string[];
+}
+/**
+ * Compact mode for cartesian charts placed in short containers.
+ */
+interface CompactWhenShortProps {
+  /**
+   * Drop the axes, grid and legend, and default to `theme.compactWhenShort.margin`, while the
+   * chart is shorter than `theme.compactWhenShort.below`. Series hidden through the legend stay
+   * hidden until the chart is tall again. Horizontal bar charts ignore it.
+   */
+  compactWhenShort?: boolean;
 }
 /**
  * Base properties shared across all chart components
@@ -937,7 +963,7 @@ type RenderLineGlyphProps<Datum extends object> = GlyphProps<Datum> & {
   glyphStyle?: SVGProps<SVGCircleElement>;
   position?: 'start' | 'end';
 };
-interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+interface LineChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps, CompactWhenShortProps {
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -990,7 +1016,7 @@ type TooltipDatum = {
   /** The series' reading, or null when the bucket has none. */
   value: number | null;
 };
-interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+interface AreaChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps, CompactWhenShortProps {
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -1093,7 +1119,7 @@ type BandHighlightSelection = {
   width: number;
   height: number;
 };
-interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps {
+interface BarChartProps extends BaseChartProps<SeriesData[]>, SeriesVisibilityProps, CompactWhenShortProps {
   /**
    * Legend configuration. Supports `collapseGroups` on top of the shared options.
    */
@@ -1149,6 +1175,8 @@ type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
  */
 export declare function useBarLegendItems(data: SeriesData[], options?: BarLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
+  /** Bar lists are always horizontal, and horizontal bars ignore `compactWhenShort`. */
+  compactWhenShort?: never;
   options?: {
     /**
      * Scale for the y axis. Exclude the type property.
