@@ -25,6 +25,7 @@ import { bisector } from "@visx/vendor/d3-array";
 import { PatternCircles, PatternHexagons, PatternLines, PatternWaves } from "@visx/pattern";
 import { Chart } from "react-google-charts";
 import DOMPurify from "dompurify";
+import { __assign } from "tslib";
 import { Icon, chevronRight } from "@wordpress/icons";
 import { arc, pie } from "@visx/shape";
 // \0rolldown/runtime.js
@@ -10238,12 +10239,75 @@ function isPlainObject(o) {
 	if (prot.hasOwnProperty("isPrototypeOf") === false) return false;
 	return true;
 }
-// ../../../node_modules/.pnpm/@wordpress+warning@4.0.0/node_modules/@wordpress/warning/build-module/utils.mjs
-var logged = /* @__PURE__ */ new Set();
-// ../../../node_modules/.pnpm/@wordpress+warning@4.0.0/node_modules/@wordpress/warning/build-module/index.mjs
+// ../../../node_modules/.pnpm/lower-case@2.0.2/node_modules/lower-case/dist.es2015/index.js
+/**
+* Lower case as a function.
+*/
+function lowerCase(str) {
+	return str.toLowerCase();
+}
+// ../../../node_modules/.pnpm/no-case@3.0.4/node_modules/no-case/dist.es2015/index.js
+var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
+var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
+/**
+* Normalize the string into something other libraries can manipulate easier.
+*/
+function noCase(input, options) {
+	if (options === void 0) options = {};
+	var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter = _d === void 0 ? " " : _d;
+	var result = replace(replace(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
+	var start = 0;
+	var end = result.length;
+	while (result.charAt(start) === "\0") start++;
+	while (result.charAt(end - 1) === "\0") end--;
+	return result.slice(start, end).split("\0").map(transform).join(delimiter);
+}
+/**
+* Replace `re` in the input string with the replacement value.
+*/
+function replace(input, re, value) {
+	if (re instanceof RegExp) return input.replace(re, value);
+	return re.reduce(function(input, re) {
+		return input.replace(re, value);
+	}, input);
+}
+// ../../../node_modules/.pnpm/dot-case@3.0.4/node_modules/dot-case/dist.es2015/index.js
+function dotCase(input, options) {
+	if (options === void 0) options = {};
+	return noCase(input, __assign({ delimiter: "." }, options));
+}
+// ../../../node_modules/.pnpm/param-case@3.0.4/node_modules/param-case/dist.es2015/index.js
+function paramCase(input, options) {
+	if (options === void 0) options = {};
+	return dotCase(input, __assign({ delimiter: "-" }, options));
+}
+// ../../../node_modules/.pnpm/@wordpress+warning@4.1.0/node_modules/@wordpress/warning/build-module/utils.mjs
+/**
+* Object map tracking messages which have been logged, for use in ensuring a
+* message is only logged once.
+*/
+const logged = /* @__PURE__ */ new Set();
+// ../../../node_modules/.pnpm/@wordpress+warning@4.1.0/node_modules/@wordpress/warning/build-module/index.mjs
 function isDev() {
 	return globalThis.SCRIPT_DEBUG === true;
 }
+/**
+* Shows a warning with `message` if environment is not `production`.
+*
+* @param message Message to show in the warning.
+*
+* @example
+* ```js
+* import warning from '@wordpress/warning';
+*
+* function MyComponent( props ) {
+*   if ( ! props.title ) {
+*     warning( '`props.title` was not passed' );
+*   }
+*   ...
+* }
+* ```
+*/
 function warning(message) {
 	if (!isDev()) return;
 	if (logged.has(message)) return;
@@ -10299,7 +10363,15 @@ var require_es6 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		return a !== a && b !== b;
 	};
 }));
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/utils/hooks/use-update-effect.mjs
+/**
+* A `React.useEffect` that will not run on the first render.
+* Source:
+* https://github.com/ariakit/ariakit/blob/main/packages/ariakit-react-core/src/utils/hooks.ts
+*
+* @param effect
+* @param deps
+*/
 function useUpdateEffect(effect, deps) {
 	const mountedRef = useRef$1(false);
 	useEffect$1(() => {
@@ -10310,23 +10382,48 @@ function useUpdateEffect(effect, deps) {
 		mountedRef.current = false;
 	}, []);
 }
-var use_update_effect_default = useUpdateEffect;
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/context-system-provider.mjs
 var import_es6 = /* @__PURE__ */ __toESM(require_es6(), 1);
-var ComponentsContext = createContext$1({});
+const ComponentsContext = createContext$1({});
 ComponentsContext.displayName = "ComponentsContext";
-var useComponentsContext = () => useContext$1(ComponentsContext);
+const useComponentsContext = () => useContext$1(ComponentsContext);
+/**
+* Consolidates incoming ContextSystem values with a (potential) parent ContextSystem value.
+*
+* Note: This function will warn if it detects an un-memoized `value`
+*
+* @param {Object}              props
+* @param {Record<string, any>} props.value
+* @return {Record<string, any>} The consolidated value.
+*/
 function useContextSystemBridge({ value }) {
 	const parentContext = useComponentsContext();
 	const valueRef = useRef$1(value);
-	use_update_effect_default(() => {
+	useUpdateEffect(() => {
 		if ((0, import_es6.default)(valueRef.current, value) && valueRef.current !== value) warning(`Please memoize your context: ${JSON.stringify(value)}`);
 	}, [value]);
 	return useMemo$1(() => {
 		return deepmerge(parentContext ?? {}, value ?? {}, { isMergeableObject: isPlainObject });
 	}, [parentContext, value]);
 }
-var BaseContextSystemProvider = ({ children, value }) => {
+/**
+* A Provider component that can modify props for connected components within
+* the Context system.
+*
+* @example
+* ```jsx
+* <ContextSystemProvider value={{ Button: { size: 'small' }}}>
+*   <Button>...</Button>
+* </ContextSystemProvider>
+* ```
+*
+* @template {Record<string, any>} T
+* @param {Object}          options
+* @param {React.ReactNode} options.children Children to render.
+* @param {T}               options.value    Props to render into connected components.
+* @return {React.JSX.Element} A Provider wrapped component.
+*/
+const BaseContextSystemProvider = ({ children, value }) => {
 	const contextValue = useContextSystemBridge({ value });
 	return /* @__PURE__ */ jsx(ComponentsContext.Provider, {
 		value: contextValue,
@@ -10334,10 +10431,14 @@ var BaseContextSystemProvider = ({ children, value }) => {
 	});
 };
 memo(BaseContextSystemProvider);
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/constants.mjs
-var COMPONENT_NAMESPACE = "data-wp-component";
-var CONNECTED_NAMESPACE = "data-wp-c16t";
-var CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/constants.mjs
+const COMPONENT_NAMESPACE = "data-wp-component";
+const CONNECTED_NAMESPACE = "data-wp-c16t";
+/**
+* Special key where the connected namespaces are stored.
+* This is attached to Context connected components as a static property.
+*/
+const CONNECT_STATIC_NAMESPACE = "__contextSystemKey__";
 // ../../../node_modules/.pnpm/memize@2.1.1/node_modules/memize/dist/index.js
 /**
 * Memize options object.
@@ -10428,12 +10529,26 @@ function memize(fn, options) {
 	};
 	return memoized;
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/get-styled-class-name-from-key.mjs
+/**
+* Generates the connected component CSS className based on the namespace.
+*
+* @param namespace The name of the connected component.
+* @return The generated CSS className.
+*/
 function getStyledClassName(namespace) {
-	return `components-${namespace.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/([A-Z])([A-Z][a-z])/g, "$1-$2").replace(/[^A-Z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase()}`;
+	return `components-${paramCase(namespace)}`;
 }
-var getStyledClassNameFromKey = memize(getStyledClassName);
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+const getStyledClassNameFromKey = memize(getStyledClassName);
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/context-connect.mjs
+/**
+* Forwards ref (React.ForwardRef) and "Connects" (or registers) a component
+* within the Context system under a specified namespace.
+*
+* @param Component The component to register into the Context system.
+* @param namespace The namespace to register the component under.
+* @return The connected WordPressComponent
+*/
 function contextConnect(Component, namespace) {
 	return _contextConnect(Component, namespace, { forwardsRef: true });
 }
@@ -10441,6 +10556,9 @@ function _contextConnect(Component, namespace, options) {
 	const WrappedComponent = options?.forwardsRef ? forwardRef$1(Component) : Component;
 	if (typeof namespace === "undefined") warning("contextConnect: Please provide a namespace");
 	let mergedNamespace = WrappedComponent["__contextSystemKey__"] || [namespace];
+	/**
+	* Consolidate (merge) namespaces before attaching it to the WrappedComponent.
+	*/
 	if (Array.isArray(namespace)) mergedNamespace = [...mergedNamespace, ...namespace];
 	if (typeof namespace === "string") mergedNamespace = [...mergedNamespace, namespace];
 	return Object.assign(WrappedComponent, {
@@ -10449,14 +10567,45 @@ function _contextConnect(Component, namespace, options) {
 		selector: `.${getStyledClassNameFromKey(namespace)}`
 	});
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/utils.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/utils.mjs
+/**
+* Creates a dedicated context namespace HTML attribute for components.
+* ns is short for "namespace"
+*
+* @example
+* ```jsx
+* <div {...ns('Container')} />
+* ```
+*
+* @param componentName The name for the component.
+* @return A props object with the namespaced HTML attribute.
+*/
 function getNamespace(componentName) {
 	return { [COMPONENT_NAMESPACE]: componentName };
 }
+/**
+* Creates a dedicated connected context namespace HTML attribute for components.
+* ns is short for "namespace"
+*
+* @example
+* ```jsx
+* <div {...cns()} />
+* ```
+*
+* @return A props object with the namespaced HTML attribute.
+*/
 function getConnectedNamespace() {
 	return { [CONNECTED_NAMESPACE]: true };
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/context/use-context-system.mjs
+/**
+* Custom hook that derives registered props from the Context system.
+* These derived props are then consolidated with incoming component props.
+*
+* @param props     Incoming props from the component.
+* @param namespace The namespace to register and to derive context props from.
+* @return The connected props.
+*/
 function useContextSystem(props, namespace) {
 	const contextSystemProps = useComponentsContext();
 	if (typeof namespace === "undefined") warning("useContextSystem: Please provide a namespace");
@@ -10477,8 +10626,8 @@ function useContextSystem(props, namespace) {
 	finalComponentProps.className = classes;
 	return finalComponentProps;
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
-var visuallyHidden = {
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/visually-hidden/styles.mjs
+const visuallyHidden = {
 	border: 0,
 	clip: "rect(1px, 1px, 1px, 1px)",
 	WebkitClipPath: "inset( 50% )",
@@ -10492,10 +10641,10 @@ var visuallyHidden = {
 	wordWrap: "normal",
 	wordBreak: "normal"
 };
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
-var customAttributeRegExp = /^(data|aria|x)-/i;
-var eventHandlerRegExp = /^on[A-Z]/;
-var svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/utils/polymorphic-element.mjs
+const customAttributeRegExp = /^(data|aria|x)-/i;
+const eventHandlerRegExp = /^on[A-Z]/;
+const svgElementNames = new Set(`animate animateMotion animateTransform circle clipPath defs desc ellipse
 	feBlend feColorMatrix feComponentTransfer feComposite feConvolveMatrix
 	feDiffuseLighting feDisplacementMap feDistantLight feDropShadow feFlood
 	feFuncA feFuncB feFuncG feFuncR feGaussianBlur feImage feMerge feMergeNode
@@ -10503,7 +10652,7 @@ var svgElementNames = new Set(`animate animateMotion animateTransform circle cli
 	feTurbulence filter foreignObject g image line linearGradient marker mask
 	metadata mpath path pattern polygon polyline radialGradient rect set stop svg
 	switch symbol text textPath tspan use view`.split(/\s+/));
-var baseElementProps = new Set(`children dangerouslySetInnerHTML key autoFocus defaultValue defaultChecked
+const baseElementProps = new Set(`children dangerouslySetInnerHTML key autoFocus defaultValue defaultChecked
 	innerHTML suppressContentEditableWarning suppressHydrationWarning valueLink
 	abbr accept acceptCharset accessKey action allow allowUserMedia
 	allowPaymentRequest allowFullScreen allowTransparency alt async autoComplete
@@ -10524,7 +10673,7 @@ var baseElementProps = new Set(`children dangerouslySetInnerHTML key autoFocus d
 	datatype inlist prefix property resource typeof vocab autoCapitalize
 	autoCorrect autoSave color incremental fallback inert itemProp itemScope
 	itemType itemID itemRef on option results security unselectable`.split(/\s+/));
-var svgElementProps = new Set(`accentHeight accumulate additive alignmentBaseline allowReorder alphabetic
+const svgElementProps = new Set(`accentHeight accumulate additive alignmentBaseline allowReorder alphabetic
 	amplitude arabicForm ascent attributeName attributeType autoReverse azimuth
 	baseFrequency baselineShift baseProfile bbox begin bias by calcMode capHeight
 	clip clipPathUnits clipPath clipRule colorInterpolation
@@ -10559,7 +10708,7 @@ var svgElementProps = new Set(`accentHeight accumulate additive alignmentBaselin
 	xlinkActuate xlinkArcrole xlinkHref xlinkRole xlinkShow xlinkTitle xlinkType
 	xmlBase xmlns xmlnsXlink xmlLang xmlSpace y y1 y2 yChannelSelector z
 	zoomAndPan`.split(/\s+/));
-var compatElementProps = /* @__PURE__ */ new Set([
+const compatElementProps = /* @__PURE__ */ new Set([
 	"autofocus",
 	"class",
 	"for"
@@ -10580,19 +10729,39 @@ function UnforwardedPolymorphicElement({ as, ...props }, ref) {
 		...forwardedProps
 	});
 }
-var PolymorphicElement = forwardRef$1(UnforwardedPolymorphicElement);
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/view/component.mjs
+/**
+* Internal utility for components that need Emotion-compatible `as` behavior
+* while rendering with plain React elements.
+*/
+const PolymorphicElement = forwardRef$1(UnforwardedPolymorphicElement);
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/view/component.mjs
 function UnforwardedView({ css, ...restProps }, ref) {
 	return /* @__PURE__ */ jsx(PolymorphicElement, {
 		ref,
 		...restProps
 	});
 }
-var component_default$2 = Object.assign(forwardRef$1(UnforwardedView), { selector: ".components-view" });
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
+/**
+* `View` is a core component that renders everything in the library.
+* It is the principle component in the entire library.
+*
+* ```jsx
+* import { View } from `@wordpress/components`;
+*
+* function Example() {
+* 	return (
+* 		<View>
+* 			 Code is Poetry
+* 		</View>
+* 	);
+* }
+* ```
+*/
+const View = Object.assign(forwardRef$1(UnforwardedView), { selector: ".components-view" });
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/visually-hidden/component.mjs
 function UnconnectedVisuallyHidden(props, forwardedRef) {
 	const { style: styleProp, ...contextProps } = useContextSystem(props, "VisuallyHidden");
-	return /* @__PURE__ */ jsx(component_default$2, {
+	return /* @__PURE__ */ jsx(View, {
 		ref: forwardedRef,
 		...contextProps,
 		"data-visually-hidden": "",
@@ -10602,14 +10771,30 @@ function UnconnectedVisuallyHidden(props, forwardedRef) {
 		}
 	});
 }
-var component_default$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
-var breakpoints = [
+/**
+* `VisuallyHidden` is a component used to render text intended to be visually
+* hidden, but will show for alternate devices, for example a screen reader.
+*
+* ```jsx
+* import { VisuallyHidden } from `@wordpress/components`;
+*
+* function Example() {
+*   return (
+*     <VisuallyHidden>
+*       <label>Code is Poetry</label>
+*     </VisuallyHidden>
+*   );
+* }
+* ```
+*/
+const VisuallyHidden$1 = contextConnect(UnconnectedVisuallyHidden, "VisuallyHidden");
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/utils/use-responsive-value.mjs
+const breakpoints = [
 	"40em",
 	"52em",
 	"64em"
 ];
-var useBreakpointIndex = (options = {}) => {
+const useBreakpointIndex = (options = {}) => {
 	const { defaultIndex = 0, enabled = true } = options;
 	if (typeof defaultIndex !== "number") throw new TypeError(`Default breakpoint index should be a number. Got: ${defaultIndex}, ${typeof defaultIndex}`);
 	else if (defaultIndex < 0 || defaultIndex > breakpoints.length - 1) throw new RangeError(`Default breakpoint index out of range. Theme has ${breakpoints.length} breakpoints, got index ${defaultIndex}`);
@@ -10641,8 +10826,8 @@ function useResponsiveValue(values, options = {}) {
 	const array = values || [];
 	return array[index >= array.length ? array.length - 1 : index];
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/grid/utils.mjs
-var ALIGNMENTS = {
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/grid/utils.mjs
+const ALIGNMENTS = {
 	bottom: {
 		alignItems: "flex-end",
 		justifyContent: "center"
@@ -10688,8 +10873,16 @@ var ALIGNMENTS = {
 function getAlignmentProps(alignment) {
 	return alignment ? ALIGNMENTS[alignment] ?? {} : {};
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/grid/hook.mjs
-var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/grid/hook.mjs
+const STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+/**
+* Returns the shared style runtime registry.
+*
+* The registry is stored on `globalThis` so separately bundled copies of this
+* package can coordinate through the same document and style maps.
+*
+* @return The shared runtime registry.
+*/
 function getRuntime() {
 	const globalScope = globalThis;
 	if (globalScope.__wpStyleRuntime) return globalScope.__wpStyleRuntime;
@@ -10701,11 +10894,27 @@ function getRuntime() {
 	if (typeof document !== "undefined") registerDocument(document);
 	return globalScope.__wpStyleRuntime;
 }
+/**
+* Checks whether a document already contains a style tag for a hash.
+*
+* @param targetDocument Document to inspect.
+* @param hash           Stable hash for the transformed CSS.
+*
+* @return Whether the style hash already exists in the document.
+*/
 function documentContainsStyleHash(targetDocument, hash) {
 	if (!targetDocument.head) return false;
 	for (const style of targetDocument.head.querySelectorAll(`style[${STYLE_HASH_ATTRIBUTE}]`)) if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) return true;
 	return false;
 }
+/**
+* Injects a registered style into a document, unless that document already
+* contains a style tag for the same hash.
+*
+* @param targetDocument Document to inject the style into.
+* @param hash           Stable hash for the transformed CSS.
+* @param css            CSS text to inject.
+*/
 function injectStyle(targetDocument, hash, css) {
 	if (!targetDocument.head) return;
 	const runtime = getRuntime();
@@ -10725,6 +10934,17 @@ function injectStyle(targetDocument, hash, css) {
 	targetDocument.head.appendChild(style);
 	injectedStyles.add(hash);
 }
+/**
+* Registers a document as a style injection target.
+*
+* Existing registered styles are replayed into the document immediately.
+* Documents are reference-counted so multiple providers can safely register the
+* same document without one cleanup removing it while another registration is
+* still active.
+*
+* @param targetDocument Document to receive registered styles.
+* @return Cleanup function that unregisters this document registration.
+*/
 function registerDocument(targetDocument) {
 	const runtime = getRuntime();
 	runtime.documents.set(targetDocument, (runtime.documents.get(targetDocument) ?? 0) + 1);
@@ -10739,51 +10959,62 @@ function registerDocument(targetDocument) {
 		runtime.documents.set(targetDocument, count - 1);
 	};
 }
+/**
+* Registers a style and injects it into all registered documents.
+*
+* The hash is used as the deduplication key, so calling this repeatedly with
+* the same hash will not add duplicate style tags to a document.
+* Registered styles are retained for the lifetime of the page so they can be
+* replayed into documents that are registered later.
+*
+* @param hash Stable hash for the transformed CSS.
+* @param css  CSS text to inject.
+*/
 function registerStyle(hash, css) {
 	const runtime = getRuntime();
 	runtime.styles.set(hash, css);
 	for (const targetDocument of runtime.documents.keys()) injectStyle(targetDocument, hash, css);
 }
-if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("79bac25858", "._631b7063b4047c89__grid{--wp-components-grid-align:initial;--wp-components-grid-justify:initial;--wp-components-grid-gap:initial;--wp-components-grid-template-columns:initial;--wp-components-grid-template-rows:initial;--wp-components-grid-row-gap:initial;--wp-components-grid-column-gap:initial;display:grid}._631b7063b4047c89__grid:not(:where(._51fa5e5688d538e7__row-gap-inherit,._3940112538797bb2__row-gap-initial,._9dc0e80dad95eb11__row-gap-unset,._964ec4132d3d0776__row-gap-revert,._9219888d7c4749d5__row-gap-revert-layer)){row-gap:var(--wp-components-grid-row-gap,calc(4px*var(--wp-components-grid-gap)))}._631b7063b4047c89__grid:not(:where(._149fd947497e8690__column-gap-inherit,.a018e74b0f04c517__column-gap-initial,.b1e45f9587eb70e5__column-gap-unset,._4da312511f64af94__column-gap-revert,.b51ead67217c210a__column-gap-revert-layer)){column-gap:var(--wp-components-grid-column-gap,calc(4px*var(--wp-components-grid-gap)))}._4cae76607d36422b__has-align:not(:where(._2c693b642b24e0d9__align-inherit,.fd4c5676ad7e83d4__align-initial,.c4c0cde44ab0ed21__align-unset,._8c23efb61db2f04e__align-revert,.c3adc4c41efa56d1__align-revert-layer)){align-items:var(--wp-components-grid-align)}._9bcd99517d001b4b__has-justify:not(:where(.a72d35ee0eda5e6b__justify-inherit,.d386403fd02ebc45__justify-initial,._7d60510a69e8ddf9__justify-unset,._857dfb6521d0cae3__justify-revert,._1537fff8402f1ca1__justify-revert-layer)){justify-content:var(--wp-components-grid-justify)}._983f7df07cd35a72__has-template-columns:not(:where(.df2216db1a717825__template-columns-inherit,._9016934ed273a0b8__template-columns-initial,._74966333f352d829__template-columns-unset,.b3ce45d005011688__template-columns-revert,._9ff0250b9bed5764__template-columns-revert-layer)){grid-template-columns:var(--wp-components-grid-template-columns)}._7e0fa0c081c20f6e__has-template-rows:not(:where(._10cfd24f62672d27__template-rows-inherit,.da1333be6b2af8c3__template-rows-initial,._919938d55c0cf234__template-rows-unset,.db40efe5796b7ffb__template-rows-revert,._1080cc5b99823c58__template-rows-revert-layer)){grid-template-rows:var(--wp-components-grid-template-rows)}.f4729d54fca65af1__is-inline{display:inline-grid;vertical-align:middle}._2c693b642b24e0d9__align-inherit{align-items:inherit}.fd4c5676ad7e83d4__align-initial{align-items:normal}.c4c0cde44ab0ed21__align-unset{align-items:unset}._8c23efb61db2f04e__align-revert{align-items:revert}.c3adc4c41efa56d1__align-revert-layer{align-items:revert-layer}.a72d35ee0eda5e6b__justify-inherit{justify-content:inherit}.d386403fd02ebc45__justify-initial{justify-content:normal}._7d60510a69e8ddf9__justify-unset{justify-content:unset}._857dfb6521d0cae3__justify-revert{justify-content:revert}._1537fff8402f1ca1__justify-revert-layer{justify-content:revert-layer}.df2216db1a717825__template-columns-inherit{grid-template-columns:inherit}._9016934ed273a0b8__template-columns-initial{grid-template-columns:none}._74966333f352d829__template-columns-unset{grid-template-columns:unset}.b3ce45d005011688__template-columns-revert{grid-template-columns:revert}._9ff0250b9bed5764__template-columns-revert-layer{grid-template-columns:revert-layer}._10cfd24f62672d27__template-rows-inherit{grid-template-rows:inherit}.da1333be6b2af8c3__template-rows-initial{grid-template-rows:none}._919938d55c0cf234__template-rows-unset{grid-template-rows:unset}.db40efe5796b7ffb__template-rows-revert{grid-template-rows:revert}._1080cc5b99823c58__template-rows-revert-layer{grid-template-rows:revert-layer}._51fa5e5688d538e7__row-gap-inherit{row-gap:inherit}._3940112538797bb2__row-gap-initial{row-gap:normal}._9dc0e80dad95eb11__row-gap-unset{row-gap:unset}._964ec4132d3d0776__row-gap-revert{row-gap:revert}._9219888d7c4749d5__row-gap-revert-layer{row-gap:revert-layer}._149fd947497e8690__column-gap-inherit{column-gap:inherit}.a018e74b0f04c517__column-gap-initial{column-gap:normal}.b1e45f9587eb70e5__column-gap-unset{column-gap:unset}._4da312511f64af94__column-gap-revert{column-gap:revert}.b51ead67217c210a__column-gap-revert-layer{column-gap:revert-layer}");
+if (typeof process === "undefined" || process.env.NODE_ENV !== "test") registerStyle("b1a8e206b7", ".ad3e2e48d7abbecd__grid{--wp-components-grid-align:initial;--wp-components-grid-justify:initial;--wp-components-grid-gap:initial;--wp-components-grid-template-columns:initial;--wp-components-grid-template-rows:initial;--wp-components-grid-row-gap:initial;--wp-components-grid-column-gap:initial;display:grid}.ad3e2e48d7abbecd__grid:not(:where(._519ed3f6107b2f0e__row-gap-inherit,.cd62b95f8b7a55ca__row-gap-initial,._226744df7703790b__row-gap-unset,._372e9fe7fa60a162__row-gap-revert,.a788bb6771f557d4__row-gap-revert-layer)){row-gap:var(--wp-components-grid-row-gap,calc(4px*var(--wp-components-grid-gap)))}.ad3e2e48d7abbecd__grid:not(:where(.c811e15146756906__column-gap-inherit,._17d3c2ea7daf9367__column-gap-initial,._595e6195481b9016__column-gap-unset,.a3ecb3e47731c19e__column-gap-revert,._7c87cfbf3c22f476__column-gap-revert-layer)){column-gap:var(--wp-components-grid-column-gap,calc(4px*var(--wp-components-grid-gap)))}._25a972dc3223dff3__has-align:not(:where(._3cda38ca04ad4eb9__align-inherit,.f1d7342c52a8cb04__align-initial,._0d1a6c7ee990f351__align-unset,._57c7b85e7abf618b__align-revert,._82cb0c4950962787__align-revert-layer)){align-items:var(--wp-components-grid-align)}._801d1214723237b8__has-justify:not(:where(.b83c5dbf3264515b__justify-inherit,._5b7394b39d69670e__justify-initial,._3e7f0418752602e5__justify-unset,._5f937df46d7b2259__justify-revert,.bf2a4718a1ddba5c__justify-revert-layer)){justify-content:var(--wp-components-grid-justify)}._3c6ac9820776f1cb__has-template-columns:not(:where(._35faa4d32eedef32__template-columns-inherit,._8150cadb3f438833__template-columns-initial,.bcd5f2b096dec164__template-columns-unset,._48d047bc6fb687b8__template-columns-revert,._93f250669aa1a5a7__template-columns-revert-layer)){grid-template-columns:var(--wp-components-grid-template-columns)}.c2703b6b15e69b82__has-template-rows:not(:where(._3e9d5ffc53e4afc0__template-rows-inherit,._64bb5fbdf6d1038a__template-rows-initial,.f8f5df7043222325__template-rows-unset,._408aaf58100e60d5__template-rows-revert,.e0730d6abf0f3d2a__template-rows-revert-layer)){grid-template-rows:var(--wp-components-grid-template-rows)}._43af1cbfad3e73dd__is-inline{display:inline-grid;vertical-align:middle}._3cda38ca04ad4eb9__align-inherit{align-items:inherit}.f1d7342c52a8cb04__align-initial{align-items:normal}._0d1a6c7ee990f351__align-unset{align-items:unset}._57c7b85e7abf618b__align-revert{align-items:revert}._82cb0c4950962787__align-revert-layer{align-items:revert-layer}.b83c5dbf3264515b__justify-inherit{justify-content:inherit}._5b7394b39d69670e__justify-initial{justify-content:normal}._3e7f0418752602e5__justify-unset{justify-content:unset}._5f937df46d7b2259__justify-revert{justify-content:revert}.bf2a4718a1ddba5c__justify-revert-layer{justify-content:revert-layer}._35faa4d32eedef32__template-columns-inherit{grid-template-columns:inherit}._8150cadb3f438833__template-columns-initial{grid-template-columns:none}.bcd5f2b096dec164__template-columns-unset{grid-template-columns:unset}._48d047bc6fb687b8__template-columns-revert{grid-template-columns:revert}._93f250669aa1a5a7__template-columns-revert-layer{grid-template-columns:revert-layer}._3e9d5ffc53e4afc0__template-rows-inherit{grid-template-rows:inherit}._64bb5fbdf6d1038a__template-rows-initial{grid-template-rows:none}.f8f5df7043222325__template-rows-unset{grid-template-rows:unset}._408aaf58100e60d5__template-rows-revert{grid-template-rows:revert}.e0730d6abf0f3d2a__template-rows-revert-layer{grid-template-rows:revert-layer}._519ed3f6107b2f0e__row-gap-inherit{row-gap:inherit}.cd62b95f8b7a55ca__row-gap-initial{row-gap:normal}._226744df7703790b__row-gap-unset{row-gap:unset}._372e9fe7fa60a162__row-gap-revert{row-gap:revert}.a788bb6771f557d4__row-gap-revert-layer{row-gap:revert-layer}.c811e15146756906__column-gap-inherit{column-gap:inherit}._17d3c2ea7daf9367__column-gap-initial{column-gap:normal}._595e6195481b9016__column-gap-unset{column-gap:unset}.a3ecb3e47731c19e__column-gap-revert{column-gap:revert}._7c87cfbf3c22f476__column-gap-revert-layer{column-gap:revert-layer}");
 var style_module_default = {
-	"grid": "_631b7063b4047c89__grid",
-	"row-gap-inherit": "_51fa5e5688d538e7__row-gap-inherit",
-	"row-gap-initial": "_3940112538797bb2__row-gap-initial",
-	"row-gap-unset": "_9dc0e80dad95eb11__row-gap-unset",
-	"row-gap-revert": "_964ec4132d3d0776__row-gap-revert",
-	"row-gap-revert-layer": "_9219888d7c4749d5__row-gap-revert-layer",
-	"column-gap-inherit": "_149fd947497e8690__column-gap-inherit",
-	"column-gap-initial": "a018e74b0f04c517__column-gap-initial",
-	"column-gap-unset": "b1e45f9587eb70e5__column-gap-unset",
-	"column-gap-revert": "_4da312511f64af94__column-gap-revert",
-	"column-gap-revert-layer": "b51ead67217c210a__column-gap-revert-layer",
-	"has-align": "_4cae76607d36422b__has-align",
-	"align-inherit": "_2c693b642b24e0d9__align-inherit",
-	"align-initial": "fd4c5676ad7e83d4__align-initial",
-	"align-unset": "c4c0cde44ab0ed21__align-unset",
-	"align-revert": "_8c23efb61db2f04e__align-revert",
-	"align-revert-layer": "c3adc4c41efa56d1__align-revert-layer",
-	"has-justify": "_9bcd99517d001b4b__has-justify",
-	"justify-inherit": "a72d35ee0eda5e6b__justify-inherit",
-	"justify-initial": "d386403fd02ebc45__justify-initial",
-	"justify-unset": "_7d60510a69e8ddf9__justify-unset",
-	"justify-revert": "_857dfb6521d0cae3__justify-revert",
-	"justify-revert-layer": "_1537fff8402f1ca1__justify-revert-layer",
-	"has-template-columns": "_983f7df07cd35a72__has-template-columns",
-	"template-columns-inherit": "df2216db1a717825__template-columns-inherit",
-	"template-columns-initial": "_9016934ed273a0b8__template-columns-initial",
-	"template-columns-unset": "_74966333f352d829__template-columns-unset",
-	"template-columns-revert": "b3ce45d005011688__template-columns-revert",
-	"template-columns-revert-layer": "_9ff0250b9bed5764__template-columns-revert-layer",
-	"has-template-rows": "_7e0fa0c081c20f6e__has-template-rows",
-	"template-rows-inherit": "_10cfd24f62672d27__template-rows-inherit",
-	"template-rows-initial": "da1333be6b2af8c3__template-rows-initial",
-	"template-rows-unset": "_919938d55c0cf234__template-rows-unset",
-	"template-rows-revert": "db40efe5796b7ffb__template-rows-revert",
-	"template-rows-revert-layer": "_1080cc5b99823c58__template-rows-revert-layer",
-	"is-inline": "f4729d54fca65af1__is-inline"
+	"grid": "ad3e2e48d7abbecd__grid",
+	"row-gap-inherit": "_519ed3f6107b2f0e__row-gap-inherit",
+	"row-gap-initial": "cd62b95f8b7a55ca__row-gap-initial",
+	"row-gap-unset": "_226744df7703790b__row-gap-unset",
+	"row-gap-revert": "_372e9fe7fa60a162__row-gap-revert",
+	"row-gap-revert-layer": "a788bb6771f557d4__row-gap-revert-layer",
+	"column-gap-inherit": "c811e15146756906__column-gap-inherit",
+	"column-gap-initial": "_17d3c2ea7daf9367__column-gap-initial",
+	"column-gap-unset": "_595e6195481b9016__column-gap-unset",
+	"column-gap-revert": "a3ecb3e47731c19e__column-gap-revert",
+	"column-gap-revert-layer": "_7c87cfbf3c22f476__column-gap-revert-layer",
+	"has-align": "_25a972dc3223dff3__has-align",
+	"align-inherit": "_3cda38ca04ad4eb9__align-inherit",
+	"align-initial": "f1d7342c52a8cb04__align-initial",
+	"align-unset": "_0d1a6c7ee990f351__align-unset",
+	"align-revert": "_57c7b85e7abf618b__align-revert",
+	"align-revert-layer": "_82cb0c4950962787__align-revert-layer",
+	"has-justify": "_801d1214723237b8__has-justify",
+	"justify-inherit": "b83c5dbf3264515b__justify-inherit",
+	"justify-initial": "_5b7394b39d69670e__justify-initial",
+	"justify-unset": "_3e7f0418752602e5__justify-unset",
+	"justify-revert": "_5f937df46d7b2259__justify-revert",
+	"justify-revert-layer": "bf2a4718a1ddba5c__justify-revert-layer",
+	"has-template-columns": "_3c6ac9820776f1cb__has-template-columns",
+	"template-columns-inherit": "_35faa4d32eedef32__template-columns-inherit",
+	"template-columns-initial": "_8150cadb3f438833__template-columns-initial",
+	"template-columns-unset": "bcd5f2b096dec164__template-columns-unset",
+	"template-columns-revert": "_48d047bc6fb687b8__template-columns-revert",
+	"template-columns-revert-layer": "_93f250669aa1a5a7__template-columns-revert-layer",
+	"has-template-rows": "c2703b6b15e69b82__has-template-rows",
+	"template-rows-inherit": "_3e9d5ffc53e4afc0__template-rows-inherit",
+	"template-rows-initial": "_64bb5fbdf6d1038a__template-rows-initial",
+	"template-rows-unset": "f8f5df7043222325__template-rows-unset",
+	"template-rows-revert": "_408aaf58100e60d5__template-rows-revert",
+	"template-rows-revert-layer": "e0730d6abf0f3d2a__template-rows-revert-layer",
+	"is-inline": "_43af1cbfad3e73dd__is-inline"
 };
-var CSS_WIDE_KEYWORDS = /* @__PURE__ */ new Set([
+const CSS_WIDE_KEYWORDS = /* @__PURE__ */ new Set([
 	"inherit",
 	"initial",
 	"unset",
@@ -10832,15 +11063,35 @@ function useGrid(props) {
 		}
 	};
 }
-// ../../../node_modules/.pnpm/@wordpress+components@43.0.0_@date-fns+tz@1.5.0_@types+react-dom@19.3.0_@types+react@19_401cb4bad47bd1f7b56615ff574f0485/node_modules/@wordpress/components/build-module/grid/component.mjs
+// ../../../node_modules/.pnpm/@wordpress+components@44.0.0_patch_hash=dd89cc780626599c6721f4e05e7091dd7b0aed577d8a667_94a1a77c56d75249398bc99af3f14fa5/node_modules/@wordpress/components/build-module/grid/component.mjs
 function UnconnectedGrid(props, forwardedRef) {
 	const gridProps = useGrid(props);
-	return /* @__PURE__ */ jsx(component_default$2, {
+	return /* @__PURE__ */ jsx(View, {
 		...gridProps,
 		ref: forwardedRef
 	});
 }
-var component_default = contextConnect(UnconnectedGrid, "Grid");
+/**
+* `Grid` is a primitive layout component that can arrange content in a grid configuration.
+*
+* ```jsx
+* import {
+* 	__experimentalGrid as Grid,
+* 	__experimentalText as Text
+* } from `@wordpress/components`;
+*
+* function Example() {
+* 	return (
+* 		<Grid columns={ 3 }>
+* 			<Text>Code</Text>
+* 			<Text>is</Text>
+* 			<Text>Poetry</Text>
+* 		</Grid>
+* 	);
+* }
+* ```
+*/
+const Grid$1 = contextConnect(UnconnectedGrid, "Grid");
 // src/charts/leaderboard-chart/hooks/use-fitted-row-count.ts
 /**
 * Fractional layout rounding can put a row's bottom a hair past the container's
@@ -11323,7 +11574,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 				}), allSeriesHidden ? /* @__PURE__ */ jsx("div", {
 					className: leaderboard_chart_module_default.emptyState,
 					children: getAllHiddenMessage(legendInteractive, "series")
-				}) : /* @__PURE__ */ jsx(component_default, {
+				}) : /* @__PURE__ */ jsx(Grid$1, {
 					role: "list",
 					"aria-label": ariaLabel ?? __("Leaderboard chart", "jetpack-charts"),
 					templateColumns,
@@ -11364,7 +11615,7 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 									children: [/* @__PURE__ */ jsx("span", {
 										"aria-hidden": "true",
 										children: "—"
-									}), /* @__PURE__ */ jsx(component_default$1, {
+									}), /* @__PURE__ */ jsx(VisuallyHidden$1, {
 										as: "span",
 										children: hasPreviousPeriodValue ? __("Percentage change unavailable", "jetpack-charts") : __("No comparison data", "jetpack-charts")
 									})]
