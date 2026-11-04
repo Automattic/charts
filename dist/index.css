@@ -349,6 +349,37 @@
     transform: scaleX(1);
   }
 }
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect {
+  rx: 0;
+  animation: none;
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="top"] {
+  clip-path: inset(0 round var(--a8c-charts-border-radius-bar-chart) var(--a8c-charts-border-radius-bar-chart) 0 0);
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="right"] {
+  clip-path: inset(0 round 0 var(--a8c-charts-border-radius-bar-chart) var(--a8c-charts-border-radius-bar-chart) 0);
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="bottom"] {
+  clip-path: inset(0 round 0 0 var(--a8c-charts-border-radius-bar-chart) var(--a8c-charts-border-radius-bar-chart));
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="left"] {
+  clip-path: inset(0 round var(--a8c-charts-border-radius-bar-chart) 0 0 var(--a8c-charts-border-radius-bar-chart));
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked.a8ccharts-97yN9W-bar-chart--animated .visx-bar-group {
+  transform-box: view-box;
+  animation: a8ccharts-97yN9W-rise var(--a8c-charts-motion-duration-entrance) var(--a8c-charts-motion-easing-entrance) both;
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked.a8ccharts-97yN9W-bar-chart--animated-horizontal .visx-bar-group {
+  transform-box: view-box;
+  animation: a8ccharts-97yN9W-stretch var(--a8c-charts-motion-duration-entrance) var(--a8c-charts-motion-easing-entrance) both;
+}
 .a8ccharts-gx1_AW-selected-ring__far, .a8ccharts-gx1_AW-selected-ring__edge {
   fill: none;
 }

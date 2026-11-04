@@ -253,9 +253,9 @@ type BarStyles = {
   opacity?: number;
 };
 /**
- * How a bar chart places its series in a category. `grouped` puts each primary series in a slot of its own; `overlap` puts every primary in one slot and every comparison in a second, and overlaps the `group`s within each slot.
+ * How a bar chart places its series in a category. `grouped` puts each primary series in a slot of its own; `overlap` puts every primary in one slot and every comparison in a second, and overlaps the `group`s within each slot; `stacked` stacks every primary in one bar, the first series at the bottom.
  */
-type BarChartLayout = 'grouped' | 'overlap';
+type BarChartLayout = 'grouped' | 'overlap' | 'stacked';
 type MultipleDataPointsDate = {
   label: string;
   data: DataPointDate[];
@@ -1168,12 +1168,12 @@ type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
 /**
  * Builds legend items that match `BarChart`'s bars in a layout, for a custom legend or a chart's own.
  *
- * @param data        - The series the chart draws.
+ * @param allData     - The chart's series; those the layout does not draw get no item.
  * @param options     - The legend options, and the layout the bars are drawn in.
  * @param legendShape - The shape of the legend swatches.
  * @return The legend items.
  */
-export declare function useBarLegendItems(data: SeriesData[], options?: BarLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
+export declare function useBarLegendItems(allData: SeriesData[], options?: BarLegendOptions, legendShape?: LegendShape<SeriesData[], number>): BaseLegendItem[];
 interface BarListChartProps extends Exclude<BarChartProps, 'orientation' | 'size' | 'gridVisibility'> {
   /** Bar lists are always horizontal, and horizontal bars ignore `compactWhenShort`. */
   compactWhenShort?: never;

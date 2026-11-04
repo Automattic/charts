@@ -5773,9 +5773,145 @@ var bar_chart_module_default = {
 	"bar-chart": "a8ccharts-97yN9W-bar-chart",
 	"bar-chart--animated": "a8ccharts-97yN9W-bar-chart--animated",
 	"bar-chart--animated-horizontal": "a8ccharts-97yN9W-bar-chart--animated-horizontal",
+	"bar-chart--stacked": "a8ccharts-97yN9W-bar-chart--stacked",
 	"rise": "a8ccharts-97yN9W-rise",
 	"stretch": "a8ccharts-97yN9W-stretch"
 };
+// src/charts/bar-chart/private/category.ts
+/**
+* Whether two data points sit at the same category: the same label, or the same date.
+*
+* @param point    - A data point.
+* @param category - The data point naming the category.
+* @return Whether `point` is at `category`.
+*/
+function isSameCategory(point, category) {
+	return category.label ? point.label === category.label : !!category.date && !!point.date && point.date.getTime() === category.date.getTime();
+}
+/**
+* The category a data point sits at, as a key two points share when `isSameCategory` holds.
+*
+* @param point - A data point.
+* @return The category key.
+*/
+function categoryKey(point) {
+	return point.label ? `label:${point.label}` : `date:${point.date?.getTime()}`;
+}
+// src/charts/bar-chart/private/value-domain.ts
+/** Domain for a value axis that has nothing to scale, so its ticks still read 0 to 1. */
+const EMPTY_DOMAIN = [0, 1];
+/**
+* The value a bar is drawn at, preferring `visualValue` so a zero still shows a sliver.
+*
+* A missing reading is NaN, not null: `ComparisonBars` coerces the value with `Number()`,
+* which turns null into 0 and would draw a comparison shadow at the baseline.
+*
+* @param point - A data point handed to visx.
+* @return The bar value, or NaN when the bucket has no reading.
+*/
+const getBarValue = (point) => {
+	const enhanced = point;
+	return (enhanced?.visualValue !== void 0 ? enhanced.visualValue : point?.value) ?? NaN;
+};
+/**
+* Whether visx renders a bar for a point.
+*
+* @param point - A data point handed to visx.
+* @return True when the point has a finite bar value.
+*/
+const isBarRendered = (point) => Number.isFinite(getBarValue(point));
+/**
+* An explicit domain for the value scale, or null to let visx fit one to the data.
+*
+* Zero goes into the domain here rather than through the scale's `zero` flag: visx applies
+* `nice` before `zero`, which would leave the axis topping out at a raw maximum.
+*
+* @param data             - Every series handed to the chart.
+* @param includeZero      - Whether the domain must span zero.
+* @param isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it.
+* @param tickDecimals     - The value axis's `tickDecimals`.
+* @return Value domain, or null when visx should fit its own.
+*/
+const getValueScaleDomain = (data, includeZero, isSeriesRendered, tickDecimals) => {
+	let min = Infinity;
+	let max = -Infinity;
+	for (const series of data) {
+		if (!isSeriesRendered(series)) continue;
+		for (const point of series.data) {
+			const value = getBarValue(point);
+			if (!Number.isFinite(value)) continue;
+			min = Math.min(min, value);
+			max = Math.max(max, value);
+		}
+	}
+	if (min === Infinity) return [...EMPTY_DOMAIN];
+	let domain = null;
+	if (min === max) domain = min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
+	else if (includeZero) domain = [Math.min(0, min), Math.max(0, max)];
+	return getTickDecimalsDomain(domain ?? [min, max], tickDecimals) ?? domain;
+};
+// src/charts/bar-chart/private/stack-layout.ts
+/**
+* The series a layout draws: a stacked layout leaves comparison series out for now.
+*
+* @param series - The chart's series.
+* @param layout - The layout the bars are drawn in.
+* @return The drawn series.
+*/
+function getDrawnSeries(series, layout) {
+	return layout === "stacked" ? series.filter((item) => item.options?.type !== "comparison") : series;
+}
+/**
+* Stacks the series in order at each category: positives upward and negatives downward from zero.
+*
+* @param series - The series to stack, bottom first.
+* @return The stack layout.
+*/
+function getStackLayout(series) {
+	const segments = /* @__PURE__ */ new Map();
+	const extents = /* @__PURE__ */ new Map();
+	for (const { label, data } of series) {
+		const byCategory = /* @__PURE__ */ new Map();
+		segments.set(label, byCategory);
+		for (const point of data) {
+			const value = getBarValue(point);
+			if (!Number.isFinite(value)) continue;
+			const key = categoryKey(point);
+			if (byCategory.has(key)) continue;
+			const extent = extents.get(key) ?? [0, 0];
+			const side = value < 0 ? 0 : 1;
+			const start = extent[side];
+			extent[side] = start + value;
+			extents.set(key, extent);
+			byCategory.set(key, {
+				start,
+				end: start + value
+			});
+		}
+	}
+	let extent = null;
+	for (const [low, high] of extents.values()) extent = extent ? [Math.min(extent[0], low), Math.max(extent[1], high)] : [low, high];
+	return {
+		segmentOf: (key, datum) => segments.get(key)?.get(categoryKey(datum)),
+		extentAt: (category) => {
+			const [low, high] = extents.get(categoryKey(category)) ?? [0, 0];
+			return [low, high];
+		},
+		extent
+	};
+}
+/**
+* The value domain of a computed stack, falling back to an empty chart's domain.
+*
+* @param stack        - The precomputed stack.
+* @param tickDecimals - The value axis precision, when set.
+* @return The extent widened for tick precision, or the empty chart domain.
+*/
+function getStackedValueDomain(stack, tickDecimals) {
+	const { extent } = stack;
+	const domain = !extent || extent[0] === extent[1] ? [...EMPTY_DOMAIN] : extent;
+	return getTickDecimalsDomain(domain, tickDecimals) ?? domain;
+}
 // src/charts/bar-chart/private/truncated-tick-component.tsx
 /**
 * Get the bandwidth of a scale
@@ -5890,59 +6026,6 @@ const createTruncatedTickComponent = (axis) => (props) => {
 */
 const TruncatedXTickComponent = createTruncatedTickComponent("x");
 const TruncatedYTickComponent = createTruncatedTickComponent("y");
-// src/charts/bar-chart/private/value-domain.ts
-/** Domain for a value axis that has nothing to scale, so its ticks still read 0 to 1. */
-const EMPTY_DOMAIN = [0, 1];
-/**
-* The value a bar is drawn at, preferring `visualValue` so a zero still shows a sliver.
-*
-* A missing reading is NaN, not null: `ComparisonBars` coerces the value with `Number()`,
-* which turns null into 0 and would draw a comparison shadow at the baseline.
-*
-* @param point - A data point handed to visx.
-* @return The bar value, or NaN when the bucket has no reading.
-*/
-const getBarValue = (point) => {
-	const enhanced = point;
-	return (enhanced?.visualValue !== void 0 ? enhanced.visualValue : point?.value) ?? NaN;
-};
-/**
-* Whether visx renders a bar for a point.
-*
-* @param point - A data point handed to visx.
-* @return True when the point has a finite bar value.
-*/
-const isBarRendered = (point) => Number.isFinite(getBarValue(point));
-/**
-* An explicit domain for the value scale, or null to let visx fit one to the data.
-*
-* Zero goes into the domain here rather than through the scale's `zero` flag: visx applies
-* `nice` before `zero`, which would leave the axis topping out at a raw maximum.
-*
-* @param data             - Every series handed to the chart.
-* @param includeZero      - Whether the domain must span zero.
-* @param isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it.
-* @param tickDecimals     - The value axis's `tickDecimals`.
-* @return Value domain, or null when visx should fit its own.
-*/
-const getValueScaleDomain = (data, includeZero, isSeriesRendered, tickDecimals) => {
-	let min = Infinity;
-	let max = -Infinity;
-	for (const series of data) {
-		if (!isSeriesRendered(series)) continue;
-		for (const point of series.data) {
-			const value = getBarValue(point);
-			if (!Number.isFinite(value)) continue;
-			min = Math.min(min, value);
-			max = Math.max(max, value);
-		}
-	}
-	if (min === Infinity) return [...EMPTY_DOMAIN];
-	let domain = null;
-	if (min === max) domain = min === 0 ? [...EMPTY_DOMAIN] : [Math.min(0, min), Math.max(0, max)];
-	else if (includeZero) domain = [Math.min(0, min), Math.max(0, max)];
-	return getTickDecimalsDomain(domain ?? [min, max], tickDecimals) ?? domain;
-};
 // src/charts/bar-chart/private/use-bar-chart-options.ts
 /** Outer padding of the category band scale (space at the chart edges). */
 const BASE_BAND_PADDING = .2;
@@ -6031,16 +6114,18 @@ const getGroupPadding = (scale) => {
 * @param horizontal       - Whether the chart is horizontal or vertical.
 * @param options          - The options for the chart.
 * @param isSeriesRendered - Whether visx mounts a series, i.e. the legend shows it.
+* @param stack            - The precomputed stack, when series share one bar.
 * @return The merged options for the chart.
 */
-function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = ALL_RENDERED) {
+function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = ALL_RENDERED, stack) {
 	const stableOptions = useDeepMemo(options);
 	const formatting = useChartFormatting();
+	const isStacked = !!stack;
 	const axisConfig = (0, react.useMemo)(() => {
 		const { labelOverflow: xLabelOverflow, tickResolution: xTickResolution, tickFormat: xTickFormat, tickDecimals: xTickDecimals, ...xAxisOptions } = stableOptions.axis?.x || {};
 		const { labelOverflow: yLabelOverflow, tickResolution: yTickResolution, tickFormat: yTickFormat, tickDecimals: yTickDecimals, ...yAxisOptions } = stableOptions.axis?.y || {};
 		const [valueAxisOptions, valueTickDecimals] = horizontal ? [xAxisOptions, xTickDecimals] : [yAxisOptions, yTickDecimals];
-		const valueScaleType = (horizontal ? stableOptions.xScale : stableOptions.yScale)?.type;
+		const valueScaleType = isStacked ? "linear" : (horizontal ? stableOptions.xScale : stableOptions.yScale)?.type;
 		return {
 			xLabelOverflow,
 			yLabelOverflow,
@@ -6051,7 +6136,11 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 			tickResolution: horizontal ? yTickResolution : xTickResolution,
 			valueTickDecimals: valueAxisOptions.tickValues || valueScaleType === "log" ? void 0 : valueTickDecimals
 		};
-	}, [stableOptions, horizontal]);
+	}, [
+		stableOptions,
+		horizontal,
+		isStacked
+	]);
 	const { tickResolution } = axisConfig;
 	const defaultOptions = (0, react.useMemo)(() => {
 		const bandScale = {
@@ -6106,17 +6195,21 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		const { xTickFormat: defaultXTickFormat, yTickFormat: defaultYTickFormat, tooltipLabelFormatter: defaultTooltipLabelFormatter, xAccessor, yAccessor, gridVisibility, xScale: baseXScale, yScale: baseYScale } = defaultOptions[horizontal ? "horizontal" : "vertical"];
 		const valueScaleOptions = horizontal ? stableOptions.xScale : stableOptions.yScale;
 		const includeZero = data.some((s) => s.options?.type === "comparison") || valueScaleOptions?.zero !== false;
-		const domain = valueScaleOptions?.domain ? null : getValueScaleDomain(data, includeZero, isSeriesRendered, axisConfig.valueTickDecimals);
-		const valueScaleDomainOverride = domain ? { domain } : {};
+		let domain = null;
+		if (!valueScaleOptions?.domain) domain = stack ? getStackedValueDomain(stack, axisConfig.valueTickDecimals) : getValueScaleDomain(data, includeZero, isSeriesRendered, axisConfig.valueTickDecimals);
+		const valueScaleOverride = {
+			...domain && { domain },
+			...stack && { type: "linear" }
+		};
 		const xScale = {
 			...baseXScale,
 			...stableOptions.xScale || {},
-			...horizontal ? valueScaleDomainOverride : {}
+			...horizontal ? valueScaleOverride : {}
 		};
 		const yScale = {
 			...baseYScale,
 			...stableOptions.yScale || {},
-			...!horizontal ? valueScaleDomainOverride : {}
+			...!horizontal ? valueScaleOverride : {}
 		};
 		const { xLabelOverflow, yLabelOverflow, xTickFormat, yTickFormat, xAxisOptions, yAxisOptions } = axisConfig;
 		const dateAxisTickFormat = horizontal ? yTickFormat : xTickFormat;
@@ -6160,7 +6253,8 @@ function useBarChartOptions(data, horizontal, options = {}, isSeriesRendered = A
 		stableOptions,
 		horizontal,
 		data,
-		isSeriesRendered
+		isSeriesRendered,
+		stack
 	]);
 }
 // src/charts/bar-chart/private/band-scale.ts
@@ -6190,6 +6284,17 @@ function getValueScaleBaseline(scale) {
 	const [minOutput, maxOutput] = isDescending ? [b, a] : [a, b];
 	if (isDescending) return Number.isFinite(maybeZero) ? Math.min(Math.max(minOutput, maybeZero), maxOutput) : maxOutput;
 	return Number.isFinite(maybeZero) ? Math.max(maybeZero, minOutput) : minOutput;
+}
+/**
+* A value's position on a continuous scale, held inside its range so a domain that leaves the value out cannot push a bar off the plot.
+*
+* @param {ValueScale} scale - The continuous value scale.
+* @param {number}     value - The value to place.
+* @return {number} The position in pixels.
+*/
+function getValueScalePosition(scale, value) {
+	const [a, b] = scale.range().map((r) => Number(r) || 0);
+	return Math.min(Math.max(scale(value), Math.min(a, b)), Math.max(a, b));
 }
 /**
 * Compute the rect that spans `valuePositions` along the value axis, centered on a slot and scaled by `widthFactor` across it.
@@ -6388,13 +6493,13 @@ const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal
 	const slotOffset = groupScale(selected.slotKey);
 	const bandPosition = Number(bandScale((horizontal ? yAccessor : xAccessor)(category)));
 	if (slotOffset == null || !Number.isFinite(bandPosition)) return null;
-	const valuePositions = selected.data.map((datum) => Number(valueScale(Number((horizontal ? xAccessor : yAccessor)(datum)))));
+	const valuePositions = selected.valueExtent ? selected.valueExtent.map((value) => getValueScalePosition(valueScale, value)) : [getValueScaleBaseline(valueScale), ...selected.data.map((datum) => Number(valueScale(Number((horizontal ? xAccessor : yAccessor)(datum)))))];
 	const rect = computeSlotRect({
 		horizontal,
 		bandPosition,
 		slotOffset,
 		slotThickness: groupScale.bandwidth(),
-		valuePositions: [getValueScaleBaseline(valueScale), ...valuePositions],
+		valuePositions,
 		widthFactor: selected.thickness
 	});
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectedRing, {
@@ -6404,13 +6509,107 @@ const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal
 		testId: "bar-chart-selected-ring"
 	});
 };
+// src/charts/bar-chart/private/stacked-bar-series.tsx
+/**
+* The side a segment rounds when it ends its drawn stack: the far end of the positives or of the negatives.
+*
+* @param stack      - The stack layout.
+* @param segment    - The segment.
+* @param category   - A datum at the segment's category.
+* @param horizontal - Whether the bars run horizontally.
+* @param clamp      - Holds a value inside the value domain, where the bars are cut off.
+* @return The side to round, or undefined for a segment inside its stack or drawn with no length.
+*/
+function getStackEnd(stack, segment, category, horizontal, clamp) {
+	const [start, end] = [segment.start, segment.end].map(clamp);
+	if (start === end) return;
+	const extent = stack.extentAt(category).map(clamp);
+	if (segment.end > 0 && end === extent[1]) return horizontal ? "right" : "top";
+	if (segment.end < 0 && end === extent[0]) return horizontal ? "left" : "bottom";
+}
+const StackedBarSeries = ({ barClassName, slotKeys, slotKey, groupPadding, stack, ...props }) => {
+	const { xScale, yScale, horizontal } = (0, react.useContext)(_visx_xychart.DataContext);
+	const bandScale = horizontal ? yScale : xScale;
+	const valueScale = horizontal ? xScale : yScale;
+	const groupScale = (0, react.useMemo)(() => createGroupScale(slotKeys, bandScale?.bandwidth?.() ?? 0, groupPadding), [
+		slotKeys,
+		bandScale,
+		groupPadding
+	]);
+	const { dataKey, xAccessor, yAccessor } = props;
+	const [domainStart, domainEnd] = (horizontal ? xScale : yScale)?.domain() ?? [-Infinity, Infinity];
+	const domainMin = Math.min(Number(domainStart), Number(domainEnd));
+	const domainMax = Math.max(Number(domainStart), Number(domainEnd));
+	const clamp = (0, react.useCallback)((value) => Math.min(domainMax, Math.max(domainMin, value)), [domainMin, domainMax]);
+	const stackEnd = (0, react.useCallback)((datum) => {
+		const [low, high] = stack.extentAt(datum);
+		return clamp(high > 0 ? high : low);
+	}, [stack, clamp]);
+	const renderGlyph = (0, react.useCallback)(({ datum, color }) => {
+		const segment = stack.segmentOf(dataKey, datum);
+		if (!segment || !bandScale?.bandwidth || !valueScale) return null;
+		const rect = computeSlotRect({
+			horizontal: !!horizontal,
+			bandPosition: Number(bandScale((horizontal ? yAccessor : xAccessor)(datum))),
+			slotOffset: groupScale(slotKey) ?? 0,
+			slotThickness: groupScale.bandwidth(),
+			valuePositions: [segment.start, segment.end].map((value) => getValueScalePosition(valueScale, value)),
+			widthFactor: 1
+		});
+		return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("rect", {
+			...rect,
+			"data-stack-end": getStackEnd(stack, segment, datum, !!horizontal, clamp),
+			className: (0, clsx.default)("visx-bar", barClassName?.(datum)),
+			fill: color
+		});
+	}, [
+		stack,
+		clamp,
+		dataKey,
+		bandScale,
+		valueScale,
+		horizontal,
+		groupScale,
+		slotKey,
+		xAccessor,
+		yAccessor,
+		barClassName
+	]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_visx_xychart.GlyphSeries, {
+		...props,
+		xAccessor: horizontal ? stackEnd : xAccessor,
+		yAccessor: horizontal ? yAccessor : stackEnd,
+		enableEvents: false,
+		renderGlyph
+	});
+};
 // src/charts/bar-chart/private/bar-layer.tsx
 /**
-* Draws the bars in front of any comparison shadows, slotted for an overlap layout and grouped by visx otherwise, then the selected bar's ring.
+* Wraps the stacked bars so the entrance animation grows them from the zero line.
+*
+* Reading the scales here, not in `BarLayer`, keeps the series' own data registration from re-rendering it in a loop.
+*
+* @param props            - Component props.
+* @param props.horizontal - Whether the bars run horizontally.
+* @param props.children   - The stacked series.
+* @return The group.
+*/
+const StackedBarGroup = ({ horizontal, children }) => {
+	const { xScale, yScale } = (0, react.useContext)(_visx_xychart.DataContext);
+	const valueScale = horizontal ? xScale : yScale;
+	const zero = valueScale ? getValueScalePosition(valueScale, 0) : 0;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
+		className: "visx-bar-group",
+		style: { transformOrigin: horizontal ? `${zero}px 0` : `0 ${zero}px` },
+		children
+	});
+};
+/**
+* Draws the bars in front of any comparison shadows, stacked or slotted in the layout's slots and grouped by visx otherwise, then the selected bar's ring.
 *
 * @param props                  - Component props.
 * @param props.chartId          - The chart's id, which keeps the ring's clip path unique on a page with several charts.
-* @param props.overlapSlots     - The overlap layout, or undefined for a grouped one.
+* @param props.barSlots         - The overlap or stacked slots, or undefined for a grouped layout.
 * @param props.selectedBar      - The bar or slot the keyboard has selected.
 * @param props.primaryEntries   - The visible primary series, for a grouped layout.
 * @param props.primaryKeys      - Their labels, in group order.
@@ -6422,20 +6621,35 @@ const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal
 * @param props.yAccessor        - Reads a datum's y value.
 * @return The bars.
 */
-const BarLayer = ({ chartId, overlapSlots, selectedBar, primaryEntries, primaryKeys, getBarBackground, barClassName, groupPadding, horizontal, xAccessor, yAccessor }) => {
+const BarLayer = ({ chartId, barSlots, selectedBar, primaryEntries, primaryKeys, getBarBackground, barClassName, groupPadding, horizontal, xAccessor, yAccessor }) => {
 	let bars;
-	if (overlapSlots) bars = /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
-		className: "visx-bar-group",
-		children: overlapSlots.entries.map(({ series, index }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SlottedBarSeries, {
+	if (barSlots?.kind === "stacked") bars = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StackedBarGroup, {
+		horizontal,
+		children: barSlots.entries.map(({ series, index }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StackedBarSeries, {
 			dataKey: series.label,
 			data: series.data,
 			xAccessor,
 			yAccessor,
 			colorAccessor: getBarBackground(index),
 			barClassName,
-			slotKeys: overlapSlots.slotKeys,
-			slotKey: overlapSlots.slotOf(series.label),
-			thickness: overlapSlots.thicknessOf(series.label),
+			slotKeys: barSlots.slotKeys,
+			slotKey: barSlots.slotOf(series.label),
+			groupPadding,
+			stack: barSlots.stack
+		}, series.label))
+	});
+	else if (barSlots) bars = /* @__PURE__ */ (0, react_jsx_runtime.jsx)("g", {
+		className: "visx-bar-group",
+		children: barSlots.entries.map(({ series, index }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SlottedBarSeries, {
+			dataKey: series.label,
+			data: series.data,
+			xAccessor,
+			yAccessor,
+			colorAccessor: getBarBackground(index),
+			barClassName,
+			slotKeys: barSlots.slotKeys,
+			slotKey: barSlots.slotOf(series.label),
+			thickness: barSlots.thicknessOf(series.label),
 			groupPadding
 		}, series.label))
 	});
@@ -6465,7 +6679,7 @@ const BarLayer = ({ chartId, overlapSlots, selectedBar, primaryEntries, primaryK
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [bars, selectedBar && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectedBarRing, {
 		chartId,
 		selected: selectedBar,
-		slotKeys: overlapSlots?.slotKeys ?? primaryKeys,
+		slotKeys: barSlots?.slotKeys ?? primaryKeys,
 		groupPadding,
 		horizontal,
 		xAccessor,
@@ -6601,28 +6815,36 @@ function getOverlapBarColors(series, colors, slotColors, background) {
 	});
 	return barColors;
 }
-// src/charts/bar-chart/private/use-overlap-slots.ts
+// src/charts/bar-chart/private/use-bar-slots.ts
 /**
-* Whether two data points sit at the same category: the same label, or the same date.
+* Lays out the visible series in slots: overlap layers primaries and comparisons in two, stacked puts every primary in one.
 *
-* @param point    - A data point.
-* @param category - The data point naming the category.
-* @return Whether `point` is at `category`.
-*/
-function isSameCategory(point, category) {
-	return category.label ? point.label === category.label : !!category.date && !!point.date && point.date.getTime() === category.date.getTime();
-}
-/**
-* Lays out the visible series of an overlap layout in slots and layers.
-*
-* @param enabled              - Whether the chart draws an overlap layout.
+* @param layout               - How the chart places its series in a category.
 * @param seriesWithVisibility - Every series, with its index and whether it is visible.
-* @return The layout, or undefined when the chart is not an overlap layout.
+* @return The slots, or undefined for a grouped layout.
 */
-function useOverlapSlots(enabled, seriesWithVisibility) {
+function useBarSlots(layout, seriesWithVisibility) {
 	return (0, react.useMemo)(() => {
-		if (!enabled) return;
+		if (layout === "grouped") return;
 		const visible = seriesWithVisibility.filter(({ isVisible }) => isVisible);
+		if (layout === "stacked") {
+			const entries = visible.map(({ series, index }) => ({
+				series,
+				index
+			}));
+			const slotKeys = [PRIMARY_SLOT];
+			const slotOf = () => PRIMARY_SLOT;
+			return {
+				kind: "stacked",
+				stack: getStackLayout(entries.map(({ series }) => series)),
+				entries,
+				keys: entries.map(({ series }) => series.label),
+				slotKeys,
+				slotOf,
+				thicknessOf: () => 1,
+				positions: getStopPositions(entries, slotKeys, slotOf)
+			};
+		}
 		const placements = getOverlapPlacements(visible.map(({ series }) => series));
 		const placed = visible.map(({ series, index }, position) => ({
 			entry: {
@@ -6639,6 +6861,7 @@ function useOverlapSlots(enabled, seriesWithVisibility) {
 		const showsComparisons = entries.some(({ series }) => slotOf(series.label) === COMPARISON_SLOT);
 		const slotKeys = [...hasPrimaries ? [PRIMARY_SLOT] : [], ...showsComparisons ? [COMPARISON_SLOT] : []];
 		return {
+			kind: "overlap",
 			entries,
 			keys: entries.map(({ series }) => series.label),
 			slotKeys,
@@ -6646,16 +6869,7 @@ function useOverlapSlots(enabled, seriesWithVisibility) {
 			thicknessOf,
 			positions: getStopPositions(entries, slotKeys, slotOf)
 		};
-	}, [enabled, seriesWithVisibility]);
-}
-/**
-* The category a data point sits at, as a key two points share when `isSameCategory` holds.
-*
-* @param point - A data point.
-* @return The category key.
-*/
-function categoryKey(point) {
-	return point.label ? `label:${point.label}` : `date:${point.date?.getTime()}`;
+	}, [layout, seriesWithVisibility]);
 }
 /**
 * Lists a stop for every slot at every category that slot draws a bar at, category by category.
@@ -6714,7 +6928,7 @@ function membersAt(entries, category, stopKey) {
 /**
 * The slot a keyboard index selects, and every bar at its category.
 *
-* @param slots         - The overlap layout.
+* @param slots         - The overlap or stacked slots.
 * @param selectedIndex - The keyboard index into `slots.positions`.
 * @return The selected slot, or undefined when nothing is selected or drawn there.
 */
@@ -6728,25 +6942,26 @@ function getSelectedSlot(slots, selectedIndex) {
 		data: slotBars.map(({ datum }) => datum),
 		slotKey,
 		thickness: Math.max(...slotBars.map(({ key }) => slots.thicknessOf(key))),
-		members
+		members,
+		...slots.kind === "stacked" && { valueExtent: slots.stack.extentAt(category) }
 	};
 }
 // src/charts/bar-chart/private/use-bar-stops.ts
 /**
-* Lays out the keyboard stops: one per slot and category in an overlap layout, else one per primary bar, series-major within each category.
+* Lays out the keyboard stops: one per slot and category in a slotted layout, else one per primary bar, series-major within each category.
 *
-* @param overlapSlots   - The overlap layout, or undefined for a grouped one.
+* @param barSlots       - The overlap or stacked slots, or undefined for a grouped layout.
 * @param primaryEntries - The visible primary series.
 * @return The stops.
 */
-function useBarStops(overlapSlots, primaryEntries) {
-	const series = (0, react.useMemo)(() => overlapSlots ? [] : primaryEntries.map((entry) => entry.series), [overlapSlots, primaryEntries]);
+function useBarStops(barSlots, primaryEntries) {
+	const series = (0, react.useMemo)(() => barSlots ? [] : primaryEntries.map((entry) => entry.series), [barSlots, primaryEntries]);
 	return {
-		count: overlapSlots?.positions.length ?? Math.max(0, ...series.map((item) => item.data.length)) * series.length,
-		key: (0, react.useMemo)(() => JSON.stringify(overlapSlots?.keys ?? series.map((item) => item.label)), [overlapSlots, series]),
+		count: barSlots?.positions.length ?? Math.max(0, ...series.map((item) => item.data.length)) * series.length,
+		key: (0, react.useMemo)(() => JSON.stringify(barSlots?.keys ?? series.map((item) => item.label)), [barSlots, series]),
 		barAt: (0, react.useCallback)((stop) => {
-			if (overlapSlots) {
-				const position = overlapSlots.positions[stop];
+			if (barSlots) {
+				const position = barSlots.positions[stop];
 				return position && {
 					datum: position.datum,
 					index: position.dataPointIndex,
@@ -6762,17 +6977,17 @@ function useBarStops(overlapSlots, primaryEntries) {
 				index,
 				key: item.label
 			} : void 0;
-		}, [overlapSlots, series]),
+		}, [barSlots, series]),
 		stopOf: (0, react.useCallback)((seriesKey, dataPointIndex) => {
-			if (overlapSlots) {
-				const hovered = overlapSlots.entries.find((entry) => entry.series.label === seriesKey)?.series.data[dataPointIndex];
-				const slotKey = overlapSlots.slotOf(seriesKey);
-				const stop = hovered ? overlapSlots.positions.findIndex((position) => position.slotKey === slotKey && isSameCategory(position.datum, hovered)) : -1;
+			if (barSlots) {
+				const hovered = barSlots.entries.find((entry) => entry.series.label === seriesKey)?.series.data[dataPointIndex];
+				const slotKey = barSlots.slotOf(seriesKey);
+				const stop = hovered ? barSlots.positions.findIndex((position) => position.slotKey === slotKey && isSameCategory(position.datum, hovered)) : -1;
 				return stop >= 0 ? stop : void 0;
 			}
 			const seriesIndex = series.findIndex((item) => item.label === seriesKey);
 			return seriesIndex >= 0 ? dataPointIndex * series.length + seriesIndex : void 0;
-		}, [overlapSlots, series])
+		}, [barSlots, series])
 	};
 }
 /**
@@ -6927,10 +7142,23 @@ function nearestBandIndex(data, accessor, scale, position) {
 	return nearest;
 }
 /**
+* How far a pointer sits from a stacked segment along the value axis.
+*
+* @param segment  - The segment, or undefined when its series has no reading there.
+* @param scale    - The value scale.
+* @param position - Pointer coordinate on the value axis.
+* @return 0 inside the segment, Infinity without one, otherwise the gap to its nearer end.
+*/
+function distanceToSegment(segment, scale, position) {
+	if (!segment) return Infinity;
+	const [low, high] = [segment.start, segment.end].map((value) => getValueScalePosition(scale, value)).sort((a, b) => a - b);
+	return Math.max(low - position, 0, position - high);
+}
+/**
 * Correct visx's range-based band inversion, which omits outer padding.
 * @param root0               - Registered series selection.
 * @param root0.keys          - Visible series keys, back to front where bars overlap.
-* @param root0.slots         - Where series share slots: the slots of a category, in the order the band lays them out, and the slot each series sits in.
+* @param root0.slots         - Where series share slots: the slots of a category, in the order the band lays them out, the slot each series sits in, and for a stack where each segment runs.
 * @param root0.groupPadding  - Padding between grouped bars.
 * @param root0.withTooltips  - Whether pointer events update the tooltip.
 * @param root0.onPointerDown - Receives the corrected pointer-down datum.
@@ -6942,6 +7170,7 @@ function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, o
 	const { xScale, yScale, dataRegistry, horizontal } = (0, react.useContext)(_visx_xychart.DataContext);
 	const { showTooltip, hideTooltip, updateTooltip } = (0, react.useContext)(_visx_xychart.TooltipContext);
 	const scale = horizontal ? yScale : xScale;
+	const valueScale = horizontal ? xScale : yScale;
 	const bandwidth = scale?.bandwidth?.() ?? 0;
 	const groupScale = (0, react.useMemo)(() => createGroupScale(slots?.keys ?? keys, bandwidth, groupPadding), [
 		slots,
@@ -6966,6 +7195,7 @@ function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, o
 			const start = band + Number(groupScale(slots ? slots.slotOf(key) : key));
 			const end = start + groupScale.step();
 			const distance = position >= start && position <= end ? 0 : Math.abs(position - (start + end) / 2);
+			const valueDistance = slots?.stack && valueScale ? distanceToSegment(slots.stack.segmentOf(key, datum), valueScale, horizontal ? point.x : point.y) : 0;
 			bands.push(band);
 			selections.push({
 				event: params.event,
@@ -6973,8 +7203,8 @@ function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, o
 				datum,
 				index,
 				svgPoint: point,
-				distanceX: horizontal ? 0 : distance,
-				distanceY: horizontal ? distance : 0
+				distanceX: horizontal ? valueDistance : distance,
+				distanceY: horizontal ? distance : valueDistance
 			});
 		}
 		if (!slots) return selections;
@@ -6983,6 +7213,7 @@ function BandTooltip({ keys, slots, groupPadding, withTooltips, onPointerDown, o
 		return selections.filter((_, index) => bands[index] === hoveredBand);
 	}, [
 		scale,
+		valueScale,
 		dataRegistry,
 		horizontal,
 		keys,
@@ -7076,6 +7307,16 @@ function useBarColors() {
 			data,
 			index
 		}).color);
+		if (layout === "stacked") {
+			const drawn = getDrawnSeries(series, layout);
+			return series.map((data, index) => {
+				const drawnIndex = drawn.indexOf(data);
+				return drawnIndex === -1 ? colors[index] : getElementStyles({
+					data,
+					index: drawnIndex
+				}).color;
+			});
+		}
 		if (layout !== "overlap") return comparisonOpacity === void 0 ? getGroupedBarColors(series, colors, backgroundColor) : colors;
 		return getOverlapBarColors(series, colors, [getElementStyles({ index: 0 }).color, getElementStyles({ index: 1 }).color], backgroundColor);
 	}, [
@@ -7124,13 +7365,14 @@ function forBarLayout(data, items, layout, seriesColors) {
 /**
 * Builds legend items that match `BarChart`'s bars in a layout, for a custom legend or a chart's own.
 *
-* @param data        - The series the chart draws.
+* @param allData     - The chart's series; those the layout does not draw get no item.
 * @param options     - The legend options, and the layout the bars are drawn in.
 * @param legendShape - The shape of the legend swatches.
 * @return The legend items.
 */
-function useBarLegendItems(data, options = {}, legendShape) {
+function useBarLegendItems(allData, options = {}, legendShape) {
 	const { layout } = options;
+	const data = (0, react.useMemo)(() => getDrawnSeries(allData, layout), [allData, layout]);
 	const getBarColors = useBarColors();
 	const seriesColors = (0, react.useMemo)(() => layout ? getBarColors(data, { layout }) : void 0, [
 		data,
@@ -7160,6 +7402,11 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ (0, react_jsx_runtime
 	children: (0, _wordpress_i18n.sprintf)((0, _wordpress_i18n.__)("%1$s: %2$s", "jetpack-charts"), label, value)
 });
 const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", layout = "grouped", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", compactWhenShort = false, onPointerDown, onPointerUp, onDatumActivate }) => {
+	if (layout === "stacked" && showZeroValues) warnOnce("bar-chart-stacked-zero-values", "BarChart: showZeroValues has no effect in a stacked layout.");
+	if (layout === "stacked" && data?.some((series) => series.options?.type === "comparison")) warnOnce("bar-chart-stacked-comparison", "BarChart: a stacked layout does not draw comparison series yet.");
+	const valueScaleOptions = orientation === "horizontal" ? options.xScale : options.yScale;
+	if (layout === "stacked" && valueScaleOptions?.type && valueScaleOptions.type !== "linear") warnOnce(`bar-chart-stacked-${valueScaleOptions.type}-scale`, `BarChart: a stacked layout draws on a linear value scale, so the ${valueScaleOptions.type} scale is ignored.`);
+	if (layout === "stacked" && valueScaleOptions?.zero === false && !valueScaleOptions.domain) warnOnce("bar-chart-stacked-zero", "BarChart: every stack starts at zero, so zero: false has no effect in a stacked layout.");
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -7167,13 +7414,15 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	const legendComparisonSeriesItems = legend.comparisonSeriesItems;
 	const horizontal = orientation === "horizontal";
 	const isOverlap = layout === "overlap";
+	const isStacked = layout === "stacked";
 	const chartId = useChartId(providedChartId);
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
 	const isSeriesVisible = (0, react.useCallback)((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
 	const theme = useXYChartTheme(data);
-	const dataSorted = useChartDataTransform(data);
+	const transformedData = useChartDataTransform(data);
+	const dataSorted = (0, react.useMemo)(() => getDrawnSeries(transformedData, layout), [layout, transformedData]);
 	const dataWithVisibleZeros = useZeroValueDisplay(dataSorted, {
-		enabled: showZeroValues,
+		enabled: showZeroValues && !isStacked,
 		valueAxisLength: horizontal ? width : height
 	});
 	const legendItems = useBarLegendItems(dataSorted, (0, react.useMemo)(() => ({
@@ -7198,7 +7447,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	const isSeriesRendered = (0, react.useCallback)((series) => isSeriesVisible(series.label), [isSeriesVisible]);
 	const hasWholeNumberValues = (0, react.useMemo)(() => hasOnlyWholeNumbers(dataSorted.filter(isSeriesRendered)), [dataSorted, isSeriesRendered]);
 	const { isCompact, compactMargin } = useCompactWhenShort(compactWhenShort && !horizontal, height);
-	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, (0, react.useMemo)(() => isCompact ? {
+	const resolvedOptions = (0, react.useMemo)(() => isCompact ? {
 		...options,
 		axis: {
 			...options.axis,
@@ -7211,7 +7460,18 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 				display: false
 			}
 		}
-	} : options, [isCompact, options]), isSeriesRendered);
+	} : options, [isCompact, options]);
+	const seriesWithVisibility = (0, react.useMemo)(() => dataWithVisibleZeros.map((series, index) => ({
+		series,
+		index,
+		isVisible: isSeriesRendered(series)
+	})), [dataWithVisibleZeros, isSeriesRendered]);
+	const allSeriesHidden = (0, react.useMemo)(() => {
+		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
+	}, [seriesWithVisibility]);
+	const primaryEntries = (0, react.useMemo)(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
+	const barSlots = useBarSlots(layout, seriesWithVisibility);
+	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, resolvedOptions, isSeriesRendered, barSlots?.kind === "stacked" ? barSlots.stack : void 0);
 	const valueAxis = horizontal ? chartOptions.axis.x : chartOptions.axis.y;
 	const callerValueDomain = horizontal ? options.xScale?.domain : options.yScale?.domain;
 	const valueTickDecimals = getTickDecimals(hasWholeNumberValues, chartOptions.valueTickDecimals);
@@ -7229,18 +7489,8 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	}, [height]);
 	const [selectedIndex, setSelectedIndex] = (0, react.useState)(void 0);
 	const [isNavigating, setIsNavigating] = (0, react.useState)(false);
-	const seriesWithVisibility = (0, react.useMemo)(() => dataWithVisibleZeros.map((series, index) => ({
-		series,
-		index,
-		isVisible: isSeriesRendered(series)
-	})), [dataWithVisibleZeros, isSeriesRendered]);
-	const allSeriesHidden = (0, react.useMemo)(() => {
-		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
-	}, [seriesWithVisibility]);
-	const primaryEntries = (0, react.useMemo)(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
-	const overlapSlots = useOverlapSlots(isOverlap, seriesWithVisibility);
 	const primaryKeys = (0, react.useMemo)(() => primaryEntries.map(({ series }) => series.label), [primaryEntries]);
-	const stops = useBarStops(overlapSlots, primaryEntries);
+	const stops = useBarStops(barSlots, primaryEntries);
 	const { barAt, stopOf } = stops;
 	const activateSelectedBar = (0, react.useCallback)((stop) => {
 		const bar = barAt(stop);
@@ -7261,7 +7511,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		if (stop !== void 0) onChartPointerMove(stop);
 	}, [stopOf, onChartPointerMove]);
 	const comparisonEntries = (0, react.useMemo)(() => {
-		if (isOverlap) return [];
+		if (barSlots) return [];
 		const primaryByGroup = new Map(primaryEntries.map(({ series, index }) => [series.group, {
 			label: series.label,
 			index
@@ -7282,7 +7532,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		});
 		return entries;
 	}, [
-		isOverlap,
+		barSlots,
 		seriesWithVisibility,
 		primaryEntries,
 		primaryKeys
@@ -7348,6 +7598,32 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			})]
 		});
 	}, [chartOptions.tooltip, dataSorted]);
+	const renderStackedTooltip = (0, react.useCallback)(({ tooltipData }) => {
+		const nearestDatum = tooltipData?.nearestDatum?.datum;
+		if (!nearestDatum || barSlots?.kind !== "stacked") return null;
+		const datumByKey = tooltipData?.datumByKey ?? {};
+		const categoryLabel = chartOptions.tooltip.labelFormatter(nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0), 0, []);
+		const rows = [...barSlots.entries].reverse().flatMap(({ series }) => {
+			const datum = datumByKey[series.label]?.datum;
+			return datum ? [{
+				label: series.label,
+				datum
+			}] : [];
+		});
+		const readings = rows.filter(({ datum }) => isBarRendered(datum)).length;
+		const [negative, positive] = barSlots.stack.extentAt(nearestDatum);
+		return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: bar_chart_module_default["bar-chart__tooltip"],
+			children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: bar_chart_module_default["bar-chart__tooltip-header"],
+					children: categoryLabel
+				}),
+				rows.map(({ label, datum }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react.Fragment, { children: renderTooltipRow(label, formatReading(datum.value)) }, label)),
+				readings > 1 && renderTooltipRow((0, _wordpress_i18n.__)("Total", "jetpack-charts"), formatReading(negative + positive))
+			]
+		});
+	}, [chartOptions.tooltip, barSlots]);
 	const renderDefaultTooltip = (0, react.useCallback)(({ tooltipData }) => {
 		const nearestDatum = tooltipData?.nearestDatum?.datum;
 		if (!nearestDatum) return null;
@@ -7419,24 +7695,25 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 				}
 			`;
 	}, [chartId]);
-	const overlapBandSlots = (0, react.useMemo)(() => overlapSlots && {
-		keys: overlapSlots.slotKeys,
-		slotOf: overlapSlots.slotOf
-	}, [overlapSlots]);
-	const selectedSlot = (0, react.useMemo)(() => getSelectedSlot(overlapSlots, selectedIndex), [overlapSlots, selectedIndex]);
+	const barBandSlots = (0, react.useMemo)(() => barSlots && {
+		keys: barSlots.slotKeys,
+		slotOf: barSlots.slotOf,
+		stack: barSlots.kind === "stacked" ? barSlots.stack : void 0
+	}, [barSlots]);
+	const selectedSlot = (0, react.useMemo)(() => getSelectedSlot(barSlots, selectedIndex), [barSlots, selectedIndex]);
 	const selectedGroup = (0, react.useMemo)(() => {
-		const stop = overlapSlots || selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
+		const stop = barSlots || selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
 		if (!stop) return;
 		return membersAt(primaryEntries, stop.datum, stop.key);
 	}, [
-		overlapSlots,
+		barSlots,
 		selectedIndex,
 		barAt,
 		primaryEntries
 	]);
 	const selectedMembers = selectedSlot?.members ?? selectedGroup;
 	const selectedBar = (0, react.useMemo)(() => {
-		if (overlapSlots) return selectedSlot;
+		if (barSlots) return selectedSlot;
 		const bar = selectedIndex === void 0 ? void 0 : barAt(selectedIndex);
 		return bar && isBarRendered(bar.datum) ? {
 			data: [bar.datum],
@@ -7444,7 +7721,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			thickness: 1
 		} : void 0;
 	}, [
-		overlapSlots,
+		barSlots,
 		selectedSlot,
 		selectedIndex,
 		barAt
@@ -7494,7 +7771,10 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			legendElement,
 			legendChildren: isCompact ? [] : legendChildren,
 			gap,
-			className: (0, clsx.default)("bar-chart", bar_chart_module_default["bar-chart"], { [bar_chart_module_default[`bar-chart--animated${horizontal ? "-horizontal" : ""}`]]: animation && !prefersReducedMotion }, className),
+			className: (0, clsx.default)("bar-chart", bar_chart_module_default["bar-chart"], {
+				[bar_chart_module_default["bar-chart--stacked"]]: isStacked,
+				[bar_chart_module_default[`bar-chart--animated${horizontal ? "-horizontal" : ""}`]]: animation && !prefersReducedMotion
+			}, className),
 			style: {
 				width,
 				height
@@ -7568,7 +7848,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 								}),
 								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BarLayer, {
 									chartId,
-									overlapSlots,
+									barSlots,
 									selectedBar,
 									primaryEntries,
 									primaryKeys,
@@ -7580,8 +7860,8 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									yAccessor: chartOptions.accessors.yAccessor
 								}),
 								(withTooltips || onPointerDown || onPointerUp) && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BandTooltip, {
-									keys: overlapSlots?.keys ?? primaryKeys,
-									slots: overlapBandSlots,
+									keys: barSlots?.keys ?? primaryKeys,
+									slots: barBandSlots,
 									groupPadding,
 									withTooltips,
 									onPointerDown,
@@ -7606,7 +7886,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 									detectBounds: true,
 									snapTooltipToDatumX: true,
 									snapTooltipToDatumY: true,
-									renderTooltip: renderTooltip || (isOverlap ? renderOverlapTooltip : renderDefaultTooltip),
+									renderTooltip: renderTooltip || isStacked && renderStackedTooltip || (isOverlap ? renderOverlapTooltip : renderDefaultTooltip),
 									selectedIndex,
 									tooltipRef,
 									keyboardFocusedClassName: bar_chart_module_default["bar-chart__tooltip--keyboard-focused"],

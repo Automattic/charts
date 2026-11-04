@@ -11,6 +11,7 @@ This is an alpha version! The changes listed here are not final.
 
 ### Added
 - Axis: Add a `tickDecimals` option that keeps value-axis ticks to a number of decimal places, so rounded labels never repeat.
+- Bar chart: Add a stacked layout.
 - Line, area and bar charts: Add `compactWhenShort`, which drops the axes, grid and legend while the chart is shorter than the new `theme.compactWhenShort.below` (140px by default).
 
 ### Changed
