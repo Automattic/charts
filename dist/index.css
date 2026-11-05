@@ -776,6 +776,17 @@
   overflow: hidden;
 }
 
+.a8ccharts-GovfoW-grid {
+  row-gap: var(--a8c-charts-dimension-leaderboard-row-gap);
+  column-gap: var(--a8c-charts-dimension-leaderboard-column-gap);
+  grid-template-columns: minmax(0, 1fr) auto;
+  display: grid;
+}
+
+.a8ccharts-GovfoW-grid--comparison {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
 .a8ccharts-GovfoW-barWithLabelContainer {
   isolation: isolate;
   grid-template-columns: 1fr;
@@ -927,6 +938,21 @@
   transition: opacity var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1)), width var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
 
+.a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-barWithLabelContainer > :not(.a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-barTrack) {
+  max-inline-size: 100%;
+  transition: max-inline-size var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
+}
+
+.a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-label {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.a8ccharts-GovfoW-interactiveRow:hover .a8ccharts-GovfoW-barWithLabelContainer > :not(.a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-barTrack), .a8ccharts-GovfoW-interactiveRow:focus-visible .a8ccharts-GovfoW-barWithLabelContainer > :not(.a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-barTrack), .a8ccharts-GovfoW-interactiveRow:has(:focus-visible) .a8ccharts-GovfoW-barWithLabelContainer > :not(.a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-barTrack) {
+  max-inline-size: calc(100% - var(--wpds-dimension-gap-2xl, 32px));
+}
+
 .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer {
   transition: transform var(--wpds-motion-duration-sm, .1s) var(--wpds-motion-easing-subtle, cubic-bezier(.15, 0, .15, 1));
 }
@@ -1007,7 +1033,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-chevron {
+  .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-barWithLabelContainer > :not(.a8ccharts-GovfoW-bar, .a8ccharts-GovfoW-barTrack), .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-valueContainer, .a8ccharts-GovfoW-interactiveRow .a8ccharts-GovfoW-chevron {
     transition: none;
   }
 }
