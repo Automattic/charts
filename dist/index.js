@@ -218,6 +218,38 @@ const getBucketInfo = (data, tickResolution) => ({
 	bucket: tickResolution ?? getBucketResolution(data),
 	displayResolution: getBucketResolution(data, tickResolution)
 });
+// src/utils/format-percentage.ts
+/**
+* Format a percentage value with smart decimal handling.
+* Uses `@automattic/number-formatters` for consistent formatting.
+* Removes unnecessary trailing zeros and caps at 2 decimal places.
+*
+* @param value - The percentage value (0-100 range)
+* @return Formatted percentage string (e.g., "30%", "30.1%", "30.25%")
+*/
+const formatPercentage = (value) => {
+	return formatNumber(value / 100, { numberFormatOptions: {
+		style: "percent",
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 2
+	} });
+};
+// src/utils/format-data-point-value.ts
+/**
+* Formats a data point's figure for display, in the legend and in a segment's accessible name.
+*
+* @param point   - The data point, with the percentage charts calculated for it.
+* @param display - Which figure to show. Defaults to its share of the total.
+* @return The formatted figure, or an empty string for 'none'.
+*/
+function formatDataPointValue(point, display = "percentage") {
+	switch (display) {
+		case "percentage": return formatPercentage(point.percentage);
+		case "value": return formatNumber(point.value);
+		case "valueDisplay": return point.valueDisplay || formatNumber(point.value);
+		default: return "";
+	}
+}
 // src/utils/format-metric-value.ts
 /**
 * Format a numeric metric value based on type, precision and scale.
@@ -266,22 +298,6 @@ const formatMetricValue = (value, type = "number", { decimals, useMultipliers = 
 			numberFormatOptions: { signDisplay }
 		});
 	}
-};
-// src/utils/format-percentage.ts
-/**
-* Format a percentage value with smart decimal handling.
-* Uses `@automattic/number-formatters` for consistent formatting.
-* Removes unnecessary trailing zeros and caps at 2 decimal places.
-*
-* @param value - The percentage value (0-100 range)
-* @return Formatted percentage string (e.g., "30%", "30.1%", "30.25%")
-*/
-const formatPercentage = (value) => {
-	return formatNumber(value / 100, { numberFormatOptions: {
-		style: "percent",
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 2
-	} });
 };
 // src/utils/get-edge-tick-widths.ts
 /**
@@ -2280,12 +2296,7 @@ function withSeriesColors(getElementStyles, seriesColors) {
 */
 function formatPointValue(point, showValues, legendValueDisplay = "percentage") {
 	if (!showValues || legendValueDisplay === "none") return "";
-	if ("percentage" in point) switch (legendValueDisplay) {
-		case "percentage": return formatPercentage(point.percentage);
-		case "value": return formatNumber(point.value);
-		case "valueDisplay": return point.valueDisplay || formatNumber(point.value);
-		default: return "";
-	}
+	if ("percentage" in point) return formatDataPointValue(point, legendValueDisplay);
 	if ("value" in point) return point.value !== null ? formatNumber(point.value) : "";
 	return "";
 }
@@ -10888,7 +10899,7 @@ const PieSelectionOutput = ({ withTooltips, selectedIndex, selectedData, keyboar
 	] });
 };
 // src/charts/private/pie-keyboard-navigation/use-pie-keyboard-navigation.ts
-const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX, tooltipOffsetY }) => {
+const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX, tooltipOffsetY, legendValueDisplay }) => {
 	const chartRef = useRef(null);
 	const svgRef = useRef(null);
 	const [selectedIndex, setSelectedIndex] = useState(void 0);
@@ -10918,7 +10929,13 @@ const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX
 		const { activeElement, body } = chartRef.current?.ownerDocument ?? document;
 		if (activeElement === null || activeElement === body) chartRef.current?.focus();
 	});
-	const getSegmentHandlers = (data, navigationIndex) => ({
+	const getSegmentName = (data) => {
+		const value = formatDataPointValue(data, legendValueDisplay);
+		return value ? sprintf(__("%1$s: %2$s", "jetpack-charts"), data.label, value) : data.label;
+	};
+	const getSegmentProps = (data, navigationIndex) => ({
+		role: "img",
+		"aria-label": getSegmentName(data),
 		onMouseMove: (event) => {
 			onChartPointerMove(navigationIndex);
 			if (!withTooltips) return;
@@ -10936,7 +10953,7 @@ const usePieKeyboardNavigation = ({ navigationArcs, withTooltips, tooltipOffsetX
 		chartRef,
 		svgRef,
 		selectedArc,
-		getSegmentHandlers,
+		getSegmentProps,
 		getKeyboardTooltipAnchor: useCallback((originX, originY, [x, y]) => withTooltips ? {
 			left: originX + x + tooltipOffsetX,
 			top: originY + y + tooltipOffsetY
@@ -11134,11 +11151,12 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		padAngle
 	})(dataWithIndex);
 	const navigationArcs = orderArcsForNavigation(arcs);
-	const { chartRef, svgRef, selectedArc, getSegmentHandlers, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
+	const { chartRef, svgRef, selectedArc, getSegmentProps, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
 		navigationArcs,
 		withTooltips,
 		tooltipOffsetX,
-		tooltipOffsetY
+		tooltipOffsetY,
+		legendValueDisplay
 	});
 	if (!isValid) return /* @__PURE__ */ jsx("div", {
 		className: clsx("pie-chart", pie_chart_module_default["pie-chart"], className),
@@ -11201,25 +11219,28 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 						fontWeight: svgLabelSmall?.fontWeight
 					}) + 12;
 					const backgroundHeight = fontSize + 12;
-					return /* @__PURE__ */ jsxs("g", { children: [/* @__PURE__ */ jsx("rect", {
-						className: pie_chart_module_default["pie-chart__label-plate"],
-						x: centroidX - backgroundWidth / 2,
-						y: centroidY - backgroundHeight / 2,
-						width: backgroundWidth,
-						height: backgroundHeight,
-						rx: 4,
-						ry: 4,
-						pointerEvents: "none"
-					}), /* @__PURE__ */ jsx("text", {
-						className: clsx(pie_chart_module_default["pie-chart__label-text"], LABEL_TEXT_MODIFIER[pickLabelTextColor(accessors.fill(arcDatum.data), labelRoles, "label-inverse")]),
-						x: centroidX,
-						y: centroidY,
-						dy: ".33em",
-						fontSize,
-						textAnchor: "middle",
-						pointerEvents: "none",
-						children: arcDatum.data.label
-					})] }, `label-${index}`);
+					return /* @__PURE__ */ jsxs("g", {
+						"aria-hidden": "true",
+						children: [/* @__PURE__ */ jsx("rect", {
+							className: pie_chart_module_default["pie-chart__label-plate"],
+							x: centroidX - backgroundWidth / 2,
+							y: centroidY - backgroundHeight / 2,
+							width: backgroundWidth,
+							height: backgroundHeight,
+							rx: 4,
+							ry: 4,
+							pointerEvents: "none"
+						}), /* @__PURE__ */ jsx("text", {
+							className: clsx(pie_chart_module_default["pie-chart__label-text"], LABEL_TEXT_MODIFIER[pickLabelTextColor(accessors.fill(arcDatum.data), labelRoles, "label-inverse")]),
+							x: centroidX,
+							y: centroidY,
+							dy: ".33em",
+							fontSize,
+							textAnchor: "middle",
+							pointerEvents: "none",
+							children: arcDatum.data.label
+						})]
+					}, `label-${index}`);
 				};
 				return /* @__PURE__ */ jsxs(Center, {
 					ref: chartRef,
@@ -11249,7 +11270,7 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 									height,
 									children: getAllHiddenMessage(legendInteractive, "segments")
 								}) : arcs.map((arcDatum, index) => /* @__PURE__ */ jsx("g", {
-									...getSegmentHandlers(arcDatum.data, navigationArcs.indexOf(arcDatum)),
+									...getSegmentProps(arcDatum.data, navigationArcs.indexOf(arcDatum)),
 									children: /* @__PURE__ */ jsx("path", {
 										d: path(arcDatum) || "",
 										fill: accessors.fill(arcDatum.data)
@@ -11398,11 +11419,12 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		endAngle
 	})(dataWithIndex);
 	const navigationArcs = orderArcsForNavigation(arcs);
-	const { chartRef, svgRef, selectedArc, getSegmentHandlers, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
+	const { chartRef, svgRef, selectedArc, getSegmentProps, getKeyboardTooltipAnchor, selectionOutputProps, chartProps } = usePieKeyboardNavigation({
 		navigationArcs,
 		withTooltips,
 		tooltipOffsetX,
-		tooltipOffsetY
+		tooltipOffsetY,
+		legendValueDisplay
 	});
 	if (!isValid) {
 		const errorWidth = propHeight ? Math.min(propWidth || propHeight * 2, propHeight * 2) : effectiveWidth;
@@ -11488,7 +11510,7 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 									height,
 									children: getAllHiddenMessage(legendInteractive, "segments")
 								}) : arcs.map((arcDatum) => /* @__PURE__ */ jsx("g", {
-									...getSegmentHandlers(arcDatum.data, navigationArcs.indexOf(arcDatum)),
+									...getSegmentProps(arcDatum.data, navigationArcs.indexOf(arcDatum)),
 									children: /* @__PURE__ */ jsx("path", {
 										d: path(arcDatum) || "",
 										fill: accessors.fill(arcDatum.data)

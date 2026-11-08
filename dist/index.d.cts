@@ -828,7 +828,178 @@ export declare const Legend: import("react").ForwardRefExoticComponent<Omit<Base
   items?: BaseLegendItem[];
   chartId?: string;
 } & import("react").RefAttributes<HTMLDivElement>>;
+/**
+ * How this data was classified, for consumers that render their own labels.
+ *
+ * @param data           - The series the chart draws, in any order, dated by `date` or `dateString`.
+ * @param tickResolution - Caller-declared bucket resolution, when known.
+ * @return The declared or inferred bucket, and the resolution formats key on.
+ */
+export declare const getBucketInfo: (data: SeriesData[], tickResolution?: TickResolution) => BucketInfo;
+/**
+ * Parses any supported date string format into an instant, dated in `timeZone` or the runtime's own
+ *
+ * Uses date-fns for robust parsing and validation. A string carrying timezone info
+ * is already an instant and is returned as one, whatever `timeZone` says. A string
+ * without it is a wall-clock reading, dated in `timeZone` when one is supplied and
+ * in the runtime's own zone when none is.
+ *
+ * A wall clock a DST gap deleted is moved forward past the gap; one a fall-back repeated
+ * resolves to a single instant. Neither policy is selectable. A zone `Intl` rejects falls
+ * back to the runtime's own, and warns once outside production.
+ *
+ * @param {string} dateString - The date string to parse into a date
+ * @param {string} [timeZone] - IANA zone a naive string is read in; the runtime's own when absent, and ignored by a string that carries its own offset
+ * @return {Date} A Date object representing the parsed instant, or an invalid Date if parsing fails
+ */
+export declare const parseAsLocalDate: (dateString: string, timeZone?: string) => Date;
+/**
+ * What figure to show for a data point.
+ * - 'percentage': its share of the total (e.g. "23%") [default]
+ * - 'value': its raw value (e.g. "30000")
+ * - 'valueDisplay': the value the consumer formatted (e.g. "30K")
+ * - 'none': no figure, the label alone
+ */
 type LegendValueDisplay = 'percentage' | 'value' | 'valueDisplay' | 'none';
+/**
+ * Types for formatMetricValue
+ */
+type MetricValueType = 'number' | 'average' | 'currency';
+type FormatMetricValueOptions = {
+  decimals?: number;
+  useMultipliers?: boolean;
+  signDisplay?: Intl.NumberFormatOptions['signDisplay'];
+};
+/**
+ * Format a numeric metric value based on type, precision and scale.
+ * Supports currency, number and percentage, using `@automattic/number-formatters`.
+ *
+ * @param value                  - The value to format
+ * @param type                   - The type of formatting to apply
+ * @param options                - Formatting options
+ * @param options.decimals       - Number of decimal places to show
+ * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
+ * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
+ * @return Formatted string
+ */
+export declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
+/**
+ * Format a percentage value with smart decimal handling.
+ * Uses `@automattic/number-formatters` for consistent formatting.
+ * Removes unnecessary trailing zeros and caps at 2 decimal places.
+ *
+ * @param value - The percentage value (0-100 range)
+ * @return Formatted percentage string (e.g., "30%", "30.1%", "30.25%")
+ */
+export declare const formatPercentage: (value: number) => string;
+/**
+ * Merges chart themes with proper precedence.
+ * The second theme (override) takes precedence over the first theme (base).
+ *
+ * @param baseTheme     - Base theme object
+ * @param overrideTheme - Theme to override base with (takes precedence)
+ * @return Merged theme with overrideTheme values taking precedence
+ */
+export declare function mergeThemes(baseTheme: CompleteChartTheme, overrideTheme: Partial<ChartTheme>): CompleteChartTheme;
+export declare function mergeThemes(baseTheme: ChartTheme, overrideTheme: Partial<ChartTheme>): ChartTheme;
+/**
+ * Check if a value is a valid 6-digit hex color
+ * @param hex - The value to check
+ * @return true if valid hex color format (e.g., '#ff0000')
+ */
+export declare const isValidHexColor: (hex: unknown) => hex is string;
+/**
+ * Validate hex color format, throwing descriptive errors if invalid
+ * @param  hex - The hex color string to validate
+ * @throws {Error} if hex string is malformed
+ */
+export declare const validateHexColor: (hex: unknown) => void;
+/**
+ * Convert hex color to rgba with specified opacity.
+ * This is genuinely reusable across chart components.
+ * @param  hex   - The hex color string (e.g., '#ff0000')
+ * @param  alpha - The opacity value. Values outside the [0, 1] range will be clamped by the underlying d3 color library.
+ * @return The rgba color string (e.g., 'rgba(255, 0, 0, 0.5)')
+ * @throws {Error} if hex string is malformed or alpha is not a valid number
+ */
+export declare const hexToRgba: (hex: string, alpha: number) => string;
+/**
+ * Weighted Euclidean distance between two HSL colors.
+ *
+ * @deprecated Not perceptual and blind to color vision deficiency, so charts no longer use it; it will be removed in a future major version.
+ * @param      hsl1 - first color in HSL format [h, s, l]
+ * @param      hsl2 - second color in HSL format [h, s, l]
+ * @return distance value (0-100+, lower means more similar)
+ */
+export declare const getColorDistance: (hsl1: [number, number, number], hsl2: [number, number, number]) => number;
+/**
+ * Parse an HSL string like 'hsl(120, 50%, 50%)' into an HSL tuple.
+ *
+ * @param hslString - HSL color string
+ * @return HSL tuple [h, s, l] or null if invalid
+ */
+export declare const parseHslString: (hslString: string) => [number, number, number] | null;
+/**
+ * Normalize any CSS color value to a hex color string.
+ * Handles hex, HSL, HSLA, RGB, RGBA, named CSS colors, and CSS variables.
+ *
+ * @param color      - Any CSS color value
+ * @param element    - Optional DOM element for resolving CSS variables
+ * @param resolveCss - Function to resolve CSS variables (injected for testability)
+ * @param _depth     - Internal recursion depth counter to prevent infinite loops
+ * @return hex color string, or the original value if conversion fails
+ */
+export declare const normalizeColorToHex: (color: string, element?: HTMLElement | null, resolveCss?: (value: string, el?: HTMLElement | null) => string | null, _depth?: number) => string;
+/**
+ * Lighten a hex color by blending it with white.
+ * Useful for creating color gradients or lighter variants.
+ *
+ * @param  hex   - Hex color string (e.g., '#98C8DF')
+ * @param  blend - Blend amount with white (0 = original color, 1 = white)
+ * @return Lightened hex color string (e.g., '#cce4ef')
+ * @throws {Error} if hex string is malformed
+ */
+export declare const lightenHexColor: (hex: string, blend: number) => string;
+/**
+ * Blend one hex color toward another, per-channel in sRGB.
+ *
+ * @param  fromHex - Starting hex color, returned when blend is 0
+ * @param  toHex   - Target hex color, returned when blend is 1
+ * @param  blend   - Amount toward toHex, clamped to [0, 1]
+ * @return Blended hex color string
+ * @throws {Error} if either hex string is malformed
+ */
+export declare const mixHexColors: (fromHex: string, toHex: string, blend: number) => string;
+/**
+ * WCAG relative luminance of a hex color (0 = black, 1 = white).
+ *
+ * @param  hex - Hex color string (e.g., '#98C8DF')
+ * @return Relative luminance in the range [0, 1]
+ * @throws {Error} if hex string is malformed
+ */
+export declare const relativeLuminance: (hex: string) => number;
+/**
+ * Whether light text reads better than dark text on the given background, using the W3C
+ * luminance threshold (0.179) that maximizes contrast against black vs white.
+ *
+ * @deprecated Assumes black and white text, so it ignores label role overrides and cannot guarantee AA; charts no longer use it, and it will be removed in a future major version.
+ * @param      backgroundHex - Hex background color
+ * @return true if light text should be used; false (dark text) for malformed colors
+ */
+export declare const prefersLightText: (backgroundHex: string) => boolean;
+/**
+ * Resolves a CSS custom property (variable) to its computed value.
+ * Handles multiple formats:
+ * - Plain variable names: '--my-color'
+ * - CSS var() syntax: 'var(--my-color)'
+ * - CSS var() with fallback: 'var(--my-color, #ffffff)'
+ * - Regular values (returned as-is): '#ffffff', 'red'
+ *
+ * @param value   - A CSS variable name, var() expression, or regular value
+ * @param element - Optional DOM element to resolve the variable from (defaults to document.documentElement)
+ * @return The resolved value, fallback value, or null if unresolvable
+ */
+export declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
 interface ChartLegendOptions {
   withGlyph?: boolean;
   glyphSize?: number;
@@ -1717,170 +1888,6 @@ declare const LeaderboardChartResponsive: (({ resizeDebounceTime, maxWidth, aspe
     chartId?: string;
   } & import("react").RefAttributes<HTMLDivElement>>;
 };
-/**
- * How this data was classified, for consumers that render their own labels.
- *
- * @param data           - The series the chart draws, in any order, dated by `date` or `dateString`.
- * @param tickResolution - Caller-declared bucket resolution, when known.
- * @return The declared or inferred bucket, and the resolution formats key on.
- */
-export declare const getBucketInfo: (data: SeriesData[], tickResolution?: TickResolution) => BucketInfo;
-/**
- * Parses any supported date string format into an instant, dated in `timeZone` or the runtime's own
- *
- * Uses date-fns for robust parsing and validation. A string carrying timezone info
- * is already an instant and is returned as one, whatever `timeZone` says. A string
- * without it is a wall-clock reading, dated in `timeZone` when one is supplied and
- * in the runtime's own zone when none is.
- *
- * A wall clock a DST gap deleted is moved forward past the gap; one a fall-back repeated
- * resolves to a single instant. Neither policy is selectable. A zone `Intl` rejects falls
- * back to the runtime's own, and warns once outside production.
- *
- * @param {string} dateString - The date string to parse into a date
- * @param {string} [timeZone] - IANA zone a naive string is read in; the runtime's own when absent, and ignored by a string that carries its own offset
- * @return {Date} A Date object representing the parsed instant, or an invalid Date if parsing fails
- */
-export declare const parseAsLocalDate: (dateString: string, timeZone?: string) => Date;
-/**
- * Types for formatMetricValue
- */
-type MetricValueType = 'number' | 'average' | 'currency';
-type FormatMetricValueOptions = {
-  decimals?: number;
-  useMultipliers?: boolean;
-  signDisplay?: Intl.NumberFormatOptions['signDisplay'];
-};
-/**
- * Format a numeric metric value based on type, precision and scale.
- * Supports currency, number and percentage, using `@automattic/number-formatters`.
- *
- * @param value                  - The value to format
- * @param type                   - The type of formatting to apply
- * @param options                - Formatting options
- * @param options.decimals       - Number of decimal places to show
- * @param options.useMultipliers - Whether to use K, M, B suffixes for large numbers
- * @param options.signDisplay    - Controls when to display the sign (auto, always, never, exceptZero)
- * @return Formatted string
- */
-export declare const formatMetricValue: (value: string | number, type?: MetricValueType, { decimals, useMultipliers, signDisplay }?: FormatMetricValueOptions) => string;
-/**
- * Format a percentage value with smart decimal handling.
- * Uses `@automattic/number-formatters` for consistent formatting.
- * Removes unnecessary trailing zeros and caps at 2 decimal places.
- *
- * @param value - The percentage value (0-100 range)
- * @return Formatted percentage string (e.g., "30%", "30.1%", "30.25%")
- */
-export declare const formatPercentage: (value: number) => string;
-/**
- * Merges chart themes with proper precedence.
- * The second theme (override) takes precedence over the first theme (base).
- *
- * @param baseTheme     - Base theme object
- * @param overrideTheme - Theme to override base with (takes precedence)
- * @return Merged theme with overrideTheme values taking precedence
- */
-export declare function mergeThemes(baseTheme: CompleteChartTheme, overrideTheme: Partial<ChartTheme>): CompleteChartTheme;
-export declare function mergeThemes(baseTheme: ChartTheme, overrideTheme: Partial<ChartTheme>): ChartTheme;
-/**
- * Check if a value is a valid 6-digit hex color
- * @param hex - The value to check
- * @return true if valid hex color format (e.g., '#ff0000')
- */
-export declare const isValidHexColor: (hex: unknown) => hex is string;
-/**
- * Validate hex color format, throwing descriptive errors if invalid
- * @param  hex - The hex color string to validate
- * @throws {Error} if hex string is malformed
- */
-export declare const validateHexColor: (hex: unknown) => void;
-/**
- * Convert hex color to rgba with specified opacity.
- * This is genuinely reusable across chart components.
- * @param  hex   - The hex color string (e.g., '#ff0000')
- * @param  alpha - The opacity value. Values outside the [0, 1] range will be clamped by the underlying d3 color library.
- * @return The rgba color string (e.g., 'rgba(255, 0, 0, 0.5)')
- * @throws {Error} if hex string is malformed or alpha is not a valid number
- */
-export declare const hexToRgba: (hex: string, alpha: number) => string;
-/**
- * Weighted Euclidean distance between two HSL colors.
- *
- * @deprecated Not perceptual and blind to color vision deficiency, so charts no longer use it; it will be removed in a future major version.
- * @param      hsl1 - first color in HSL format [h, s, l]
- * @param      hsl2 - second color in HSL format [h, s, l]
- * @return distance value (0-100+, lower means more similar)
- */
-export declare const getColorDistance: (hsl1: [number, number, number], hsl2: [number, number, number]) => number;
-/**
- * Parse an HSL string like 'hsl(120, 50%, 50%)' into an HSL tuple.
- *
- * @param hslString - HSL color string
- * @return HSL tuple [h, s, l] or null if invalid
- */
-export declare const parseHslString: (hslString: string) => [number, number, number] | null;
-/**
- * Normalize any CSS color value to a hex color string.
- * Handles hex, HSL, HSLA, RGB, RGBA, named CSS colors, and CSS variables.
- *
- * @param color      - Any CSS color value
- * @param element    - Optional DOM element for resolving CSS variables
- * @param resolveCss - Function to resolve CSS variables (injected for testability)
- * @param _depth     - Internal recursion depth counter to prevent infinite loops
- * @return hex color string, or the original value if conversion fails
- */
-export declare const normalizeColorToHex: (color: string, element?: HTMLElement | null, resolveCss?: (value: string, el?: HTMLElement | null) => string | null, _depth?: number) => string;
-/**
- * Lighten a hex color by blending it with white.
- * Useful for creating color gradients or lighter variants.
- *
- * @param  hex   - Hex color string (e.g., '#98C8DF')
- * @param  blend - Blend amount with white (0 = original color, 1 = white)
- * @return Lightened hex color string (e.g., '#cce4ef')
- * @throws {Error} if hex string is malformed
- */
-export declare const lightenHexColor: (hex: string, blend: number) => string;
-/**
- * Blend one hex color toward another, per-channel in sRGB.
- *
- * @param  fromHex - Starting hex color, returned when blend is 0
- * @param  toHex   - Target hex color, returned when blend is 1
- * @param  blend   - Amount toward toHex, clamped to [0, 1]
- * @return Blended hex color string
- * @throws {Error} if either hex string is malformed
- */
-export declare const mixHexColors: (fromHex: string, toHex: string, blend: number) => string;
-/**
- * WCAG relative luminance of a hex color (0 = black, 1 = white).
- *
- * @param  hex - Hex color string (e.g., '#98C8DF')
- * @return Relative luminance in the range [0, 1]
- * @throws {Error} if hex string is malformed
- */
-export declare const relativeLuminance: (hex: string) => number;
-/**
- * Whether light text reads better than dark text on the given background, using the W3C
- * luminance threshold (0.179) that maximizes contrast against black vs white.
- *
- * @deprecated Assumes black and white text, so it ignores label role overrides and cannot guarantee AA; charts no longer use it, and it will be removed in a future major version.
- * @param      backgroundHex - Hex background color
- * @return true if light text should be used; false (dark text) for malformed colors
- */
-export declare const prefersLightText: (backgroundHex: string) => boolean;
-/**
- * Resolves a CSS custom property (variable) to its computed value.
- * Handles multiple formats:
- * - Plain variable names: '--my-color'
- * - CSS var() syntax: 'var(--my-color)'
- * - CSS var() with fallback: 'var(--my-color, #ffffff)'
- * - Regular values (returned as-is): '#ffffff', 'red'
- *
- * @param value   - A CSS variable name, var() expression, or regular value
- * @param element - Optional DOM element to resolve the variable from (defaults to document.documentElement)
- * @return The resolved value, fallback value, or null if unresolvable
- */
-export declare const resolveCssVariable: (value: string, element?: HTMLElement | null) => string | null;
 /**
  * Hook to create legend items from leaderboard data
  * @param root0                         - Configuration object
