@@ -2260,8 +2260,10 @@ const Legend = forwardRef(({ chartId, items, shape, ...props }, ref) => {
 	const contextChartId = chartId ?? chartInstanceContext?.chartId;
 	const chartData = useMemo(() => contextChartId && context ? context.getChartData(contextChartId) : void 0, [contextChartId, context]);
 	const contextItems = chartData?.legendItems;
-	const resolvedShape = shape ?? (chartData?.chartType ? defaultShapeByChartType[chartData.chartType] : void 0);
-	const legendItems = items || contextItems;
+	const instance = chartInstanceContext?.chartId === contextChartId ? chartInstanceContext : void 0;
+	const chartType = instance?.chartType ?? chartData?.chartType;
+	const resolvedShape = shape ?? (chartType ? defaultShapeByChartType[chartType] : void 0);
+	const legendItems = items || instance?.legendItems || contextItems;
 	if (!legendItems) return null;
 	return /* @__PURE__ */ jsx(BaseLegend, {
 		ref,
@@ -3425,6 +3427,10 @@ const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, 
 	const [contentRef, contentWidth, contentHeight] = useElementSize();
 	const isRenderProp = typeof children === "function";
 	const isMeasured = contentHeight > 0;
+	const [contentAttached, setContentAttached] = useState(false);
+	useIsomorphicLayoutEffect(() => {
+		if (isRenderProp) setContentAttached(true);
+	}, [isRenderProp]);
 	const visibilityStyle = isRenderProp && !isMeasured ? { visibility: "hidden" } : {};
 	useEffect(() => {
 		if (isRenderProp && onContentHeightChange && isMeasured) onContentHeightChange(contentHeight);
@@ -3434,11 +3440,13 @@ const ChartLayout = ({ legendPosition, legendElement, legendChildren, children, 
 		isMeasured,
 		onContentHeightChange
 	]);
-	const renderedChildren = isRenderProp ? children({
+	let renderedChildren;
+	if (typeof children === "function") renderedChildren = contentAttached ? children({
 		contentWidth,
 		contentHeight,
 		isMeasured
-	}) : children;
+	}) : null;
+	else renderedChildren = children;
 	return /* @__PURE__ */ jsxs(Stack, {
 		ref: rootRef,
 		direction: "column",
@@ -3980,10 +3988,13 @@ var with_responsive_module_default = {
 * A higher-order component that provides responsive dimensions
 * to the wrapped chart component using useParentSize from `@visx/responsive`.
 *
-* @param WrappedComponent - The chart component to be wrapped.
+* @param WrappedComponent         - The chart component to be wrapped.
+* @param options                  - Options for the wrapper.
+* @param options.waitForSize      - Whether to hold the chart back until the box is measured.
+* @param options.derivesOwnHeight - Whether the chart has a height without the box providing one.
 * @return A functional component that renders the wrapped component with responsive dimensions.
 */
-function withResponsive(WrappedComponent) {
+function withResponsive(WrappedComponent, { waitForSize = true, derivesOwnHeight = false } = {}) {
 	return function ResponsiveChart({ resizeDebounceTime = 300, maxWidth = 1200, aspectRatio, size, width, height, ...chartProps }) {
 		const { parentRef, width: parentWidth, height: parentHeight } = useParentSize({
 			debounceTime: resizeDebounceTime,
@@ -4027,12 +4038,26 @@ function withResponsive(WrappedComponent) {
 			containedHeight,
 			parentHeight
 		]);
-		const wrappedComponent = /* @__PURE__ */ jsx(WrappedComponent, {
+		const isMeasured = parentWidth > 0;
+		const hasDimensions = size !== void 0 && size > 0 || boxWidth > 0 && (boxHeight > 0 || isMeasured);
+		const hasBeenSized = useRef(!waitForSize);
+		hasBeenSized.current = hasBeenSized.current || hasDimensions;
+		if (waitForSize && !derivesOwnHeight && isMeasured && boxHeight === 0) warnOnce("with-responsive:no-height", "A chart takes its height from its parent, and this parent has no height of its own, so the chart has none to draw in. Give the parent a height, or pass the chart an aspectRatio or an explicit height.");
+		const [hasNoSizeToWaitFor, setHasNoSizeToWaitFor] = useState(false);
+		useIsomorphicLayoutEffect(() => {
+			if (hasBeenSized.current || hasNoSizeToWaitFor) return;
+			const node = wrapperRef.current;
+			if (node && node.getClientRects().length > 0 && node.clientWidth === 0) {
+				warnOnce("with-responsive:no-width", "A chart takes its width from its parent, and this parent takes its width from its contents, so neither can resolve. Give the parent a width, or pass the chart an explicit width.");
+				setHasNoSizeToWaitFor(true);
+			}
+		});
+		const wrappedComponent = hasBeenSized.current || hasNoSizeToWaitFor ? /* @__PURE__ */ jsx(WrappedComponent, {
 			width: boxWidth,
 			height: boxHeight,
 			size,
 			...chartProps
-		});
+		}) : null;
 		return /* @__PURE__ */ jsx("div", {
 			ref: setWrapperRef,
 			className: clsx(with_responsive_module_default.container, hasAspectRatio && with_responsive_module_default.isContained),
@@ -5120,7 +5145,9 @@ const LineChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 			chartRef: internalChartRef,
 			isSeriesVisible,
 			chartWidth: width,
-			chartHeight: measuredChartHeight || 0
+			chartHeight: measuredChartHeight || 0,
+			legendItems,
+			chartType: "line"
 		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
@@ -5652,7 +5679,9 @@ const AreaChartInternal = forwardRef(({ data, ariaLabel, chartId: providedChartI
 			chartRef: internalChartRef,
 			isSeriesVisible,
 			chartWidth: width,
-			chartHeight: measuredChartHeight || 0
+			chartHeight: measuredChartHeight || 0,
+			legendItems,
+			chartType: "area"
 		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
@@ -7772,7 +7801,9 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			chartId,
 			isSeriesVisible,
 			chartWidth: width,
-			chartHeight: measuredChartHeight || 0
+			chartHeight: measuredChartHeight || 0,
+			legendItems,
+			chartType: "bar"
 		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
@@ -9831,7 +9862,7 @@ const HeatmapChartResponsiveInner = (props) => /* @__PURE__ */ jsx(HeatmapChartW
 	height: void 0
 });
 HeatmapChartResponsiveInner.displayName = "HeatmapChart";
-const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner), { Legend: HeatmapLegend });
+const HeatmapChartResponsive = attachSubComponents(withResponsive(HeatmapChartResponsiveInner, { waitForSize: false }), { Legend: HeatmapLegend });
 // src/charts/heatmap-chart/private/civil-day.ts
 const DAY_MS = 864e5;
 const KEY_OPTIONS = {
@@ -10690,7 +10721,11 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 		interactive: legendInteractive
 	});
 	return /* @__PURE__ */ jsx(ChartInstanceContext.Provider, {
-		value: { chartId },
+		value: {
+			chartId,
+			legendItems,
+			chartType: "leaderboard"
+		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
@@ -10821,7 +10856,7 @@ const LeaderboardChartWithProvider = (props) => {
 };
 LeaderboardChartWithProvider.displayName = "LeaderboardChart";
 const LeaderboardChart = attachSubComponents(LeaderboardChartWithProvider, { Legend });
-const LeaderboardChartResponsive = attachSubComponents(withResponsive(LeaderboardChartWithProvider), { Legend });
+const LeaderboardChartResponsive = attachSubComponents(withResponsive(LeaderboardChartWithProvider, { waitForSize: false }), { Legend });
 // src/charts/private/pie-keyboard-navigation/order-arcs-for-navigation.ts
 /**
 * Orders arcs the way they appear: clockwise from 12 o'clock, which for a semi-circle is left to right.
@@ -11178,7 +11213,11 @@ const PieChartInternal = ({ data, chartId: providedChartId, withTooltips = false
 		interactive: legendInteractive
 	});
 	return /* @__PURE__ */ jsx(ChartInstanceContext.Provider, {
-		value: { chartId },
+		value: {
+			chartId,
+			legendItems,
+			chartType: "pie"
+		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
@@ -11314,7 +11353,7 @@ const PieChart = attachSubComponents(PieChartWithProvider, {
 	SVG: ChartSVG,
 	HTML: ChartHTML
 });
-const PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider), {
+const PieChartResponsive = attachSubComponents(withResponsive(PieChartWithProvider, { derivesOwnHeight: true }), {
 	Legend,
 	SVG: ChartSVG,
 	HTML: ChartHTML
@@ -11457,7 +11496,11 @@ const PieSemiCircleChartInternal = ({ data, chartId: providedChartId, width: pro
 		interactive: legendInteractive
 	});
 	return /* @__PURE__ */ jsx(ChartInstanceContext.Provider, {
-		value: { chartId },
+		value: {
+			chartId,
+			legendItems,
+			chartType: "pie-semi-circle"
+		},
 		children: /* @__PURE__ */ jsx(ChartLayout, {
 			legendPosition,
 			legendElement,
@@ -11566,7 +11609,7 @@ const PieSemiCircleChart = attachSubComponents(PieSemiCircleChartWithProvider, {
 	SVG: ChartSVG,
 	HTML: ChartHTML
 });
-const PieSemiCircleChartResponsive = attachSubComponents(withResponsive(PieSemiCircleChartWithProvider), {
+const PieSemiCircleChartResponsive = attachSubComponents(withResponsive(PieSemiCircleChartWithProvider, { derivesOwnHeight: true }), {
 	Legend,
 	SVG: ChartSVG,
 	HTML: ChartHTML

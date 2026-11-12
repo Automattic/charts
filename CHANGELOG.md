@@ -11,6 +11,10 @@ This is an alpha version! The changes listed here are not final.
 
 ### Changed
 - Update package dependencies.
+- Warn when a chart's parent cannot give it a width, and document the container a responsive chart needs.
+
+### Fixed
+- Wait for a chart's size before drawing it, so charts and their legends no longer jump into place as a page loads.
 
 ## [4.15.2] - 2026-11-09
 ### Fixed
