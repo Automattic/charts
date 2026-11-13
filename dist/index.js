@@ -10423,6 +10423,7 @@ var leaderboard_chart_module_default = {
 	"rowButton": "a8ccharts-GovfoW-rowButton",
 	"rowItem": "a8ccharts-GovfoW-rowItem",
 	"stretch": "a8ccharts-GovfoW-stretch",
+	"value": "a8ccharts-GovfoW-value",
 	"valueContainer": "a8ccharts-GovfoW-valueContainer"
 };
 // src/charts/leaderboard-chart/private/resolve-leaderboard-entries.ts
@@ -10779,7 +10780,10 @@ const LeaderboardChartInternal = ({ data, chartId: providedChartId, width: propW
 						}), /* @__PURE__ */ jsxs("div", {
 							className: clsx(leaderboard_chart_module_default.valueContainer, { [leaderboard_chart_module_default.overlayLabel]: withOverlayLabel }),
 							children: [
-								isPrimaryVisible && /* @__PURE__ */ jsx(Text$1, { children: valueFormatter(entry.currentValue) }),
+								isPrimaryVisible && /* @__PURE__ */ jsx(Text$1, {
+									className: leaderboard_chart_module_default.value,
+									children: valueFormatter(entry.currentValue)
+								}),
 								showComparisonValue && /* @__PURE__ */ jsx(Text$1, {
 									className: clsx(leaderboard_chart_module_default.deltaValue, deltaTrendClass),
 									children: deltaFormatter(entry.delta)

@@ -40,6 +40,7 @@
   --a8c-charts-dimension-leaderboard-label-inset: var(--wpds-dimension-padding-sm, 8px);
   --a8c-charts-dimension-legend-column-gap: var(--wpds-dimension-gap-lg, 16px);
   --a8c-charts-dimension-legend-row-gap: var(--wpds-dimension-gap-sm, 8px);
+  --a8c-charts-font-weight-leaderboard: var(--wpds-typography-font-weight-default, 400);
 }
 
 @media (forced-colors: active) {
@@ -863,6 +864,10 @@
   grid-template-columns: subgrid;
   place-items: center end;
   display: grid;
+}
+
+.a8ccharts-GovfoW-label, .a8ccharts-GovfoW-value, .a8ccharts-GovfoW-deltaValue {
+  font-weight: var(--a8c-charts-font-weight-leaderboard);
 }
 
 .a8ccharts-GovfoW-deltaValue {

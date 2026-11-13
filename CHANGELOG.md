@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.15.3-alpha] - unreleased
+## [4.16.0-alpha] - unreleased
 
 This is an alpha version! The changes listed here are not final.
+
+### Added
+- Leaderboard chart: Add the --a8c-charts-font-weight-leaderboard custom property for the row text weight.
 
 ### Changed
 - Update package dependencies.
@@ -1251,7 +1254,7 @@ This is an alpha version! The changes listed here are not final.
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
-[4.15.3-alpha]: https://github.com/Automattic/charts/compare/v4.15.2...v4.15.3-alpha
+[4.16.0-alpha]: https://github.com/Automattic/charts/compare/v4.15.2...v4.16.0-alpha
 [4.15.2]: https://github.com/Automattic/charts/compare/v4.15.1...v4.15.2
 [4.15.1]: https://github.com/Automattic/charts/compare/v4.15.0...v4.15.1
 [4.15.0]: https://github.com/Automattic/charts/compare/v4.14.0...v4.15.0
