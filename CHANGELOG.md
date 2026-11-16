@@ -9,9 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This is an alpha version! The changes listed here are not final.
 
-### Added
-- Leaderboard chart: Add the --a8c-charts-font-weight-leaderboard custom property for the row text weight.
-
 ### Changed
 - Heatmap Chart: Add `scale="log"` and `scale="buckets"` to color cells by their distance in log space or by their rank, keeping the existing placement by distance as the default, darken the top of the color range, and leave incomplete periods off the color scale with a hatched pattern.
 - Update package dependencies.

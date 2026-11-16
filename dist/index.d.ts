@@ -1876,7 +1876,6 @@ interface LeaderboardChartProps extends Pick<BaseChartProps<LeaderboardEntry>, '
    */
   style?: React.CSSProperties & {
     '--a8c-charts-border-radius-leaderboard-bar'?: string;
-    '--a8c-charts-font-weight-leaderboard'?: string;
   };
   /**
    * Custom labels for legend items
