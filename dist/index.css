@@ -707,6 +707,10 @@
   background: color-mix(in sRGB, var(--a8c-charts-color-heatmap-high, var(--a8c-charts-color-heatmap-primary)) calc(var(--a8c-charts-heatmap-cell-intensity) * 100%), var(--a8c-charts-color-heatmap-low, color-mix(in sRGB, var(--a8c-charts-color-heatmap-primary) 15%, var(--a8c-charts-color-background, #fff))));
 }
 
+.a8ccharts-O3YMOW-heatmap-chart__cell--partial {
+  background: repeating-linear-gradient(45deg, color-mix(in sRGB, var(--a8c-charts-color-heatmap-low, color-mix(in sRGB, var(--a8c-charts-color-heatmap-primary) 15%, var(--a8c-charts-color-background, #fff))) 50%, var(--a8c-charts-color-track)) 0 var(--wpds-dimension-gap-xs, 4px), var(--a8c-charts-color-track) var(--wpds-dimension-gap-xs, 4px) calc(2 * var(--wpds-dimension-gap-xs, 4px))), var(--a8c-charts-color-track);
+}
+
 .a8ccharts-O3YMOW-heatmap-chart__cell--selected {
   outline: var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)) solid var(--wpds-color-stroke-focus, var(--wp-admin-theme-color, #3858e9));
   outline-offset: calc(-1 * var(--wpds-border-width-focus, var(--wp-admin-border-width-focus, 2px)));

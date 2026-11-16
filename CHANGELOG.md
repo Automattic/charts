@@ -13,6 +13,7 @@ This is an alpha version! The changes listed here are not final.
 - Leaderboard chart: Add the --a8c-charts-font-weight-leaderboard custom property for the row text weight.
 
 ### Changed
+- Heatmap Chart: Add `scale="log"` and `scale="buckets"` to color cells by their distance in log space or by their rank, keeping the existing placement by distance as the default, darken the top of the color range, and leave incomplete periods off the color scale with a hatched pattern.
 - Update package dependencies.
 - Warn when a chart's parent cannot give it a width, and document the container a responsive chart needs.
 

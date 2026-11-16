@@ -8983,6 +8983,7 @@ var heatmap_chart_module_default = {
 	"heatmap-chart__cell": "a8ccharts-O3YMOW-heatmap-chart__cell",
 	"heatmap-chart__cell--filled": "a8ccharts-O3YMOW-heatmap-chart__cell--filled",
 	"heatmap-chart__cell--hidden": "a8ccharts-O3YMOW-heatmap-chart__cell--hidden",
+	"heatmap-chart__cell--partial": "a8ccharts-O3YMOW-heatmap-chart__cell--partial",
 	"heatmap-chart__cell--placeholder": "a8ccharts-O3YMOW-heatmap-chart__cell--placeholder",
 	"heatmap-chart__cell--selected": "a8ccharts-O3YMOW-heatmap-chart__cell--selected",
 	"heatmap-chart__cell--summary": "a8ccharts-O3YMOW-heatmap-chart__cell--summary",
@@ -9011,31 +9012,37 @@ var heatmap_chart_module_default = {
 // src/charts/heatmap-chart/private/use-heatmap-colors.ts
 const isPresent = (value) => value !== null && value !== void 0 && !isNaN(value);
 /**
-* Get the min and max values from heatmap data, ignoring null/NaN and the zeros
-* `isEmptyValue` paints as empty. Summary columns stay out: a roll-up on the
-* scale would flatten every real cell.
+* Every value a cell reports, ascending. Roll-up columns stay out, since a
+* summary on the scale would flatten every real cell, and so do cells that
+* report nothing about the series.
+*
 * @param data - The heatmap columns
-* @return Tuple of [min, max] values
+* @return The reported values, ascending
 */
-const getValueExtent = (data) => {
-	let min = Infinity;
-	let max = -Infinity;
-	let hasZero = false;
+const scaleValues = (data) => {
+	const values = [];
 	for (const column of data) {
 		if (column.summary) continue;
 		for (const cell of column.data) {
-			if (!isPresent(cell.value)) continue;
-			if (cell.value === 0) {
-				hasZero = true;
-				continue;
-			}
-			if (cell.value < min) min = cell.value;
-			if (cell.value > max) max = cell.value;
+			if (cell.hidden || cell.placeholder || cell.partial || !isPresent(cell.value)) continue;
+			values.push(cell.value);
 		}
 	}
-	if (hasZero && min < 0) max = Math.max(max, 0);
-	if (min === Infinity) return [0, 0];
-	return [min, max];
+	return values.sort((a, b) => a - b);
+};
+/**
+* Get the min and max of an ascending value list, ignoring the zeros
+* `isEmptyValue` paints as empty.
+*
+* @param values - The values from `scaleValues`
+* @return Tuple of [min, max] values
+*/
+const getExtentOf = (values) => {
+	const nonZero = values.filter((value) => value !== 0);
+	if (!nonZero.length) return [0, 0];
+	const min = nonZero[0];
+	const max = nonZero[nonZero.length - 1];
+	return [min, min < 0 && nonZero.length < values.length ? Math.max(max, 0) : max];
 };
 /**
 * Whether a value paints as an empty cell: a zero in data with no negatives
@@ -9047,23 +9054,96 @@ const getValueExtent = (data) => {
 */
 const isEmptyValue = (value, extent) => value === 0 && extent[0] >= 0;
 /**
-* Normalize a value to 0–1 within the extent. A flat extent (min === max)
-* maps to 1, since every cell is equally the "highest".
+* Place a value by its distance from the extent's ends rather than its rank.
+* A flat extent maps to 1, since every cell is equally the highest.
 *
-* @param value  - The value to normalize
-* @param extent - Tuple of [min, max] values for the normalization range
-* @return Normalized value between 0 and 1
+* @param value  - The value to place
+* @param extent - Tuple of [min, max] from `getExtentOf`
+* @return Position between 0 and 1
 */
 const getNormalizedValue = (value, extent) => {
 	const [min, max] = extent;
 	if (min === max) return 1;
 	return Math.min(1, Math.max(0, (value - min) / (max - min)));
 };
+/**
+* Place a value by its distance in log space and snap it to `steps`, so a
+* tenfold jump moves the color by the same amount wherever it falls in the
+* series and a cell always matches a legend swatch. Undefined at or below zero,
+* so the caller checks `canPlaceOnLogScale` first.
+*
+* @param value  - The value to place
+* @param extent - Tuple of [min, max] from `getExtentOf`
+* @param steps  - How many color steps the cells share with the legend
+* @return The swatch position between 0 and 1
+*/
+const getLogValue = (value, extent, steps) => {
+	const [min, max] = extent;
+	if (min === max) return 1;
+	const position = (Math.log(value) - Math.log(min)) / (Math.log(max) - Math.log(min));
+	return Math.round(Math.min(1, Math.max(0, position)) * (steps - 1)) / (steps - 1);
+};
+/**
+* Whether a series can take the log scale. A negative has no logarithm, and
+* `getExtentOf` strips the zeros that paint as empty cells, so a floor at or
+* below zero means the series holds a negative. A flat extent places at 1 on
+* either scale, which covers a series with nothing on the scale at all.
+*
+* @param extent - The extent from `getExtentOf`
+* @return True when the log scale can place every value the extent spans
+*/
+const canPlaceOnLogScale = (extent) => extent[0] === extent[1] || extent[0] > 0;
+// src/charts/heatmap-chart/private/heatmap-buckets.ts
+/**
+* Split a series into `steps` color buckets of roughly equal population, so a
+* cell's shade reports its rank among the other cells rather than its distance
+* from the largest one. Ties can leave fewer buckets than asked for.
+*
+* @param values - The series values, ascending, from `scaleValues`
+* @param extent - The extent from `getExtentOf`
+* @param steps  - How many color steps to aim for
+* @return The thresholds and the step count `getBucketedValue` reads
+*/
+const getValueBuckets = (values, extent, steps = 5) => {
+	const eligible = values.filter((value) => !isEmptyValue(value, extent));
+	if (!eligible.length) return {
+		thresholds: [],
+		steps
+	};
+	const min = eligible[0];
+	const thresholds = [];
+	const last = () => thresholds[thresholds.length - 1] ?? min;
+	for (let step = 1; step < steps; step++) {
+		const index = Math.min(eligible.length - 1, Math.floor(eligible.length * step / steps));
+		const cut = eligible[index] > last() ? eligible[index] : eligible.find((value) => value > last());
+		if (cut === void 0) break;
+		thresholds.push(cut);
+	}
+	return {
+		thresholds,
+		steps
+	};
+};
+/**
+* Place a value on its bucket, as the 0–1 position of a legend swatch, so a
+* cell always matches one. Fewer than two distinct eligible values paints at 1,
+* since every cell is then equally the highest.
+*
+* @param value   - The cell value
+* @param buckets - The buckets from `getValueBuckets`
+* @return The swatch position between 0 and 1
+*/
+const getBucketedValue = (value, buckets) => {
+	const { thresholds, steps } = buckets;
+	if (!thresholds.length) return 1;
+	const index = thresholds.filter((threshold) => value >= threshold).length;
+	return Math.round(index * (steps - 1) / thresholds.length) / (steps - 1);
+};
 const STEPS = 200;
 const ramp = (from, to) => Array.from({ length: 201 }, (_, step) => mixHexColors(from, to, step / STEPS));
 /**
 * The two ends of the heatmap fill scale: toward 2.5:1 against the background and the empty cell at
-* the low end, never under 2:1 against the background or the high end, and toward 6:1 at the high end.
+* the low end, never under 2:1 against the background or the high end, and toward 9:1 at the high end.
 *
 * @param primary    - The resolved primary color, as six-digit hex.
 * @param background - The resolved chart background, as six-digit hex.
@@ -9074,10 +9154,10 @@ const getHeatmapScale = (primary, background, emptyCell) => {
 	const backgroundLuminance = relativeLuminance(background);
 	const ownSide = relativeLuminance(primary) > backgroundLuminance ? "#ffffff" : "#000000";
 	const otherSide = ownSide === "#ffffff" ? "#000000" : "#ffffff";
-	const extreme = contrastRatio(ownSide, background) >= 6 || contrastRatio(ownSide, background) >= contrastRatio(otherSide, background) ? ownSide : otherSide;
+	const extreme = contrastRatio(ownSide, background) >= 9 || contrastRatio(ownSide, background) >= contrastRatio(otherSide, background) ? ownSide : otherSide;
 	const onExtremeSide = (color) => extreme === "#ffffff" ? relativeLuminance(color) > backgroundLuminance : relativeLuminance(color) < backgroundLuminance;
 	const deepening = ramp(primary, extreme);
-	const high = deepening.find((color) => contrastRatio(color, background) >= 6) ?? extreme;
+	const high = deepening.find((color) => contrastRatio(color, background) >= 9) ?? extreme;
 	const path = [...ramp(background, primary), ...deepening];
 	const spread = path.slice(0, path.indexOf(high) + 1).filter((color) => onExtremeSide(color) && contrastRatio(color, background) >= 2 && contrastRatio(color, high) >= 2);
 	const surroundings = emptyCell ? [background, emptyCell] : [background];
@@ -9091,11 +9171,14 @@ const getHeatmapScale = (primary, background, emptyCell) => {
 /** Shared by the chart and legend without importing back from `heatmap-chart.tsx`. */
 const HeatmapContext = createContext(null);
 // src/charts/heatmap-chart/private/heatmap-legend.tsx
-const HeatmapLegend = ({ steps = 5, variant = "swatches", lessLabel, moreLabel }) => {
+const HeatmapLegend = ({ steps: requestedSteps, variant = "swatches", lessLabel, moreLabel }) => {
 	const context = useContext(HeatmapContext);
 	const { legend } = useGlobalChartsTheme();
 	if (!context) return null;
 	const { extent, fillVars } = context;
+	const ownStepsIgnored = context.scale !== "linear" && requestedSteps !== void 0 && requestedSteps !== 5;
+	if (ownStepsIgnored) warnOnce("heatmap:legendSteps", `steps is fixed under the ${context.scale} scale, where a cell paints on exactly 5 steps, so the legend keeps them.`);
+	const steps = ownStepsIgnored ? 5 : requestedSteps ?? 5;
 	const labelStyle = legend.labelStyles;
 	const showsEmptyCell = isEmptyValue(0, extent);
 	return /* @__PURE__ */ jsxs(Stack, {
@@ -9436,7 +9519,8 @@ const cellName = (info) => info.cellLabel || [
 	info.columnLabel,
 	info.rowLabel
 ].filter(Boolean).join(" ");
-const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, fitCells = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
+const withIncompleteNote = (text, partial) => partial ? sprintf(__("%s (incomplete)", "jetpack-charts"), text) : text;
+const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, height = 0, className, compact = false, fitCells = false, showValues, maxCellWidth, maxCellHeight, minCellWidth, minCellHeight, rowLabels = NO_ROW_LABELS, columnGroups, keyboardNavigation = "grid", ariaLabel, primaryColor, scale: valueScale = "linear", gap = "md", withTooltips = false, renderTooltip, tooltipStyle, children }) => {
 	const chartId = useChartId(providedChartId);
 	const tooltipBoxStyle = tooltipStyle ? {
 		...TOOLTIP_BOX_STYLE$1,
@@ -9484,11 +9568,32 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		primaryColorHex,
 		chartBackgroundHex
 	]);
-	const extent = useMemo(() => getValueExtent(data), [data]);
+	const values = useMemo(() => scaleValues(data), [data]);
+	const extent = useMemo(() => getExtentOf(values), [values]);
+	const buckets = useMemo(() => getValueBuckets(values, extent, 5), [values, extent]);
+	const logUnusable = valueScale === "log" && !canPlaceOnLogScale(extent);
+	if (logUnusable) warnOnce("heatmap:logScale", "The log scale needs every value above zero, so the cells keep their placement by distance.");
+	const effectiveScale = logUnusable ? "linear" : valueScale;
+	const placeOnScale = useCallback((value) => {
+		if (effectiveScale === "buckets") return getBucketedValue(value, buckets);
+		if (effectiveScale === "log") return getLogValue(value, extent, 5);
+		return getNormalizedValue(value, extent);
+	}, [
+		effectiveScale,
+		extent,
+		buckets
+	]);
 	const heatmapContext = useMemo(() => ({
 		extent,
+		buckets,
+		scale: effectiveScale,
 		fillVars
-	}), [extent, fillVars]);
+	}), [
+		extent,
+		buckets,
+		effectiveScale,
+		fillVars
+	]);
 	const columns = data.length;
 	const rows = Math.max(0, ...data.map((column) => column.data.length));
 	const groupLayout = useMemo(() => resolveColumnGroups(columnGroups, columns, 2), [columnGroups, columns]);
@@ -9546,6 +9651,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 			columnLabel: data[columnIndex]?.label,
 			groupLabel: group === void 0 ? void 0 : groupLayout.groups[group]?.label,
 			cellLabel: cell?.label,
+			partial: cell?.partial === true && !data[columnIndex]?.summary,
 			row: rowIndex,
 			column: columnIndex
 		};
@@ -9662,7 +9768,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 		showTooltip,
 		getTooltipOrigin
 	]);
-	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: cellName(info) }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
+	const defaultRenderTooltip = useCallback((info) => /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("strong", { children: withIncompleteNote(cellName(info), info.partial) }), /* @__PURE__ */ jsx("div", { children: info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value) })] }), []);
 	if (!columns || !rows) return /* @__PURE__ */ jsx(Center, {
 		className: clsx("heatmap-chart", heatmap_chart_module_default["heatmap-chart"], className),
 		style: {
@@ -9789,10 +9895,13 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 									}, `cell-${columnIndex}-${rowIndex}`);
 									const value = cell?.value ?? null;
 									const present = isPresent(value);
-									const filled = present && !column.summary && !isEmptyValue(value, extent);
-									const normalized = filled ? getNormalizedValue(value, extent) : 0;
 									const info = buildTooltipData(columnIndex, rowIndex);
-									const accessibleLabel = `${cellName(info)}: ${info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value)}`;
+									const partial = info.partial === true;
+									if (column.summary) {} else if (partial) {}
+									const filled = present && !partial && !column.summary && !isEmptyValue(value, extent);
+									const normalized = filled ? placeOnScale(value) : 0;
+									const valueLabel = info.value === null ? __("No data", "jetpack-charts") : formatNumber(info.value);
+									const accessibleLabel = withIncompleteNote(`${cellName(info)}: ${valueLabel}`, partial);
 									return /* @__PURE__ */ jsx("div", {
 										id: `${chartId}-cell-${columnIndex}-${rowIndex}`,
 										role: "gridcell",
@@ -9804,6 +9913,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 										className: clsx(heatmap_chart_module_default["heatmap-chart__cell"], {
 											[heatmap_chart_module_default["heatmap-chart__cell--filled"]]: filled,
 											[heatmap_chart_module_default["heatmap-chart__cell--summary"]]: column.summary,
+											[heatmap_chart_module_default["heatmap-chart__cell--partial"]]: partial,
 											...summaryGaps(columnIndex),
 											[heatmap_chart_module_default["heatmap-chart__cell--selected"]]: selected?.column === columnIndex && selected?.row === rowIndex
 										}),
@@ -9814,7 +9924,7 @@ const HeatmapChartInternal = ({ data, chartId: providedChartId, width = 0, heigh
 										onMouseMove: handleCellMouseMove,
 										onMouseLeave: handleCellMouseLeave,
 										children: (drawValues || column.summary) && present && /* @__PURE__ */ jsx("span", {
-											className: clsx(heatmap_chart_module_default["heatmap-chart__cell-value"], filled && CELL_VALUE_MODIFIER[cellTextColor(normalized)]),
+											className: clsx(heatmap_chart_module_default["heatmap-chart__cell-value"], (filled || partial) && CELL_VALUE_MODIFIER[cellTextColor(normalized)]),
 											children: formatNumberCompact(value)
 										})
 									}, `cell-${columnIndex}-${rowIndex}`);

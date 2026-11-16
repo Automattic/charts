@@ -1612,6 +1612,13 @@ type HeatmapCell = {
    * which were never measured.
    */
   placeholder?: boolean;
+  /**
+   * The cell covers a period the data does not fill — a launch month, or a
+   * month still running. It is left out of the color scale and painted as a
+   * hatch, so it is not read as a quiet period, while keeping its value,
+   * tooltip, accessible name and place in keyboard navigation.
+   */
+  partial?: boolean;
 };
 /** A heatmap column (rendered left→right); its cells render top→bottom. */
 type HeatmapColumn = {
@@ -1638,6 +1645,8 @@ type HeatmapTooltipData = {
   /** Label of the column group the cell falls in, if any. */
   groupLabel?: string;
   cellLabel?: string;
+  /** The cell's period is unfinished; the default tooltip says so after the name. */
+  partial?: boolean;
   row: number;
   column: number;
 };
@@ -1686,11 +1695,19 @@ interface HeatmapChartProps extends Omit<BaseChartProps<HeatmapColumn[]>, 'showL
   /** Floor a cell's height (px) in non-compact mode; see `minCellWidth`. */
   minCellHeight?: number;
   /**
-   * Color the cell scale is built from, deepened at the highest value toward 6:1
+   * Color the cell scale is built from, deepened at the highest value toward 9:1
    * against the background. Defaults to the first series palette slot,
    * `--a8c-charts-color-series-1`.
    */
   primaryColor?: string;
+  /**
+   * How a value picks its color, from the docs' comparison of the three.
+   * `linear`: by distance between the lowest and highest value. `log`: by
+   * distance in log space, on five steps; falls back to `linear` with a
+   * warning when a value is at or below zero. `buckets`: by rank, about a
+   * fifth of the cells per step. Default `linear`.
+   */
+  scale?: 'buckets' | 'linear' | 'log';
   renderTooltip?: (data: HeatmapTooltipData) => ReactNode;
   /** @deprecated Every tooltip draws on the package tooltip surface; this prop has no effect. */
   tooltipVariant?: 'light' | 'dark';
@@ -1747,7 +1764,13 @@ type MonthCalendarHeatmapResult = {
   columnGroups: HeatmapColumnGroup[];
 };
 interface HeatmapLegendProps {
-  /** Number of color swatches in the scale, not counting the empty-cell swatch. Default 5. */
+  /**
+   * Number of color swatches in the scale, not counting the empty-cell swatch.
+   * Default 5. Under the `buckets` and `log` scales a cell paints on exactly
+   * those five steps, so the legend keeps them and a different count here is
+   * ignored with a warning. The `linear` scale is continuous, so there the
+   * count is free.
+   */
   steps?: number;
   /**
    * `swatches` spaces the steps out as cell-sized squares; `bar` joins them
