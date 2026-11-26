@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.17.0-alpha] - unreleased
+
+This is an alpha version! The changes listed here are not final.
+
+### Added
+- Bar chart: Sum comparison series into one bar beside each stack in the stacked layout, keyed `COMPARISON_TOTAL_KEY` and colored by the new `--a8c-charts-color-comparison` role.
+
 ## [4.16.2] - 2026-11-23
 ### Changed
 - Remove five dependencies the package does not use. [#55224]
@@ -1257,6 +1264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed lints following ESLint rule changes for TS [#40584]
 - Fixing a bug in Chart storybook data. [#40640]
 
+[4.17.0-alpha]: https://github.com/Automattic/charts/compare/v4.16.2...v4.17.0-alpha
 [4.16.2]: https://github.com/Automattic/charts/compare/v4.16.1...v4.16.2
 [4.16.1]: https://github.com/Automattic/charts/compare/v4.16.0...v4.16.1
 [4.16.0]: https://github.com/Automattic/charts/compare/v4.15.2...v4.16.0

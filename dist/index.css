@@ -14,6 +14,7 @@
   --a8c-charts-color-trend-up: var(--wpds-color-foreground-content-success-weak, #008030);
   --a8c-charts-color-trend-down: var(--wpds-color-foreground-content-error-weak, #cc1818);
   --a8c-charts-color-trend-neutral: var(--wpds-color-foreground-content-neutral-weak, #707070);
+  --a8c-charts-color-comparison: var(--wpds-color-foreground-content-neutral-weak, #707070);
   --a8c-charts-color-background: var(--wpds-color-background-surface-neutral-strong, #fff);
   --a8c-charts-color-surface: var(--wpds-color-background-surface-neutral-strong, #fff);
   --a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-neutral-weak, #f4f4f4);
@@ -365,6 +366,10 @@
 
 .a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="bottom"] {
   clip-path: inset(0 round 0 0 var(--a8c-charts-border-radius-bar-chart) var(--a8c-charts-border-radius-bar-chart));
+}
+
+.a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="both"] {
+  clip-path: inset(0 round var(--a8c-charts-border-radius-bar-chart));
 }
 
 .a8ccharts-97yN9W-bar-chart--stacked .visx-bar-group rect[data-stack-end="left"] {

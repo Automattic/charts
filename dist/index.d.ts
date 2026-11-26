@@ -253,7 +253,7 @@ type BarStyles = {
   opacity?: number;
 };
 /**
- * How a bar chart places its series in a category. `grouped` puts each primary series in a slot of its own; `overlap` puts every primary in one slot and every comparison in a second, and overlaps the `group`s within each slot; `stacked` stacks every primary in one bar, the first series at the bottom.
+ * How a bar chart places its series in a category. `grouped` puts each primary series in a slot of its own; `overlap` puts every primary in one slot and every comparison in a second, and overlaps the `group`s within each slot; `stacked` stacks every primary in one bar, the first series at the bottom, and sums every comparison into one bar in a second slot.
  */
 type BarChartLayout = 'grouped' | 'overlap' | 'stacked';
 type MultipleDataPointsDate = {
@@ -718,7 +718,8 @@ type BaseChartProps<T = DataPoint | DataPointDate | LeaderboardEntry> = {
   /**
    * Callback for Enter or Space on the point keyboard navigation has selected:
    * the keyboard counterpart of a click. `index` is the point's position in its
-   * series and `key` the series label.
+   * series and `key` the series label. A stacked bar chart's comparison total reports
+   * `COMPARISON_TOTAL_KEY` and its summed point.
    */
   onDatumActivate?: (params: {
     datum: DataPoint | DataPointDate;
@@ -1332,6 +1333,8 @@ type GetBarColors = (series: SeriesData[], options?: {
  * @return A function from series and a layout to each series' bar color, by index.
  */
 export declare function useBarColors(): GetBarColors;
+/** The `key` a stacked layout draws its comparison total under, and hands to its callbacks. */
+export declare const COMPARISON_TOTAL_KEY = "a8c-charts-comparison-total";
 type BarLegendOptions = Omit<ChartLegendOptions, 'seriesColors'> & {
   /** The layout the bars are drawn in. Unset, the items are the chart legend's own. */
   layout?: BarChartLayout;
@@ -2375,6 +2378,8 @@ interface GlobalChartsContextValue {
   getElementStyles: (params: GetElementStylesParams) => ElementStyles;
   /** The chart background as an opaque hex, for colors that must keep contrast against it. Optional so a hand-built context value still type-checks. */
   backgroundColor?: string;
+  /** The `--a8c-charts-color-comparison` role as an opaque hex, which a stacked bar chart tones to 3:1 for its comparison total. */
+  comparisonColor?: string;
   toggleSeriesVisibility: (chartId: string, seriesLabel: string) => void;
   setSeriesVisibility: (chartId: string, seriesLabel: string, visible: boolean) => void;
   setChartHiddenSeries: (chartId: string, seriesLabels: readonly string[]) => void;

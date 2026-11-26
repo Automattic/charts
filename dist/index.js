@@ -811,6 +811,7 @@ const SERIES_PALETTE_POINTERS = Array.from({ length: 5 }, (_, index) => index ==
 const BACKGROUND_FALLBACK = "#ffffff";
 const LABEL_FALLBACK = "#1e1e1e";
 const LABEL_INVERSE_FALLBACK = "#f0f0f0";
+const COMPARISON_FALLBACK = "#707070";
 const CATALOG_POINTERS = {
 	background: `var(--a8c-charts-color-background, ${BACKGROUND_FALLBACK})`,
 	label: `var(--a8c-charts-color-label, ${LABEL_FALLBACK})`,
@@ -823,6 +824,7 @@ const CATALOG_POINTERS = {
 	axisY: "var(--a8c-charts-color-axis-y, none)",
 	tickY: "var(--a8c-charts-color-tick-y, none)",
 	annotation: "var(--a8c-charts-color-annotation, #1e1e1e)",
+	comparison: `var(--a8c-charts-color-comparison, ${COMPARISON_FALLBACK})`,
 	surface: "var(--a8c-charts-color-surface, #fff)",
 	surfaceSecondary: "var(--a8c-charts-color-surface-secondary, #f4f4f4)",
 	track: "var(--a8c-charts-color-track, #f0f0f0)",
@@ -1328,6 +1330,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 	const [colorCache, setColorCache] = useState(() => ({
 		colors: [],
 		background: BACKGROUND_FALLBACK,
+		comparison: COMPARISON_FALLBACK,
 		labelColors: PLACEHOLDER_LABEL_COLORS,
 		colorAt: createPaletteGenerator([SERIES_SLOT_1_FALLBACK], BACKGROUND_FALLBACK, PLACEHOLDER_LABEL_COLORS)
 	}));
@@ -1345,6 +1348,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		setColorCache({
 			colors: resolvedColors,
 			background: backgroundHex,
+			comparison: resolveOpaqueHex(CATALOG_POINTERS.comparison, resolveAtWrapper) ?? "#707070",
 			labelColors,
 			colorAt: createPaletteGenerator(resolvedColors, backgroundHex, labelColors)
 		});
@@ -1453,6 +1457,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		formatting,
 		getElementStyles,
 		backgroundColor: colorCache.background,
+		comparisonColor: colorCache.comparison,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
@@ -1470,6 +1475,7 @@ const GlobalChartsProvider = ({ children, theme, locale, timeZone }) => {
 		formatting,
 		getElementStyles,
 		colorCache.background,
+		colorCache.comparison,
 		toggleSeriesVisibility,
 		setSeriesVisibility,
 		setChartHiddenSeries,
@@ -2275,6 +2281,15 @@ const Legend = forwardRef(({ chartId, items, shape, ...props }, ref) => {
 });
 // src/components/legend/hooks/use-chart-legend-items.ts
 /**
+* Names the comparison: the `comparisonItem` string, or "Comparison period".
+*
+* @param comparisonItem - The legend's `comparisonItem` option.
+* @return The label.
+*/
+function getComparisonItemLabel(comparisonItem) {
+	return typeof comparisonItem === "string" && comparisonItem ? comparisonItem : __("Comparison period", "jetpack-charts");
+}
+/**
 * Wraps `getElementStyles` so a swatch takes the color given for its series.
 * @param getElementStyles - Function to get element styles
 * @param seriesColors     - Each series' swatch color, by index
@@ -2505,7 +2520,7 @@ function useChartLegendItems(data, options = {}, legendShape) {
 			const getElementStyles = seriesColors ? withSeriesColors(getSeriesStyles, seriesColors) : getSeriesStyles;
 			const items = processSeriesData(seriesData, getElementStyles, showValues, withGlyph, glyphSize, collapseGroups, renderGlyph, legendShape);
 			if (comparisonSeriesItems) return [...items, ...buildPerSeriesComparisonItems(seriesData, items, comparisonSeriesItems, getElementStyles, legendShape)];
-			const comparison = comparisonItem ? buildComparisonLegendItem(seriesData, items, typeof comparisonItem === "string" ? comparisonItem : __("Comparison period", "jetpack-charts"), getElementStyles, legendShape) : null;
+			const comparison = comparisonItem ? buildComparisonLegendItem(seriesData, items, getComparisonItemLabel(comparisonItem), getElementStyles, legendShape) : null;
 			return comparison ? [...items, comparison] : items;
 		}
 		return processPointData(data, getSeriesStyles, showValues, legendValueDisplay, withGlyph, glyphSize, renderGlyph, legendShape);
@@ -5889,52 +5904,92 @@ const getValueScaleDomain = (data, includeZero, isSeriesRendered, tickDecimals) 
 };
 // src/charts/bar-chart/private/stack-layout.ts
 /**
-* The series a layout draws: a stacked layout leaves comparison series out for now.
+* Sums the series at each category, positives and negatives apart, calling `onSegment` with where each reading runs.
 *
-* @param series - The chart's series.
-* @param layout - The layout the bars are drawn in.
-* @return The drawn series.
+* @param series    - The series to stack, bottom first.
+* @param onSegment - Receives each reading's series, category and segment.
+* @return The extent at each category.
 */
-function getDrawnSeries(series, layout) {
-	return layout === "stacked" ? series.filter((item) => item.options?.type !== "comparison") : series;
-}
-/**
-* Stacks the series in order at each category: positives upward and negatives downward from zero.
-*
-* @param series - The series to stack, bottom first.
-* @return The stack layout.
-*/
-function getStackLayout(series) {
-	const segments = /* @__PURE__ */ new Map();
+function stackSeries(series, onSegment) {
 	const extents = /* @__PURE__ */ new Map();
 	for (const { label, data } of series) {
-		const byCategory = /* @__PURE__ */ new Map();
-		segments.set(label, byCategory);
+		const seen = /* @__PURE__ */ new Set();
 		for (const point of data) {
 			const value = getBarValue(point);
-			if (!Number.isFinite(value)) continue;
 			const key = categoryKey(point);
-			if (byCategory.has(key)) continue;
+			if (!Number.isFinite(value) || seen.has(key)) continue;
+			seen.add(key);
 			const extent = extents.get(key) ?? [0, 0];
 			const side = value < 0 ? 0 : 1;
 			const start = extent[side];
 			extent[side] = start + value;
 			extents.set(key, extent);
-			byCategory.set(key, {
+			onSegment?.(label, key, {
 				start,
 				end: start + value
 			});
 		}
 	}
+	return extents;
+}
+/**
+* Stacks the series in order at each category, positives up and negatives down from zero, and sums comparisons into one bar.
+*
+* @param series     - The series to stack, bottom first.
+* @param comparison - The comparison series to sum, and the key their bar is drawn under.
+* @return The stack layout.
+*/
+function getStackLayout(series, comparison) {
+	const segments = new Map(series.map(({ label }) => [label, /* @__PURE__ */ new Map()]));
+	const extents = stackSeries(series, (label, key, segment) => segments.get(label)?.set(key, segment));
+	const comparisonExtents = comparison ? stackSeries(comparison.series) : /* @__PURE__ */ new Map();
+	if (comparison) segments.set(comparison.key, new Map([...comparisonExtents].map(([key, [low, high]]) => [key, high > 0 ? {
+		start: low,
+		end: high
+	} : {
+		start: 0,
+		end: low
+	}])));
 	let extent = null;
-	for (const [low, high] of extents.values()) extent = extent ? [Math.min(extent[0], low), Math.max(extent[1], high)] : [low, high];
+	for (const [low, high] of [...extents.values(), ...comparisonExtents.values()]) extent = extent ? [Math.min(extent[0], low), Math.max(extent[1], high)] : [low, high];
 	return {
 		segmentOf: (key, datum) => segments.get(key)?.get(categoryKey(datum)),
-		extentAt: (category) => {
-			const [low, high] = extents.get(categoryKey(category)) ?? [0, 0];
+		extentAt: (category, key) => {
+			const [low, high] = (key !== void 0 && key === comparison?.key ? comparisonExtents : extents).get(categoryKey(category)) ?? [0, 0];
 			return [low, high];
 		},
 		extent
+	};
+}
+/**
+* The series of a comparison total: at each category the comparisons have a reading, the net of their readings.
+*
+* @param comparisons - The comparison series to sum.
+* @param label       - The total's key.
+* @return The total, a comparison series named `label`.
+*/
+function getComparisonTotalSeries(comparisons, label) {
+	const totals = /* @__PURE__ */ new Map();
+	for (const { data } of comparisons) {
+		const seen = /* @__PURE__ */ new Set();
+		for (const point of data) {
+			const key = categoryKey(point);
+			const value = getBarValue(point);
+			if (seen.has(key)) continue;
+			seen.add(key);
+			const total = totals.get(key);
+			if (!total) totals.set(key, {
+				label: point.label,
+				date: point.date,
+				value: Number.isFinite(value) ? value : null
+			});
+			else if (Number.isFinite(value)) total.value = (total.value ?? 0) + value;
+		}
+	}
+	return {
+		label,
+		data: [...totals.values()],
+		options: { type: "comparison" }
 	};
 }
 /**
@@ -6548,19 +6603,21 @@ const SelectedBarRing = ({ chartId, selected, slotKeys, groupPadding, horizontal
 };
 // src/charts/bar-chart/private/stacked-bar-series.tsx
 /**
-* The side a segment rounds when it ends its drawn stack: the far end of the positives or of the negatives.
+* The side a segment rounds when it ends its drawn stack, or `both` for a comparison total that spans zero.
 *
 * @param stack      - The stack layout.
+* @param key        - The series the segment is drawn for.
 * @param segment    - The segment.
 * @param category   - A datum at the segment's category.
 * @param horizontal - Whether the bars run horizontally.
 * @param clamp      - Holds a value inside the value domain, where the bars are cut off.
 * @return The side to round, or undefined for a segment inside its stack or drawn with no length.
 */
-function getStackEnd(stack, segment, category, horizontal, clamp) {
+function getStackEnd(stack, key, segment, category, horizontal, clamp) {
 	const [start, end] = [segment.start, segment.end].map(clamp);
 	if (start === end) return;
-	const extent = stack.extentAt(category).map(clamp);
+	const extent = stack.extentAt(category, key).map(clamp);
+	if (segment.start < 0 && segment.end > 0 && start === extent[0] && end === extent[1]) return "both";
 	if (segment.end > 0 && end === extent[1]) return horizontal ? "right" : "top";
 	if (segment.end < 0 && end === extent[0]) return horizontal ? "left" : "bottom";
 }
@@ -6579,9 +6636,13 @@ const StackedBarSeries = ({ barClassName, slotKeys, slotKey, groupPadding, stack
 	const domainMax = Math.max(Number(domainStart), Number(domainEnd));
 	const clamp = useCallback((value) => Math.min(domainMax, Math.max(domainMin, value)), [domainMin, domainMax]);
 	const stackEnd = useCallback((datum) => {
-		const [low, high] = stack.extentAt(datum);
+		const [low, high] = stack.extentAt(datum, dataKey);
 		return clamp(high > 0 ? high : low);
-	}, [stack, clamp]);
+	}, [
+		stack,
+		dataKey,
+		clamp
+	]);
 	const renderGlyph = useCallback(({ datum, color }) => {
 		const segment = stack.segmentOf(dataKey, datum);
 		if (!segment || !bandScale?.bandwidth || !valueScale) return null;
@@ -6595,7 +6656,7 @@ const StackedBarSeries = ({ barClassName, slotKeys, slotKey, groupPadding, stack
 		});
 		return /* @__PURE__ */ jsx("rect", {
 			...rect,
-			"data-stack-end": getStackEnd(stack, segment, datum, !!horizontal, clamp),
+			"data-stack-end": getStackEnd(stack, dataKey, segment, datum, !!horizontal, clamp),
 			className: clsx("visx-bar", barClassName?.(datum)),
 			fill: color
 		});
@@ -6744,10 +6805,14 @@ function SlotTooltipMembers({ members }) {
 	}, [members]);
 	return null;
 }
+// src/charts/bar-chart/constants.ts
+/** The `key` a stacked layout draws its comparison total under, and hands to its callbacks. */
+const COMPARISON_TOTAL_KEY = "a8c-charts-comparison-total";
 // src/charts/bar-chart/private/overlap-bars.ts
 const PRIMARY_SLOT = "primary";
 const COMPARISON_SLOT = "comparison";
 const OVERLAP_SLOTS = [PRIMARY_SLOT, COMPARISON_SLOT];
+const isComparisonSeries = (series) => series.options?.type === "comparison";
 const SEARCH_STEPS = 16;
 /**
 * Places each series of an overlap layout: primaries in one slot and comparisons in the other, with each `group` a layer, back to front in order of first appearance.
@@ -6854,7 +6919,7 @@ function getOverlapBarColors(series, colors, slotColors, background) {
 }
 // src/charts/bar-chart/private/use-bar-slots.ts
 /**
-* Lays out the visible series in slots: overlap layers primaries and comparisons in two, stacked puts every primary in one.
+* Lays out the visible series in slots: overlap layers primaries and comparisons in two, stacked puts every primary in one and sums the comparisons into a bar in a second.
 *
 * @param layout               - How the chart places its series in a category.
 * @param seriesWithVisibility - Every series, with its index and whether it is visible.
@@ -6865,15 +6930,26 @@ function useBarSlots(layout, seriesWithVisibility) {
 		if (layout === "grouped") return;
 		const visible = seriesWithVisibility.filter(({ isVisible }) => isVisible);
 		if (layout === "stacked") {
-			const entries = visible.map(({ series, index }) => ({
+			const primaries = visible.filter(({ series }) => !isComparisonSeries(series));
+			const visibleGroups = new Set(primaries.map(({ series }) => series.group));
+			const hiddenGroups = new Set(seriesWithVisibility.flatMap(({ series, isVisible }) => isVisible || isComparisonSeries(series) ? [] : [series.group]));
+			const comparisons = seriesWithVisibility.filter(({ series }) => isComparisonSeries(series) && (visibleGroups.has(series.group) || !hiddenGroups.has(series.group)));
+			const total = primaries.length && comparisons.length ? {
+				series: getComparisonTotalSeries(comparisons.map(({ series }) => series), COMPARISON_TOTAL_KEY),
+				index: comparisons[0].index
+			} : void 0;
+			const entries = [...primaries, ...total ? [total] : []].map(({ series, index }) => ({
 				series,
 				index
 			}));
-			const slotKeys = [PRIMARY_SLOT];
-			const slotOf = () => PRIMARY_SLOT;
+			const slotKeys = total ? [PRIMARY_SLOT, COMPARISON_SLOT] : [PRIMARY_SLOT];
+			const slotOf = (key) => total && key === total.series.label ? COMPARISON_SLOT : PRIMARY_SLOT;
 			return {
 				kind: "stacked",
-				stack: getStackLayout(entries.map(({ series }) => series)),
+				stack: getStackLayout(primaries.map(({ series }) => series), total && {
+					key: total.series.label,
+					series: comparisons.map(({ series }) => series)
+				}),
 				entries,
 				keys: entries.map(({ series }) => series.label),
 				slotKeys,
@@ -6980,7 +7056,7 @@ function getSelectedSlot(slots, selectedIndex) {
 		slotKey,
 		thickness: Math.max(...slotBars.map(({ key }) => slots.thicknessOf(key))),
 		members,
-		...slots.kind === "stacked" && { valueExtent: slots.stack.extentAt(category) }
+		...slots.kind === "stacked" && { valueExtent: slots.stack.extentAt(category, stopKey) }
 	};
 }
 // src/charts/bar-chart/private/use-bar-stops.ts
@@ -7337,7 +7413,7 @@ function getGroupedBarColors(series, colors, background) {
 * @return A function from series and a layout to each series' bar color, by index.
 */
 function useBarColors() {
-	const { getElementStyles, backgroundColor = BACKGROUND_FALLBACK, theme } = useGlobalChartsContext();
+	const { getElementStyles, backgroundColor = BACKGROUND_FALLBACK, comparisonColor = COMPARISON_FALLBACK, theme } = useGlobalChartsContext();
 	const comparisonOpacity = theme.barChart?.barStyles?.comparison?.opacity;
 	return useCallback((series, { layout = "grouped" } = {}) => {
 		const colors = series.map((data, index) => getElementStyles({
@@ -7345,35 +7421,67 @@ function useBarColors() {
 			index
 		}).color);
 		if (layout === "stacked") {
-			const drawn = getDrawnSeries(series, layout);
-			return series.map((data, index) => {
-				const drawnIndex = drawn.indexOf(data);
-				return drawnIndex === -1 ? colors[index] : getElementStyles({
-					data,
-					index: drawnIndex
-				}).color;
-			});
+			const primaries = series.filter((data) => !isComparisonSeries(data));
+			const stroked = series.findIndex((data) => isComparisonSeries(data) && data.options?.stroke);
+			const roleColor = isValidHexColor(backgroundColor) ? tintWithContrast(comparisonColor, backgroundColor) : comparisonColor;
+			const totalColor = stroked === -1 ? roleColor : colors[stroked];
+			return series.map((data) => isComparisonSeries(data) ? totalColor : getElementStyles({
+				data,
+				index: primaries.indexOf(data)
+			}).color);
 		}
 		if (layout !== "overlap") return comparisonOpacity === void 0 ? getGroupedBarColors(series, colors, backgroundColor) : colors;
 		return getOverlapBarColors(series, colors, [getElementStyles({ index: 0 }).color, getElementStyles({ index: 1 }).color], backgroundColor);
 	}, [
 		getElementStyles,
 		backgroundColor,
+		comparisonColor,
 		comparisonOpacity
 	]);
 }
 // src/charts/bar-chart/use-bar-legend-items.ts
 const isComparison = (data, label) => data.some((series) => series.label === label && series.options?.type === "comparison");
 /**
-* Applies what a bar layout changes about a legend: overlap lists every primary before every comparison, as it draws their slots, with every swatch opaque like its bar; a collapsed grouped item takes its comparison's tint, the wider bar that frames the group.
+* The series a stacked layout's legend lists: every primary, then, with a comparison item, the comparison total it draws.
+*
+* @param data           - The chart's series.
+* @param comparisonItem - The legend's `comparisonItem` option.
+* @return The series, and each one's index in `data` for its color.
+*/
+function getStackedLegendSeries(data, comparisonItem) {
+	const indexes = data.flatMap((series, index) => series.options?.type === "comparison" ? [] : [index]);
+	const comparison = data.findIndex((series) => series.options?.type === "comparison");
+	const series = indexes.map((index) => data[index]);
+	if (!comparisonItem || comparison === -1) return {
+		series,
+		indexes
+	};
+	return {
+		series: [...series, {
+			label: COMPARISON_TOTAL_KEY,
+			data: [],
+			options: { type: "comparison" }
+		}],
+		indexes: [...indexes, comparison]
+	};
+}
+/**
+* Applies what a bar layout changes about a legend: its swatch colors, and the order and kind of its comparison items.
 *
 * @param data         - The series the items were built from.
 * @param items        - The legend items.
 * @param layout       - The layout the bars are drawn in.
 * @param seriesColors - Each series' bar color, by index.
+* @param totalLabel   - The name of a stacked layout's comparison total.
 * @return The legend items.
 */
-function forBarLayout(data, items, layout, seriesColors) {
+function forBarLayout(data, items, layout, seriesColors, totalLabel) {
+	if (layout === "stacked") return items.map((item) => item.seriesLabels?.[0] === "a8c-charts-comparison-total" ? {
+		...item,
+		label: totalLabel,
+		seriesLabels: void 0,
+		interactive: false
+	} : item);
 	if (layout === "overlap") {
 		const opaque = items.map((item) => item.shapeStyle ? {
 			...item,
@@ -7409,22 +7517,42 @@ function forBarLayout(data, items, layout, seriesColors) {
 */
 function useBarLegendItems(allData, options = {}, legendShape) {
 	const { layout } = options;
-	const data = useMemo(() => getDrawnSeries(allData, layout), [allData, layout]);
+	const stacked = useMemo(() => layout === "stacked" ? getStackedLegendSeries(allData, options.comparisonItem) : void 0, [
+		allData,
+		layout,
+		options.comparisonItem
+	]);
+	const data = stacked?.series ?? allData;
 	const getBarColors = useBarColors();
-	const seriesColors = useMemo(() => layout ? getBarColors(data, { layout }) : void 0, [
-		data,
+	const seriesColors = useMemo(() => {
+		if (!layout) return;
+		const colors = getBarColors(allData, { layout });
+		return stacked ? stacked.indexes.map((index) => colors[index]) : colors;
+	}, [
+		allData,
+		stacked,
 		layout,
 		getBarColors
 	]);
 	const items = useChartLegendItems(data, useMemo(() => ({
 		...options,
+		...stacked && {
+			comparisonItem: false,
+			comparisonSeriesItems: void 0
+		},
 		seriesColors
-	}), [options, seriesColors]), legendShape);
-	return useMemo(() => layout && seriesColors ? forBarLayout(data, items, layout, seriesColors) : items, [
+	}), [
+		options,
+		stacked,
+		seriesColors
+	]), legendShape);
+	const { comparisonItem } = options;
+	return useMemo(() => layout && seriesColors ? forBarLayout(data, items, layout, seriesColors, getComparisonItemLabel(comparisonItem)) : items, [
 		data,
 		items,
 		layout,
-		seriesColors
+		seriesColors,
+		comparisonItem
 	]);
 }
 // src/charts/bar-chart/bar-chart.tsx
@@ -7440,10 +7568,10 @@ const renderTooltipRow = (label, value) => /* @__PURE__ */ jsx("div", {
 });
 const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, height, className, margin, withTooltips = false, showLegend = false, legend = {}, gridVisibility: gridVisibilityProp, renderTooltip, tooltipPlacement, tooltipAnchorTop, tooltipStyle, barClassName, options = {}, orientation = "vertical", layout = "grouped", withPatterns = false, showZeroValues = false, withBandHighlight = false, onBandHighlightChange, defaultHiddenSeries, animation, children, gap = "md", compactWhenShort = false, onPointerDown, onPointerUp, onDatumActivate }) => {
 	if (layout === "stacked" && showZeroValues) warnOnce("bar-chart-stacked-zero-values", "BarChart: showZeroValues has no effect in a stacked layout.");
-	if (layout === "stacked" && data?.some((series) => series.options?.type === "comparison")) warnOnce("bar-chart-stacked-comparison", "BarChart: a stacked layout does not draw comparison series yet.");
 	const valueScaleOptions = orientation === "horizontal" ? options.xScale : options.yScale;
 	if (layout === "stacked" && valueScaleOptions?.type && valueScaleOptions.type !== "linear") warnOnce(`bar-chart-stacked-${valueScaleOptions.type}-scale`, `BarChart: a stacked layout draws on a linear value scale, so the ${valueScaleOptions.type} scale is ignored.`);
 	if (layout === "stacked" && valueScaleOptions?.zero === false && !valueScaleOptions.domain) warnOnce("bar-chart-stacked-zero", "BarChart: every stack starts at zero, so zero: false has no effect in a stacked layout.");
+	if (layout === "stacked" && legend.comparisonSeriesItems) warnOnce("bar-chart-stacked-comparison-series-items", "BarChart: a stacked layout sums its comparisons into one bar, so legend.comparisonSeriesItems is ignored; name that bar with legend.comparisonItem.");
 	if (!withTooltips && (withBandHighlight || onBandHighlightChange)) warnOnce("bar-chart-band-highlight-without-tooltips", "BarChart: withBandHighlight and onBandHighlightChange require withTooltips.");
 	const legendInteractive = legend.interactive ?? false;
 	const legendCollapseGroups = legend.collapseGroups ?? false;
@@ -7456,23 +7584,11 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 	const hiddenSeries = useDefaultHiddenSeries(chartId, defaultHiddenSeries);
 	const isSeriesVisible = useCallback((seriesLabel) => !hiddenSeries.has(seriesLabel), [hiddenSeries]);
 	const theme = useXYChartTheme(data);
-	const transformedData = useChartDataTransform(data);
-	const dataSorted = useMemo(() => getDrawnSeries(transformedData, layout), [layout, transformedData]);
+	const dataSorted = useChartDataTransform(data);
 	const dataWithVisibleZeros = useZeroValueDisplay(dataSorted, {
 		enabled: showZeroValues && !isStacked,
 		valueAxisLength: horizontal ? width : height
 	});
-	const legendItems = useBarLegendItems(dataSorted, useMemo(() => ({
-		collapseGroups: legendCollapseGroups,
-		comparisonItem: legendComparisonItem,
-		comparisonSeriesItems: legendComparisonSeriesItems,
-		layout
-	}), [
-		legendCollapseGroups,
-		legendComparisonItem,
-		legendComparisonSeriesItems,
-		layout
-	]));
 	const { getElementStyles, theme: providerTheme } = useGlobalChartsContext();
 	const getBarColors = useBarColors();
 	const barColors = useMemo(() => getBarColors(dataSorted, { layout }), [
@@ -7503,11 +7619,23 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 		index,
 		isVisible: isSeriesRendered(series)
 	})), [dataWithVisibleZeros, isSeriesRendered]);
-	const allSeriesHidden = useMemo(() => {
-		return seriesWithVisibility.every(({ isVisible }) => !isVisible);
-	}, [seriesWithVisibility]);
 	const primaryEntries = useMemo(() => seriesWithVisibility.filter(({ isVisible, series }) => isVisible && series.options?.type !== "comparison"), [seriesWithVisibility]);
 	const barSlots = useBarSlots(layout, seriesWithVisibility);
+	const allSeriesHidden = barSlots?.kind === "stacked" ? barSlots.entries.length === 0 : seriesWithVisibility.every(({ isVisible }) => !isVisible);
+	const hasComparisonTotal = !!barSlots?.slotKeys.includes(COMPARISON_SLOT);
+	const legendItems = useBarLegendItems(dataSorted, useMemo(() => ({
+		collapseGroups: legendCollapseGroups,
+		comparisonItem: isStacked && !hasComparisonTotal ? false : legendComparisonItem,
+		comparisonSeriesItems: legendComparisonSeriesItems,
+		layout
+	}), [
+		legendCollapseGroups,
+		legendComparisonItem,
+		legendComparisonSeriesItems,
+		layout,
+		isStacked,
+		hasComparisonTotal
+	]));
 	const chartOptions = useBarChartOptions(dataWithVisibleZeros, horizontal, resolvedOptions, isSeriesRendered, barSlots?.kind === "stacked" ? barSlots.stack : void 0);
 	const valueAxis = horizontal ? chartOptions.axis.x : chartOptions.axis.y;
 	const callerValueDomain = horizontal ? options.xScale?.domain : options.yScale?.domain;
@@ -7635,18 +7763,22 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			})]
 		});
 	}, [chartOptions.tooltip, dataSorted]);
+	const comparisonTotalLabel = getComparisonItemLabel(legendComparisonItem);
 	const renderStackedTooltip = useCallback(({ tooltipData }) => {
 		const nearestDatum = tooltipData?.nearestDatum?.datum;
 		if (!nearestDatum || barSlots?.kind !== "stacked") return null;
 		const datumByKey = tooltipData?.datumByKey ?? {};
 		const categoryLabel = chartOptions.tooltip.labelFormatter(nearestDatum.label || (nearestDatum.date ? nearestDatum.date.getTime() : 0), 0, []);
-		const rows = [...barSlots.entries].reverse().flatMap(({ series }) => {
+		const datumOf = ({ series }) => {
 			const datum = datumByKey[series.label]?.datum;
 			return datum ? [{
 				label: series.label,
 				datum
 			}] : [];
-		});
+		};
+		const isPrimary = ({ series }) => barSlots.slotOf(series.label) !== COMPARISON_SLOT;
+		const rows = barSlots.entries.filter(isPrimary).reverse().flatMap(datumOf);
+		const comparisonRows = barSlots.entries.filter((entry) => !isPrimary(entry)).flatMap(datumOf).filter(({ datum }) => isBarRendered(datum));
 		const readings = rows.filter(({ datum }) => isBarRendered(datum)).length;
 		const [negative, positive] = barSlots.stack.extentAt(nearestDatum);
 		return /* @__PURE__ */ jsxs("div", {
@@ -7657,10 +7789,15 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 					children: categoryLabel
 				}),
 				rows.map(({ label, datum }) => /* @__PURE__ */ jsx(Fragment, { children: renderTooltipRow(label, formatReading(datum.value)) }, label)),
-				readings > 1 && renderTooltipRow(__("Total", "jetpack-charts"), formatReading(negative + positive))
+				readings > 1 && renderTooltipRow(__("Total", "jetpack-charts"), formatReading(negative + positive)),
+				comparisonRows.map(({ label, datum }) => /* @__PURE__ */ jsx(Fragment, { children: renderTooltipRow(comparisonTotalLabel, formatReading(datum.value)) }, label))
 			]
 		});
-	}, [chartOptions.tooltip, barSlots]);
+	}, [
+		chartOptions.tooltip,
+		barSlots,
+		comparisonTotalLabel
+	]);
 	const renderDefaultTooltip = useCallback(({ tooltipData }) => {
 		const nearestDatum = tooltipData?.nearestDatum?.datum;
 		if (!nearestDatum) return null;
@@ -7687,8 +7824,15 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 			}), renderTooltipRow(categoryLabel, formatReading(nearestDatum.value))]
 		});
 	}, [chartOptions.tooltip, comparisonEntries]);
+	const patternTypes = useMemo(() => {
+		const primaries = dataSorted.filter((series) => !isComparisonSeries(series));
+		return dataSorted.map((series, index) => {
+			if (!isStacked) return index;
+			return isComparisonSeries(series) ? primaries.length : primaries.indexOf(series);
+		});
+	}, [dataSorted, isStacked]);
 	const renderPattern = useCallback((index, color) => {
-		const patternType = index % 4;
+		const patternType = (patternTypes[index] ?? index) % 4;
 		const id = getPatternId(chartId, index);
 		const commonProps = {
 			id,
@@ -7721,7 +7865,7 @@ const BarChartInternal = ({ data, ariaLabel, chartId: providedChartId, width, he
 				height: 3
 			}, id);
 		}
-	}, [chartId]);
+	}, [chartId, patternTypes]);
 	const createPatternBorderStyle = useCallback((index, color) => {
 		const patternId = getPatternId(chartId, index);
 		return `
@@ -11923,6 +12067,6 @@ function TrendIndicator({ direction, value, className, style, showIcon = true })
 		})]
 	});
 }
-export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TooltipBox, TrendIndicator, XYChartTooltip, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useBarColors, useBarLegendItems, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
+export { AccessibleTooltip, AreaChartResponsive as AreaChart, AreaChart as AreaChartUnresponsive, BarChartResponsive as BarChart, BarChart as BarChartUnresponsive, BarListChartResponsive as BarListChart, BarListChart as BarListChartUnresponsive, BaseTooltip, COMPARISON_TOTAL_KEY, ConversionFunnelChartWithProvider as ConversionFunnelChart, GeoChartResponsive as GeoChart, GeoChartWithProvider as GeoChartUnresponsive, GlobalChartsContext, GlobalChartsProvider, GlobalChartsProvider as ThemeProvider, GoogleDataTableColumnRoleType, HeatmapChartResponsive as HeatmapChart, HeatmapChart as HeatmapChartUnresponsive, LeaderboardChartResponsive as LeaderboardChart, LeaderboardChart as LeaderboardChartUnresponsive, Legend, LineChartResponsive as LineChart, LineChart as LineChartUnresponsive, PieChartResponsive as PieChart, PieChart as PieChartUnresponsive, PieSemiCircleChartResponsive as PieSemiCircleChart, PieSemiCircleChart as PieSemiCircleChartUnresponsive, Sparkline, SparklineUnresponsive, TooltipBox, TrendIndicator, XYChartTooltip, buildCalendarHeatmapData, buildMonthCalendarHeatmapData, defaultTheme, formatMetricValue, formatPercentage, getBucketInfo, getColorDistance, hexToRgba, isValidHexColor, lightenHexColor, mergeThemes, mixHexColors, normalizeColorToHex, parseAsLocalDate, parseHslString, prefersLightText, relativeLuminance, resolveCssVariable, useBarColors, useBarLegendItems, useCalendarHeatmapData, useChartFormatting, useChartLegendItems, useChartRegistration, useChartScopeElement, useGlobalChartsContext, useGlobalChartsTheme, useLeaderboardLegendItems, useMonthCalendarHeatmapData, validateHexColor };
 
 //# sourceMappingURL=index.js.map
